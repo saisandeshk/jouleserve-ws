@@ -73,11 +73,21 @@ Sandesh will set the concrete next plan after this handoff.
   - The AeroEval tasks finished today, and almost all failed:
     - D3_OUTBACK: 8 fail, 1 partial.
     - F1_FARM_SURVEY: 9 fail (`validator_reject`), about 72 min per run.
+- **Tool-calling CLGSCE sweep (Gemma):** **running** since 2026-10-01 00:17 in
+  `/home/yash/final_toolcalling_thor79/`. At ~01:10, 18 of 108 runs were done.
+  - The agent is `_harness/clgsce_openai_toolcalling.py`. It has the same shape as Reflexion
+    minus the reflector: each attempt builds a *fresh* generator prompt, makes exactly one
+    `execute_and_observe` tool call, then runs an evaluator (2 calls).
+  - Measured on the 18 finished runs: 3 LLM calls and 2 tool calls per run, 0–1% cache
+    reuse, prompts of at most ~5.6K tokens, prefill 3.5% (A) / 10.7% (B) of LLM time.
+  - **So a sweep is live on the Thor: follow the busy-check rules strictly.**
 - **Qwen3.8-27B:** 144 entries in the index, **0 runs** so far.
-- **Traffic workload:** nothing about it in this repo yet.
+- **Traffic workload:** not yet located for P1.
+  - mayankarya has a DeepStream camera/traffic query agent at
+    `/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/` (with `traffic_agent/`
+    alongside). It is ReAct with an accumulating transcript and has 22 Thor traces.
+  - Whether this is P1's traffic workload is unknown.
 - **Predictor:** not started.
-- **Thor at 20:50:** no harness processes running. P1's Gemma SGLang server (:30000) and
-  CLGSCE MCP server are still up. It looks like a gap between sweeps.
 
 **WS**
 - Idle: both GPUs near 0 MiB, no tmux sessions.
@@ -123,9 +133,19 @@ Sandesh will set the concrete next plan after this handoff.
   only 1–8% of LLM time.
 - The Reflexion roles (generator, evaluator, reflector) rebuild their prompts on every call,
   so only 10–31% of a CLGSCE prompt is reusable.
-- There is **no native tool-calling drone agent in P1**: all runs are Reflexion.
-  - `aerogen_mcp` on the Thor (by mayankarya) is a native tool-calling drone agent with an
-    accumulating context. It has never been run at scale, and its sim returns instantly.
+- **P1's paradigms don't accumulate context.** P1's tool-calling agent (see §2) passes the
+  whole program as one tool argument. The AeroEval ReAct in Gazebo keeps only the last
+  observation.
+- **`aerogen_mcp` does accumulate** (verified 2026-10-01). It is a drone agent by mayankarya
+  at `/media/ssd/drone/aeroeval/aerogen_mcp/`:
+  - One `messages` list per mission gets every assistant turn and tool result appended;
+    ≤40 turns and ≤80 tool calls.
+  - 20 MCP tools. The system prompt is ~32K chars (~8K tokens) plus the tool schemas.
+  - The pure-Python `sim` backend computes `flight_time_s` from distance and speed (max
+    2 m/s) but doesn't wait for it, so waits need pacing.
+  - Only 5 tasks; never run at scale.
+  - The default model is o3-mini, and a random system-prompt prefix defeats caching. Both
+    must change for our use.
 
 **Track B** (`review/systems/README.md` §3)
 - **F1:** every published retention rule says "discard" on P1 Reflexion as it stands.

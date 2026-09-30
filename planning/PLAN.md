@@ -154,6 +154,7 @@ different model (D1), and the full metric set. There is no replay and there are 
 - There is **no tool-calling paradigm** for drone on the P1 device: all 126 runs are `reflexion`, and the only switch is `P1_ENABLE_REFLEXION`.
 - There is an unused **"constrained ReAct"** for AeroEval at `aeroeval_gazebo_subagents/repo_side/react_aeroeval_gazebo.py`. It picks the next protocol-allowed action from the last observation only, so the context doesn't grow.
 - **Re-checked on 2026-09-30, including `/media/ssd`:** P1 has no native tool-calling implementation and no results for one; all 209 paradigm entries are `reflexion`. P1 also has a `find_toolcalling.sh` helper (Sep 28) that searched for the same thing.
+- **Correction, 2026-10-01:** P1 started a CLGSCE tool-calling sweep at 00:17 in `/home/yash/final_toolcalling_thor79/`. Each attempt builds a fresh prompt and makes one `execute_and_observe` call, so context does not accumulate. Details in `HANDOFF.md` §2.
 - Two native tool-calling agents by another lab member (mayankarya) exist on the Thor. Neither was ever run at scale, and neither has traces.
   - `/media/ssd/drone/aeroeval/aerogen_mcp/`: a **drone** agent with 20 MCP tools over AeroStack2, ≤40 turns / 80 tool calls, and context accumulating in one `messages` list. Its pure-Python `sim` backend computes flight time but returns instantly, so it needs real-time pacing. 5 tasks (radio tower); needs only `openai` + `mcp`; 828 KB.
   - `/media/ssd/deepstream-mcp/`: a video-pipeline agent.

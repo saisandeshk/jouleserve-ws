@@ -143,6 +143,29 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 | Qwen3.5-9B weights | `cache/hf/models--Qwen--Qwen3.5-9B` | hybrid, same family as P1's Qwen3.8 |
 | Orin SGLang image | `jouleserve/sglang:0.5.16-orin-cu126-sm87` | built on Orin-2 (legacy); for M6 |
 
+## 6b. WS working directories and gotchas (set up 2026-10-01)
+
+| What | Where (WS) | Notes |
+|---|---|---|
+| Dev copy of this repo's code | `~/jsw-dev/` | `rsync -a jsw env <ws>:~/jsw-dev/` from the local checkout. `~/jouleserve-ws` stays a clean git clone |
+| aerogen private copy | `~/work/aeroeval/` (own local git) | mayankarya's code from the Thor. **Not vendored into this repo** until the owner agrees. The only edit is the pacing hook (commit `0acef8c`) |
+| aerogen venv | `~/work/venv-aerogen` | openai 3.22, **mcp 1.29.1** (the agent's client needs mcp 1.x: 2.x renamed `Tool.inputSchema`), nvidia-ml-py |
+| Run outputs | `~/work/runs/<run>/` | Copy back to local `data/ws_runs/` (git-ignored) for analysis |
+| Logs | `~/work/logs/` | Server and queue logs |
+
+- **K2-Horizon-7B has no thinking-off mode.** `chat_template_kwargs.reasoning_effort` is
+  one of high, medium or low (default high).
+  - The template **raises** unless every assistant message in the history carries a
+    thinking field. SGLang 0.5.20 forwards only `reasoning_content`, so send that (`""`
+    when empty).
+  - Past reasoning stays in the history. At high effort, one aerogen session outgrows a
+    one-GPU pool (25.4K tokens) within about 7 turns (`finish_reason=length`).
+- **Streaming TTFT is not prefill time for tool calls.** The `k2_horizon` tool parser
+  emits a tool call only once it is complete. Model prefill from the calibrated rate
+  instead (`jsw/costs/calibrate.py`).
+- **Foreground `sleep` is blocked for the agent.** Wait on WS jobs with a background
+  `until …; do sleep N; done` over ssh.
+
 ## 7. Conventions
 
 - **Keep it lean.** The legacy attempt accumulated heavy process and got bloated. Prefer the
