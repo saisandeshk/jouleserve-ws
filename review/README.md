@@ -1,9 +1,16 @@
 # JouleServe prior-art and claim evidence
 
 This directory retains the compact evidence underlying the current research
-position. The active conceptual document is
-`../planning/P5_JOULESERVE_REFRESHER.md`; the detailed contract is
-`../planning/JOULESERVE_MASTER_RESEARCH_PLAN.md`.
+position.
+
+**Start here (2026-09-30):** [`systems/README.md`](systems/README.md) is the Track B index and
+synthesis, with one doc per system under `systems/`. The master plan is
+[`../planning/JOULESERVE_WS_PLAN.md`](../planning/JOULESERVE_WS_PLAN.md).
+
+The files below were carried over from the legacy JouleServe repo. They refer to
+`planning/P5_JOULESERVE_REFRESHER.md` and `JOULESERVE_MASTER_RESEARCH_PLAN.md`, which
+live only in the legacy repo and are **not** followed here. Treat the "N1→N5 ladder"
+wording below as historical.
 
 ## Retained records
 
