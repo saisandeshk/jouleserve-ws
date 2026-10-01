@@ -1,6 +1,6 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-02, ~00:30 IST: P1 status refresh, plus the AeroEval and P1-task
+**Last updated:** 2026-10-01, ~23:45 IST: P1 status refresh, plus the AeroEval and P1-task
 overview written in answer to the P1 mentor. The rest is from the overnight measurement
 session that ended 2026-10-01 ~06:20. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
