@@ -169,6 +169,16 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Streaming TTFT is not prefill time for tool calls.** The `k2_horizon` tool parser
   emits a tool call only once it is complete. Model prefill from the calibrated rate
   instead (`jsw/costs/calibrate.py`).
+- **Pin model revisions and run offline.** On 2026-10-02 Hugging Face served a re-upload of
+  K2 (revision `85d46bb`, re-sharded) and SGLang fetched it silently. `env/launch_k2_tp1.sh` now
+  pins `f846b1e` (the revision of every earlier run) with `HF_HUB_OFFLINE=1`.
+- **Qwen3.5-9B** (`env/launch_qwen35_tp1.sh`): hybrid, with 8 of 32 layers full attention.
+  - Use `--reasoning-parser qwen3 --tool-call-parser qwen3_coder`, and turn thinking on or off
+    with `chat_template_kwargs.enable_thinking`.
+  - At 0.85 the KV pool is 35.5K tokens, and the mamba state slots cap concurrency at 3.
+  - The unified radix cache reuses both state kinds across tool steps.
+- **`pkill -f <pattern>` over ssh kills the ssh shell itself** when the pattern is in the
+  command line. Select PIDs with `ps | grep "[x]yz"` instead.
 - **Foreground `sleep` is blocked for the agent.** Wait on WS jobs with a background
   `until …; do sleep N; done` over ssh.
 

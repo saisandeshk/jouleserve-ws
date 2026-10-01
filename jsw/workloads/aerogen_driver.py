@@ -35,7 +35,15 @@ REPO = Path(__file__).resolve().parents[2]
 # 0.5.20 only forwards `reasoning_content` (it drops `think_fast`/`think_faster`), which the
 # template re-renders under the high-effort tag; for low/medium effort the re-rendered
 # history therefore differs from the generated tokens at the think tag of each turn.
-THINK_KEY = {"high": "reasoning_content", "medium": "reasoning_content", "low": "reasoning_content"}
+THINK_KEY = {"high": "reasoning_content", "medium": "reasoning_content", "low": "reasoning_content",
+             "think": "reasoning_content", "nothink": "reasoning_content"}
+
+
+def template_kwargs(effort):
+    """K2 Horizon: reasoning_effort low|medium|high. Qwen3.x: enable_thinking (think|nothink)."""
+    if effort in ("think", "nothink"):
+        return {"enable_thinking": effort == "think"}
+    return {"reasoning_effort": effort}
 
 
 # ---------------------------------------------------------------- child: one mission
@@ -57,7 +65,8 @@ class LoggingClient:
                    temperature=a.temperature, top_p=a.top_p, seed=a.seed,
                    max_tokens=a.max_tokens, stream=True,
                    stream_options={"include_usage": True},
-                   extra_body={"chat_template_kwargs": {"reasoning_effort": a.effort}})
+                   extra_body={"chat_template_kwargs": template_kwargs(a.effort),
+                               **({"top_k": a.top_k} if a.top_k else {})})
         rec = {"session": a.session, "call_index": self.idx, "n_messages": len(messages),
                "effort": a.effort, "t_req": time.monotonic(), "t_req_wall": time.time()}
         t_first, reasoning, content, tcs, finish, usage = None, [], [], {}, None, None
@@ -109,6 +118,9 @@ class LoggingClient:
             content_chars=len(msg["content"] or ""),
             tool_names=[t["function"]["name"] for t in msg.get("tool_calls", [])],
             finish_reason=finish)
+        if (rec.get("completion_tokens") or 0) > 4000:   # keep a sample of long reasoning, to tell loops from planning
+            rt = msg[THINK_KEY[a.effort]]
+            rec.update(reasoning_head=rt[:1500], reasoning_tail=rt[-1500:])
         self._write(rec)
         return ChatCompletion.model_validate({
             "id": f"{a.session}-{self.idx}", "object": "chat.completion",
@@ -146,7 +158,9 @@ def child_main(a):
         tool_log.write(json.dumps({
             "session": a.session, "seq": seq["n"], "tool": name, "t_start": t0, "t_end": t1,
             "dur_s": t1 - t0, "args_chars": len(json.dumps(arguments)),
-            "result_chars": len(json.dumps(res)), "status": status}) + "\n")
+            "result_chars": len(json.dumps(res)), "status": status,
+            # simulated (physical) clock after the call; wall time is this / pace speedup
+            "sim_t": res.get("flight_time_s") if isinstance(res, dict) else None}) + "\n")
         tool_log.flush()
         return res
 
@@ -162,6 +176,9 @@ def child_main(a):
         summary.update(status="done", stop_reason=mission["stop_reason"],
                        tool_calls=mission["tool_calls"], flight_time_s=mission["flight_time_s"],
                        validator=val, usage=usage.as_dict())
+        if "delivery" in task:
+            from jsw.workloads.delivery_check import check
+            summary["delivery_check"] = check(task, mission["trace"])
         (out / "mission.json").write_text(json.dumps(mission, indent=1, default=str))
     except Exception as e:
         summary.update(status="error", error=repr(e)[:4000])
@@ -196,9 +213,8 @@ def parent_main(a):
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     root = Path(a.aerogen_root)
-    tasks = [t.strip() for t in
-             (root / "aerogen_mcp/task_sets/aerogen_aeroeval_radio_tower.txt").read_text().splitlines()
-             if t.strip()]
+    task_file = Path(a.task_file) if a.task_file else root / "aerogen_mcp/task_sets/aerogen_aeroeval_radio_tower.txt"
+    tasks = [t.strip() for t in task_file.read_text().splitlines() if t.strip()]
     task_ids = range(len(tasks)) if a.tasks == "all" else [int(x) for x in a.tasks.split(",")]
     # Interleave by run so concurrent slots fly different tasks.
     missions = [(t, r) for r in range(a.runs) for t in task_ids]
@@ -206,7 +222,9 @@ def parent_main(a):
 
     manifest = {
         "args": vars(a), "host": socket.gethostname(), "t_start_wall": time.time(),
-        "t_start_mono": time.monotonic(), "tasks": tasks,
+        "t_start_mono": time.monotonic(), "task_file": str(task_file), "tasks": tasks,
+        "prompt_files": {k: (v, _sha(v)) for k, v in
+                         (("world", a.world_prompt), ("runtime", a.runtime_prompt)) if v},
         "server_info": _get(base + "/get_server_info"), "models": _get(base + "/v1/models"),
         "aerogen_snapshot": subprocess.run(["git", "-C", str(root), "log", "--oneline", "-1"],
                                            capture_output=True, text=True).stdout.strip(),
@@ -231,6 +249,8 @@ def parent_main(a):
     env = dict(os.environ, OPENAI_API_KEY="EMPTY", OPENAI_BASE_URL=a.base_url,
                AEROGEN_MODEL=a.model, AEROGEN_MCP_PYTHON=sys.executable,
                AEROGEN_PACE_SPEEDUP=str(a.pace_speedup),
+               **({"AEROGEN_WORLD_PROMPT": a.world_prompt} if a.world_prompt else {}),
+               **({"AEROGEN_RUNTIME_PROMPT": a.runtime_prompt} if a.runtime_prompt else {}),
                PYTHONPATH=f"{REPO}:{a.aerogen_root}:" + os.environ.get("PYTHONPATH", ""))
     pending = list(missions)
     running = {}  # Popen -> (session, t_launch)
@@ -258,7 +278,7 @@ def parent_main(a):
             cmd = [sys.executable, "-m", "jsw.workloads.aerogen_driver", "--child",
                    "--aerogen-root", a.aerogen_root, "--base-url", a.base_url,
                    "--model", a.model, "--effort", a.effort, "--temperature", str(a.temperature),
-                   "--top-p", str(a.top_p), "--seed", str(a.seed + r), "--max-tokens",
+                   "--top-p", str(a.top_p), "--top-k", str(a.top_k), "--seed", str(a.seed + r), "--max-tokens",
                    str(a.max_tokens), "--scenario", a.scenario, "--out", str(sdir),
                    "--session", session, "--task-index", str(t), "--task-text", tasks[t]]
             p = subprocess.Popen(cmd, env=env, cwd=str(REPO),
@@ -295,12 +315,16 @@ def main():
     ap.add_argument("--effort", default="low", choices=list(THINK_KEY))
     ap.add_argument("--temperature", type=float, default=1.0)   # K2 Horizon model-card setting
     ap.add_argument("--top-p", type=float, default=0.95)
+    ap.add_argument("--top-k", type=int, default=0, help="0 = server default")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-tokens", type=int, default=16384)
     ap.add_argument("--scenario", default=os.path.expanduser(
         "~/work/aeroeval/aerogen_mcp/scenario_radio_tower.json"))
     ap.add_argument("--out", required=True)
     # parent
+    ap.add_argument("--task-file", default="", help="one task per line; default: aerogen's sample set")
+    ap.add_argument("--world-prompt", default="", help="overrides AEROGEN_WORLD_PROMPT")
+    ap.add_argument("--runtime-prompt", default="", help="overrides AEROGEN_RUNTIME_PROMPT")
     ap.add_argument("--tasks", default="all")
     ap.add_argument("--runs", type=int, default=1)
     ap.add_argument("--concurrency", type=int, default=1)
