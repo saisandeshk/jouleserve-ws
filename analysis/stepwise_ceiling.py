@@ -129,27 +129,39 @@ def figure(per_arm_outs, p1):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    colors = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#7d5ba6", "#9aa0a6", "#3d3d3d", "#b4b4b4"]
-    fig, ax = plt.subplots(figsize=(8, 4.2), dpi=150)
+    # one hue family per model; lighter = the second setting; P1 in neutral dashes
+    style = {
+        "Qwen3.5-9B thinking, greedy (P1 protocol)": ("#1f5fae", "-"),
+        "Qwen3.5-9B thinking, sampled": ("#7fb0e8", "-"),
+        "Qwen3.5-9B no thinking, greedy": ("#137f59", "-"),
+        "Qwen3.5-9B no thinking, sampled": ("#6fd3a8", "-"),
+        "K2-Horizon-7B high effort": ("#c4511f", "-"),
+        "K2-Horizon-7B low effort": ("#f2a477", "-"),
+        "P1 Reflexion (Thor)": ("#222222", "--"),
+        "P1 tool calling (Thor)": ("#8a8a8a", "--"),
+    }
+    fig, ax = plt.subplots(figsize=(8.5, 4.4), dpi=150)
     series = list(per_arm_outs.items()) + [(k + " (Thor)", v) for k, v in p1.items()]
-    for (label, xs), col in zip(series, colors):
+    for label, xs in series:
         if not xs:
             continue
+        col, ls = style.get(label, ("#555555", "-"))
         xs = sorted(max(1, x) for x in xs)
         ys = [(i + 1) / len(xs) for i in range(len(xs))]
-        ls = "--" if "P1" in label else "-"
-        ax.step(xs, ys, where="post", color=col, lw=2, ls=ls, label=f"{label} (n={len(xs)})")
-    for x, txt in [(300, "~300: re-prefilling 20K tokens\ncosts the same on the Thor")]:
-        ax.axvline(x, color="#999", lw=1, ls=":")
-        ax.text(x * 1.08, 0.04, txt, fontsize=7, color="#555")
+        ax.step(xs, ys, where="post", color=col, lw=2, ls=ls, label=f"{label}, n={len(xs)}")
+    ax.axvline(300, color="#999", lw=1, ls=":")
+    ax.text(330, 0.03, "300 tokens: decoding them on the Thor costs as much\nas re-prefilling a 20K-token context",
+            fontsize=7, color="#555")
     ax.set_xscale("log")
-    ax.set_xlabel("Output tokens per call (reasoning included, log scale). Step-wise: calls after a tool result")
+    ax.set_xlim(1, 6e4)
+    ax.set_xlabel("Output tokens per LLM call (reasoning included, log scale)")
     ax.set_ylabel("Share of calls")
-    ax.set_title("Step-wise agents write short steps; P1's program-writing agents do not", fontsize=10)
+    ax.set_title("After a tool result, step-wise agents write ~60-100 tokens; P1's agents write thousands\n"
+                 "(step-wise: calls after a tool result, D1 missions on the WS; P1: all calls, Thor sweeps)", fontsize=9.5)
     ax.grid(alpha=0.25)
-    ax.legend(fontsize=7, loc="lower right", frameon=False)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
+    ax.legend(fontsize=7, loc="upper left", frameon=False)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
     fig.tight_layout()
     (OUT / "figures").mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT / "figures/output_per_step_cdf.png")
@@ -166,9 +178,16 @@ def main():
             pre, dec = rates(ms)
             if prefix.startswith("k2"):
                 pre = 4106.0          # calibrated cold prefill (jsw/costs/calibrate.py), K2 on one A5000
+            else:
+                # Qwen: cold first calls of the thinking arms, whose first streamed token is
+                # reasoning, so TTFT is prefill (the tool parser buffers no-thinking output)
+                pre = rates([m for pf in ("q_think_greedy", "q_think_sampled") for sf in ("d1", "d23")
+                             for m in load_missions(pf, sf)])[0]
             r_ws = (pre / dec) if pre and dec else None
             row = arm_stats(ms, r_ws)
-            row.update(prefill_ws=pre, decode_ws=dec)
+            llm = sum(c["t_end"] - c["t_req"] for m in ms for c in m["calls"])
+            cached = sum(c.get("cached_tokens") or 0 for m in ms for c in m["calls"])
+            row.update(prefill_ws=pre, decode_ws=dec, measured_saving_ws=((cached / pre) / (llm + cached / pre)) if pre else None)  # share of LLM time with nothing kept
             result[f"{prefix}_{suffix}"] = dict(label=label, task_set=suffix, **row)
             if suffix == "d1":
                 per_arm_outs[label] = [c["completion_tokens"] for m in ms for c in m["calls"][1:]]
@@ -182,7 +201,7 @@ def main():
     keys = ["missions", "passed_strict", "collisions", "calls_per_mission", "first_out_median", "first_out_max",
             "first_share_of_output", "resume_out_median", "resume_out_p90", "resume_out_max", "resume_share_gt_1k",
             "capped", "first_prompt", "peak_ctx_median", "reuse", "ceiling_thor", "ceiling_thor_private",
-            "resume_ceiling_thor", "resume_ceiling_thor_private", "ceiling_ws", "flight_s_per_mission",
+            "resume_ceiling_thor", "resume_ceiling_thor_private", "ceiling_ws", "measured_saving_ws", "flight_s_per_mission",
             "thor_llm_s_nokeep", "flight_share_thor"]
     for name, row in result.items():
         print(name, {k: (round(row[k], 3) if isinstance(row.get(k), float) else row.get(k)) for k in keys if k in row})

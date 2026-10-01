@@ -1,8 +1,7 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-01, ~23:45 IST: P1 status refresh, plus the AeroEval and P1-task
-overview written in answer to the P1 mentor. The rest is from the overnight measurement
-session that ended 2026-10-01 ~06:20. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
+**Last updated:** 2026-10-02, ~02:00 IST, after the step-wise D1 test (108 missions on the WS),
+which followed the AeroEval/P1-task overview written for the P1 mentor. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
@@ -40,11 +39,15 @@ appending history, which git already keeps.
   [`reports/2026-10-01-p1-task-overview/README.md`](reports/2026-10-01-p1-task-overview/README.md):
   where AeroEval lives, the full task inventory, per-task numbers, what can be used, and
   questions for the mentor (its §7).
+- **Step-wise test (2026-10-02, ~00:05–01:32):**
+  [`reports/2026-10-02-stepwise-d1/README.md`](reports/2026-10-02-stepwise-d1/README.md).
+  It is the deciding test for option B in the task overview (§6–7). Sandesh takes both reports
+  to the P1 mentor on the morning of 2026-10-02.
 - **Sandesh** said (2026-10-01) that they have their own idea of how to approach the next
   step and will share it. The report's options and decisions (§6–7) are input to that
   discussion, not a plan.
-- **WS: idle.** K2 servers ran overnight on both GPUs. All runs finished by 06:16, and
-  everything was torn down: both GPUs are back to ~15–47 MiB, with no tmux sessions.
+- **WS: idle.** The 2026-10-02 runs finished at 01:32 and everything was torn down: both GPUs
+  are back to 15–47 MiB, with no tmux sessions.
   - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
   - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
 - **P1 (Thor), checked 2026-10-01 23:00.**
@@ -70,6 +73,7 @@ appending history, which git already keeps.
 | Cost calibration | `jsw/costs/calibrate.py` | Idle power, cold/warm prefill time and energy against length, decode J/token against batch |
 | Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py` | One session model for P1 traces and WS runs; figures; trace-driven policy simulator checked against live runs; Claude-Doc chart modules |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/queue*.sh` | Queues are the record of what ran overnight |
+| Step-wise D-task test (2026-10-02) | `jsw/workloads/delivery_check.py`, `env/launch_qwen35_tp1.sh`, `env/queue_stepwise_d.sh`, `analysis/stepwise_ceiling.py`, `analysis/p1_per_task.py` | Driver flags: `--effort think\|nothink`, `--task-file`, `--world-prompt`, `--runtime-prompt`, `--top-k`. P1's task texts live on the WS in `~/work/tasks/`. K2 is pinned to revision `f846b1e` |
 
 Not built yet: the gateway, policies in a live engine (the simulator stands in for now), a
 Jetson telemetry adapter, and the CLGSCE port.
@@ -104,6 +108,19 @@ Jetson telemetry adapter, and the CLGSCE port.
   calling, the early ReAct) synthesize whole programs with fresh prompts.
 - aerogen_mcp is mayankarya's step-wise tool-calling rewrite of AeroGen. It shares AeroEval's
   world prompts, not P1's tasks or agent. Our aerogen numbers characterize that paradigm.
+
+**A step-wise agent on P1's own delivery tasks keeps its steps short** (WS, 2026-10-02).
+- **Setup:** aerogen's loop with P1's D1–D3 texts and world files; Qwen3.5-9B thinking on/off,
+  greedy and sampled; K2 low/high; 108 missions.
+- **Steps:** after a tool result the model writes a median of 55–99 tokens (p90 ≤ 394).
+  Thinking concentrates in the first, planning call: a median of 545–5,147 tokens, and one
+  greedy runaway to 24K.
+- **Ceiling** at the Thor's r ≈ 67: 56–72% of post-wait LLM time, and 20–72% of mission LLM
+  time.
+- **Private state** is only 3–16% of mission LLM time; the rest is the shared prompt.
+- **Missions:** 72% deliver everything, but only 27% pass the strict check, because the sim has
+  no buildings and the model flies through them.
+- **Caveats:** the models are proxies for Gemma, the waits are paced at 50×, and N ≤ 2.
 
 **aerogen has it** (WS, K2-Horizon-7B, real-time flight pacing, random anti-cache prompt
 prefix removed).
@@ -157,7 +174,10 @@ prefix removed).
 
 ## 6. Next steps
 
-Waiting on Sandesh's approach. Candidates from the report (§6–7):
+Waiting on the P1 mentor's answers to the task overview (§9 there) and Sandesh's approach.
+If B is chosen, start with the step-wise report's "Next" list: a building-aware sim guard,
+the large farm tasks, memory-pressure runs with admission policies, and Gemma per step on a
+device. Earlier candidates (report §6–7):
 1. Take the evidence pack to the professor and get the direction decision (A / A+τ² / B /
    C).
 2. Ask mayankarya about using and extending `aerogen_mcp`.

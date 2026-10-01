@@ -279,7 +279,17 @@ missions:
   - if per-step output stays at a few hundred tokens, B holds;
   - if it runs to thousands, A or C is the honest direction.
 
-Results: [`../2026-10-02-stepwise-d1/README.md`](../2026-10-02-stepwise-d1/README.md).
+**Result (2026-10-02):** [`../2026-10-02-stepwise-d1/README.md`](../2026-10-02-stepwise-d1/README.md).
+- **Coverage:** 108 missions on P1's D1–D3, with Qwen3.5-9B (thinking on and off, P1's greedy
+  protocol and sampled decoding) and K2-Horizon-7B (low and high effort).
+- **Steps stay short.** After a tool result the model writes a median of 55–99 tokens (p90 ≤
+  394), so **B holds by the rule.**
+- **Thinking concentrates in the first, planning call:** a median of 545–5,147 tokens with
+  thinking on, and one greedy runaway to 24K.
+- **Ceiling** at the Thor's ratio: 56–72% of post-wait LLM time, and 20–72% of mission LLM time.
+- **Private per-session state** is worth 3–16% of mission LLM time on these short deliveries;
+  the rest is the shared prompt.
+- **Caveat:** the models are proxies, not P1's Gemma.
 
 ## 8. What can be used under each option
 
@@ -305,7 +315,8 @@ Results: [`../2026-10-02-stepwise-d1/README.md`](../2026-10-02-stepwise-d1/READM
 
 ## 9. Questions for the mentor
 
-1. **Which option: A, B or C (§6)?** The test in §7 should come first, if B is on the table.
+1. **Which option: A, B or C (§6)?** The §7 test supports B, but the per-session value on
+   short deliveries is modest.
 2. **Which 8 AeroEval tasks?** I found 5 original missions and 6 P1 variants (§3).
 3. **Is a step-wise paradigm in P1's scope?**
    - P1's deck lists tool calling, ReAct and Reflexion.
