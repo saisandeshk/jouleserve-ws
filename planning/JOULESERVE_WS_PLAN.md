@@ -1,6 +1,7 @@
 # JouleServe-WS — build plan and reference
 
 Status: **v1.0** (2026-09-30). This is the master plan for the workstation build.
+- **2026-10-01:** first evidence pack (Track A + aerogen, M2-style): [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md). Direction decision pending; see its §6–7.
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 

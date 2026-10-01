@@ -2,6 +2,8 @@
 
 > **Master plan:** [`JOULESERVE_WS_PLAN.md`](JOULESERVE_WS_PLAN.md). This file holds the **Track A working notes and measurements**. Track B (prior work) is in [`../review/systems/README.md`](../review/systems/README.md).
 
+> **2026-10-01:** Track A's question is answered in [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md): P1's agents as implemented have no retained-state opportunity; an accumulating-context drone agent (aerogen) does. Direction decision pending.
+
 Status: **draft v0.4** (2026-09-30). This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.
 

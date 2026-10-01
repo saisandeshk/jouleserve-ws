@@ -21,6 +21,7 @@ SHORT = {
     "P1 tool-calling · basic (B)": ("p1-tc-b", "P1 tool-calling · basic"),
     "P1 tool-calling · advanced (A)": ("p1-tc-a", "P1 tool-calling · advanced"),
     "aerogen · low effort (WS)": ("ag-low", "aerogen · low effort"),
+    "aerogen · medium effort (WS)": ("ag-med", "aerogen · medium effort"),
     "aerogen · high effort (WS)": ("ag-high", "aerogen · high effort"),
 }
 
@@ -93,8 +94,8 @@ def time_split():
         "const color = p => p === 'decode' ? 'var(--cds-chart-categorical-1)' : p === 'tool wait' ? 'var(--cds-chart-categorical-2)' : 'var(--cds-chart-muted)'; "
         "const op = p => p === 'other' ? 0.45 : 1; "
         "const parts = rows.filter(r => r.slug === names.at(0).slug); "
-        f"return <svg viewBox='0 0 760 {H}' role='img' aria-label='Decoding dominates every workload except low-effort aerogen, which mostly waits on flights' fontSize='12'>"
-        "<text data-claude-text-id='title' x='0' y='22' fontSize='16' fontWeight='600' fill='var(--cds-text-primary)'>Decoding dominates every workload except low-effort aerogen, which waits on flights</text>"
+        f"return <svg viewBox='0 0 760 {H}' role='img' aria-label='P1 agents mostly decode; aerogen mostly waits on flights' fontSize='12'>"
+        "<text data-claude-text-id='title' x='0' y='22' fontSize='16' fontWeight='600' fill='var(--cds-text-primary)'>P1's agents mostly decode; aerogen mostly waits on flights</text>"
         "<text data-claude-text-id='subtitle' x='0' y='44' fill='var(--cds-text-secondary)'>Share of session wall time, pooled over sessions. Right: median session length.</text>"
         "<g data-claude-anchor='legend'>{parts.map((p, k) => <g key={p.part}><rect x={left + k * 110} y='60' width='12' height='12' rx='2' fill={color(p.part)} fillOpacity={op(p.part)}/><text x={left + k * 110 + 18} y='70' fill='var(--cds-text-secondary)'>{p.part}</text></g>)}</g>"
         "<g data-claude-anchor='x-axis'>{[0, 25, 50, 75, 100].map(t => <g key={t}><line x1={left + t / 100 * w} x2={left + t / 100 * w} y1={y0 - 8} y2={y0 + names.length * rowh - 10} stroke='var(--cds-chart-grid)'/><text x={left + t / 100 * w} y={y0 + names.length * rowh + 6} textAnchor='middle' fill='var(--cds-text-secondary)'>{`${t}%`}</text></g>)}</g>"
@@ -108,6 +109,41 @@ def time_split():
     )
 
 
+def headroom():
+    sim = json.loads((REPO / "reports/2026-10-01-workload-opportunity/sim_validation.json").read_text())
+    series = [("lru-25", 25427, "lru", "SGLang default (LRU), 25.4K pool"),
+              ("lru-16", 16384, "lru", "LRU, pool capped at 16.4K"),
+              ("drop-25", 25427, "drop", "drop state at every wait, 25.4K"),
+              ("keep-25", 25427, "keep", "keep all state until resume, 25.4K")]
+    rows = []
+    for slug, pool, pol, label in series:
+        for r in sorted((r for r in sim["headroom"] if r["pool"] == pool and r["policy"] == pol), key=lambda r: r["n"]):
+            rows.append({"series": slug, "label": label, "n": r["n"], "energy": r["energy_per_mission_j"] / 1000,
+                         "mission_min": r["mission_s_p50"] / 60, "failed_pct": 100 * r["failed"] / r["missions"]})
+    return (
+        "export default () => <claude.Visualize data-claude-component='policy-headroom' "
+        f"sources={{{{rows:{{kind:'data', data:{js(rows)}}}}}}}>"
+        "{({rows, datum}) => { const left = 56, w = 640, y0 = 118, h = 240, ymax = 30; "
+        "const ns = [1, 2, 4, 8, 16]; const x = n => left + Math.log2(n) / 4 * w; const y = v => y0 + h - v / ymax * h; "
+        "const color = s => s.startsWith('lru') ? 'var(--cds-chart-categorical-1)' : s === 'drop-25' ? 'var(--cds-chart-categorical-2)' : 'var(--cds-chart-muted)'; "
+        "const op = s => s === 'lru-16' ? 0.5 : 1; "
+        "const heads = rows.filter(r => r.n === 16); "
+        "return <svg viewBox='0 0 760 420' role='img' aria-label='More sessions per GPU cut energy per mission; a smaller KV budget or pinning state gives much of it back' fontSize='12'>"
+        "<text data-claude-text-id='title' x='0' y='22' fontSize='16' fontWeight='600' fill='var(--cds-text-primary)'>More sessions per GPU cut energy 3\u00d7; a small pool or pinning state erodes it</text>"
+        "<text data-claude-text-id='subtitle' x='0' y='44' fill='var(--cds-text-secondary)'>Simulated GPU energy per completed mission: the same 15 single-session aerogen missions replayed at every N (20 W between calls).</text>"
+        "<g data-claude-anchor='y-axis'>{[0, 5, 10, 15, 20, 25, 30].map(t => <g key={t}><line x1={left} x2={left + w} y1={y(t)} y2={y(t)} stroke='var(--cds-chart-grid)'/><text x={left - 8} y={y(t) + 4} textAnchor='end' fill='var(--cds-text-secondary)'>{`${t}`}</text></g>)}</g>"
+        "<text data-claude-text-id='y-unit' x={left - 8} y={y0 - 12} textAnchor='end' fill='var(--cds-text-secondary)'>kJ</text>"
+        "<g data-claude-anchor='x-axis'>{ns.map(n => <text key={n} x={x(n)} y={y0 + h + 20} textAnchor='middle' fill='var(--cds-text-secondary)'>{`${n}`}</text>)}</g>"
+        "<text data-claude-text-id='x-label' x={left + w / 2} y={y0 + h + 42} textAnchor='middle' fill='var(--cds-text-secondary)'>concurrent drone sessions on one GPU</text>"
+        "<g data-claude-anchor='legend'>{heads.map((hd, k) => <g key={hd.series}><line x1={left + (k % 2) * 330} x2={left + (k % 2) * 330 + 22} y1={66 + Math.floor(k / 2) * 20} y2={66 + Math.floor(k / 2) * 20} stroke={color(hd.series)} strokeOpacity={op(hd.series)} strokeWidth='3'/><text x={left + (k % 2) * 330 + 30} y={70 + Math.floor(k / 2) * 20} fill='var(--cds-text-primary)' {...datum(hd, 'label')}>{hd.label}</text></g>)}</g>"
+        "{heads.map(hd => { const pts = rows.filter(r => r.series === hd.series); return <g key={hd.series} data-claude-anchor={`series-${hd.series}`}>"
+        "<polyline points={pts.map(r => `${x(r.n)},${y(r.energy)}`).join(' ')} fill='none' stroke={color(hd.series)} strokeOpacity={op(hd.series)} strokeWidth='2' strokeLinejoin='round'/>"
+        "{pts.map(r => <circle key={r.n} cx={x(r.n)} cy={y(r.energy)} r='4' fill={color(r.series)} fillOpacity={op(r.series)} {...datum(r, 'energy')}><title>{`${r.label}, N=${r.n}: ${r.energy.toFixed(1)} kJ per completed mission, median mission ${r.mission_min.toFixed(0)} min, ${r.failed_pct.toFixed(0)}% of missions failed`}</title></circle>)}"
+        "</g>; })}"
+        "</svg>; }}</claude.Visualize>;"
+    )
+
+
 if __name__ == "__main__":
     which = sys.argv[1]
-    print({"retention": retention, "time": time_split}[which]())
+    print({"retention": retention, "time": time_split, "headroom": headroom}[which]())

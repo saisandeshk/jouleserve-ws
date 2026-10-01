@@ -67,6 +67,7 @@ class Sess:
     queued_s: float = 0.0
     q_since: float = 0.0
     t_end: float = 0.0
+    failed: bool = False
 
 
 def share_prefix(traces, shared):
@@ -81,13 +82,14 @@ def share_prefix(traces, shared):
 
 
 def simulate(traces, n, pool, policy, prefill_tok_s, active_w, idle_w, total_missions,
-             shared=0, stagger_s=20.0, seed=0):
+             shared=0, stagger_s=20.0, seed=0, shuffle=True):
     import random
     rng = random.Random(seed)
     traces = share_prefix(traces, shared)
     pool = pool - shared
     order = list(range(len(traces)))
-    rng.shuffle(order)
+    if shuffle:
+        rng.shuffle(order)
     per_slot = [total_missions // n + (1 if k < total_missions % n else 0) for k in range(n)]
     events, seq = [], [0]
     active: dict = {}          # Sess -> tokens resident during its call
@@ -134,6 +136,15 @@ def simulate(traces, n, pool, policy, prefill_tok_s, active_w, idle_w, total_mis
         push(t + dur, "call_end", s)
 
     def request_call(s, t):
+        if s.steps[s.i].ctx > pool:
+            # The call cannot fit even alone (SGLang rejects it): the mission fails here.
+            waiting.discard(s)
+            s.held, s.failed, s.t_end = 0, True, t
+            done.append(s)
+            if started[s.slot] < per_slot[s.slot]:
+                new_mission(s.slot, t)
+            drain(t)
+            return
         if not queue and can_start(s):
             start_call(s, t)
         else:
@@ -201,11 +212,13 @@ def simulate(traces, n, pool, policy, prefill_tok_s, active_w, idle_w, total_mis
         busy += c1 - c0
     energy = busy * active_w + (t - busy) * idle_w
     m = len(done)
+    ok = [x for x in done if not x.failed] or done
     return dict(policy=policy, n=n, pool=pool + shared, shared=shared, missions=m, span_s=t,
-                missions_per_hour=m / t * 3600, energy_per_mission_j=energy / m,
+                failed=sum(x.failed for x in done),
+                missions_per_hour=len(ok) / t * 3600, energy_per_mission_j=energy / len(ok),
                 reprefill_tok_per_mission=sum(x.reprefill_tok for x in done) / m,
                 queued_s_per_mission=sum(x.queued_s for x in done) / m,
-                mission_s_p50=st.median(x.t_end - x.t_start for x in done),
+                mission_s_p50=st.median(x.t_end - x.t_start for x in ok),
                 busy_share=busy / t, forced_drops=forced[0])
 
 

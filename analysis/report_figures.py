@@ -81,10 +81,14 @@ def load_ws_run(name, cal):
 
 
 def run_summary(run, cal):
-    ss = [s for s in run["sessions"] if s.success is not None]
-    if not ss:
+    # Every mission that ran spends energy; errored missions (e.g. context outgrew a capped
+    # pool) are charged to the run, and energy is reported per completed and per
+    # successful mission.
+    ss = list(run["sessions"])
+    done = [s for s in ss if s.status == "done"]
+    if not done:
         return None
-    p = pooled(ss, cal["prefill_tok_s"])
+    p = pooled(done, cal["prefill_tok_s"])
     # Energy: whole-run GPU energy divided by missions (concurrency shares the GPU), plus
     # the per-mission idle share for single-session runs.
     man = run["manifest"]
@@ -111,13 +115,18 @@ def run_summary(run, cal):
     if c1 is not None:
         busy.append((c0, c1))
     e_busy = sum(energy_between(run["nvml"], a, b) or 0 for a, b in busy)
+    busy_s = sum(b - a for a, b in busy)
     p.update(
+        call_power_w=(e_busy / busy_s) if busy_s else None,
+        idle_power_w=((e_run - e_busy) / (span - busy_s)) if e_run and span > busy_s else None,
         idle_energy_share=(1 - e_busy / e_run) if e_run else None,
         busy_time_share=sum(b - a for a, b in busy) / span if span else None,
         concurrency=man["args"]["concurrency"], effort=man["args"]["effort"],
-        missions=len(ss), energy_j=e_run, span_s=span,
-        energy_per_mission_j=(e_run / len(ss)) if e_run else None,
-        missions_per_hour=len(ss) / span * 3600,
+        missions=len(ss), completed=len(done), errored=len(ss) - len(done),
+        succeeded=sum(1 for s in done if s.success), energy_j=e_run, span_s=span,
+        energy_per_mission_j=(e_run / len(done)) if e_run else None,
+        energy_per_success_j=(e_run / max(1, sum(1 for s in done if s.success))) if e_run else None,
+        missions_per_hour=len(done) / span * 3600,
         uncached_tokens_per_mission=uncached / len(ss),
         reprefill_tokens_per_mission=reprefill / len(ss),
         reprefill_j_per_mission=reprefill / len(ss) * cal["j_per_prefill_tok"],
@@ -129,7 +138,7 @@ def run_summary(run, cal):
 ROW_ORDER = [("P1 Reflexion · basic (B)", "P1"), ("P1 Reflexion · advanced (A)", "P1"),
              ("P1 Reflexion · AeroEval (D/F)", "P1"), ("P1 tool-calling · basic (B)", "P1"),
              ("P1 tool-calling · advanced (A)", "P1"), ("aerogen · low effort (WS)", "AG"),
-             ("aerogen · high effort (WS)", "AG")]
+             ("aerogen · medium effort (WS)", "AG"), ("aerogen · high effort (WS)", "AG")]
 
 
 def fig_time_split(rows, path):
@@ -302,36 +311,49 @@ def fig_concurrency(groups, path):
     plt.close(fig)
 
 
-def fig_pool(run, path, pool_tokens):
-    rows = [json.loads(l) for l in open(run["dir"] / "sglang_metrics.jsonl")]
-    rows = [r for r in rows if "m" in r]
-    t0 = rows[0]["t_mono"]
-    t = np.array([(r["t_mono"] - t0) / 60 for r in rows])
-
-    def series(name):
-        return np.array([r["m"].get(name, np.nan) for r in rows])
-
-    used = series("sglang:num_used_tokens") / 1000
-    run_reqs = series("sglang:num_running_reqs")
-    queue = series("sglang:num_queue_reqs")
-    fig, axes = plt.subplots(2, 1, figsize=(11.5, 4.6), sharex=True, gridspec_kw={"height_ratios": [2, 1]})
-    ax = axes[0]
-    ax.plot(t, used, color=C1, lw=1.5)
-    ax.axhline(pool_tokens / 1000, color=INK2, lw=1)
-    ax.text(t[-1], pool_tokens / 1000 * 1.02, "KV pool capacity", ha="right", va="bottom",
-            fontsize=8.5, color=INK2)
-    ax.set_ylabel("KV tokens in use (K)")
-    ax.set_title(f"Server KV pool during {run['name']} (N={run['manifest']['args']['concurrency']})",
-                 fontsize=10)
-    ax.set_ylim(0, pool_tokens / 1000 * 1.15)
-    _style(ax, "y")
-    ax = axes[1]
-    ax.plot(t, run_reqs, color=C1, lw=1.5, label="running requests")
-    ax.plot(t, queue, color=C2, lw=1.5, label="queued requests")
-    ax.set_ylabel("requests")
-    ax.set_xlabel("time since run start (min)")
-    ax.legend(loc="upper right", fontsize=9, ncol=2)
-    _style(ax, "y")
+def fig_pool(runs, path):
+    """KV pool over time: memory used by running requests vs retained (evictable) cache, the
+    pool capacity, and below it queued requests and cumulative evicted tokens."""
+    fig, axes = plt.subplots(2, len(runs), figsize=(12, 5.2), sharex="col",
+                             gridspec_kw={"height_ratios": [2, 1]})
+    for j, (run, title) in enumerate(runs):
+        rows = [json.loads(l) for l in open(run["dir"] / "sglang_metrics.jsonl")]
+        rows = [r for r in rows if "m" in r]
+        t0 = rows[0]["t_mono"]
+        t = np.array([(r["t_mono"] - t0) / 60 for r in rows])
+        g = lambda k: np.array([r["m"].get(k, np.nan) for r in rows], dtype=float)
+        used, evict = g("sglang:kv_used_tokens") / 1000, g("sglang:kv_evictable_tokens") / 1000
+        cap = float(np.nanmax(g("sglang:max_total_num_tokens"))) / 1000
+        ev_key = next(k for k in rows[-1]["m"] if k.startswith("sglang:evicted_tokens_total"))
+        evicted = g(ev_key)
+        first = evicted[~np.isnan(evicted)][0] if np.any(~np.isnan(evicted)) else 0.0
+        evicted = (np.nan_to_num(evicted, nan=first) - first) / 1000
+        n = run["manifest"]["args"]["concurrency"]
+        queue_any = np.nanmax(g("sglang:num_queue_reqs")) > 0
+        title = (f"N={n} sessions, {float(np.nanmax(g('sglang:max_total_num_tokens'))) / 1000:.1f}K-token pool: "
+                 + ("requests queue for memory" if queue_any else "no queueing"))
+        ax = axes[0][j]
+        ax.fill_between(t, 0, used, color=C1, alpha=0.85, lw=0, label="in use by running requests")
+        ax.fill_between(t, used, used + evict, color=C2, alpha=0.35, lw=0, label="retained cache (waiting sessions + shared prompt)")
+        ax.axhline(cap, color=INK2, lw=1)
+        ax.text(t[-1], cap * 1.02, f"pool {cap:.1f}K", ha="right", va="bottom", fontsize=8.5, color=INK2)
+        ax.set_ylim(0, cap * 1.15)
+        ax.set_title(title, fontsize=10)
+        if j == 0:
+            ax.set_ylabel("KV tokens (K)")
+        _style(ax, "y")
+        ax = axes[1][j]
+        ax.plot(t, g("sglang:num_queue_reqs"), color=C2, lw=1.5, label="queued requests")
+        ax2max = max(1.0, float(np.nanmax(g("sglang:num_queue_reqs"))))
+        ax.set_ylim(0, ax2max * 1.3 + 0.5)
+        ax.text(0.99, 0.92, f"{evicted[-1]:.0f}K tokens evicted in total", transform=ax.transAxes,
+                ha="right", va="top", fontsize=8.5, color=INK2)
+        ax.set_xlabel("time since run start (min)")
+        if j == 0:
+            ax.set_ylabel("queued requests")
+        _style(ax, "y")
+    h, l = axes[0][0].get_legend_handles_labels()
+    fig.legend(h, l, loc="lower center", ncol=2, fontsize=9, bbox_to_anchor=(0.5, -0.04), frameon=False)
     fig.tight_layout()
     fig.savefig(path, dpi=160, bbox_inches="tight")
     plt.close(fig)
@@ -356,11 +378,12 @@ def main():
             p = pooled(ss, thor_rate)
             rows.append(dict(label=label, family=fam, **p))
     ws_runs = {}
-    for name, label in [("e1_low_n1", ROW_ORDER[5][0]), ("e1_high_n1", ROW_ORDER[6][0])]:
+    for name, label in [("e1_low_n1", ROW_ORDER[5][0]), ("e1_medium_n1", ROW_ORDER[6][0]),
+                        ("e1_high_n1", ROW_ORDER[7][0])]:
         run = load_ws_run(name, cal)
         if run:
             ws_runs[name] = run
-            ss = [s for s in run["sessions"] if s.success is not None]
+            ss = [s for s in run["sessions"] if s.status == "done"]
             if ss:
                 rows.append(dict(label=label, family="AG", **pooled(ss, cal["prefill_tok_s"])))
     for r in rows:
@@ -398,13 +421,19 @@ def main():
         if g:
             groups.append((f"{effort} reasoning effort", g))
     if any(len(g) >= 2 for _, g in groups):
-        fig_concurrency(groups, FIG / "concurrency.png")
-        # Pool timeline for the most pressured run we have.
-        for name in ["e2_high_n4", "e2_high_n2", "e2_low_n8", "e2_low_n4"]:
-            if name in ws_runs and (ws_runs[name]["dir"] / "sglang_metrics.jsonl").exists():
-                fig_pool(ws_runs[name], FIG / "pool_timeline.png", 25427)
-                data["pool_timeline_run"] = name
-                break
+        pr = [(ws_runs.get(n) or load_ws_run(n, cal), n) for n in ["e2_low_n8", "e2_low_n4_kv16k"]]
+        pr = [(r, lab) for r, lab in pr if r and (r["dir"] / "sglang_metrics.jsonl").exists()]
+        if pr:
+            fig_pool(pr, FIG / "pool_timeline.png")
+            for r, _ in pr:
+                rows_m = [json.loads(l) for l in open(r["dir"] / "sglang_metrics.jsonl")]
+                rows_m = [x for x in rows_m if "m" in x]
+                k = next(k for k in rows_m[-1]["m"] if k.startswith("sglang:evicted_tokens_total"))
+                data.setdefault("pool_runs", {})[r["name"]] = {
+                    "evicted_tokens": rows_m[-1]["m"][k] - rows_m[0]["m"].get(k, 0),
+                    "queue_max": max(x["m"].get("sglang:num_queue_reqs", 0) for x in rows_m),
+                    "queue_mean": st.mean(x["m"].get("sglang:num_queue_reqs", 0) for x in rows_m),
+                    "retracted": max(v for x in rows_m for kk, v in x["m"].items() if kk.startswith("sglang:num_retracted_reqs"))}
     (OUT / "report_data.json").write_text(json.dumps(data, indent=1, default=float))
     print(json.dumps({"rows": [(r["label"], round(r["reuse"], 3), round(r["retention_saving"], 4),
                                 round(r["paused_mem_share"], 3)) for r in rows],

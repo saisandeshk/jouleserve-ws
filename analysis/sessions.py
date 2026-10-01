@@ -32,6 +32,7 @@ class Session:
     success: bool | None
     calls: list = field(default_factory=list)
     waits: list = field(default_factory=list)
+    status: str = "done"
 
 
 def _jsonl(p):
@@ -81,7 +82,8 @@ def load_aerogen(run_dir: Path, workload: str, prefill_tok_s: float) -> list[Ses
         tools = _jsonl(sd / "tool_calls.jsonl")
         valid = (summ.get("validator") or {}).get("valid")
         s = Session(workload, workload, f"t{summ['task_index']}", sd.name, summ["t_start"],
-                    summ["t_end"], None if summ.get("status") != "done" else valid == "YES")
+                    summ["t_end"], None if summ.get("status") != "done" else valid == "YES",
+                    status=summ.get("status", "done"))
         for r in llm:
             if r.get("t_end") is None or r.get("prompt_tokens") is None:
                 continue
