@@ -74,6 +74,12 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
     `ssh yash@10.24.24.79 'tar -C /home/yash/final_sweep -cf - _harness' | tar -xf -`.
   - To read or hash specific files, glob inside Python (`glob.glob("*.py")`) so no filename
     appears in argv.
+  - **No shell globs** in Thor folders that hold those files. For example,
+    `ls agent/*` in `aeroeval_gazebo_subagents` puts `gazebo_aeroeval_subagents.py` in argv.
+    The check runs only when a run starts, so a stray millisecond `ls` is unlikely to hit it,
+    but don't rely on that.
+- **Where P1's code is on the Thor** (AeroEval agent, task sets, harness, aerogen): see
+  `reports/2026-10-01-p1-task-overview/README.md` §2.
 - **Timing.** Make big copies only while no sweep is running (check
   `tail /home/yash/final_sweep/<model>/sweep.log`).
 - **Ownership.** Ask Sandesh before vendoring P1 code, or the `aerogen_mcp` agent by another

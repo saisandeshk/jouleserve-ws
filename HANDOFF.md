@@ -1,7 +1,8 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-01, ~23:15 IST (P1 status refresh; the rest is from the overnight
-measurement session that ended ~06:20). Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
+**Last updated:** 2026-10-02, ~00:30 IST: P1 status refresh, plus the AeroEval and P1-task
+overview written in answer to the P1 mentor. The rest is from the overnight measurement
+session that ended 2026-10-01 ~06:20. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
@@ -34,6 +35,11 @@ appending history, which git already keeps.
     until Sandesh shares it from its Share menu.
   - It answers the Track A question and recommends a direction. **Nothing has been shown to
     the professor yet.**
+- **P1 mentor feedback (2026-10-01)** was that P1's drone set is 12 CLGSCE + 4 AeroEval tasks,
+  and that aerogen is not P1's workload. The answer is
+  [`reports/2026-10-01-p1-task-overview/README.md`](reports/2026-10-01-p1-task-overview/README.md):
+  where AeroEval lives, the full task inventory, per-task numbers, what can be used, and
+  questions for the mentor (its §7).
 - **Sandesh** said (2026-10-01) that they have their own idea of how to approach the next
   step and will share it. The report's options and decisions (§6–7) are input to that
   discussion, not a plan.
@@ -89,6 +95,16 @@ Jetson telemetry adapter, and the CLGSCE port.
 - Anomaly: most same-role resumes missed the cache (A 73/116, D/F 105/182), often after a
   32K decode, which is possibly Gemma sliding-window state.
 
+**AeroEval and aerogen** (details in the task overview report).
+- The original AeroEval has 5 missions. P1 wrote 6 variants (2026-09-04) and kept 4 (D1–D3,
+  F1). The dropped ones are the large-area and perception missions (est. 15–25 min flights).
+- P1's AeroEval runs rarely fly: D1 flew 8 times in 9 runs, and F1 never, because the LLM code
+  validator rejected first. Gazebo runs at a real-time factor of 10.
+- **The cause is the paradigm, not the task size.** All of P1's agents (Reflexion, tool
+  calling, the early ReAct) synthesize whole programs with fresh prompts.
+- aerogen_mcp is mayankarya's step-wise tool-calling rewrite of AeroGen. It shares AeroEval's
+  world prompts, not P1's tasks or agent. Our aerogen numbers characterize that paradigm.
+
 **aerogen has it** (WS, K2-Horizon-7B, real-time flight pacing, random anti-cache prompt
 prefix removed).
 - Low effort, 15 missions: 88% of time is waiting on flights, 93% of prompt tokens come from
@@ -134,6 +150,8 @@ prefix removed).
   - replace P1's `pkill -x thor_headless` reset.
 - **P1-style sessions (40–55K tokens) do not fit a one-GPU pool.** They need tp2, a lower
   `max_tokens`, or FP8 KV.
+- **P1's AeroEval agent, task sets and Reflexion harness** were copied read-only to
+  `data/p1_aeroeval_src/` on 2026-10-01.
 - **The local P1 trace copy has everything except the `server_kv.jsonl` time series.** D3/F1
   and the tool-calling runs were copied on 2026-10-01.
 
@@ -153,10 +171,13 @@ Waiting on Sandesh's approach. Candidates from the report (§6–7):
 ## 7. Open questions for Sandesh
 
 1. Their plan for the next step (they said they have one).
-2. Direction and scope decisions: report §7.
-3. Go/no-go thresholds (D4) and an edge-plausible `N_edge` (drones per ground-station box).
-4. Traffic workload: is mayankarya's DeepStream camera/traffic agent P1's traffic workload?
-5. Timeline: P1's deadline, when the devices return, ISP milestones. Is the WS exclusively
+2. The P1 mentor's answers to the task overview's §7: which 8 AeroEval tasks; whether a
+   step-wise paradigm is in P1's scope; whether P5 may run P1's AeroEval tasks with a
+   step-wise (aerogen-based) agent; drones per edge box.
+3. Direction and scope decisions: report §7.
+4. Go/no-go thresholds (D4) and an edge-plausible `N_edge` (drones per ground-station box).
+5. Traffic workload: is mayankarya's DeepStream camera/traffic agent P1's traffic workload?
+6. Timeline: P1's deadline, when the devices return, ISP milestones. Is the WS exclusively
    ours?
 
 ## 8. Resume checklist for a new session
