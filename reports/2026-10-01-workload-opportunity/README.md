@@ -23,11 +23,14 @@ limitations are in the [appendix](#appendix-methods-definitions-reproducibility)
   (§4.2).
   - Live: 8 sessions on one GPU used 2.2× less GPU energy per passed mission than one
     session (27.8 → 12.6 kJ), at the same median mission time.
+  - Live energy per mission swings with trajectories: the N=2 and N=4 runs drew long
+    missions, some of which outgrew the pool. On fixed missions the simulator shows a
+    2.5–3.5× drop from N=1 to N=16.
   - On the full pool, the shared prompt kept memory pressure low.
   - Capping the pool to an edge-like 16.4K brought queueing and 20.5K re-prefilled tokens
     per mission. Missions whose context exceeds the pool fail at any concurrency.
 - **Simulated policy headroom** (§4.2; the memory model reproduces live re-prefill within
-  7–13% when replaying the same missions):
+  7–25% when replaying the same missions):
   - dropping state at every wait costs 6–11% more energy than LRU on the full pool;
   - pinning everything stalls missions (44 min instead of 10 at N=8);
   - an exact-flight-ETA eviction oracle is no better than LRU.
@@ -213,12 +216,13 @@ What this shows:
 ### 4.2 Many sessions on one GPU (E2: closed loop, low effort, 15 missions per run)
 
 Each row is a single live run on one A5000 running K2-Horizon-7B under SGLang's default
-policy (LRU radix cache). N=1 and N=4 ran on GPU1; N=8 and the two capped-pool runs ran on
-GPU0 (A2):
+policy (LRU radix cache). N=1, N=2 and N=4 ran on GPU1; N=8 and the two capped-pool runs
+ran on GPU0 (A2):
 
 | Run | KV pool (tokens) | Missions: completed / errored / passed | GPU energy per mission | per passed mission | Missions per hour | Median mission | Re-prefilled tokens per mission |
 |---|---|---|---|---|---|---|---|
 | N=1 | 25,427 | 15 / 0 / 11 | 20.4 kJ | 27.8 kJ | 5.4 | 9.8 min | ~0 |
+| N=2 | 25,427 | 7 / 3 / 6 | 34.3 kJ | 40.0 kJ | 6.9 | 6.5 min | 3.2K |
 | N=4 | 25,427 | 14 / 1 / 9 | 20.5 kJ | 31.9 kJ | 17.5 | 8.4 min | 4.8K |
 | **N=8** | 25,227 | 14 / 1 / 11 | **9.9 kJ** | **12.6 kJ** | **30.9** | 9.4 min | 1.8K |
 | N=4, pool capped | 16,384 | 12 / 3 / 6 | 22.4 kJ | 44.8 kJ | 17.8 | 9.5 min | 20.5K |
@@ -230,7 +234,6 @@ GPU0 (A2):
 - **Re-prefilled tokens** are the previous prompt's tokens that the next call had to
   recompute. They are ~0 for a single session, so what is counted is caused by memory
   pressure.
-- **N=2** (GPU1) was still running when this was written.
 
 ![Pool timelines](figures/pool_timeline.png)
 
@@ -240,9 +243,13 @@ GPU0 (A2):
    fill that time and share the GPU's power (§5).
    - The two runs used different GPUs. GPU0 (N=8) idles higher than GPU1 (N=1), so the
      comparison is, if anything, conservative.
-   - The N=4 run drew unusually long trajectories: two missions of 34–38 LLM calls, and
-     31% of its time decoding against 11–14% in the other runs. Its energy is not
-     comparable to N=1/N=8 directly.
+   - The N=2 and N=4 runs drew unusually long trajectories, so their energy is not
+     comparable to N=1/N=8 directly:
+     - At N=2, three of ten missions grew contexts of 25.5K–37.6K tokens, outgrew the pool
+       and errored. Their energy is charged to the run, so its 34.3 kJ per completed
+       mission is worse than N=1.
+     - At N=4, two missions ran 34–38 LLM calls, and 31% of the run's time was decoding,
+       against 11–14% in the other runs.
    - Every configuration ran once, at temperature 1.0, with no confidence intervals.
      Repeat runs are needed before any number here is cited.
 2. **On the full pool, the shared prompt keeps pressure low.**
@@ -270,11 +277,11 @@ closed-loop sessions sharing one KV pool.
 
 *Validation, in two modes:*
 - **Same trajectories.** Replaying each live run's own missions, with that run's pool and
-  measured power, reproduces its re-prefill within 6.5% (N=4, full pool), 6.8% (16.4K) and
-  12.9% (13.3K).
+  measured power, reproduces its re-prefill within 6.5% (N=4, full pool), 6.8% (16.4K),
+  12.9% (13.3K) and 25% (N=2).
   - At N=8, where re-prefill is small, the simulator gives half the live value (0.9K vs
     1.8K tokens per mission).
-  - Energy per mission is within −3% to +38%, so the energy model is good for trends and
+  - Energy per mission is within −23% to +38%, so the energy model is good for trends and
     rankings, not absolute levels.
 - **A fixed sample.** The figure below replays the *15 single-session missions* at every N.
   Its absolute levels depend on that sample. Live missions under concurrency ran longer,
@@ -484,8 +491,9 @@ All three are git-ignored. The Thor copies are read-only copies of P1's files.
   benchmark. The P1 tool-calling sample is the first 18 runs of a sweep in progress.
 - **GPU-only energy, and two GPUs.** WS energy is NVML GPU energy (no CPU, DRAM or
   simulator). The two A5000s idle differently, and runs were split across them (A2).
-- **The simulator.** Its memory model is validated on identical trajectories; its energy
-  model is good to −3%…+38%. It ignores batching's per-step slowdown and SGLang's
+- **The simulator.** Its memory model is validated on identical trajectories (re-prefill
+  within 7–25%; 2× low at N=8, where re-prefill is small); its energy model is good to
+  −23%…+38%. It ignores batching's per-step slowdown and SGLang's
   retraction path, and it has no admission policies yet.
 - **Low-effort history mismatch.** K2's re-rendered history uses the high-effort think tag,
   so at low effort each turn's last output is re-prefilled (a few hundred tokens). The

@@ -1,6 +1,6 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-01, ~05:30 IST, after an overnight measurement session run by
+**Last updated:** 2026-10-01, ~06:20 IST, after an overnight measurement session run by
 Claude Code. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
 
@@ -24,7 +24,7 @@ appending history, which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline. P5 has the 2×A5000
   workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-01 ~05:30 IST
+## 2. Situation as of 2026-10-01 ~06:20 IST
 
 - **Evidence pack (the main output of the night).**
   - Report: [`reports/2026-10-01-workload-opportunity/README.md`](reports/2026-10-01-workload-opportunity/README.md)
@@ -37,11 +37,8 @@ appending history, which git already keeps.
 - **Sandesh** said (2026-10-01) that they have their own idea of how to approach the next
   step and will share it. The report's options and decisions (§6–7) are input to that
   discussion, not a plan.
-- **WS.**
-  - K2 servers ran overnight on both GPUs.
-  - GPU0 was released at 05:18. GPU1 releases itself when the last run (`e2_low_n2`)
-    finishes, via tmux `teardown` running `~/work/teardown_after_n2.sh`; it logs to
-    `~/work/logs/teardown_done.txt`.
+- **WS: idle.** K2 servers ran overnight on both GPUs. All runs finished by 06:16, and
+  everything was torn down: both GPUs are back to ~15–47 MiB, with no tmux sessions.
   - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
   - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
 - **P1 (Thor).**
@@ -92,13 +89,17 @@ prefix removed).
 **Concurrency** (live, low effort, one run per configuration).
 - Energy per passed mission: 27.8 kJ at N=1 (GPU1) and **12.6 kJ at N=8** (GPU0), with
   5.8× the throughput.
+- N=2 and N=4 drew long missions, some of which outgrew the pool, so live per-run energy
+  swings with trajectories (N=2: 40.0 kJ per passed mission). The fixed-mission simulation
+  shows 2.5–3.5× from N=1 to N=16.
 - On the full pool, the shared prompt keeps pressure low.
 - With the pool capped at 16.4K: queueing and 20.5K re-prefilled tokens per mission.
   Missions whose context exceeds the pool fail at any N.
 
 **Simulator** (`analysis/headroom_sim.py`, run via `analysis/sim_validate.py`).
-- Memory model: within 7–13% of live re-prefill on same-trajectory replays (N=4 runs).
-- Energy model: −3% to +38%, so trends only.
+- Memory model: within 7–25% of live re-prefill on same-trajectory replays (N=2 and N=4
+  runs).
+- Energy model: −23% to +38%, so trends only.
 - Policy results (10–30 W between calls):
   - drop-at-wait costs +6–11% on the full pool;
   - pinning everything stalls missions;
@@ -137,8 +138,6 @@ Waiting on Sandesh's approach. Candidates from the report (§6–7):
    - then build them in a gateway in front of SGLang;
    - repeat runs with seeds and confidence intervals;
    - grow the task set and add a hybrid model on the WS.
-4. Fold in `e2_low_n2` when it finishes: `python3 -m analysis.report_figures`, then
-   `python3 -m analysis.sim_validate`, which validates only finished runs.
 
 ## 7. Open questions for Sandesh
 
@@ -153,8 +152,7 @@ Waiting on Sandesh's approach. Candidates from the report (§6–7):
 
 1. Read `AGENTS.md`, then this file.
 2. `git status`, `git log --oneline -5`.
-3. WS: `nvidia-smi; tmux ls; ls ~/work/runs`. Check whether `e2_low_n2` finished, and
-   whether teardown ran (`~/work/logs/teardown_done.txt`).
+3. WS: `nvidia-smi; tmux ls; ls ~/work/runs`.
 4. Re-run the analysis if runs changed:
    - `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`
    - `python3 -m analysis.report_figures && python3 -m analysis.sim_validate`
