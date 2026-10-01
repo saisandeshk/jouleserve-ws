@@ -1,7 +1,7 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-01, ~06:20 IST, after an overnight measurement session run by
-Claude Code. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
+**Last updated:** 2026-10-01, ~23:15 IST (P1 status refresh; the rest is from the overnight
+measurement session that ended ~06:20). Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
@@ -41,13 +41,17 @@ appending history, which git already keeps.
   everything was torn down: both GPUs are back to ~15–47 MiB, with no tmux sessions.
   - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
   - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
-- **P1 (Thor).**
-  - The Gemma Reflexion sweep is complete (144 runs).
+- **P1 (Thor), checked 2026-10-01 23:00.**
+  - The Gemma Reflexion sweep is complete: 144 runs, 102 pass, 4 partial, 38 fail. On
+    2026-10-01 P1 wrote a dataset README for it (`/home/yash/final_sweep/drones_README.md`),
+    which looks like release packaging.
   - A **tool-calling CLGSCE sweep** has been running since 2026-10-01 00:17
-    (`/home/yash/final_toolcalling_thor79/`): 18 runs when copied at ~01:40, all passing so
-    far.
-  - Qwen3.8: no runs. Predictor: not started. The Thor is live, so follow the busy-check
-    rules.
+    (`/home/yash/final_toolcalling_thor79/`). It covers 12 CLGSCE tasks × 3 instances × 3
+    runs = 108 runs. At 23:00, 35 were done (all instance 1) and 27 had passed. About 46 h
+    remain, so the Thor is busy until about the night of 2026-10-03. All 35 runs were copied
+    to `data/p1_thor_toolcalling/` at 23:10, without `server_kv` or `device_samples`.
+  - Qwen3.8: 144 run folders are laid out, but there are no runs. Predictor: not started.
+    The Thor is live, so follow the busy-check rules.
 - **Repo:** tonight's harness, analysis and report are committed and pushed. The WS clone is
   pulled.
 
@@ -67,13 +71,20 @@ Jetson telemetry adapter, and the CLGSCE port.
 ## 4. What we know (details, figures and caveats in the report)
 
 **P1's agents create no retained-state opportunity** (Thor traces, Gemma-4-26B-A4B).
-- Reflexion: 143 runs; tool-calling: first 18 runs.
+- Reflexion: 143 runs; tool-calling: 35 runs (instance 1, as of 2026-10-01 23:00).
 - Observed cache hits saved ≤0.9% of LLM time. The bound for *any* retention policy is the
   prefill share of LLM time: 1–10%.
 - Prompts are rebuilt on every call (0.4–31% from cache), and decode is 90–99% of LLM
   time.
 - The tool-calling agent has the same shape (a fresh prompt per attempt, one tool call
-  carrying the whole program, then two evaluator calls).
+  carrying the whole program, then two evaluator calls). Across 35 runs, the bound for any
+  retention policy is ≤0.75% of LLM time.
+- **Thinking-cap runaway dominates P1's tool-calling sweep.**
+  - 50 of 176 LLM calls hit the 32,768-token cap. Those calls take 78% of all LLM time
+    (16.9 of 21.6 h at ~27 tok/s decode).
+  - Every one of the 8 failures includes a capped call; P1 labels most of them
+    `malformed_call`.
+  - A6–A9 and A20 runs take 80–110 min, against 7–36 min under Reflexion.
 - That concurrency does not change this is *argued*, not measured.
 - Anomaly: most same-role resumes missed the cache (A 73/116, D/F 105/182), often after a
   32K decode, which is possibly Gemma sliding-window state.
