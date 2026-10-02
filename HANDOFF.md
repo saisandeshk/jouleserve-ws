@@ -42,6 +42,14 @@ appending history, which git already keeps.
     - It is private until Sandesh shares it from its Share menu.
   - It answers the Track A question and recommends a direction. **Nothing has been shown to
     the professor yet.**
+  - **Teaching guide** (2026-10-02, at Sandesh's request): **"JouleServe (P5): a teaching
+    guide"**, a Claude Doc at https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c.
+    - It is for a new intern who knows LLM basics, and has 20 sections: inference and the KV
+      cache, hybrid state, agents, energy, the retention ceiling, the design space, prior work
+      in depth, Orin/Thor, the controller architecture, evaluation, the roadmap, P1 and its
+      tasks one by one, the evidence, the options, a self-test and a glossary.
+    - It has no repo copy (export it from the doc's menu if needed).
+    - One open comment in it asks Sandesh how many drones per device to plan for.
 - **P1 mentor feedback (2026-10-01)** was that P1's drone set is 12 CLGSCE + 4 AeroEval tasks,
   and that aerogen is not P1's workload. The answer is
   [`reports/2026-10-01-p1-task-overview/README.md`](reports/2026-10-01-p1-task-overview/README.md):
