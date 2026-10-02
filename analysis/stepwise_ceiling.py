@@ -115,14 +115,20 @@ def arm_stats(missions, r_ws):
     return row
 
 
-def p1_outputs():
+def p1_calls():
+    """(prompt, output) tokens of every LLM call in P1's Thor sweeps."""
     out = {}
     for label, root in P1.items():
         xs = []
         for f in glob.glob(str(root / "*/*/instance_*/run_*/iterations.jsonl")):
-            xs += [d.get("completion_tokens") or 0 for d in _jsonl(f) if d.get("kind") == "llm" and d.get("t_phase_end")]
+            xs += [(d.get("prompt_tokens") or 0, d.get("completion_tokens") or 0)
+                   for d in _jsonl(f) if d.get("kind") == "llm" and d.get("t_phase_end")]
         out[label] = xs
     return out
+
+
+def p1_outputs():
+    return {k: [o for _, o in v] for k, v in p1_calls().items()}
 
 
 def figure(per_arm_outs, p1):
@@ -192,9 +198,20 @@ def main():
             if suffix == "d1":
                 per_arm_outs[label] = [c["completion_tokens"] for m in ms for c in m["calls"][1:]]
     p1 = p1_outputs()
-    for k, xs in p1.items():
+    for k, calls in p1_calls().items():
+        xs = [o for _, o in calls]
+        P, O = sum(p for p, _ in calls), sum(xs)
+        # P1's prompts are rebuilt per role call: the whole prompt counts as P (an upper bound)
         result[k] = dict(label=k, calls=len(xs), out_median=st.median(xs), out_p90=pct(xs, 0.9),
-                         share_out_gt_1k=sum(x > 1000 for x in xs) / len(xs))
+                         share_out_gt_1k=sum(x > 1000 for x in xs) / len(xs),
+                         ceiling_thor=P / (P + R_THOR * O),
+                         ceiling_r8=P / (P + 8 * O))  # sensitivity: r at batch 16 on the WS (energy)
+    # aerogen on its own tasks (2026-10-01, K2-Horizon-7B, one session)
+    for prefix in ("e1_low", "e1_medium", "e1_high"):
+        ms = load_missions(prefix, "n1")
+        if ms:
+            result[f"{prefix}_n1"] = dict(label=f"aerogen own tasks, K2 {prefix[3:]} effort",
+                                          task_set="aerogen", **arm_stats(ms, 4106.0 / 36.5))
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "stepwise.json").write_text(json.dumps(result, indent=1))
     figure(per_arm_outs, p1)

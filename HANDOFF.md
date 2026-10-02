@@ -90,13 +90,17 @@ Jetson telemetry adapter, and the CLGSCE port.
 
 **P1's agents create no retained-state opportunity** (Thor traces, Gemma-4-26B-A4B).
 - Reflexion: 143 runs; tool-calling: 35 runs (instance 1, as of 2026-10-01 23:00).
-- Observed cache hits saved ≤0.9% of LLM time. The bound for *any* retention policy is the
-  prefill share of LLM time: 1–10%.
+- **Pooled over all calls**, the ceiling P/(P+r·O) at the Thor's r ≈ 67 is 2.1% (Reflexion)
+  and 0.6% (tool calling).
+- **Per task**, the prefill-share bound is 0.3–14%. It exceeds 4% only on the 1–3 min basic
+  tasks, and it is 0.3–3.2% on every task longer than 10 min.
+- **Observed savings** are ≤0.9% per task class, and 2.1% on one task (B37).
+- **Batching** would lower r. At the WS's batch-16 energy ratio (r ≈ 8) the Reflexion ceiling
+  would be ~15%, but that is untested.
 - Prompts are rebuilt on every call (0.4–31% from cache), and decode is 90–99% of LLM
   time.
 - The tool-calling agent has the same shape (a fresh prompt per attempt, one tool call
-  carrying the whole program, then two evaluator calls). Across 35 runs, the bound for any
-  retention policy is ≤0.75% of LLM time.
+  carrying the whole program, then two evaluator calls).
 - **Thinking-cap runaway dominates P1's tool-calling sweep.**
   - 50 of 176 LLM calls hit the 32,768-token cap. Those calls take 78% of all LLM time
     (16.9 of 21.6 h at ~27 tok/s decode).
@@ -186,8 +190,9 @@ Waiting on the P1 mentor's answers to the task overview (§9 there) and Sandesh'
 If B is chosen, start with the step-wise report's "Next" list: a building-aware sim guard,
 the large farm tasks, memory-pressure runs with admission policies, and Gemma per step on a
 device. Earlier candidates (report §6–7):
-1. Take the evidence pack to the professor and get the direction decision (A / A+τ² / B /
-   C).
+1. Take the merged doc to the professor and get the direction decision. The options are A,
+   B and C as defined in the merged doc; the letters changed from the 2026-10-01 report,
+   whose A is now B, whose C is now A, and whose A + τ² is folded into C.
 2. Ask mayankarya about using and extending `aerogen_mcp`.
 3. If A, first test the open hypothesis:
    - add admission policies to the simulator (concurrency caps per KV budget, queue vs
