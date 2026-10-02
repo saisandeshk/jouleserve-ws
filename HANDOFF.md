@@ -1,8 +1,9 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-02, after merging all reports into the shared doc and its repo copy
-(`reports/2026-10-02-p5-evidence`). The step-wise D1 test (108 missions on the WS) ran ~00:05–01:32. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
-file holds the state at the time of writing.
+**Last updated:** 2026-10-03 ~01:00 IST, after the admission/retention simulation
+(`reports/2026-10-03-admission-sim`). The professor meeting is on Monday 2026-10-05. Rules,
+machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This file holds the state at
+the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
 appending history, which git already keeps.
@@ -24,7 +25,15 @@ appending history, which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline. P5 has the 2×A5000
   workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-01 ~06:20 IST
+## 2. Situation as of 2026-10-03 ~01:00 IST
+
+- **Admission/retention simulation (2026-10-03, the open hypothesis):**
+  [`reports/2026-10-03-admission-sim/README.md`](reports/2026-10-03-admission-sim/README.md).
+  It answers "does a memory controller beat SGLang's default with N drones per box?" with **no**
+  (a negative result) and finds that the agent design is the big lever. Headlines in §4 below.
+  Sandesh asked for it on Friday night 2026-10-02 as weekend work before Monday's meeting.
+- **WS unreachable since 2026-10-02 ~23:00** (ssh times out, no ping). Sandesh is asking the
+  admin. The simulation needed no GPU; the live check of its best policy waits for the WS.
 
 - **Evidence pack (the main output of the night).**
   - Report: [`reports/2026-10-01-workload-opportunity/README.md`](reports/2026-10-01-workload-opportunity/README.md)
@@ -62,10 +71,12 @@ appending history, which git already keeps.
 - **Sandesh** said (2026-10-01) that they have their own idea of how to approach the next
   step and will share it. The report's options and decisions (§6–7) are input to that
   discussion, not a plan.
-- **WS: idle.** The 2026-10-02 runs finished at 01:32 and everything was torn down: both GPUs
-  are back to 15–47 MiB, with no tmux sessions.
+- **WS: was idle** when last reachable (2026-10-02): runs torn down, GPUs at 15–47 MiB, no tmux.
   - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
   - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
+- **P1 (Thor), checked 2026-10-02 23:03:** the tool-calling sweep had 84 of 108 runs done
+  (60 passed), on instance 3, estimated to finish ~21:30 IST on 2026-10-03. Copy the finished
+  runs (directory copy, read-only) after it ends and refresh P1's numbers.
 - **P1 (Thor), checked 2026-10-01 23:00.**
   - The Gemma Reflexion sweep is complete: 144 runs, 102 pass, 4 partial, 38 fail. On
     2026-10-01 P1 wrote a dataset README for it (`/home/yash/final_sweep/drones_README.md`),
@@ -89,9 +100,10 @@ appending history, which git already keeps.
 | Cost calibration | `jsw/costs/calibrate.py` | Idle power, cold/warm prefill time and energy against length, decode J/token against batch |
 | Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py` | One session model for P1 traces and WS runs; figures; trace-driven policy simulator checked against live runs; Claude-Doc chart modules |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/queue*.sh` | Queues are the record of what ran overnight |
+| Admission/retention simulator (2026-10-03) | `analysis/admission_sim.py`, `analysis/admission_figures.py` | Token-driven, N closed-loop drones, byte budget with per-model state layouts (Gemma SWA window, Qwen3.5 recurrent slots, dense), decode growth and retraction, 12 policies plus an unlimited-memory bound; device models for the Thor (P1's rates, board power, MoE batching) and the WS. Validated against P1's calls and the live WS concurrency runs |
 | Step-wise D-task test (2026-10-02) | `jsw/workloads/delivery_check.py`, `env/launch_qwen35_tp1.sh`, `env/queue_stepwise_d.sh`, `analysis/stepwise_ceiling.py`, `analysis/p1_per_task.py` | Driver flags: `--effort think\|nothink`, `--task-file`, `--world-prompt`, `--runtime-prompt`, `--top-k`. P1's task texts live on the WS in `~/work/tasks/`. K2 is pinned to revision `f846b1e` |
 
-Not built yet: the gateway, policies in a live engine (the simulator stands in for now), a
+Not built yet: the gateway, policies in a live engine (the simulators stand in for now), a
 Jetson telemetry adapter, and the CLGSCE port.
 
 ## 4. What we know (details, figures and caveats in the report)
@@ -103,8 +115,10 @@ Jetson telemetry adapter, and the CLGSCE port.
 - **Per task**, the prefill-share bound is 0.3–14%. It exceeds 4% only on the 1–3 min basic
   tasks, and it is 0.3–3.2% on every task longer than 10 min.
 - **Observed savings** are ≤0.9% per task class, and 2.1% on one task (B37).
-- **Batching** would lower r. At the WS's batch-16 energy ratio (r ≈ 8) the Reflexion ceiling
-  would be ~15%, but that is untested.
+- **Batching does not change this** (simulated 2026-10-03): with 1–16 P1 drones on a Thor,
+  keeping state is worth 0–1.3% of energy per success (≤ 1.6% with dense-model batching), so
+  the earlier "~15% at r ≈ 8" estimate does not hold. P1's agents keep the Thor 94–98% busy
+  with one drone.
 - Prompts are rebuilt on every call (0.4–31% from cache), and decode is 90–99% of LLM
   time.
 - The tool-calling agent has the same shape (a fresh prompt per attempt, one tool call
@@ -115,7 +129,6 @@ Jetson telemetry adapter, and the CLGSCE port.
   - Every one of the 8 failures includes a capped call; P1 labels most of them
     `malformed_call`.
   - A6–A9 and A20 runs take 80–110 min, against 7–36 min under Reflexion.
-- That concurrency does not change this is *argued*, not measured.
 - Anomaly: most same-role resumes missed the cache (A 73/116, D/F 105/182), often after a
   32K decode, which is possibly Gemma sliding-window state.
 
@@ -168,8 +181,30 @@ prefix removed).
   - drop-at-wait costs +6–11% on the full pool;
   - pinning everything stalls missions;
   - **an exact-ETA eviction oracle ≈ LRU, so eviction order shows no headroom.**
-- **Admission policies are not simulated yet.** "Budget-aware admission beats the default"
-  is the open hypothesis.
+- Superseded for the admission question by the 2026-10-03 simulator (below).
+
+**A memory controller does not beat SGLang's default** (simulated, 2026-10-03; validated:
+LLM time within 2–3% of 887 Thor calls, energy within −8% to +10% of the live WS runs).
+- 1–16 drones per box, 6 workloads, 4 state layouts, 1–32 GiB, 12 policies plus unlimited memory.
+- **Results:**
+  - No online policy beats the best fixed rule by more than 9.9% in any of 455 cells, so the
+    suggested 15% bar is not met.
+  - Eviction order ≤ 3% (6% with exact wake times).
+  - Budget-aware admission ≤ 5%, and up to 36% worse on P1's long decodes.
+  - Concurrency caps ≤ 0.2%.
+  - Half-size paused state ≤ 10%.
+- **Keeping state is worth 4–7% at 1 drone and 19–29% at 16 for step-wise agents**, but the
+  radix cache already keeps it. With ≥ 8 GiB for state on the Thor, the default equals
+  unlimited memory up to 16 step-wise drones.
+- **Under 1–4 GiB the default loses up to 60% to unlimited memory,** but that is capacity, not
+  decisions. An FP8 KV cache, which is configuration, recovers 10–34%.
+- **The agent design is the big lever** (Thor costs):
+  - On P1's D1–D3, P1's Reflexion uses 219–499 kJ per success (measured), against 22–68 kJ
+    for the step-wise agent (projected).
+  - A Thor serves 4–16 step-wise drones within 1.5× p95 mission time, but only 2 of P1's.
+  - Energy per success falls 4.7–8.5× from 1 to 16 step-wise drones.
+- **Not tested:** long missions, memory that changes over time (co-located models, H4),
+  Gemma's own step-wise token counts, mixed agents, DVFS.
 
 **WS costs** (K2, one A5000).
 - Prefill 4,106 tokens/s at ~0.05 J/token.
@@ -194,20 +229,33 @@ prefix removed).
 
 ## 6. Next steps
 
+**Weekend plan, agreed 2026-10-02:**
+1. Simulation: done (`reports/2026-10-03-admission-sim`).
+2. When the WS is back:
+   - Qwen3.5 energy calibration;
+   - one live memory-pressure run to anchor the simulator (e.g. 8 sessions, capped pool,
+     default vs. half-size paused state, or the FP8 KV cache);
+   - one long mission (lawnmower or circles) at N=1, to see whether private state grows.
+3. After P1's sweep ends (~2026-10-03 21:30): copy the finished runs and refresh P1's numbers.
+4. Sunday: a one-page Monday brief (local Markdown). It covers the decision asked, the
+   recommendation, the new negative result and the permissions to ask for. Update the shared
+   Claude Doc only if Sandesh asks.
+
+The simulation changes the options:
+- A retention/admission controller is not a contribution on these workloads.
+- What remains is the decode side (option A's thinking budget and runaway control), the
+  agent-design result (option B's value, which is a P1/benchmark finding), capacity on
+  memory-tight devices, and memory that changes over time (H4, untested).
+
 Waiting on the P1 mentor's answers to the task overview (§9 there) and Sandesh's approach.
-If B is chosen, start with the step-wise report's "Next" list: a building-aware sim guard,
-the large farm tasks, memory-pressure runs with admission policies, and Gemma per step on a
-device. Earlier candidates (report §6–7):
+Earlier candidates (report §6–7):
 1. Take the merged doc to the professor and get the direction decision. The options are A,
    B and C as defined in the merged doc; the letters changed from the 2026-10-01 report,
    whose A is now B, whose C is now A, and whose A + τ² is folded into C.
 2. Ask mayankarya about using and extending `aerogen_mcp`.
-3. If A, first test the open hypothesis:
-   - add admission policies to the simulator (concurrency caps per KV budget, queue vs
-     evict, handling contexts that won't fit);
-   - then build them in a gateway in front of SGLang;
-   - repeat runs with seeds and confidence intervals;
-   - grow the task set and add a hybrid model on the WS.
+3. The open admission hypothesis was tested in simulation on 2026-10-03 and came out
+   negative; a gateway with admission policies is not worth building for these workloads
+   unless the professor re-scopes (e.g. memory that changes over time, H4).
 
 ## 7. Open questions for Sandesh
 

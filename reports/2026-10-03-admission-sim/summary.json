@@ -1,0 +1,138 @@
+{
+ "paradigm": {
+  "p1_reflexion_measured": {
+   "D1": {
+    "runs": 9,
+    "passed": 5,
+    "kj_per_run": 277.29562633230364,
+    "kj_per_success": 499.1321273981466,
+    "minutes_median": 70.26741787931726,
+    "llm_share": 0.9076613701827565
+   },
+   "D2": {
+    "runs": 8,
+    "passed": 3,
+    "kj_per_run": 82.25706945611117,
+    "kj_per_success": 219.35218521629648,
+    "minutes_median": 19.42642513449197,
+    "llm_share": 0.9467030085963904
+   },
+   "D3": {
+    "runs": 9,
+    "passed": 0,
+    "kj_per_run": 240.779011680945,
+    "kj_per_success": null,
+    "minutes_median": 72.3758163236004,
+    "llm_share": 0.9652114102694798
+   }
+  },
+  "stepwise_projected": {
+   "stepwise_qwen_think D1": {
+    "missions": 9,
+    "succeeded": 6,
+    "kj_per_mission": 31.066697333882615,
+    "kj_per_success": 46.60004600082392,
+    "minutes_median": 10.122320583773279
+   },
+   "stepwise_qwen_think D2+D3": {
+    "missions": 12,
+    "succeeded": 10,
+    "kj_per_mission": 25.40228336334602,
+    "kj_per_success": 30.482740036015223,
+    "minutes_median": 9.227922921267753
+   },
+   "stepwise_qwen_nothink D1": {
+    "missions": 9,
+    "succeeded": 7,
+    "kj_per_mission": 28.80805043298507,
+    "kj_per_success": 37.03892198526652,
+    "minutes_median": 11.113295683027282
+   },
+   "stepwise_qwen_nothink D2+D3": {
+    "missions": 12,
+    "succeeded": 11,
+    "kj_per_mission": 20.142625487912134,
+    "kj_per_success": 21.97377325954051,
+    "minutes_median": 8.570254994182573
+   },
+   "stepwise_k2_high D1": {
+    "missions": 8,
+    "succeeded": 5,
+    "kj_per_mission": 42.51553078127081,
+    "kj_per_success": 68.0248492500333,
+    "minutes_median": 14.830800067535307
+   },
+   "stepwise_k2_high D2+D3": {
+    "missions": 12,
+    "succeeded": 9,
+    "kj_per_mission": 28.98200979082368,
+    "kj_per_success": 38.64267972109824,
+    "minutes_median": 9.352433354772877
+   },
+   "stepwise_k2_low D1": {
+    "missions": 9,
+    "succeeded": 6,
+    "kj_per_mission": 28.3494588507049,
+    "kj_per_success": 42.524188276057345,
+    "minutes_median": 10.952425881395152
+   },
+   "stepwise_k2_low D2+D3": {
+    "missions": 12,
+    "succeeded": 6,
+    "kj_per_mission": 24.03011276643419,
+    "kj_per_success": 48.06022553286838,
+    "minutes_median": 9.375094476991963
+   }
+  }
+ },
+ "by_scenario": {
+  "thor_dense": {
+   "cells": 55,
+   "found_gt_5pct": 3,
+   "found_max": 0.08523,
+   "bound_gt_10pct": 13,
+   "adaptive_vs_best_fixed_max": 0.05996,
+   "value_exact_max": 0.04751
+  },
+  "thor_densebatch_gemma": {
+   "cells": 70,
+   "found_gt_5pct": 3,
+   "found_max": 0.09806,
+   "bound_gt_10pct": 20,
+   "adaptive_vs_best_fixed_max": 0.05169,
+   "value_exact_max": 0.06086
+  },
+  "thor_gemma": {
+   "cells": 145,
+   "found_gt_5pct": 4,
+   "found_max": 0.09871,
+   "bound_gt_10pct": 31,
+   "adaptive_vs_best_fixed_max": 0.05309,
+   "value_exact_max": 0.05985
+  },
+  "thor_gemma_fp8": {
+   "cells": 75,
+   "found_gt_5pct": 4,
+   "found_max": 0.09749,
+   "bound_gt_10pct": 8,
+   "adaptive_vs_best_fixed_max": 0.05229,
+   "value_exact_max": 0.05837
+  },
+  "thor_qwen35": {
+   "cells": 60,
+   "found_gt_5pct": 3,
+   "found_max": 0.1236,
+   "bound_gt_10pct": 14,
+   "adaptive_vs_best_fixed_max": 0.05742,
+   "value_exact_max": 0.07009
+  },
+  "ws_k2": {
+   "cells": 50,
+   "found_gt_5pct": 3,
+   "found_max": 0.09781,
+   "bound_gt_10pct": 9,
+   "adaptive_vs_best_fixed_max": 0.09489,
+   "value_exact_max": 0.04403
+  }
+ }
+}
