@@ -1,7 +1,7 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-02, ~02:00 IST, after the step-wise D1 test (108 missions on the WS),
-which followed the AeroEval/P1-task overview written for the P1 mentor. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
+**Last updated:** 2026-10-02, after merging all reports into the shared doc and its repo copy
+(`reports/2026-10-02-p5-evidence`). The step-wise D1 test (108 missions on the WS) ran ~00:05–01:32. Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This
 file holds the state at the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
@@ -29,9 +29,17 @@ appending history, which git already keeps.
 - **Evidence pack (the main output of the night).**
   - Report: [`reports/2026-10-01-workload-opportunity/README.md`](reports/2026-10-01-workload-opportunity/README.md)
     (figures, data JSON and methods beside it).
-  - Shareable doc: **"JouleServe drone workload evidence"**, a Claude Doc at
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7. It is private
-    until Sandesh shares it from its Share menu.
+  - Shareable doc: **"JouleServe (P5): drone workload evidence and options"**, a Claude Doc at
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7.
+    - On 2026-10-02 it was rewritten to merge all three reports, at Sandesh's request: what P5
+      asks, the ceiling formula, P1's workloads, P1's agents, the step-wise evidence, costs,
+      options A/B/C, decisions and next steps.
+    - It has two new charts drawn from rows (the ceiling per agent; output per step) and keeps
+      the policy-simulation chart.
+    - Its repo copy is
+      [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md).
+      Keep the two in sync.
+    - It is private until Sandesh shares it from its Share menu.
   - It answers the Track A question and recommends a direction. **Nothing has been shown to
     the professor yet.**
 - **P1 mentor feedback (2026-10-01)** was that P1's drone set is 12 CLGSCE + 4 AeroEval tasks,
