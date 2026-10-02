@@ -1,6 +1,6 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-03 ~01:00 IST, after the admission/retention simulation
+**Last updated:** 2026-10-03 ~00:25 IST, after the admission/retention simulation
 (`reports/2026-10-03-admission-sim`). The professor meeting is on Monday 2026-10-05. Rules,
 machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This file holds the state at
 the time of writing.
@@ -25,7 +25,7 @@ appending history, which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline. P5 has the 2×A5000
   workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-03 ~01:00 IST
+## 2. Situation as of 2026-10-03 ~00:25 IST
 
 - **Admission/retention simulation (2026-10-03, the open hypothesis):**
   [`reports/2026-10-03-admission-sim/README.md`](reports/2026-10-03-admission-sim/README.md).
