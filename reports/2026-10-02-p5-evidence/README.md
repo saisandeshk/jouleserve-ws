@@ -1,6 +1,6 @@
 # JouleServe (P5): drone workload evidence and options
 
-**2026-10-02 · Sai Sandesh (P5)**, prepared with Claude Code.
+**2026-10-03 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 This is the repo copy of the Claude Doc
 [JouleServe (P5): drone workload evidence and options](https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7),
@@ -10,20 +10,20 @@ which is private until Sandesh shares it.
   [`2026-10-01-p1-task-overview`](../2026-10-01-p1-task-overview/README.md) and
   [`2026-10-02-stepwise-d1`](../2026-10-02-stepwise-d1/README.md).
 - The doc's two charts appear here as a table and a figure.
-- It was fact-checked against the sources on 2026-10-02.
+- It was fact-checked against the sources on 2026-10-02, and updated on 2026-10-03 with the
+  many-drones simulation and P1's refreshed tool-calling sweep
+  ([`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md)).
 
 P1's drone agents, as built today, leave an edge serving system almost no retained state to
-manage: keeping it could save at most 2.1% of their LLM time.
+manage: keeping it could save at most 2.1% of their LLM time. A step-wise agent on P1's own
+delivery tasks does create state worth keeping. But a simulation of 1–16 drones per box
+(2026-10-03) shows that SGLang's default already keeps it: no memory policy beats the default by
+more than about 10% of energy per successful mission.
 
-A step-wise agent running P1's own delivery tasks is different.
-- Its steps after each tool wait are short: a median of 55–99 output tokens.
-- So kept state could save up to 20–72% of a mission's LLM time at the Thor's speeds.
-- Only 3–16% of a mission's LLM time is each drone's private history; the rest is the shared
-  prompt.
-- These are upper bounds, measured with stand-in models on the workstation.
-
-We recommend option B: a step-wise agent on P1's tasks, with P1's agents kept as the contrast
-case. The professor and P1's mentor make that call.
+The large levers are elsewhere. The agent design changes energy per success 5–13× on P1's
+delivery tasks, and runaway thinking takes 57–70% of P1's LLM time. We now lean towards option
+A, decode-side energy on P1's agents, with option B's finding reported to P1. The professor and
+P1's mentor make that call.
 
 ## Summary
 
@@ -32,9 +32,9 @@ case. The professor and P1's mentor make that call.
      LLM call from a fresh prompt.
    - Thinking decodes take 86–99% of their LLM time per task.
    - Pooled over all calls, any retention policy could save at most 2.1% (Reflexion, 143 runs)
-     or 0.6% (tool calling, 35 runs) of it.
+     or 0.6% (tool calling, 104 runs) of it.
 2. **The cause is the agent design, not the task.**
-   - Bigger P1 tasks lower the ceiling, because they add thinking and 32K-capped calls (78% of
+   - Bigger P1 tasks lower the ceiling, because they add thinking and 32K-capped calls (70% of
      tool-calling LLM time).
    - By the same mechanism, the large AeroEval missions P1 dropped should not change this under
      P1's agents. That is argued, not measured.
@@ -52,12 +52,18 @@ case. The professor and P1's mentor make that call.
      drone's private history is only 3–16% of it.
    - The rest is each mission's first prompt (9–11K tokens, mostly the system prompt every
      drone shares), which SGLang's radix cache already keeps.
-6. **Many drones per device is the big energy lever, and the KV budget bounds it.**
-   - On aerogen's own tasks, eight sessions on one GPU used 2.2× less GPU energy per passed
-     mission than one.
-   - In simulation, SGLang's default eviction matches an exact-flight-time oracle. So a
-     contribution must come from admission under a memory budget, longer missions and edge
-     effects, none of which is tested yet.
+6. **A memory controller does not beat SGLang's default.**
+   - In a simulation of 1–16 drones per box, no policy beats the default by more than about 10%
+     of energy per successful mission, short of the 15% bar.
+   - Keeping state is worth 19–29% at 16 step-wise drones, but the radix cache already keeps it.
+   - Under tight memory the loss is capacity, which no policy recovers.
+7. **The agent design is the big lever.** On P1's delivery tasks a step-wise agent uses 5–13×
+   less energy per success than P1's Reflexion agent, and one Thor serves 4–16 step-wise drones
+   instead of 2.
+8. **Runaway thinking is where P1's energy goes.**
+   - On the 12 CLGSCE tasks, calls that hit the 32K cap take 57% (Reflexion) and 70% (tool
+     calling) of LLM time, and none produced a usable answer.
+   - On those tasks the tool-calling agent spends 2.9× Reflexion's energy per success.
 
 **The most kept state could save** (P / (P + r·O) as a share of LLM time, at the Thor's r ≈ 67;
 the doc's summary chart):
@@ -65,7 +71,7 @@ the doc's summary chart):
 | Agent | Data | Ceiling | Of which: each drone's private history |
 | --- | --- | --- | --- |
 | P1 Reflexion | Thor, 143 runs | 2.1% | none (prompts rebuilt each call) |
-| P1 tool calling | Thor, 35 runs | 0.6% | none (prompts rebuilt each call) |
+| P1 tool calling | Thor, 104 runs | 0.6% | none (prompts rebuilt each call) |
 | aerogen on its own tasks, K2-Horizon-7B low effort | WS, 15 missions | 50% | 13% |
 | Step-wise on P1's D1: Qwen3.5-9B, no thinking, greedy | WS, 6 missions | 71% | 7.7% |
 | Step-wise on P1's D1: Qwen3.5-9B, no thinking, sampled | WS, 9 missions | 68% | 10% |
@@ -159,7 +165,7 @@ How the workloads in this report meet those four conditions:
 | --- | --- | --- | --- |
 | Context accumulates | No: prompts rebuilt per role call | Yes | Yes |
 | Many physical waits | No: at most 3 flights per run | Yes: ~14 LLM calls per mission, 88% of mission time in flight | Yes: 13–22 LLM calls per mission |
-| Short steps | No: median 538–3,802 output tokens per call | Yes: median 44 after a wait | Yes: median 55–99 after a wait |
+| Short steps | No: median 538–3,406 output tokens per call | Yes: median 44 after a wait | Yes: median 55–99 after a wait |
 | Memory contended | No: one session per device | Only with a capped pool | Not yet tested (at most 2 sessions) |
 
 ![A P1 session and an aerogen mission on one clock](../2026-10-01-workload-opportunity/figures/timelines.png)
@@ -229,26 +235,26 @@ task longer than 10 minutes.
 
 | Task | Reflexion: passed | Reflexion: min per run | Reflexion: bound | Reflexion: 32K-capped calls | Tool calling: passed | Tool calling: min per run | Tool calling: bound | Tool calling: 32K-capped calls |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B5 | 9/9 | 1.2 | 9.9% | 0 | 3/3 | 1.7 | 10.9% | 0 |
-| B13 | 9/9 | 1.0 | 14.0% | 0 | 3/3 | 1.4 | 11.1% | 0 |
-| B29 | 9/9 | 1.8 | 6.1% | 0 | 3/3 | 1.5 | 9.7% | 0 |
-| B37 | 6/9 | 2.8 | 6.5% | 0 | 3/3 | 2.4 | 7.6% | 0 |
-| A3 | 9/9 | 2.9 | 4.0% | 0 | 3/3 | 4.4 | 3.9% | 0 |
-| A5 | 9/9 | 10.0 | 1.2% | 3 | 3/3 | 4.5 | 3.5% | 0 |
-| A6 | 9/9 | 7.3 | 1.7% | 0 | 1/3 | 79.8 | 0.4% | 9 |
-| A7 | 8/9 | 36.4 | 1.0% | 6 | 0/3 | 85.5 | 0.5% | 9 |
-| A8 | 7/9 | 27.8 | 0.9% | 5 | 3/3 | 81.4 | 0.6% | 9 |
-| A9 | 9/9 | 31.8 | 1.0% | 11 | 0/3 | 110.0 | 0.3% | 15 |
-| A16 | 1/9 | 68.6 | 0.8% | 21 | 3/3 | 8.7 | 2.3% | 0 |
-| A20 | 9/9 | 7.6 | 1.9% | 0 | 2/2 | 92.2 | 0.3% | 8 |
+| B5 | 9/9 | 1.2 | 9.9% | 0 | 9/9 | 1.6 | 10.4% | 0 |
+| B13 | 9/9 | 1.0 | 14.0% | 0 | 9/9 | 1.4 | 10.4% | 0 |
+| B29 | 9/9 | 1.8 | 6.1% | 0 | 9/9 | 1.6 | 8.5% | 0 |
+| B37 | 6/9 | 2.8 | 6.5% | 0 | 6/9 | 2.8 | 8.6% | 0 |
+| A3 | 9/9 | 2.9 | 4.0% | 0 | 9/9 | 5.2 | 3.2% | 0 |
+| A5 | 9/9 | 10.0 | 1.2% | 3 | 9/9 | 4.5 | 3.6% | 0 |
+| A6 | 9/9 | 7.3 | 1.7% | 0 | 2/9 | 78.8 | 0.5% | 22 |
+| A7 | 8/9 | 36.4 | 1.0% | 6 | 0/9 | 71.5 | 0.7% | 17 |
+| A8 | 7/9 | 27.8 | 0.9% | 5 | 6/9 | 61.8 | 0.8% | 17 |
+| A9 | 9/9 | 31.8 | 1.0% | 11 | 1/9 | 96.6 | 0.3% | 38 |
+| A16 | 1/9 | 68.6 | 0.8% | 21 | 7/8 | 31.1 | 0.9% | 6 |
+| A20 | 9/9 | 7.6 | 1.9% | 0 | 3/6 | 102.4 | 0.3% | 27 |
 | D1 ordered delivery | 5/9 | 67.5 | 2.2% | 22 | not in sweep | | | |
 | D2 checkpoint | 3/8 | 19.5 | 3.2% | 2 | not in sweep | | | |
 | D3 out-and-back | 0/9 | 57.0 | 2.3% | 18 | not in sweep | | | |
 | F1 farm survey | 0/9 | 72.6 | 2.1% | 27 | not in sweep | | | |
 
 - **Reflexion:** P1's final sweep, 143 of 144 runs. One D2 run is missing from our copy.
-- **Tool calling:** 35 runs of P1's running sweep, instance 1 only, as of 2026-10-01 23:00. That
-  sweep covers the CLGSCE tasks only.
+- **Tool calling:** 104 of the 108 runs of P1's sweep (the 12 CLGSCE tasks, 3 instances × 3
+  runs; the last 4 were still running), as of 2026-10-03 16:16.
 
 **Why the bound is so small:**
 
@@ -260,16 +266,17 @@ task longer than 10 minutes.
 - **O is large.** Thinking decodes take 71–94% of session wall time and 86–99% of LLM time per
   task. A generator call writes a median of ~8K tokens.
 - **Bigger tasks make it worse.**
-  - In the tool-calling sweep, 50 of 176 LLM calls hit the 32K cap. Those calls take 78% of all
-    LLM time (16.9 of 21.6 h), and all 8 failures include one.
+  - In the tool-calling sweep, 127 of 571 LLM calls hit the 32K cap. Those calls take 70% of
+    all LLM time (43.0 of 61.1 h), and 30 of the 34 failures include one.
   - In Reflexion, 115 of 1,030 calls hit the cap.
 - **The AeroEval runs rarely fly.** D1 flew 8 times in 9 runs and F1 never did, because the LLM
   code validator rejected the programs first.
 - **There is no memory pressure.**
   - There is one session per device, and its context (≤ 55K tokens) fits P1's 80K-token pool,
     so keeping everything is free.
-  - That concurrency would not change the picture is argued, not measured. Batching lowers r:
-    at the WS's batch-16 energy ratio (r ≈ 8), the pooled Reflexion ceiling would be ~15%.
+  - Concurrency does not change the picture either: in simulation with 1–16 drones per Thor,
+    P1's agents gain at most 1.6% from kept state (see
+    [Many drones on one box](#many-drones-on-one-box-does-a-memory-controller-help)).
 
 **One anomaly to check on the devices.**
 - In the Reflexion runs, most same-role calls that repeat an earlier prompt missed the cache:
@@ -278,6 +285,22 @@ task longer than 10 minutes.
 - Our guess is that Gemma's sliding-window state is lost after long decodes, a hybrid-model
   effect.
 - It costs 0.3–1.1% of LLM time.
+
+**P1's two agents on the same 12 CLGSCE tasks** (Thor, measured): the tool-calling agent spends
+2.9× the energy per success of Reflexion, and runaway thinking is the reason.
+
+| | Reflexion | Tool calling |
+| --- | --- | --- |
+| Runs, passed | 108, 94 (87%) | 104, 70 (67%) |
+| Board energy per run / per success | 69 / 79 kJ | 155 / 231 kJ |
+| Long advanced tasks (A6–A9, A20): passed, median time | 42 of 45, 10 min | 12 of 42, 87 min |
+| Calls that hit the 32K cap | 46 of 403, 57% of LLM time | 127 of 571, 70% of LLM time |
+| Had those calls stopped at 16K tokens | 27% less board energy | 34% less board energy |
+
+- Every capped call ended at the token limit, so none produced a usable answer.
+- The last row is an upper bound from the traces: the decode time those calls spent past 16K
+  tokens, at the board's 71.9 W, assuming the rest of each run goes as recorded. A fixed 16K
+  cut would also stop 14 (Reflexion) and 32 (tool calling) calls that finished on their own.
 
 ## Step-wise agents (1): aerogen on its own tasks
 
@@ -342,7 +365,8 @@ more) and keeps one growing conversation per mission.
   - an eviction oracle that knows exact flight times is no better than LRU (within 0–6%).
 
 So eviction order is not a contribution: SGLang's default already gets most of the value.
-Whether budget-aware **admission** beats the default is the open hypothesis.
+Admission was simulated on 2026-10-03 and does not beat the default either (see
+[Many drones on one box](#many-drones-on-one-box-does-a-memory-controller-help)).
 
 ## Step-wise agents (2): the deciding test on P1's delivery tasks
 
@@ -424,6 +448,72 @@ the ceiling against what the cache actually did.
 - **D2 and D3 agree** (60 more missions): post-wait medians of 55–99 tokens and mission
   ceilings of 42–72%.
 
+## Many drones on one box: does a memory controller help?
+
+No. In a simulation of 1–16 drones sharing one box, no memory policy beats SGLang's default by
+more than about 10% of energy per successful mission, short of the 15% bar suggested on
+2026-10-02. This answers the open hypothesis left by the aerogen runs.
+
+**Setup** (2026-10-03, [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md)):
+
+- **Workloads:** recorded missions replayed by N drones, each starting a new mission when one
+  ends: the step-wise D1–D3 runs, aerogen's own tasks, and P1's Reflexion and tool-calling
+  traces.
+- **Thor costs** from P1's runs: prefill 1,811 and decode 27 tokens/s; board power 71.9 W while
+  a call runs and 38.6 W otherwise. Gemma's experts make batching weak: a 16-request decode step
+  takes about 5.3× as long as one.
+- **Memory:** state budgets of 1–16 GiB in Gemma's layout (20 KiB per token plus a 200 MiB
+  sliding window per session), with Qwen3.5 and dense layouts as checks. 12 policies, unlimited
+  memory as the bound, 5 seeds per point.
+- **Validation:** LLM time within 2–3% of 887 Thor calls; energy per mission within −8% to +10%
+  of the five live WS runs with 2–8 sessions.
+
+![Default against the best policy and unlimited memory](../2026-10-03-admission-sim/figures/headroom.png)
+
+The doc's chart shows the top row of this figure (step-wise Qwen3.5 thinking).
+
+**What the policies recover** (best case on the Thor, Gemma layout; the gap to unlimited memory
+reaches 60% at 1 GiB and 16 drones):
+
+| Policy | Best gain over the default |
+| --- | --- |
+| Eviction order by value per byte, online | 3% (6% with exact wake times) |
+| Budget-aware admission | 5% for step-wise agents; up to 52% worse on P1's long decodes |
+| Concurrency caps of 1–8 calls | 0.2% |
+| Paused state stored at half size | 10% |
+| FP8 KV cache for all state (a configuration) | 10–34% at 1–4 GiB |
+
+- **Keeping state matters more as the box fills, but the default already keeps it.**
+  - Dropping state at every wait costs step-wise agents 4–7% more energy per success with one
+    drone, and 19–29% more at 16.
+  - With 8 GiB for state, the default matches unlimited memory up to 16 step-wise drones (P1's
+    agents need 16 GiB).
+- **P1's agents gain nothing from kept state** at any drone count (0–1.3%), and at most 1.6%
+  even with dense-model batching. The earlier estimate that batching could lift their ceiling to
+  about 15% does not hold.
+- **On the Thor, decode throughput binds before memory.** P1's agents keep it 94–98% busy with
+  one drone; step-wise agents saturate it at about 8.
+- **Realistic budgets:** a Thor running Gemma in bf16 has tens of GB free (P1's runs used 75 GB
+  in total), which is ample. Tight budgets mean an Orin 64 GB with Gemma in bf16, or dense-KV
+  models.
+
+**The agent design is the big lever** (Thor costs; the first three rows are P1's D1–D3 only):
+
+| | P1 Reflexion (measured) | Step-wise agent (projected) |
+| --- | --- | --- |
+| Board energy per run | 82–277 kJ | 20–43 kJ |
+| Board energy per success | 219–499 kJ (D3: no passes) | 22–68 kJ |
+| Median mission time | 19–72 min, 91–97% of it LLM | 9–15 min |
+| Drones per Thor within 1.5× p95 mission time | 2 | 4–16 |
+| Energy per success, 1 → 16 drones | 3.1–3.2× lower | 4.7–8.5× lower |
+
+The two sides differ in models (Gemma against the Qwen3.5 and K2 stand-ins), simulators and
+success checks. P1's Gazebo flights run at 10× real time, which only flatters P1's side.
+
+**Not tested yet:** longer missions, memory that changes over time (co-located models), Gemma's
+own step-wise token counts, mixed agents on one box, and power modes. The simulated default also
+loses less under pressure than live SGLang, which understates headroom by a few percent at most.
+
 ## Serving costs and what changes on the edge
 
 Decode is the energy sink and batching is the lever.
@@ -461,56 +551,50 @@ tokens).
     state pools and reuse at checkpoint granularity.
   - On the WS, K2-Horizon-7B is the dense baseline and Qwen3.5-9B the hybrid stand-in.
 
-## Three options for P5
+## Options left for P5
 
-On P1's agents as they are, there is nothing to manage: dropping all state at every wait would
-cost at most 3.2% of LLM time on any task longer than 10 minutes. That finding should be
-reported. P5's question needs sessions whose kept state has value, which leaves three honest
-options.
+The simulation answers the memory-controller question for these workloads: SGLang's default is
+within about 10% of every policy tried. On P1's agents there is nothing to manage at all;
+dropping all state at every wait would cost at most 3.2% of LLM time on any task longer than 10
+minutes. What remains is a choice of what P5 studies, and the professor makes it.
 
-| Option | Keeps | Changes | Evidence for | Against |
-| --- | --- | --- | --- | --- |
-| A. P1's agents as they are | P1's tasks and agents | P5's question, to decode-side scheduling: admitting and batching long thinking decodes, thinking budgets | Fully aligned with P1, no new agent. 78% of tool-calling LLM time is in 32K-capped calls (Thor). Decode energy per token falls 14× with batching (WS, dense 7B; the Thor's curve is unmeasured) | No longer about kept state; close to existing work (KAIROS) |
-| **B. A step-wise agent on P1's tasks (recommended)** | P5's question; P1's missions, worlds and devices | Only the agent loop: one flight action per tool call, one growing conversation | Post-wait steps stay short (median 55–99 tokens) with two stand-in models, thinking on or off. At the Thor's r, a ceiling of 20–72% of mission LLM time (56–72% after a wait). 2.2× less GPU energy with 8 sessions per GPU (aerogen's own tasks, WS) | Not P1's agent. Each drone's private history is only 3–16% of mission LLM time on short deliveries. Mission success needs a building-aware sim |
-| C. Standard agent benchmarks (τ²-bench, BFCL) with injected waits | P5's question | The workload | Easy to compare with prior work, including Adaptive KV Retention | Loses the drone story; every wait is synthetic; about a week to set up |
+| Option | What P5 studies | Evidence for | Against |
+| --- | --- | --- | --- |
+| **A. Decode-side energy on P1's agents (our lean)** | Stopping runaway thinking, thinking budgets, admitting and batching long decodes on the Thor | Calls that hit the 32K cap take 57% (Reflexion) and 70% (tool calling) of LLM time on the 12 CLGSCE tasks, and none produced a usable answer. Stopping them at 16K tokens would save about 27–34% of board energy (upper bound from the traces). P1's agents keep the Thor busy with a single drone | No longer about kept state. The effect on mission success is unmeasured. Reasoning-length control is an active research area we have not reviewed yet |
+| B. A step-wise agent on P1's tasks | The agent design itself | 5–13× less energy per success on P1's delivery tasks, and 4–16 drones per Thor instead of 2. Post-wait steps stay short with two stand-in models | The win belongs to the agent, which is P1's territory; a memory controller on top adds at most about 10% (simulated). Not P1's agent, and success needs a building-aware sim |
+| C. Standard benchmarks (τ²-bench, BFCL) with injected waits | The original question on another workload | Easy comparison with prior work, including Adaptive KV Retention | The same capacity and compute limits probably apply (not simulated). Loses the drone story; every wait is synthetic |
+| D. Memory that changes over time | Admission and retention when co-located models (perception, VLM, the simulator) take and release unified memory | The one memory-side case the simulation could not test. Under tight memory the default loses up to 60% to capacity | Untested. Needs a device, or a co-located workload emulated on the WS |
 
-- **P1's agents stay in every option.** They are the decode-dominated case, where a controller
-  must recognise that retention is worthless and not make things worse.
-- **The option letters changed.** The 2026-10-01 report's option A is B here, its C is A here,
-  and its A + τ²-bench is folded into C.
+- **P1's agents stay in every option** as the case where a controller must not make things
+  worse.
+- **Option letters:** A–C are as on 2026-10-02 (the 2026-10-01 report's A is B here, its C is
+  A, and its A + τ²-bench is C). D is new.
 
-**Why B.** It changes the fewest things that matter: P1's missions, worlds and devices stay, and
-so does P5's question. It is not a matter of tweaking P1's agent until P5 finds work: it runs
-the standard agent design on P1's own missions.
+**Why A now.** It is where P1's measured energy goes, on P1's device, with P1's agents
+unchanged. B's finding still matters, but as a result to hand to P1 (their agent design costs
+5–13× per success), not as a serving controller. D is the alternative if P5 should stay on
+retained state.
 
-**Where B could be wrong:**
+**Where A could be wrong:**
 
-1. **"A manufactured opportunity."** A reviewer may say we picked the agent that gives our
-   system work. The defences:
-   - step-wise tool calling is the standard agent design, and almost every prior KV-retention
-     system evaluates on it;
-   - P1's own plan lists tool calling and ReAct, although both of P1's versions act on whole
-     programs;
-   - search and tracking missions need decisions mid-flight;
-   - P5 would report both designs.
-
-   This is the professor's call.
-2. **P1's model may think more per step.** Qwen3.5-9B and K2-Horizon-7B stand in for
-   Gemma-4-26B-A4B. At ~2K output tokens per step on the Thor the ceiling would drop to ~8%,
-   and at ~8K to ~2%.
-3. **The value per drone is modest on short deliveries.**
-   - Private history is 3–16% of mission LLM time, and the radix cache already keeps the
-     shared prompt.
-   - B's case is strongest on longer missions (lawnmower and circles, an estimated 20–150
-     steps), with models that keep their reasoning in the conversation, and with several drones
-     per box.
+1. **Success.** A cut or a budget may cost missions. All 173 capped calls ended at the token
+   limit, but a fixed 16K cut would also stop 14 (Reflexion) and 32 (tool calling) calls that
+   finished on their own.
+2. **Novelty.** Thinking budgets and early exit are studied for datacenter reasoning models.
+   What the edge adds (board power, weak batching on a mixture of experts, one drone saturating
+   the device) has to carry the contribution.
+3. **Scope.** It drops P5's original question about retained state. The professor may prefer D.
 
 ## Decisions needed
 
-- [ ] **Direction (professor):** option A, B or C. The deciding test supports B, but the value
-  per drone on short deliveries is modest.
-- [ ] **Scope (professor):** retention only, or admission and retention under a memory budget,
-  which is where the remaining value appears to be.
+- [ ] **Direction (professor):** option A (decode-side energy), B (the agent design, reported to
+  P1), C, or D (memory that changes over time). The simulation rules out a memory controller on
+  fixed budgets for these workloads.
+- [ ] **Scope (professor):** leave retained state for decode-side energy (A), or stay on it with
+  co-located models (D)?
+- [ ] **Report to P1 (P1's mentor):** on the same 12 tasks their tool-calling agent spends 2.9×
+  Reflexion's energy per success, and capped thinking calls take 57–70% of their LLM time; a
+  step-wise agent uses 5–13× less energy per success on their delivery tasks.
 - [ ] **P1's paradigms (P1's mentor):** is a step-wise agent with flight-level tools in P1's
   scope? P1's tool-calling and ReAct agents both act on whole programs.
 - [ ] **Workload (P1's mentor):** may P5 run P1's AeroEval tasks with a step-wise agent (D1–D3
@@ -525,22 +609,27 @@ the standard agent design on P1's own missions.
 
 ## Next steps
 
-**If B:**
+**Either way:**
 
-1. Make the sim respect P1's world. Reject moves through buildings in aerogen's guard, using
-   P1's Gazebo geometry, so that success rates mean something.
-2. Run the large farm tasks (lawnmower, concentric circles), where each drone's private state
-   grows.
-3. Run under memory pressure: several drones per GPU and an edge-sized pool. Try admission
-   policies first in the simulator, then live in a gateway in front of SGLang.
-4. Measure Gemma-4-26B-A4B's output per step on a device when one is free.
-5. Repeat runs with seeds and confidence intervals before citing numbers.
+1. Refresh P1's numbers when the last 4 tool-calling runs finish (expected around 21:00 on
+   2026-10-03).
+2. When the WS is reachable again, run one live memory-pressure test to anchor the simulator.
 
-**If A:** use P1's traces to size a thinking budget and decode admission for long planning
-calls, then test batching of long decodes on the WS.
+**If A:**
 
-**If C:** stand up τ²-bench on the WS, with one GPU as the agent and one as the user simulator,
-and draw the waits from P1's measured flight times.
+1. From P1's traces, find what predicts a runaway early (output length so far, repetition), and
+   replay a stop rule's savings and misses.
+2. Review the reasoning-budget and early-exit literature.
+3. Measure batching of long decodes on the WS, and on the Thor when it is free.
+
+**If B, as a finding for P1:** a building-aware sim guard, the large farm tasks (lawnmower,
+concentric circles), and Gemma-4-26B-A4B's output per step on a device.
+
+**If C:** stand up τ²-bench on the WS, one GPU as the agent and one as the user simulator, with
+waits drawn from P1's measured flight times.
+
+**If D:** emulate a co-located model that takes and releases memory on the WS, and extend the
+simulator to a budget that changes over time.
 
 ## Data, methods and limitations
 
@@ -548,10 +637,11 @@ Every number in this report comes from one of these sources:
 
 | Source | What | When |
 | --- | --- | --- |
-| P1 Thor traces | Reflexion final sweep (143 runs) and tool-calling sweep (35 runs, instance 1); Gemma-4-26B-A4B; read-only copies | to 2026-10-01 23:00 |
+| P1 Thor traces | Reflexion final sweep (143 runs) and tool-calling sweep (104 of 108 runs); Gemma-4-26B-A4B; read-only copies | Reflexion to 2026-10-01; tool calling to 2026-10-03 16:16 |
 | WS runs: aerogen | K2-Horizon-7B on aerogen's own 5 tasks, real-time pacing: one session (15 missions at low effort, 5 each at medium and high) and 1–8 sessions per GPU | 2026-10-01 |
 | WS runs: the deciding test | Qwen3.5-9B and K2-Horizon-7B on P1's D1–D3, 108 missions, 50× pacing | 2026-10-02 |
 | WS calibration | K2-Horizon-7B prefill and decode time and energy against length and batch | 2026-10-01 |
+| Simulation | The traces above replayed as 1–16 drones per box on Thor and WS costs, 12 policies, 5 seeds (`analysis/admission_sim.py`) | 2026-10-03 |
 
 **Reproduce.**
 - `python3 -m analysis.stepwise_ceiling` writes `../2026-10-02-stepwise-d1/stepwise.json`:
@@ -563,6 +653,9 @@ Every number in this report comes from one of these sources:
   (`../2026-10-01-p1-task-overview/per_task.json`).
 - The aerogen concurrency and simulation numbers come from the 2026-10-01 report's
   `report_data.json` and `sim_validation.json`.
+- `python3 -m analysis.admission_sim all` and `python3 -m analysis.admission_figures` write the
+  many-drones simulation (`../2026-10-03-admission-sim/`); `python3 -m analysis.p1_runaway`
+  writes P1's two-agent comparison (`p1_agents.json` there).
 
 **Where P1's code is on the Thor** (read-only):
 
@@ -579,17 +672,18 @@ Every number in this report comes from one of these sources:
   - aerogen's kinematic sim has no buildings or physics.
   - P1's Gazebo runs at 10× real time.
   - Only delivery missions were tested.
-- **Memory pressure on P1's tasks.** In the deciding test, at most 2 sessions shared a GPU, and
-  flights ran at 50×.
+- **Memory pressure on P1's tasks.** Live runs of the deciding test had at most 2 sessions per
+  GPU. Memory pressure with up to 16 drones is simulated, not yet measured live.
 - **Energy scope.** WS energy is NVML GPU energy; board, CPU and DRAM energy are not measured.
   On a Jetson the rails cover the whole board.
-- **Ceilings are time shares at batch 1.** Batching lowers r and raises every ceiling, P1's
-  included: at the WS's batch-16 energy ratio, Reflexion's pooled ceiling would be ~15%.
+- **Ceilings are time shares at batch 1.** Batching lowers r, but on the Thor Gemma's experts make
+  it weak, and in simulation P1's agents gain at most 1.6% from kept state at any drone count.
 - **Statistics.**
   - There was one run per concurrency configuration and 6–12 missions per test configuration,
     with no confidence intervals.
   - Greedy repeats were identical, so each greedy configuration has 3 distinct trajectories.
-- **The simulator.** Its energy is within −23% to +38% of live runs, and its policy results
-  replay a fixed sample, so they are rankings only.
+- **The simulators.** The 2026-10-01 one is within −23% to +38% of live energy and gives rankings
+  only. The 2026-10-03 one is within −8% to +10% of live energy and 2–3% of measured LLM time,
+  but under capped pools its default re-prefills about half of what live SGLang did.
 - **The shared prompt.** Removing aerogen's anti-cache prompt prefix is what lets sessions share
   the system prompt; a deployed agent would not carry it.

@@ -1,7 +1,7 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-03 ~00:25 IST, after the admission/retention simulation
-(`reports/2026-10-03-admission-sim`). The professor meeting is on Monday 2026-10-05. Rules,
+**Last updated:** 2026-10-03 ~16:50 IST, after refreshing P1's tool-calling runs (104 of 108)
+and updating both Claude Docs and their repo copies with the simulation and the options left. The professor meeting is on Monday 2026-10-05. Rules,
 machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This file holds the state at
 the time of writing.
 
@@ -25,15 +25,26 @@ appending history, which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline. P5 has the 2×A5000
   workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-03 ~00:25 IST
+## 2. Situation as of 2026-10-03 ~16:50 IST
+
+- **Docs updated 2026-10-03 (Sandesh asked):**
+  - The evidence doc (and `reports/2026-10-02-p5-evidence`) now has a lead and summary built on
+    the simulation, a new section "Many drones on one box" with a chart, P1's two-agent
+    comparison, and "Options left for P5": A–C plus a new D (memory that changes over time).
+    **Lean: A** (decode-side energy on P1's agents), with B's finding reported to P1.
+  - The teaching guide has the same updates: §11 status, §13 Gate G2 run early (not met), §14,
+    the two-agent table in §17.1, a new §17.4 with the chart, §18 with four options, and the
+    self-test answers.
+  - The dated reports (task overview, step-wise) carry a note that their tool-calling numbers
+    are from the first 35 runs.
 
 - **Admission/retention simulation (2026-10-03, the open hypothesis):**
   [`reports/2026-10-03-admission-sim/README.md`](reports/2026-10-03-admission-sim/README.md).
   It answers "does a memory controller beat SGLang's default with N drones per box?" with **no**
   (a negative result) and finds that the agent design is the big lever. Headlines in §4 below.
   Sandesh asked for it on Friday night 2026-10-02 as weekend work before Monday's meeting.
-- **WS unreachable since 2026-10-02 ~23:00** (ssh times out, no ping). Sandesh is asking the
-  admin. The simulation needed no GPU; the live check of its best policy waits for the WS.
+- **WS unreachable since 2026-10-02 ~23:00, still down at 2026-10-03 16:50** (ssh times out,
+  no ping). Sandesh is asking the admin. The simulation needed no GPU; the live check of its best policy waits for the WS.
 
 - **Evidence pack (the main output of the night).**
   - Report: [`reports/2026-10-01-workload-opportunity/README.md`](reports/2026-10-01-workload-opportunity/README.md)
@@ -74,9 +85,12 @@ appending history, which git already keeps.
 - **WS: was idle** when last reachable (2026-10-02): runs torn down, GPUs at 15–47 MiB, no tmux.
   - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
   - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
-- **P1 (Thor), checked 2026-10-02 23:03:** the tool-calling sweep had 84 of 108 runs done
-  (60 passed), on instance 3, estimated to finish ~21:30 IST on 2026-10-03. Copy the finished
-  runs (directory copy, read-only) after it ends and refresh P1's numbers.
+- **P1 (Thor), checked 2026-10-03 16:16:** the tool-calling sweep has 104 of 108 runs done (70
+  passed); A16 i3 run 3 and A20 i3 runs 1–3 remain, about 5 h, so it ends ~21:00. The 104 runs
+  are copied to `data/p1_thor_toolcalling/` (directory tar without `server_kv`/`device_samples`,
+  read-only). Nothing else changed on the Thor since 2026-10-01: no Qwen3.8 runs, no new
+  folders. Copy the last 4 runs after it ends and rerun `analysis.p1_runaway`,
+  `analysis.p1_per_task`, `analysis.stepwise_ceiling` and `analysis.admission_sim`.
 - **P1 (Thor), checked 2026-10-01 23:00.**
   - The Gemma Reflexion sweep is complete: 144 runs, 102 pass, 4 partial, 38 fail. On
     2026-10-01 P1 wrote a dataset README for it (`/home/yash/final_sweep/drones_README.md`),
@@ -100,7 +114,7 @@ appending history, which git already keeps.
 | Cost calibration | `jsw/costs/calibrate.py` | Idle power, cold/warm prefill time and energy against length, decode J/token against batch |
 | Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py` | One session model for P1 traces and WS runs; figures; trace-driven policy simulator checked against live runs; Claude-Doc chart modules |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/queue*.sh` | Queues are the record of what ran overnight |
-| Admission/retention simulator (2026-10-03) | `analysis/admission_sim.py`, `analysis/admission_figures.py` | Token-driven, N closed-loop drones, byte budget with per-model state layouts (Gemma SWA window, Qwen3.5 recurrent slots, dense), decode growth and retraction, 12 policies plus an unlimited-memory bound; device models for the Thor (P1's rates, board power, MoE batching) and the WS. Validated against P1's calls and the live WS concurrency runs |
+| Admission/retention simulator (2026-10-03) | `analysis/admission_sim.py`, `analysis/admission_figures.py`, `analysis/p1_runaway.py` (P1's two agents, runaway-cut estimate) | Token-driven, N closed-loop drones, byte budget with per-model state layouts (Gemma SWA window, Qwen3.5 recurrent slots, dense), decode growth and retraction, 12 policies plus an unlimited-memory bound; device models for the Thor (P1's rates, board power, MoE batching) and the WS. Validated against P1's calls and the live WS concurrency runs |
 | Step-wise D-task test (2026-10-02) | `jsw/workloads/delivery_check.py`, `env/launch_qwen35_tp1.sh`, `env/queue_stepwise_d.sh`, `analysis/stepwise_ceiling.py`, `analysis/p1_per_task.py` | Driver flags: `--effort think\|nothink`, `--task-file`, `--world-prompt`, `--runtime-prompt`, `--top-k`. P1's task texts live on the WS in `~/work/tasks/`. K2 is pinned to revision `f846b1e` |
 
 Not built yet: the gateway, policies in a live engine (the simulators stand in for now), a
@@ -123,12 +137,19 @@ Jetson telemetry adapter, and the CLGSCE port.
   time.
 - The tool-calling agent has the same shape (a fresh prompt per attempt, one tool call
   carrying the whole program, then two evaluator calls).
-- **Thinking-cap runaway dominates P1's tool-calling sweep.**
-  - 50 of 176 LLM calls hit the 32,768-token cap. Those calls take 78% of all LLM time
-    (16.9 of 21.6 h at ~27 tok/s decode).
-  - Every one of the 8 failures includes a capped call; P1 labels most of them
-    `malformed_call`.
-  - A6–A9 and A20 runs take 80–110 min, against 7–36 min under Reflexion.
+- **Runaway thinking is where P1's energy goes** (104 tool-calling runs, 2026-10-03;
+  `analysis/p1_runaway.py`, `reports/2026-10-03-admission-sim/p1_agents.json`).
+  - On the 12 CLGSCE tasks, 127 of 571 tool-calling calls hit the 32,768-token cap and take 70%
+    of LLM time (43.0 of 61.1 h); in Reflexion, 46 of 403 calls, 57%. All 173 capped calls
+    ended with finish reason "length", so none produced a usable answer.
+  - 30 of the 34 tool-calling failures include a capped call (23 `malformed_call`, 11
+    `no_convergence`).
+  - Same 12 tasks: tool calling passes 67% at 231 kJ per success; Reflexion 87% at 79 kJ (2.9×).
+    Long advanced tasks (A6–A9, A20): 12 of 42 passed at 87 min median, against 42 of 45 at 10
+    min.
+  - Stopping capped calls at 16K tokens would save ~27% (Reflexion) / 34% (tool calling) of
+    board energy (upper bound from the traces); a fixed 16K cut would also stop 14 / 32 calls
+    that finished on their own.
 - Anomaly: most same-role resumes missed the cache (A 73/116, D/F 105/182), often after a
   32K decode, which is possibly Gemma sliding-window state.
 
@@ -236,16 +257,19 @@ LLM time within 2–3% of 887 Thor calls, energy within −8% to +10% of the liv
    - one live memory-pressure run to anchor the simulator (e.g. 8 sessions, capped pool,
      default vs. half-size paused state, or the FP8 KV cache);
    - one long mission (lawnmower or circles) at N=1, to see whether private state grows.
-3. After P1's sweep ends (~2026-10-03 21:30): copy the finished runs and refresh P1's numbers.
+3. P1 refresh: done for 104 of 108 runs (2026-10-03 16:16); the last 4 after ~21:00.
 4. Sunday: a one-page Monday brief (local Markdown). It covers the decision asked, the
    recommendation, the new negative result and the permissions to ask for. Update the shared
    Claude Doc only if Sandesh asks.
 
-The simulation changes the options:
+The simulation changes the options (as now written in both docs):
 - A retention/admission controller is not a contribution on these workloads.
-- What remains is the decode side (option A's thinking budget and runaway control), the
-  agent-design result (option B's value, which is a P1/benchmark finding), capacity on
-  memory-tight devices, and memory that changes over time (H4, untested).
+- **A** (our lean): decode-side energy on P1's agents: runaway stops, thinking budgets, batching
+  long decodes. **B**: the agent design, reported to P1 as a finding. **C**: standard benchmarks
+  with injected waits. **D** (new): memory that changes over time with co-located models (H4,
+  untested).
+- If A: first find what predicts a runaway early in P1's traces and replay a stop rule's savings
+  and misses; review the reasoning-budget literature.
 
 Waiting on the P1 mentor's answers to the task overview (§9 there) and Sandesh's approach.
 Earlier candidates (report §6–7):

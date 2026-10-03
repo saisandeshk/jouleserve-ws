@@ -1,5 +1,10 @@
 # Does a thinking model keep its steps short? A step-wise agent on P1's delivery tasks
 
+> **Update 2026-10-03.** `stepwise.json` and the figure were regenerated with 104 of the 108
+> runs of P1's tool-calling sweep (median 3,406 output tokens per call, 63% over 1K); the text
+> below quotes the first 35 runs (median 3,802). Many drones per box are simulated in
+> [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md).
+
 **2026-10-02 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 This is the deciding test from the task overview

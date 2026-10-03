@@ -1,0 +1,92 @@
+{
+ "reflexion": {
+  "runs": 108,
+  "passed": 94,
+  "kj_per_run": 68.74388087899449,
+  "kj_per_success": 78.98233122267452,
+  "run_hours": 29.85535440286721,
+  "llm_hours": 27.37897425974473,
+  "calls": 403,
+  "capped_calls": 46,
+  "capped_share_of_llm": 0.5718117112066523,
+  "capped_finish_reasons": {
+   "length": 46
+  },
+  "failed": 14,
+  "failed_with_capped_call": 10,
+  "failure_classes": {
+   "validator_reject": 4,
+   "malformed_call": 10
+  },
+  "long_tasks": {
+   "runs": 45,
+   "passed": 42,
+   "median_min": 10.376982524216874
+  },
+  "cut": {
+   "4096": {
+    "saved_h": 13.661213464521877,
+    "saved_time_share": 0.4575800132926876,
+    "saved_energy_share": 0.47628057243771277,
+    "finished_calls_cut": 87
+   },
+   "8192": {
+    "saved_h": 11.70961154101875,
+    "saved_time_share": 0.3922114399651608,
+    "saved_energy_share": 0.4082404906608966,
+    "finished_calls_cut": 54
+   },
+   "16384": {
+    "saved_h": 7.806407694012501,
+    "saved_time_share": 0.2614742933101072,
+    "saved_energy_share": 0.27216032710726445,
+    "finished_calls_cut": 14
+   }
+  }
+ },
+ "toolcalling": {
+  "runs": 104,
+  "passed": 70,
+  "kj_per_run": 155.4452918130453,
+  "kj_per_success": 230.94729069366724,
+  "run_hours": 63.27397683666366,
+  "llm_hours": 61.10409457886126,
+  "calls": 571,
+  "capped_calls": 127,
+  "capped_share_of_llm": 0.7035217302373425,
+  "capped_finish_reasons": {
+   "length": 127
+  },
+  "failed": 34,
+  "failed_with_capped_call": 30,
+  "failure_classes": {
+   "malformed_call": 23,
+   "no_convergence": 11
+  },
+  "long_tasks": {
+   "runs": 42,
+   "passed": 12,
+   "median_min": 86.9550106472588
+  },
+  "cut": {
+   "4096": {
+    "saved_h": 37.55109558197958,
+    "saved_time_share": 0.593468238592218,
+    "saved_energy_share": 0.6012333903578283,
+    "finished_calls_cut": 99
+   },
+   "8192": {
+    "saved_h": 32.1866533559825,
+    "saved_time_share": 0.5086870616504726,
+    "saved_energy_share": 0.5153429060209958,
+    "finished_calls_cut": 86
+   },
+   "16384": {
+    "saved_h": 21.457768903988335,
+    "saved_time_share": 0.3391247077669817,
+    "saved_energy_share": 0.3435619373473305,
+    "finished_calls_cut": 32
+   }
+  }
+ }
+}

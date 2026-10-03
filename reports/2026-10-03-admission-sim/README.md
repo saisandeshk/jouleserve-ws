@@ -35,7 +35,7 @@ Data: [`sim.json`](sim.json), [`summary.json`](summary.json); figures: [`figures
      by up to 60%. That gap comes from how many sessions' state fits at once.
    - What the policies recover (Thor, Gemma layout):
      - eviction order: ≤ 3% (≤ 6% with exact wake times);
-     - budget-aware admission: ≤ 5%, and up to 36% *worse* on P1's long decodes;
+     - budget-aware admission: ≤ 5%, and up to 52% *worse* on P1's long decodes;
      - concurrency caps: ≤ 0.2%;
      - storing paused state at half size: ≤ 10% (12% with Qwen3.5's recurrent-state layout).
    - A static FP8 KV cache recovers 10–34% at 1–4 GiB: that is configuration, not control.
@@ -52,7 +52,7 @@ Data: [`sim.json`](sim.json), [`summary.json`](summary.json); figures: [`figures
    | Energy per success | 219–499 kJ (D3: no passes) | 22–68 kJ |
    | Median mission time | 19–72 min, 91–97% of it LLM | 9–15 min |
    | Drones per Thor at ≤ 1.5× p95 mission time | 2 | 4–16 |
-   | Energy per success, 1 → 16 drones | 2.9–3.1× lower | 4.7–8.5× lower |
+   | Energy per success, 1 → 16 drones | 3.1–3.2× lower | 4.7–8.5× lower |
 
 **What this means for Monday.**
 - **A retention-and-admission controller on top of SGLang is not a contribution** on these
@@ -61,9 +61,10 @@ Data: [`sim.json`](sim.json), [`summary.json`](summary.json); figures: [`figures
   energy per success, and 2–8× more drones per box. That is a finding about P1's benchmark,
   not a serving controller; the controller adds ≤ 10% on top.
 - **What is left for P5's question:**
-  1. **The decode side (option A's lever).** It is where P1's energy is: thinking-cap runaways
-     took 78% of the LLM time in P1's first 35 tool-calling runs, and P1's agents saturate the
-     Thor.
+  1. **The decode side (option A's lever).** It is where P1's energy is. Calls that hit the
+     32K cap take 57% (Reflexion) and 70% (tool calling, 104 runs) of P1's LLM time on the 12
+     CLGSCE tasks, and stopping them at 16K tokens would save about 27–34% of board energy
+     (upper bound, §5). P1's agents also saturate the Thor.
   2. **Capacity on memory-tight devices.** This means the precision or compression of retained
      state, mostly configuration.
   3. **Things this run could not test** (see "What could still change this").
@@ -83,7 +84,7 @@ With unlimited memory, on Thor costs (`thor_gemma`):
 | Step-wise, K2 high effort | 47.4 | 19.4 | 13.5 | 10.1 | 4 |
 | aerogen's own tasks, K2 low | 39.9 | 12.6 | 8.1 | 5.2 | 8 |
 | P1 Reflexion | 169.9 | 85.1 | 69.1 | 54.5 | 2 |
-| P1 tool calling | 215.3 | 117.2 | 91.4 | 74.0 | 2 |
+| P1 tool calling | 262.3 | 133.7 | 106.5 | 83.0 | 2 |
 
 - **Most of the gain is the box's baseline power** (38.6 W whenever no call runs) spread over
   more drones. Batching adds a little: Gemma's experts make it weak, with 16 requests per step
@@ -100,12 +101,12 @@ every tool wait, with 16 GiB for state:
 
 | Workload | 1 drone | 4 | 8 | 16 |
 | --- | --- | --- | --- | --- |
-| Step-wise, Qwen3.5 thinking | 5.3% | 12.4% | 17.8% | 26.4% |
+| Step-wise, Qwen3.5 thinking | 5.3% | 12.4% | 17.8% | 26.5% |
 | Step-wise, K2 high effort | 7.4% | 16.1% | 21.2% | 28.9% |
 | Step-wise, Qwen3.5 no thinking | 3.9% | 8.6% | 11.5% | 18.8% |
 | aerogen's own tasks, K2 low | 5.3% | 10.3% | 14.7% | 25.1% |
 | P1 Reflexion | 0.1% | 0.8% | 1.3% | 1.3% |
-| P1 tool calling | 0.0% | 0.2% | 0.4% | 0.6% |
+| P1 tool calling | 0.0% | 0.0% | 0.3% | 1.1% |
 
 - **With one drone,** a re-prefill costs only the gap between active and idle power, so
   keeping state is worth a few percent.
@@ -125,18 +126,18 @@ on the Thor with Gemma's layout, at 4 / 8 / 16 drones (x: more than 1% of missio
 | Workload | 1 GiB | 2 GiB | 4 GiB | 8 GiB | 16 GiB |
 | --- | --- | --- | --- | --- | --- |
 | Step-wise, Qwen3.5 thinking | 15 / 35 / 54% | 0 / 10 / 36% | 0 / 0 / 12% | 0 / 0 / 0 | 0 / 0 / 0 |
-| Step-wise, K2 high effort | 27 / 47 / 60% | 0 / 19 / 40% | 0 / 0 / 26% | 0 / 0 / 0 | 0 / 0 / 0 |
-| P1 Reflexion | x | 22 / 37 / 50% | 0 / 13 / 32% | 0 / 0 / 15% | 0 / 0 / 0 |
-| P1 tool calling | 33 / 48 / 58% | 10 / 30 / 43% | 0 / 7 / 26% | 0 / 0 / 6% | 0 / 0 / 0 |
+| Step-wise, K2 high effort | 27 / 47 / 60% | 0 / 20 / 40% | 0 / 0 / 26% | 0 / 0 / 0 | 0 / 0 / 0 |
+| P1 Reflexion | x | 22 / 37 / 50% | 0 / 13 / 32% | 0 / 0 / 16% | 0 / 0 / 0 |
+| P1 tool calling | 37 / 50 / 60% | 6 / 26 / 42% | 0 / 5 / 26% | 0 / 0 / 5% | 0 / 0 / 0 |
 
 How much of that gap each policy recovers (best case anywhere on the Thor with Gemma's layout):
 
 | Policy family | Best gain over the default | Note |
 | --- | --- | --- |
-| Eviction order (value per byte), online | 3.0% | 6.0% with exact wake times; confirms the 2026-10-01 result that an exact-ETA oracle ≈ LRU |
-| Budget-aware admission | 5.3% (step-wise) | P1's agents: up to 36% *worse*. Reserving each running call's expected output under-admits 32K-token decodes, and the default's optimistic admission with cheap retraction wins |
-| Concurrency caps (1, 2, 4, 8) | 0.2% | up to 190% worse when a cap starves the batch |
-| Pinning paused state | none | up to 95% worse: pinned state blocks admission |
+| Eviction order (value per byte), online | 2.9% | 6.0% with exact wake times; confirms the 2026-10-01 result that an exact-ETA oracle ≈ LRU |
+| Budget-aware admission | 5.1% (step-wise) | P1's agents: up to 52% *worse*. Reserving each running call's expected output under-admits 32K-token decodes, and the default's optimistic admission with cheap retraction wins |
+| Concurrency caps (1, 2, 4, 8) | 0.2% | up to 191% worse when a cap starves the batch |
+| Pinning paused state | none | up to 107% worse: pinned state blocks admission |
 | Paused state at half size | 9.9% | only at the edge of pressure (4 GiB, 16 drones); nothing where running calls alone fill memory |
 | FP8 KV cache for everything (configuration) | 10–34% | at 1–4 GiB, step-wise |
 
@@ -144,8 +145,8 @@ How much of that gap each policy recovers (best case anywhere on the Thor with G
 
 - **Other layouts give the same picture.**
   - Hybrid recurrent state (Qwen3.5) and dense KV (K2) on Thor costs: the best online policy
-    beats the best fixed rule by ≤ 5.9% and ≤ 8.5%.
-  - With dense-model batching on the Thor: ≤ 9.8%.
+    beats the best fixed rule by ≤ 5.9% and ≤ 8.4%.
+  - With dense-model batching on the Thor: ≤ 9.7%.
   - On the WS with K2: ≤ 9.5%.
 - **Which budgets are realistic** (rough):
 
@@ -161,7 +162,7 @@ How much of that gap each policy recovers (best case anywhere on the Thor with G
 | --- | --- |
 | LLM time per call, one session, Thor (887 P1 calls) | simulated within 2–3% of measured (pooled) |
 | LLM time per call, one session, WS (K2, 271 calls) | within 0.4–1.3% |
-| Energy per mission, one P1 drone, Thor | +5% (Reflexion), +1% (tool calling) against P1's measured board energy |
+| Energy per mission, one P1 drone, Thor | +5% (Reflexion), +6% (tool calling) against P1's measured board energy |
 | Live WS runs with 2–8 sessions and capped pools, replayed with their own missions | energy per mission −8% to +10%, missions per hour −3% to +7% |
 | Re-prefilled tokens in those runs | 0.35–1.5× of live; about half of live under capped pools |
 
@@ -172,6 +173,31 @@ How much of that gap each policy recovers (best case anywhere on the Thor with G
   0.4 kJ, or 4% of a 10 kJ mission. This does not lift any cell near the bar.
 - **The board-power fit used P1's own runs,** so the one-drone energy check is a consistency
   check, not independent.
+
+### 5. P1's two agents on the same tasks: runaway thinking is the energy sink
+
+Measured on the Thor (Gemma-4-26B-A4B), on the 12 CLGSCE tasks both sweeps share, with P1's
+tool-calling sweep refreshed to 104 of its 108 runs on 2026-10-03 16:16
+(`python3 -m analysis.p1_runaway`, [`p1_agents.json`](p1_agents.json)):
+
+| | Reflexion | Tool calling |
+| --- | --- | --- |
+| Runs, passed | 108, 94 (87%) | 104, 70 (67%) |
+| Board energy per run / per success | 69 / 79 kJ | 155 / 231 kJ |
+| Long advanced tasks (A6–A9, A20): passed, median time | 42 of 45, 10 min | 12 of 42, 87 min |
+| Calls that hit the 32K cap | 46 of 403, 57% of LLM time | 127 of 571, 70% of LLM time |
+| Failed runs that include a capped call | 10 of 14 | 30 of 34 |
+| Had those calls stopped at 16K tokens | 27% less board energy | 34% less board energy |
+
+- **Every capped call ended at the token limit** (finish reason "length"), so none produced a
+  usable answer.
+- **The last row is an upper bound.** It is the decode time those calls spent past 16K
+  tokens, at the board's 71.9 W while a call runs, assuming the rest of each run goes as
+  recorded.
+- **A fixed 16K cut would also stop** 14 (Reflexion) and 32 (tool calling) calls that finished
+  on their own; at 8K it would stop 54 and 86. A useful stop rule has to predict runaways
+  early, which is option A's first question.
+- **No other P1 activity on the Thor since 2026-10-01:** no Qwen3.8 runs, no new folders.
 
 ## What could still change this
 
@@ -205,7 +231,7 @@ finishes a mission, it draws the next one at random from the same pool.
 | Step-wise, K2 high effort | 20 | same | 9.2K |
 | aerogen's own tasks, K2 low effort | 15 | WS, 2026-10-01 | 9.1K |
 | P1 Reflexion | 143 | Thor traces (Gemma-4-26B-A4B) | none modelled |
-| P1 tool calling | 35 | Thor traces, first 35 runs of P1's current sweep | none modelled |
+| P1 tool calling | 104 | Thor traces, 104 of the 108 runs of P1's sweep (refreshed 2026-10-03 16:16) | none modelled |
 
 - Per LLM call the trace gives prompt, cached and output tokens. Between calls it gives the
   tool wait at real time: the step-wise runs were paced 50×, so flight times come from the
@@ -287,6 +313,7 @@ fixed rules.
 ```bash
 python3 -m analysis.admission_sim all     # validation + grid (~20K simulations, ~15 min on 20 cores)
 python3 -m analysis.admission_figures     # figures + summary.json (incl. the paradigm comparison)
+python3 -m analysis.p1_runaway            # P1's two agents and the runaway-cut estimate (p1_agents.json)
 ```
 
 Inputs: `data/ws_runs/` (WS runs and the K2 calibration), `data/p1_thor_drone/`,

@@ -562,12 +562,12 @@
  },
  "P1 tool calling": {
   "label": "P1 tool calling",
-  "calls": 176,
-  "out_median": 3802.0,
+  "calls": 571,
+  "out_median": 3406,
   "out_p90": 32768,
-  "share_out_gt_1k": 0.6306818181818182,
-  "ceiling_thor": 0.0055694124514784685,
-  "ceiling_r8": 0.04485086201566221
+  "share_out_gt_1k": 0.6339754816112084,
+  "ceiling_thor": 0.006429990056609351,
+  "ceiling_r8": 0.051467013156881194
  },
  "e1_low_n1": {
   "label": "aerogen own tasks, K2 low effort",

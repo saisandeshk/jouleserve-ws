@@ -1,5 +1,12 @@
 # P1's drone tasks: what AeroEval is, and which tasks can give P5 an opportunity
 
+> **Update 2026-10-03.** The tool-calling numbers below are from the first 35 runs of P1's
+> sweep. With 104 of 108 runs: 70 passed, capped calls take 70% of LLM time (127 of 571 calls),
+> and 30 of 34 failures include one; the pooled ceiling is still 0.6%. `per_task.json` beside this
+> file is regenerated with the 104 runs. Current numbers and options:
+> [`2026-10-02-p5-evidence`](../2026-10-02-p5-evidence/README.md) and
+> [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md).
+
 **2026-10-01 (late), updated 2026-10-02 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 This answers two questions from the P1 mentor's feedback ("P1's drone set is 12 CLGSCE + 4
