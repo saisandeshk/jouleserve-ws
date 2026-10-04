@@ -10,7 +10,7 @@ things:
    loops, and an online loop stop beats a fixed cut;
 3. it lists what changes in our earlier reports.
 
-P1's traffic results are not covered. We get access to P1's repository on 2026-10-06.
+P1's traffic results are not covered. We get access to P1's repository on Monday 2026-10-05.
 
 Data: [`loops.json`](loops.json); figure: [`figures/loops.png`](figures/loops.png). P1's
 figures below are crops of the deck's figures to their drone rows. They are unpublished, so they

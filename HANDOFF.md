@@ -1,9 +1,10 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-04 ~20:00 IST. Today's work:
+**Last updated:** 2026-10-04 ~23:00 IST. Today's work:
 - reviewed P1's paper-meeting deck of 2026-10-03;
 - found that the runaway calls are repetition loops;
-- updated every doc, local and both Claude Docs, with the drone findings.
+- updated every doc, local and both Claude Docs, with the drone findings;
+- built the P5 reference deck through batch 2 (sections 0–8, v0.3).
 
 The professor meeting is on **Monday 2026-10-05**. Rules, machines, recipes and WS gotchas are in
 [`AGENTS.md`](AGENTS.md). This file holds the state at the time of writing.
@@ -41,7 +42,7 @@ appending history, which git already keeps.
 - **P1's paper meeting (2026-10-03).** P1 presented its results to the professor: the
   EdgeAgentBench deck, `~/Downloads/SIGMETRICS-2027-EdgeAgentBench.pptx`, slides 387–406.
   - P1's repository is `github.com/dream-lab/edge-agent-bench`. Sandesh gets access from the
-    professor on Mon 2026-10-06.
+    professor on Mon 2026-10-05.
   - Until then, do not clone it via anyone's credentials on the Thor (see `AGENTS.md` §4).
 - **New analysis (2026-10-04):**
   [`reports/2026-10-04-drone-runaways/README.md`](reports/2026-10-04-drone-runaways/README.md),
@@ -68,10 +69,15 @@ appending history, which git already keeps.
     1. sections 0–1, front matter and introduction (v0.1);
     2. batch 1, sections 2–6: preliminaries, problem statement, research questions and
        hypotheses (v0.2, 2026-10-04; 34 slides in all);
-    3. batch 2, sections 7–8: related work (recheck the Track B numbers against the papers) and P1;
+    3. batch 2, sections 7–8: related work and P1 (v0.3, 2026-10-04; 59 slides in all). The
+       related-work numbers were checked against the papers on 2026-10-04: all 25 held. Two
+       wordings were dropped: MLPerf Edge Agentic's page names no device (do not say Thor), and
+       Arya & Simmhan report a low memory clock raising latency 370% and energy 72% (not that
+       memory "dominates"). Reasoning-length control (slide `rw-reasoning`) is a placeholder,
+       still unread;
     4. batch 3, sections 9–13 plus the appendix: approach, findings, options, plan, status,
        weekly log.
-  - **Visual check before Sandesh sees a batch (he approved it):** `env/render_slides.py` renders
+  - **Visual check before Sandesh sees a batch (Sandesh approved it):** `env/render_slides.py` renders
     the slide files with the Playwright-cached headless Chromium. It is approximate and flags
     overflow and overlaps.
   - **Slide sources:** the artifact itself. To change a slide, read its file from the artifact, edit it,
@@ -248,7 +254,9 @@ missions).
    - the loop finding and its overlap with P1's early-abort plan;
    - the success-check sensitivity;
    - the permissions to ask for.
-2. Sandesh decides on the repo's visibility, then pushes today's local commit.
+2. Sandesh decides on the repo's visibility, then pushes today's local commits.
+3. Sandesh reviews deck batch 2 (sections 7–8). Batch 3 (sections 9–13 plus the appendix)
+   starts only after that review.
 
 **From Monday:**
 1. Get P1's repository and refresh P1's numbers (the tool-calling sweep runs to 144). Then rerun:

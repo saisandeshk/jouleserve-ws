@@ -635,7 +635,7 @@ calls, as explained above.
 - **The second row** in P1's figures is Orin 64 with Devstral-24B, a tool-calling configuration
   (31% pass) whose traces we do not have yet.
 - **Timeline:** P1's last runs end on Thu 8 October, and their paper is due on Sat 10 October.
-  We get P1's repository on Mon 6 October.
+  We get P1's repository on Mon 5 October.
 
 ## Serving costs and what changes on the edge
 
@@ -747,7 +747,7 @@ retained state.
 
 **Either way:**
 
-1. Get P1's repository on Mon 6 October and refresh P1's numbers. The tool-calling sweep now runs
+1. Get P1's repository on Mon 5 October and refresh P1's numbers. The tool-calling sweep now runs
    to 144 runs, including the AeroEval tasks.
 2. When the WS is reachable again, run one live memory-pressure test to anchor the simulator.
 
