@@ -64,14 +64,18 @@ appending history, which git already keeps.
   https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8 (private until shared).
   - It is the single main reference, updated weekly.
   - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt), small text 24 px (12 pt).
-  - **Built in passes,** with Sandesh's review after each:
-    1. sections 0–1, front matter and introduction (done, v0.1);
-    2. preliminaries;
-    3. problem and research questions;
-    4. related work;
-    5. P1;
-    6. approach and findings;
-    7. options, plan, status, weekly log and appendix.
+  - **Built in batches,** with Sandesh's review after each:
+    1. sections 0–1, front matter and introduction (v0.1);
+    2. batch 1, sections 2–6: preliminaries, problem statement, research questions and
+       hypotheses (v0.2, 2026-10-04; 34 slides in all);
+    3. batch 2, sections 7–8: related work (recheck the Track B numbers against the papers) and P1;
+    4. batch 3, sections 9–13 plus the appendix: approach, findings, options, plan, status,
+       weekly log.
+  - **Visual check before Sandesh sees a batch (he approved it):** `env/render_slides.py` renders
+    the slide files with the Playwright-cached headless Chromium. It is approximate and flags
+    overflow and overlaps.
+  - **Slide sources:** the artifact itself. To change a slide, read its file from the artifact, edit it,
+    and publish only the changed files.
   - **The agreed outline:** 14 sections plus an appendix. Preliminaries are a short refresher tied to our numbers, not basics. Related work goes two papers per slide, with a summary table and a placeholder for reasoning-length control. Traffic gets a placeholder in section 8.
   - **Weekly routine:** a log slide, the at-a-glance slide and the changelog updated in place, and matured results moved into Findings.
 - **Doc links.**
