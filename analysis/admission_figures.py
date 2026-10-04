@@ -57,7 +57,7 @@ def fig_scaling(cells, path):
         ax.set_xlabel("Drones sharing one Thor")
         _style(ax, "y")
     axes[0].legend(fontsize=8, loc="lower left")
-    fig.suptitle("Unlimited state memory, Gemma-4-26B-A4B costs on the Thor (simulated, 12 h per point, 3 seeds)",
+    fig.suptitle("Unlimited state memory, Gemma-4-26B-A4B costs on the Thor (simulated; mean of 5 seeds, 24 h each, 72 h for P1's agents)",
                  x=0.01, ha="left", fontsize=9.5, color=INK2)
     fig.tight_layout()
     fig.savefig(path, dpi=160, bbox_inches="tight")

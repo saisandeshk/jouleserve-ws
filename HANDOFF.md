@@ -1,10 +1,10 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-04 ~23:00 IST. Today's work:
+**Last updated:** 2026-10-05 (early morning IST). Today's work:
 - reviewed P1's paper-meeting deck of 2026-10-03;
 - found that the runaway calls are repetition loops;
 - updated every doc, local and both Claude Docs, with the drone findings;
-- built the P5 reference deck through batch 2 (sections 0–8, v0.3).
+- built the P5 reference deck to v1.0 (all 14 sections plus the appendix, 109 slides).
 
 The professor meeting is on **Monday 2026-10-05**. Rules, machines, recipes and WS gotchas are in
 [`AGENTS.md`](AGENTS.md). This file holds the state at the time of writing.
@@ -76,7 +76,9 @@ appending history, which git already keeps.
        memory "dominates"). Reasoning-length control (slide `rw-reasoning`) is a placeholder,
        still unread;
     4. batch 3, sections 9–13 plus the appendix: approach, findings, options, plan, status,
-       weekly log.
+       the first weekly log (week of 28 Sep) and the appendix (v1.0, 2026-10-05; 109 slides).
+       A final pass checked numbers and wording across all sections. Figures come from the
+       reports (uploaded as artifact assets; `env/render_slides.py` maps their blob ids).
   - **Visual check before Sandesh sees a batch (Sandesh approved it):** `env/render_slides.py` renders
     the slide files with the Playwright-cached headless Chromium. It is approximate and flags
     overflow and overlaps.
@@ -255,8 +257,10 @@ missions).
    - the success-check sensitivity;
    - the permissions to ask for.
 2. Sandesh decides on the repo's visibility, then pushes today's local commits.
-3. Sandesh reviews deck batch 2 (sections 7–8). Batch 3 (sections 9–13 plus the appendix)
-   starts only after that review.
+3. Sandesh reviews deck v1.0 before sharing it (it is private until shared from its Share menu).
+   From then on, update it weekly: a new log slide in section 13, the at-a-glance slide and the
+   changelog; fill the traffic (section 8) and reasoning-length (section 7) placeholders when
+   their inputs arrive.
 
 **From Monday:**
 1. Get P1's repository and refresh P1's numbers (the tool-calling sweep runs to 144). Then rerun:

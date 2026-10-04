@@ -20,7 +20,14 @@ import tempfile
 ROOT, OUT = sys.argv[1], sys.argv[2]
 IDS = sys.argv[3:]
 CHROME = os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell")
-BLOBS = {"/_blob/5782cc27b5482310b0b1af225e4362a7":
+BLOBS = {
+         "/_blob/4b538ccc9cf4f178e3608db80da82808": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-01-workload-opportunity/figures/time_split.png",
+         "/_blob/e0c130ece5d8cd561bf6484b8f214df1": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-02-stepwise-d1/figures/output_per_step_cdf.png",
+         "/_blob/eeecb9f7c5e2e427d730760b9746fd80": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-03-admission-sim/figures/retention_value.png",
+         "/_blob/d2ef785321065d758b947aa06dc0c5ea": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-03-admission-sim/figures/scaling.png",
+         "/_blob/254540e25cc5f82652dfd8de6fd9a2c2": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-03-admission-sim/figures/headroom.png",
+         "/_blob/020a92f9717905d39c7bee8cd3deb7e0": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-04-drone-runaways/figures/loops.png",
+         "/_blob/c1499efb008a4a95584f38761fc1d89d": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-01-workload-opportunity/figures/ws_costs.png","/_blob/5782cc27b5482310b0b1af225e4362a7":
          "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-01-workload-opportunity/figures/timelines.png"}
 os.makedirs(OUT, exist_ok=True)
 deck = json.load(open(os.path.join(ROOT, "project/deck.json")))
