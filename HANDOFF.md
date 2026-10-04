@@ -60,6 +60,20 @@ appending history, which git already keeps.
     glossary rows.
   - **The dated reports** carry update notes pointing to the new report, and the admission-sim
     report §5 has the loop result.
+- **The P5 reference deck (started 2026-10-04, at Sandesh's request)** is a Slides artifact:
+  https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8 (private until shared).
+  - It is the single main reference, updated weekly.
+  - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt), small text 24 px (12 pt).
+  - **Built in passes,** with Sandesh's review after each:
+    1. sections 0–1, front matter and introduction (done, v0.1);
+    2. preliminaries;
+    3. problem and research questions;
+    4. related work;
+    5. P1;
+    6. approach and findings;
+    7. options, plan, status, weekly log and appendix.
+  - **The agreed outline:** 14 sections plus an appendix. Preliminaries are a short refresher tied to our numbers, not basics. Related work goes two papers per slide, with a summary table and a placeholder for reasoning-length control. Traffic gets a placeholder in section 8.
+  - **Weekly routine:** a log slide, the at-a-glance slide and the changelog updated in place, and matured results moved into Findings.
 - **Doc links.**
   - Evidence doc: https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7.
   - Teaching guide: https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (no
