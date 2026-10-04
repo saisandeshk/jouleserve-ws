@@ -3,6 +3,12 @@
 > **Master plan:** [`JOULESERVE_WS_PLAN.md`](JOULESERVE_WS_PLAN.md). This file holds the **Track A working notes and measurements**. Track B (prior work) is in [`../review/systems/README.md`](../review/systems/README.md).
 
 > **2026-10-01:** Track A's question is answered in [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md): P1's agents as implemented have no retained-state opportunity; an accumulating-context drone agent (aerogen) does. Direction decision pending.
+>
+> **Later results** (current state: [`../HANDOFF.md`](../HANDOFF.md)):
+> - **2026-10-03:** a memory controller does not beat SGLang's default
+>   ([`../reports/2026-10-03-admission-sim/README.md`](../reports/2026-10-03-admission-sim/README.md)).
+> - **2026-10-04:** P1's runaway calls are repetition loops, and P1's 3 Oct drone results
+>   reproduce ([`../reports/2026-10-04-drone-runaways/README.md`](../reports/2026-10-04-drone-runaways/README.md)).
 
 Status: **draft v0.4** (2026-09-30). This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.
@@ -151,6 +157,7 @@ different model (D1), and the full metric set. There is no replay and there are 
 - Replace the Jetson `DeviceSampler` (tegrastats/sysfs) with an **NVML sampler** that includes GPU energy counters.
 - Remove the single-run busy check.
 - Add an **N-session concurrent driver**. With temperature 0, top-k 1 and seed 42, identical task instances produce identical trajectories, so concurrent sessions draw **different tasks/instances**.
+  - **Correction, 2026-10-04.** That holds for our WS greedy runs. On P1's Jetsons, 23–25% of drone prompts took more than one path in 3 repeats at temperature 0 (P1's deck).
 
 **Paradigm.**
 - There is **no tool-calling paradigm** for drone on the P1 device: all 126 runs are `reflexion`, and the only switch is `P1_ENABLE_REFLEXION`.
@@ -361,7 +368,7 @@ To do: calibrate a Thor↔WS time-scaling factor from A0.5 plus our WS runs, so 
 |---|---|---|
 | D1 | Model on the WS: a small model from the AA list that is **bf16 and supported** | **decided: `IFM/K2-Horizon-7B`, bf16. Step 1 on a single GPU; TP=2, quantization or FP8 KV for concurrency still under discussion** |
 | D2 | Load model: closed-loop N workers (default) vs open-loop arrivals (later) | default: closed-loop |
-| D3 | Paradigm | **decided: Reflexion** (no tool-calling exists for drone); tool-calling is an A1 lever |
+| D3 | Paradigm | **decided: Reflexion** (no tool-calling exists for drone); tool-calling is an A1 lever. *Superseded:* P1 has run a tool-calling sweep since 2026-10-01, and our step-wise runs use aerogen |
 | D4 | Go/no-go thresholds (`X`, `Y`, `Z`, `W`, `N_edge`) | agree with the professor before E2 |
 | D5 | How to run drone on the WS | **decided: the real closed-loop stack** (§2.3): CLGSCE first, AeroEval second |
 

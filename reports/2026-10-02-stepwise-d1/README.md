@@ -4,6 +4,11 @@
 > runs of P1's tool-calling sweep (median 3,406 output tokens per call, 63% over 1K); the text
 > below quotes the first 35 runs (median 3,802). Many drones per box are simulated in
 > [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md).
+>
+> **Update 2026-10-04.** `stepwise.json` also holds every ceiling at r = 90, P1's marginal energy
+> price of a generated vs a prefilled token on the Thor (the text uses r = 67, a time ratio). At
+> r = 90 the mission ceilings are 16–66% (private state 2–13%) and the post-wait ceilings 48–66%:
+> [`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md).
 
 **2026-10-02 · Sai Sandesh (P5)**, prepared with Claude Code.
 

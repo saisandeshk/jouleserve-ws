@@ -1,0 +1,167 @@
+{
+ "reflexion": {
+  "detector": {
+   "windows_chars": [
+    4000,
+    16000
+   ],
+   "threshold": 0.1,
+   "persist_checks": 3,
+   "step_chars": 1000
+  },
+  "calls": 1030,
+  "capped_calls": 121,
+  "capped_finish_reasons": [
+   "length"
+  ],
+  "capped_flagged": 120,
+  "finished_calls_flagged": 0,
+  "flag_share_median": 0.3498790635410804,
+  "flag_tokens_median": 11176.549662429903,
+  "savings": {
+   "all": {
+    "loop": {
+     "saved_energy_share": 0.43873021410027807,
+     "saved_hours": 26.35495585605452,
+     "finished_calls_stopped": 0,
+     "finished_tokens_lost": 0.0
+    },
+    "cut16k": {
+     "saved_energy_share": 0.33740898048916707,
+     "saved_hours": 20.26848961032776,
+     "finished_calls_stopped": 14,
+     "finished_tokens_lost": 46690.0
+    },
+    "loop_or_cut16k": {
+     "saved_energy_share": 0.44889028010574367,
+     "saved_hours": 26.965281022780886,
+     "finished_calls_stopped": 14,
+     "finished_tokens_lost": 46690.0
+    }
+   },
+   "clgsce12": {
+    "loop": {
+     "saved_energy_share": 0.3145001228731562,
+     "saved_hours": 9.02084519466817,
+     "finished_calls_stopped": 0,
+     "finished_tokens_lost": 0.0
+    },
+    "cut16k": {
+     "saved_energy_share": 0.27216032710726445,
+     "saved_hours": 7.806407694012501,
+     "finished_calls_stopped": 14,
+     "finished_tokens_lost": 46690.0
+    },
+    "loop_or_cut16k": {
+     "saved_energy_share": 0.33505323411503285,
+     "saved_hours": 9.610372578911962,
+     "finished_calls_stopped": 14,
+     "finished_tokens_lost": 46690.0
+    }
+   }
+  },
+  "cross_check": {
+   "runs": 143,
+   "passed": 102,
+   "capped_share_of_llm_time": 0.7065110872411935,
+   "runs_with_capped_call": 56,
+   "pass_rate_with_capped_call": 0.39285714285714285,
+   "pass_rate_without": 0.9195402298850575,
+   "failed_share_of_runs": 0.28671328671328666,
+   "failed_share_of_energy": 0.6271045575020723,
+   "cached_share_of_prompt_tokens": 0.25722210685876296,
+   "prefill_share_of_llm_time": 0.01775227063492133,
+   "runs_with_kv_eviction": 47,
+   "evicting_runs_with_capped_call": 45,
+   "price": {
+    "calls": 1030,
+    "identifiable": true,
+    "j_per_prefilled": 0.037004175331769404,
+    "j_per_cached": 0.08649611373031929,
+    "j_per_generated": 2.7292233771774494,
+    "generated_over_prefilled": 73.75447102139077,
+    "generated_share_of_llm_energy": 0.9744770780778538
+   }
+  }
+ },
+ "toolcalling": {
+  "detector": {
+   "windows_chars": [
+    4000,
+    16000
+   ],
+   "threshold": 0.1,
+   "persist_checks": 3,
+   "step_chars": 1000
+  },
+  "calls": 571,
+  "capped_calls": 143,
+  "capped_finish_reasons": [
+   "length"
+  ],
+  "capped_flagged": 127,
+  "finished_calls_flagged": 0,
+  "flag_share_median": 0.44322714823106907,
+  "flag_tokens_median": 14523.667193235671,
+  "savings": {
+   "all": {
+    "loop": {
+     "saved_energy_share": 0.3559367057958207,
+     "saved_hours": 22.230656970862928,
+     "finished_calls_stopped": 0,
+     "finished_tokens_lost": 0.0
+    },
+    "cut16k": {
+     "saved_energy_share": 0.3435619373473305,
+     "saved_hours": 21.457768903988335,
+     "finished_calls_stopped": 32,
+     "finished_tokens_lost": 113068.0
+    },
+    "loop_or_cut16k": {
+     "saved_energy_share": 0.40025286843332314,
+     "saved_hours": 24.998501348296777,
+     "finished_calls_stopped": 32,
+     "finished_tokens_lost": 113068.0
+    }
+   },
+   "clgsce12": {
+    "loop": {
+     "saved_energy_share": 0.3559367057958207,
+     "saved_hours": 22.230656970862928,
+     "finished_calls_stopped": 0,
+     "finished_tokens_lost": 0.0
+    },
+    "cut16k": {
+     "saved_energy_share": 0.3435619373473305,
+     "saved_hours": 21.457768903988335,
+     "finished_calls_stopped": 32,
+     "finished_tokens_lost": 113068.0
+    },
+    "loop_or_cut16k": {
+     "saved_energy_share": 0.40025286843332314,
+     "saved_hours": 24.998501348296777,
+     "finished_calls_stopped": 32,
+     "finished_tokens_lost": 113068.0
+    }
+   }
+  },
+  "cross_check": {
+   "runs": 104,
+   "passed": 70,
+   "capped_share_of_llm_time": 0.7062977099382464,
+   "runs_with_capped_call": 46,
+   "pass_rate_with_capped_call": 0.34782608695652173,
+   "pass_rate_without": 0.9310344827586207,
+   "failed_share_of_runs": 0.32692307692307687,
+   "failed_share_of_energy": 0.7263024771282286,
+   "cached_share_of_prompt_tokens": 0.2944641824977843,
+   "prefill_share_of_llm_time": 0.007197755195935122,
+   "runs_with_kv_eviction": 44,
+   "evicting_runs_with_capped_call": 40,
+   "price": {
+    "calls": 571,
+    "identifiable": false
+   }
+  }
+ }
+}

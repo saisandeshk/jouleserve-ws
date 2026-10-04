@@ -2,3 +2,6 @@ data/
 runs/
 __pycache__/
 .venv/
+
+# P1 (EdgeAgentBench) deck figures: unpublished, kept out of this public repo
+reports/*/p1_figures/

@@ -1,9 +1,12 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-03 ~16:50 IST, after refreshing P1's tool-calling runs (104 of 108)
-and updating both Claude Docs and their repo copies with the simulation and the options left. The professor meeting is on Monday 2026-10-05. Rules,
-machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This file holds the state at
-the time of writing.
+**Last updated:** 2026-10-04 ~20:00 IST. Today's work:
+- reviewed P1's paper-meeting deck of 2026-10-03;
+- found that the runaway calls are repetition loops;
+- updated every doc, local and both Claude Docs, with the drone findings.
+
+The professor meeting is on **Monday 2026-10-05**. Rules, machines, recipes and WS gotchas are in
+[`AGENTS.md`](AGENTS.md). This file holds the state at the time of writing.
 
 **Update this file at the end of every working session.** Replace stale facts rather than
 appending history, which git already keeps.
@@ -21,285 +24,256 @@ appending history, which git already keeps.
 - **Where the contribution must come from:** generic "keep KV across tool pauses" is taken
   (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout; KAIROS for energy).
   It must come from what the edge changes: unified memory, shared bandwidth and power,
-  thermal state, hybrid models, and 10 s–10 min physical tool waits.
-- **Resources:** the edge devices are with P1 until their deadline. P5 has the 2×A5000
-  workstation, and WS work must pay off later.
+  hybrid models, and 10 s–10 min physical tool waits. P1 measured no thermal throttling at room
+  temperature (below), so thermal state is out unless the hot-enclosure runs show otherwise.
+- **Resources:** the edge devices are with P1 until their deadline (paper due Sat 2026-10-10).
+  P5 has the 2×A5000 workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-03 ~16:50 IST
+## 2. Situation as of 2026-10-04 ~20:00 IST
 
-- **Docs updated 2026-10-03 (Sandesh asked):**
-  - The evidence doc (and `reports/2026-10-02-p5-evidence`) now has a lead and summary built on
-    the simulation, a new section "Many drones on one box" with a chart, P1's two-agent
-    comparison, and "Options left for P5": A–C plus a new D (memory that changes over time).
-    **Lean: A** (decode-side energy on P1's agents), with B's finding reported to P1.
-  - The teaching guide has the same updates: §11 status, §13 Gate G2 run early (not met), §14,
-    the two-agent table in §17.1, a new §17.4 with the chart, §18 with four options, and the
-    self-test answers.
-  - The dated reports (task overview, step-wise) carry a note that their tool-calling numbers
-    are from the first 35 runs.
+- **Not pushed: the GitHub repo is PUBLIC.**
+  - `gh repo view` reports `saisandeshk/jouleserve-ws` as public.
+  - It already holds P1's unpublished drone numbers in `reports/`. Today's work adds more P1
+    material, including descriptions of P1's deck.
+  - Today's commit is local only. Sandesh decides on visibility (private is advisable before
+    P1's double-blind submission on 2026-10-10) and then pushes.
+  - P1's deck figures are kept out of git entirely: `reports/*/p1_figures/` is git-ignored.
+- **P1's paper meeting (2026-10-03).** P1 presented its results to the professor: the
+  EdgeAgentBench deck, `~/Downloads/SIGMETRICS-2027-EdgeAgentBench.pptx`, slides 387–406.
+  - P1's repository is `github.com/dream-lab/edge-agent-bench`. Sandesh gets access from the
+    professor on Mon 2026-10-06.
+  - Until then, do not clone it via anyone's credentials on the Thor (see `AGENTS.md` §4).
+- **New analysis (2026-10-04):**
+  [`reports/2026-10-04-drone-runaways/README.md`](reports/2026-10-04-drone-runaways/README.md),
+  drone only. Headlines in §4.
+- **Docs updated 2026-10-04 (Sandesh asked: "update all the docs, local and artifacts; content
+  on drones only; include useful plots").**
+  - **The evidence Claude Doc** (rev 85) and its repo copy
+    [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md):
+    - new lead and summary items 7–10;
+    - new sections "Runaway calls are repetition loops" and "P1's results of 3 October (drone)",
+      with our loop figure and four of P1's drone figures cropped from the deck;
+    - updated options A/B, decisions (new: offer the loop stop to P1's paper?), next steps and
+      limitations.
+  - **The teaching guide Claude Doc** (rev 56): status, §10 Heat (with P1's thermal figure), §14,
+    §15 P1 status, §17.1 (loops, figures), §17.4, §18, two new self-test questions and three
+    glossary rows.
+  - **The dated reports** carry update notes pointing to the new report, and the admission-sim
+    report §5 has the loop result.
+- **Doc links.**
+  - Evidence doc: https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7.
+  - Teaching guide: https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (no
+    repo copy).
+  - Both are private until Sandesh shares them.
+  - One open comment in the guide (ours) asks how many drones per device to plan for.
+- **WS:** unreachable since 2026-10-02 ~23:00 when last checked (2026-10-03 16:50). It was not
+  checked today, because Sandesh asked not to access the WS or the Thor this session.
+  - P1's schedule shows four "workstation" lanes (Sol/Terra runs from Sun 2026-10-04).
+  - Ask Sandesh whether our WS is one of them.
+- **P1 (Thor), per the deck as of 2026-10-03 15:00.**
+  - thor-1 (the Thor we read from) is booked back to back until about Thu 2026-10-08:
+    1. Gemma tool calling, 99 of 144 runs. The sweep now covers the 4 AeroEval tasks too, so it
+       does not end at 108.
+    2. Then granite tool calling.
+    3. Then Devstral tool calling.
+  - P1's last runs end Thu 2026-10-08 16:40, and the paper is due Sat 2026-10-10 17:30.
+  - Copies from the Thor would land mid-run, so wait for the repository instead.
+  - Our local copy is unchanged: `data/p1_thor_drone/` (143 Reflexion runs) and
+    `data/p1_thor_toolcalling/` (104 runs as of 2026-10-03 16:16).
+- **P1's traffic workload (seen in the deck, not analysed; kept out of the shared docs for now
+  at Sandesh's request).** It matters for P5 because it is the accumulating-context pattern our
+  drone analysis said P1 lacked:
+  - **The agent:** native tool calling, max 20 steps; 56–82% of prompt tokens come from cache.
+  - **Contexts:** up to 104K tokens on the Thor.
+  - **Memory binds at N = 1 on the Orins:** Gemma-26B on an Orin 64 is served with a
+    12,288-token window, and 21% of its runs end by overflow; granite overflows in 11–14%.
+  - **A co-located vision model:** `ask_vlm` runs on the same GPU. It is 5% of tool calls but
+    62% of tool energy, at a median 73 s and 3.7 kJ per call, so tool time is not idle time.
+  - **Capped calls are here too** (8K cap): 42% of LLM time on Thor Gemma.
+  - **What this means for P5:** option D (memory that changes over time, H4) may have a live
+    test case in P1's own workload. Analyse it when the repository arrives.
+- **Sandesh** said (2026-10-01) they have their own idea for the next step; not yet shared.
+- **Earlier in the weekend** (details in the reports):
+  - the admission/retention simulation (2026-10-03, negative);
+  - the step-wise D1–D3 test (2026-10-02);
+  - the task overview for P1's mentor (2026-10-01);
+  - the first evidence pack (2026-10-01).
 
-- **Admission/retention simulation (2026-10-03, the open hypothesis):**
-  [`reports/2026-10-03-admission-sim/README.md`](reports/2026-10-03-admission-sim/README.md).
-  It answers "does a memory controller beat SGLang's default with N drones per box?" with **no**
-  (a negative result) and finds that the agent design is the big lever. Headlines in §4 below.
-  Sandesh asked for it on Friday night 2026-10-02 as weekend work before Monday's meeting.
-- **WS unreachable since 2026-10-02 ~23:00, still down at 2026-10-03 16:50** (ssh times out,
-  no ping). Sandesh is asking the admin. The simulation needed no GPU; the live check of its best policy waits for the WS.
-
-- **Evidence pack (the main output of the night).**
-  - Report: [`reports/2026-10-01-workload-opportunity/README.md`](reports/2026-10-01-workload-opportunity/README.md)
-    (figures, data JSON and methods beside it).
-  - Shareable doc: **"JouleServe (P5): drone workload evidence and options"**, a Claude Doc at
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7.
-    - On 2026-10-02 it was rewritten to merge all three reports, at Sandesh's request: what P5
-      asks, the ceiling formula, P1's workloads, P1's agents, the step-wise evidence, costs,
-      options A/B/C, decisions and next steps.
-    - It has two new charts drawn from rows (the ceiling per agent; output per step) and keeps
-      the policy-simulation chart.
-    - Its repo copy is
-      [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md).
-      Keep the two in sync.
-    - It is private until Sandesh shares it from its Share menu.
-  - It answers the Track A question and recommends a direction. **Nothing has been shown to
-    the professor yet.**
-  - **Teaching guide** (2026-10-02, at Sandesh's request): **"JouleServe (P5): a teaching
-    guide"**, a Claude Doc at https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c.
-    - It is for a new intern who knows LLM basics, and has 20 sections: inference and the KV
-      cache, hybrid state, agents, energy, the retention ceiling, the design space, prior work
-      in depth, Orin/Thor, the controller architecture, evaluation, the roadmap, P1 and its
-      tasks one by one, the evidence, the options, a self-test and a glossary.
-    - It has no repo copy (export it from the doc's menu if needed).
-    - One open comment in it asks Sandesh how many drones per device to plan for.
-- **P1 mentor feedback (2026-10-01)** was that P1's drone set is 12 CLGSCE + 4 AeroEval tasks,
-  and that aerogen is not P1's workload. The answer is
-  [`reports/2026-10-01-p1-task-overview/README.md`](reports/2026-10-01-p1-task-overview/README.md):
-  where AeroEval lives, the full task inventory, per-task numbers, what can be used, and
-  questions for the mentor (its §7).
-- **Step-wise test (2026-10-02, ~00:05–01:32):**
-  [`reports/2026-10-02-stepwise-d1/README.md`](reports/2026-10-02-stepwise-d1/README.md).
-  It is the deciding test for option B in the task overview (§6–7). Sandesh takes both reports
-  to the P1 mentor on the morning of 2026-10-02.
-- **Sandesh** said (2026-10-01) that they have their own idea of how to approach the next
-  step and will share it. The report's options and decisions (§6–7) are input to that
-  discussion, not a plan.
-- **WS: was idle** when last reachable (2026-10-02): runs torn down, GPUs at 15–47 MiB, no tmux.
-  - Runs are in `~/work/runs/`, copied to local `data/ws_runs/` (git-ignored).
-  - The aerogen private copy is at `~/work/aeroeval/` (see `AGENTS.md` §6b).
-- **P1 (Thor), checked 2026-10-03 16:16:** the tool-calling sweep has 104 of 108 runs done (70
-  passed); A16 i3 run 3 and A20 i3 runs 1–3 remain, about 5 h, so it ends ~21:00. The 104 runs
-  are copied to `data/p1_thor_toolcalling/` (directory tar without `server_kv`/`device_samples`,
-  read-only). Nothing else changed on the Thor since 2026-10-01: no Qwen3.8 runs, no new
-  folders. Copy the last 4 runs after it ends and rerun `analysis.p1_runaway`,
-  `analysis.p1_per_task`, `analysis.stepwise_ceiling` and `analysis.admission_sim`.
-- **P1 (Thor), checked 2026-10-01 23:00.**
-  - The Gemma Reflexion sweep is complete: 144 runs, 102 pass, 4 partial, 38 fail. On
-    2026-10-01 P1 wrote a dataset README for it (`/home/yash/final_sweep/drones_README.md`),
-    which looks like release packaging.
-  - A **tool-calling CLGSCE sweep** has been running since 2026-10-01 00:17
-    (`/home/yash/final_toolcalling_thor79/`). It covers 12 CLGSCE tasks × 3 instances × 3
-    runs = 108 runs. At 23:00, 35 were done (all instance 1) and 27 had passed. About 46 h
-    remain, so the Thor is busy until about the night of 2026-10-03. All 35 runs were copied
-    to `data/p1_thor_toolcalling/` at 23:10, without `server_kv` or `device_samples`.
-  - Qwen3.8: 144 run folders are laid out, but there are no runs. Predictor: not started.
-    The Thor is live, so follow the busy-check rules.
-- **Repo:** tonight's harness, analysis and report are committed and pushed. The WS clone is
-  pulled.
-
-## 3. What was built overnight (JouleServe-WS pieces)
+## 3. What is built (JouleServe-WS pieces)
 
 | Piece | Where | Notes |
 |---|---|---|
-| Telemetry samplers | `jsw/telemetry/samplers.py` | NVML at 10 Hz (power, **energy counter**, clocks, throttle) and SGLang `/metrics` at 2 Hz (incl. `kv_used_tokens`, `kv_evictable_tokens`, `evicted_tokens_total`, queue) |
-| aerogen driver | `jsw/workloads/aerogen_driver.py` (+ `aerogen_peek.py`) | Runs mayankarya's agent unmodified, patching the client and MCP call at runtime. Logs per LLM call and per tool call. N closed-loop session slots, manifest per run |
-| Cost calibration | `jsw/costs/calibrate.py` | Idle power, cold/warm prefill time and energy against length, decode J/token against batch |
-| Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py` | One session model for P1 traces and WS runs; figures; trace-driven policy simulator checked against live runs; Claude-Doc chart modules |
-| Launch / queues | `env/launch_k2_tp1.sh`, `env/queue*.sh` | Queues are the record of what ran overnight |
-| Admission/retention simulator (2026-10-03) | `analysis/admission_sim.py`, `analysis/admission_figures.py`, `analysis/p1_runaway.py` (P1's two agents, runaway-cut estimate) | Token-driven, N closed-loop drones, byte budget with per-model state layouts (Gemma SWA window, Qwen3.5 recurrent slots, dense), decode growth and retraction, 12 policies plus an unlimited-memory bound; device models for the Thor (P1's rates, board power, MoE batching) and the WS. Validated against P1's calls and the live WS concurrency runs |
-| Step-wise D-task test (2026-10-02) | `jsw/workloads/delivery_check.py`, `env/launch_qwen35_tp1.sh`, `env/queue_stepwise_d.sh`, `analysis/stepwise_ceiling.py`, `analysis/p1_per_task.py` | Driver flags: `--effort think\|nothink`, `--task-file`, `--world-prompt`, `--runtime-prompt`, `--top-k`. P1's task texts live on the WS in `~/work/tasks/`. K2 is pinned to revision `f846b1e` |
+| Telemetry samplers | `jsw/telemetry/samplers.py` | NVML at 10 Hz (power, **energy counter**, clocks, throttle) and SGLang `/metrics` at 2 Hz |
+| aerogen driver | `jsw/workloads/aerogen_driver.py` (+ `aerogen_peek.py`) | Runs mayankarya's agent unmodified (runtime patches), N closed-loop session slots, manifest per run. Flags for P1's tasks: `--effort think\|nothink`, `--task-file`, `--world-prompt`, `--runtime-prompt`, `--top-k` |
+| Delivery checker | `jsw/workloads/delivery_check.py` | Strict check of P1's D1–D3 over a sim trace (order, descent + 10 s hold, return, no flight through a building) |
+| Cost calibration | `jsw/costs/calibrate.py` | Idle power, cold/warm prefill, decode J/token against batch |
+| Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py`, `p1_per_task.py`, `stepwise_ceiling.py` | One session model for P1 traces and WS runs; ceilings (`stepwise.json` also holds r = 90 ceilings since 2026-10-04) |
+| Admission/retention simulator | `analysis/admission_sim.py`, `admission_figures.py` | N drones per box, per-model state layouts, 12 policies + unlimited memory; Thor and WS device models. `summary.json` holds the paradigm comparison under both success checks (2026-10-04) |
+| P1 runaway analysis | `analysis/p1_runaway.py`, **`analysis/p1_loops.py`** (2026-10-04) | Two-agent comparison and fixed-cut savings; online loop detector replay, savings vs fixed cuts, cross-check of P1's drone numbers, eviction overlap |
+| Launch / queues | `env/launch_k2_tp1.sh`, `env/launch_qwen35_tp1.sh`, `env/queue*.sh` | K2 pinned to revision `f846b1e` |
 
-Not built yet: the gateway, policies in a live engine (the simulators stand in for now), a
-Jetson telemetry adapter, and the CLGSCE port.
+Not built: the gateway, live policies, a Jetson telemetry adapter, the CLGSCE port. If the
+negative result stands, the gateway and policy milestones (master plan M3–M5) should not be
+built as planned; rewrite them after the direction decision.
 
-## 4. What we know (details, figures and caveats in the report)
+## 4. What we know (details, figures and caveats in the reports)
 
-**P1's agents create no retained-state opportunity** (Thor traces, Gemma-4-26B-A4B).
-- Reflexion: 143 runs; tool-calling: 35 runs (instance 1, as of 2026-10-01 23:00).
-- **Pooled over all calls**, the ceiling P/(P+r·O) at the Thor's r ≈ 67 is 2.1% (Reflexion)
-  and 0.6% (tool calling).
-- **Per task**, the prefill-share bound is 0.3–14%. It exceeds 4% only on the 1–3 min basic
-  tasks, and it is 0.3–3.2% on every task longer than 10 min.
-- **Observed savings** are ≤0.9% per task class, and 2.1% on one task (B37).
-- **Batching does not change this** (simulated 2026-10-03): with 1–16 P1 drones on a Thor,
-  keeping state is worth 0–1.3% of energy per success (≤ 1.6% with dense-model batching), so
-  the earlier "~15% at r ≈ 8" estimate does not hold. P1's agents keep the Thor 94–98% busy
-  with one drone.
-- Prompts are rebuilt on every call (0.4–31% from cache), and decode is 90–99% of LLM
-  time.
-- The tool-calling agent has the same shape (a fresh prompt per attempt, one tool call
-  carrying the whole program, then two evaluator calls).
-- **Runaway thinking is where P1's energy goes** (104 tool-calling runs, 2026-10-03;
-  `analysis/p1_runaway.py`, `reports/2026-10-03-admission-sim/p1_agents.json`).
-  - On the 12 CLGSCE tasks, 127 of 571 tool-calling calls hit the 32,768-token cap and take 70%
-    of LLM time (43.0 of 61.1 h); in Reflexion, 46 of 403 calls, 57%. All 173 capped calls
-    ended with finish reason "length", so none produced a usable answer.
-  - 30 of the 34 tool-calling failures include a capped call (23 `malformed_call`, 11
-    `no_convergence`).
-  - Same 12 tasks: tool calling passes 67% at 231 kJ per success; Reflexion 87% at 79 kJ (2.9×).
-    Long advanced tasks (A6–A9, A20): 12 of 42 passed at 87 min median, against 42 of 45 at 10
-    min.
-  - Stopping capped calls at 16K tokens would save ~27% (Reflexion) / 34% (tool calling) of
-    board energy (upper bound from the traces); a fixed 16K cut would also stop 14 / 32 calls
-    that finished on their own.
-- Anomaly: most same-role resumes missed the cache (A 73/116, D/F 105/182), often after a
-  32K decode, which is possibly Gemma sliding-window state.
+**P1's drone agents leave no retained-state opportunity** (Thor traces, Gemma-4-26B-A4B; P1's
+own deck agrees).
+- **Pooled ceiling** P/(P+r·O) at the Thor's r ≈ 67:
+  - 2.1% (Reflexion, 143 runs) and 0.6% (tool calling, 104 runs);
+  - 1.6% and 0.5% at P1's energy price ratio of 90.
+- **Per task:** 0.3–14%, and 0.3–3.2% on every task longer than 10 min.
+- **Batching does not change it:** 0–1.3% in simulation with 1–16 drones.
+- **Prompts are rebuilt every call;** decode is 90–99% of LLM time, and generated tokens carry
+  97% of LLM energy (P1's fit and ours).
 
-**AeroEval and aerogen** (details in the task overview report).
-- The original AeroEval has 5 missions. P1 wrote 6 variants (2026-09-04) and kept 4 (D1–D3,
-  F1). The dropped ones are the large-area and perception missions (est. 15–25 min flights).
-- P1's AeroEval runs rarely fly: D1 flew 8 times in 9 runs, and F1 never, because the LLM code
-  validator rejected first. Gazebo runs at a real-time factor of 10.
-- **The cause is the paradigm, not the task size.** All of P1's agents (Reflexion, tool
-  calling, the early ReAct) synthesize whole programs with fresh prompts.
-- aerogen_mcp is mayankarya's step-wise tool-calling rewrite of AeroGen. It shares AeroEval's
-  world prompts, not P1's tasks or agent. Our aerogen numbers characterize that paradigm.
+**Runaway thinking is where P1's energy goes, and every runaway is a repetition loop**
+(2026-10-04, `analysis/p1_loops.py`).
+- **Capped calls** take 57% (Reflexion) and 70% (tool calling) of LLM time on the 12 CLGSCE
+  tasks, and 71% over Reflexion's 16 tasks.
+- **They are loops.** 120 of the 121 capped Reflexion calls and all 127 tool-calling calls capped
+  at 32K end in repeating text. Their most repetitive 16K characters compress to 1–9%, against
+  14–29% for calls that finished. No finished call (0 of 1,337) is flagged.
+- **An online loop stop** fires at a median of 35% (Reflexion) and 44% (tool calling) into the
+  call, and saves (upper bound, board energy):
+  - 44% over Reflexion's 16 tasks;
+  - 31% over Reflexion's 12 CLGSCE tasks;
+  - 36% for tool calling;
+  - stopping 0 finished calls in every case.
 
-**A step-wise agent on P1's own delivery tasks keeps its steps short** (WS, 2026-10-02).
-- **Setup:** aerogen's loop with P1's D1–D3 texts and world files; Qwen3.5-9B thinking on/off,
-  greedy and sampled; K2 low/high; 108 missions.
-- **Steps:** after a tool result the model writes a median of 55–99 tokens (p90 ≤ 394).
-  Thinking concentrates in the first, planning call: a median of 545–5,147 tokens, and one
-  greedy runaway to 24K.
-- **Ceiling** at the Thor's r ≈ 67: 56–72% of post-wait LLM time, and 20–72% of mission LLM
-  time.
-- **Private state** is only 3–16% of mission LLM time; the rest is the shared prompt.
-- **Missions:** 72% deliver everything, but only 27% pass the strict check, because the sim has
-  no buildings and the model flies through them.
-- **Caveats:** the models are proxies for Gemma, the waits are paced at 50×, and N ≤ 2.
+  A fixed 16K cut saves 34% / 27% / 34% and stops 14 / 14 / 32 finished calls.
+- **The likely cause is greedy decoding:** P1 runs everything at temperature 0. On the WS, Qwen3.5
+  ran away only under greedy decoding. Gemma under sampling is not measured.
+- **Two-agent comparison** (same 12 tasks): tool calling passes 67% at 231 kJ per success, and
+  Reflexion 87% at 79 kJ (2.9×).
+- **P1's KV-cache evictions are a side effect of the loops.**
+  - P1 reports evictions in 33% of drone runs at one request in flight. 45 of those 47
+    Reflexion runs (and 40 of 44 tool-calling ones) contain a capped call, which overflows P1's
+    80K-token pool cap.
+  - This explains our 2026-10-01 same-role cache-miss anomaly, which costs 0.3–1.1%.
+- **Overlap:** P1's paper plans an early-abort policy (kill runs predicted to fail at iteration
+  2) as its systems contribution. Option A overlaps it.
 
-**aerogen has it** (WS, K2-Horizon-7B, real-time flight pacing, random anti-cache prompt
-prefix removed).
-- Low effort, 15 missions: 88% of time is waiting on flights, 93% of prompt tokens come from
-  cache, and keeping state saves 33% of LLM time. **12% of that is private state**; the rest
-  is the 9.1K-token system prompt that all sessions share.
-- Medium and high effort: 2.3–2.5× the energy per mission. Their contexts hit the one-GPU
-  pool, so their quality can't be judged here.
+**P1's deck, drone side (2026-10-03; reproduced from our copy where marked).**
+- **Reproduced from our copy:**
+  - 71% pass;
+  - 71% of LLM time in capped calls;
+  - pass rate 39% with a capped call against 92% without;
+  - failed runs: 29% of runs, using 63% of the energy;
+  - 26% of prompt tokens cached, and prefill 1.8% of LLM time;
+  - a generated token costs 74× a prefilled one in our regression, against P1's 75× average
+    and 90× marginal.
+- **Quoted from the deck:**
+  - **No thermal throttling** at room temperature in 392 h: the hottest drone reading was 77 °C
+    on the Thor, and no clock fell below 98% of its pinned value.
+  - **Temperature 0 is not deterministic on Jetson:** 23–25% of drone prompts took more than one
+    path in 3 repeats.
+  - **Devstral-24B tool calling on Orin 64** passes 31%, with 0 cached tokens reported; we have
+    no traces for it.
+  - **P1 also has a replay-based cost model,** close in method to our admission simulator.
 
-**Concurrency** (live, low effort, one run per configuration).
-- Energy per passed mission: 27.8 kJ at N=1 (GPU1) and **12.6 kJ at N=8** (GPU0), with
-  5.8× the throughput.
-- N=2 and N=4 drew long missions, some of which outgrew the pool, so live per-run energy
-  swings with trajectories (N=2: 40.0 kJ per passed mission). The fixed-mission simulation
-  shows 2.5–3.5× from N=1 to N=16.
-- On the full pool, the shared prompt keeps pressure low.
-- With the pool capped at 16.4K: queueing and 20.5K re-prefilled tokens per mission.
-  Missions whose context exceeds the pool fail at any N.
+**AeroEval and aerogen** (task overview report).
+- P1 kept 4 of 9 AeroEval-family missions (D1–D3, F1), the small ones.
+- P1's AeroEval runs rarely fly: the LLM validator rejects first.
+- aerogen is mayankarya's step-wise rewrite; it is not P1's workload.
 
-**Simulator** (`analysis/headroom_sim.py`, run via `analysis/sim_validate.py`).
-- Memory model: within 7–25% of live re-prefill on same-trajectory replays (N=2 and N=4
-  runs).
-- Energy model: −23% to +38%, so trends only.
-- Policy results (10–30 W between calls):
-  - drop-at-wait costs +6–11% on the full pool;
-  - pinning everything stalls missions;
-  - **an exact-ETA eviction oracle ≈ LRU, so eviction order shows no headroom.**
-- Superseded for the admission question by the 2026-10-03 simulator (below).
+**A step-wise agent on P1's delivery tasks keeps its steps short** (WS, 2026-10-02, 108
+missions).
+- **Steps:** median 55–99 output tokens after a tool result; thinking concentrates in the
+  planning call.
+- **Ceiling at r = 67:** 56–72% of post-wait LLM time and 20–72% of mission LLM time; private
+  state 3–16%. At r = 90: 48–66%, 16–66% and 2–13%.
+- **Missions:** 72% deliver everything, but only 27% pass the strict check (no buildings in the
+  sim).
 
-**A memory controller does not beat SGLang's default** (simulated, 2026-10-03; validated:
-LLM time within 2–3% of 887 Thor calls, energy within −8% to +10% of the live WS runs).
-- 1–16 drones per box, 6 workloads, 4 state layouts, 1–32 GiB, 12 policies plus unlimited memory.
-- **Results:**
-  - No online policy beats the best fixed rule by more than 9.9% in any of 455 cells, so the
-    suggested 15% bar is not met.
-  - Eviction order ≤ 3% (6% with exact wake times).
-  - Budget-aware admission ≤ 5%, and up to 36% worse on P1's long decodes.
-  - Concurrency caps ≤ 0.2%.
-  - Half-size paused state ≤ 10%.
-- **Keeping state is worth 4–7% at 1 drone and 19–29% at 16 for step-wise agents**, but the
-  radix cache already keeps it. With ≥ 8 GiB for state on the Thor, the default equals
-  unlimited memory up to 16 step-wise drones.
-- **Under 1–4 GiB the default loses up to 60% to unlimited memory,** but that is capacity, not
-  decisions. An FP8 KV cache, which is configuration, recovers 10–34%.
-- **The agent design is the big lever** (Thor costs):
-  - On P1's D1–D3, P1's Reflexion uses 219–499 kJ per success (measured), against 22–68 kJ
-    for the step-wise agent (projected).
-  - A Thor serves 4–16 step-wise drones within 1.5× p95 mission time, but only 2 of P1's.
-  - Energy per success falls 4.7–8.5× from 1 to 16 step-wise drones.
-- **Not tested:** long missions, memory that changes over time (co-located models, H4),
-  Gemma's own step-wise token counts, mixed agents, DVFS.
+**A memory controller does not beat SGLang's default** (simulated 2026-10-03, 1–16 drones).
+- **Policies:** no online policy beats the best fixed rule by more than 9.9% in any of 455 cells.
+- **Keeping state:** worth 19–29% at 16 step-wise drones, but the radix cache already keeps it.
+- **Under tight memory** the loss is capacity: an FP8 KV cache (configuration) recovers 10–34%.
+- **Agent design** (Thor costs, P1's D1–D3):
+  - **Energy per success:** P1's Reflexion uses 219–499 kJ (measured), against 22–68 kJ for the
+    step-wise agent (projected). That is 5–13× counting delivered-and-returned missions, and
+    **0.9–9.6× under the strict check**; the truth is probably in between until a
+    building-aware sim exists.
+  - **Drones per Thor:** 4–16 step-wise drones, against 2 of P1's.
+
+**aerogen and concurrency** (WS, 2026-10-01).
+- **Kept state:** saves 33% of LLM time on aerogen's own tasks (12% private).
+- **Concurrency:** 8 sessions per GPU used 2.2× less energy per passed mission than 1.
 
 **WS costs** (K2, one A5000).
-- Prefill 4,106 tokens/s at ~0.05 J/token.
-- Decode 5.36 J/token at batch 1 and 0.38 J at batch 16, at a flat ~205 W.
-- Idle 10–20 W; 20–32 W between calls under concurrency.
+- **Prefill:** 4,106 tokens/s at ~0.05 J/token.
+- **Decode:** 5.36 J/token at batch 1 and 0.38 J at batch 16.
+- **Idle:** 10–20 W.
 
-**Track B** synthesis (F1–F10, baselines, H1–H5) is unchanged: `review/systems/README.md`.
+**Track B** synthesis is unchanged (`review/systems/README.md`), apart from a thermal note.
 
 ## 5. Still-valid notes from the 2026-09-30 audit
 
-- **The CLGSCE port** (needed only if P1's agents run on the WS) is mostly done in legacy.
-  The x86 sim binary matches P1's source. Left to do:
+- **The CLGSCE port** (needed only if P1's agents run on the WS) is mostly done in legacy. Left
+  to do:
   - re-copy 2 changed files, `advanced.txt` and P1's harness;
   - patch the hard-coded RPC port 41451;
   - replace P1's `pkill -x thor_headless` reset.
 - **P1-style sessions (40–55K tokens) do not fit a one-GPU pool.** They need tp2, a lower
   `max_tokens`, or FP8 KV.
-- **P1's AeroEval agent, task sets and Reflexion harness** were copied read-only to
-  `data/p1_aeroeval_src/` on 2026-10-01.
-- **The local P1 trace copy has everything except the `server_kv.jsonl` time series.** D3/F1
-  and the tool-calling runs were copied on 2026-10-01.
+- **P1's AeroEval agent, task sets and Reflexion harness** are in `data/p1_aeroeval_src/`
+  (read-only copies, 2026-10-01).
 
 ## 6. Next steps
 
-**Weekend plan, agreed 2026-10-02:**
-1. Simulation: done (`reports/2026-10-03-admission-sim`).
-2. When the WS is back:
+**Before Monday's meeting (2026-10-05):**
+1. A one-page brief, if Sandesh wants it (local Markdown). It would cover:
+   - the decision asked;
+   - the negative memory-controller result;
+   - the loop finding and its overlap with P1's early-abort plan;
+   - the success-check sensitivity;
+   - the permissions to ask for.
+2. Sandesh decides on the repo's visibility, then pushes today's local commit.
+
+**From Monday:**
+1. Get P1's repository and refresh P1's numbers (the tool-calling sweep runs to 144). Then rerun:
+   - `analysis.p1_runaway`, `analysis.p1_loops` and `analysis.p1_per_task`;
+   - `analysis.stepwise_ceiling`, `analysis.admission_sim` and `analysis.admission_figures`.
+2. Analyse P1's traffic traces with the same tools:
+   - ceilings and cache value;
+   - whether the 8K-capped calls are loops too;
+   - why the Orin 64 window is 12,288 tokens;
+   - what `ask_vlm` does to memory and GPU time.
+
+   This may revive option D on P1's own workload.
+3. **If A:**
+   - test whether sampling removes the loops on Gemma (a device, or a quantized Gemma on the WS);
+   - agree with P1 how the loop stop relates to their early-abort policy;
+   - review the reasoning-budget and early-exit literature.
+4. When the WS is back:
    - Qwen3.5 energy calibration;
-   - one live memory-pressure run to anchor the simulator (e.g. 8 sessions, capped pool,
-     default vs. half-size paused state, or the FP8 KV cache);
-   - one long mission (lawnmower or circles) at N=1, to see whether private state grows.
-3. P1 refresh: done for 104 of 108 runs (2026-10-03 16:16); the last 4 after ~21:00.
-4. Sunday: a one-page Monday brief (local Markdown). It covers the decision asked, the
-   recommendation, the new negative result and the permissions to ask for. Update the shared
-   Claude Doc only if Sandesh asks.
-
-The simulation changes the options (as now written in both docs):
-- A retention/admission controller is not a contribution on these workloads.
-- **A** (our lean): decode-side energy on P1's agents: runaway stops, thinking budgets, batching
-  long decodes. **B**: the agent design, reported to P1 as a finding. **C**: standard benchmarks
-  with injected waits. **D** (new): memory that changes over time with co-located models (H4,
-  untested).
-- If A: first find what predicts a runaway early in P1's traces and replay a stop rule's savings
-  and misses; review the reasoning-budget literature.
-
-Waiting on the P1 mentor's answers to the task overview (§9 there) and Sandesh's approach.
-Earlier candidates (report §6–7):
-1. Take the merged doc to the professor and get the direction decision. The options are A,
-   B and C as defined in the merged doc; the letters changed from the 2026-10-01 report,
-   whose A is now B, whose C is now A, and whose A + τ² is folded into C.
-2. Ask mayankarya about using and extending `aerogen_mcp`.
-3. The open admission hypothesis was tested in simulation on 2026-10-03 and came out
-   negative; a gateway with admission policies is not worth building for these workloads
-   unless the professor re-scopes (e.g. memory that changes over time, H4).
+   - one live memory-pressure run to anchor the simulator;
+   - one long mission (lawnmower or circles).
+5. Rewrite the master plan's M3–M5 for the chosen direction, and record it as D12.
 
 ## 7. Open questions for Sandesh
 
 1. Their plan for the next step (they said they have one).
-2. The P1 mentor's answers to the task overview's §7: which 8 AeroEval tasks; whether a
-   step-wise paradigm is in P1's scope; whether P5 may run P1's AeroEval tasks with a
-   step-wise (aerogen-based) agent; drones per edge box.
-3. Direction and scope decisions: report §7.
-4. Go/no-go thresholds (D4) and an edge-plausible `N_edge` (drones per ground-station box).
-5. Traffic workload: is mayankarya's DeepStream camera/traffic agent P1's traffic workload?
-6. Timeline: P1's deadline, when the devices return, ISP milestones. Is the WS exclusively
-   ours?
+2. **Should we offer the loop stop to P1's paper before 2026-10-10, or keep it for P5?**
+3. **The repo's visibility:** make it private before pushing?
+4. Is our WS one of P1's four "workstation" lanes in the deck schedule? Is it back up?
+5. The P1 mentor's answers to the task overview's §9:
+   - which 8 AeroEval tasks;
+   - whether a step-wise paradigm is in P1's scope;
+   - whether P5 may run P1's AeroEval tasks with a step-wise agent;
+   - drones per edge box.
+6. Direction and scope (A–D), the go/no-go thresholds (D4), and `N_edge`.
+7. Timeline: when the devices return to P5 after 2026-10-10, and the ISP milestones.
 
 ## 8. Resume checklist for a new session
 
 1. Read `AGENTS.md`, then this file.
-2. `git status`, `git log --oneline -5`.
-3. WS: `nvidia-smi; tmux ls; ls ~/work/runs`.
-4. Re-run the analysis if runs changed:
-   - `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`
-   - `python3 -m analysis.report_figures && python3 -m analysis.sim_validate`
-5. Thor, read-only and busy-check safe: `tail -3 /home/yash/final_sweep/*/sweep.log` and
-   `ls /home/yash/final_toolcalling_thor79/gemma-4-26B-A4B-it-toolcalling`.
+2. `git status`, `git log --oneline -5`. Before any `git push`, check the visibility:
+   `gh repo view saisandeshk/jouleserve-ws --json visibility`.
+3. WS, if reachable: `nvidia-smi; tmux ls; ls ~/work/runs`.
+4. Re-run the analysis if runs changed (§6). WS runs:
+   `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`.
+5. Thor: read-only and busy-check safe. P1 is in its final week, so prefer the repository to
+   copies.

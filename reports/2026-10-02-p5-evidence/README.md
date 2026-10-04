@@ -1,6 +1,6 @@
 # JouleServe (P5): drone workload evidence and options
 
-**2026-10-03 · Sai Sandesh (P5)**, prepared with Claude Code.
+**2026-10-04 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 This is the repo copy of the Claude Doc
 [JouleServe (P5): drone workload evidence and options](https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7),
@@ -13,6 +13,11 @@ which is private until Sandesh shares it.
 - It was fact-checked against the sources on 2026-10-02, and updated on 2026-10-03 with the
   many-drones simulation and P1's refreshed tool-calling sweep
   ([`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md)).
+- It was updated on 2026-10-04 with the runaway-loop analysis and P1's drone results of
+  3 October ([`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md)).
+- P1's figures are unpublished, so they are kept out of this public repository: they live in the
+  git-ignored `../2026-10-04-drone-runaways/p1_figures/` and show only in a local checkout that
+  has them.
 
 P1's drone agents, as built today, leave an edge serving system almost no retained state to
 manage: keeping it could save at most 2.1% of their LLM time. A step-wise agent on P1's own
@@ -20,10 +25,12 @@ delivery tasks does create state worth keeping. But a simulation of 1–16 drone
 (2026-10-03) shows that SGLang's default already keeps it: no memory policy beats the default by
 more than about 10% of energy per successful mission.
 
-The large levers are elsewhere. The agent design changes energy per success 5–13× on P1's
-delivery tasks, and runaway thinking takes 57–70% of P1's LLM time. We now lean towards option
-A, decode-side energy on P1's agents, with option B's finding reported to P1. The professor and
-P1's mentor make that call.
+The large levers are elsewhere. Runaway thinking takes 57–70% of P1's LLM time, and every
+runaway call is a repetition loop that an online stop could cut without touching a call that
+finishes. The agent design changes energy per success by about 1–13× on P1's delivery tasks,
+depending on how success is checked. We lean towards option A, decode-side energy on P1's agents,
+coordinated with P1, whose own plan includes stopping hopeless runs early. The professor and P1's
+mentor make that call.
 
 ## Summary
 
@@ -57,13 +64,26 @@ P1's mentor make that call.
      of energy per successful mission, short of the 15% bar.
    - Keeping state is worth 19–29% at 16 step-wise drones, but the radix cache already keeps it.
    - Under tight memory the loss is capacity, which no policy recovers.
-7. **The agent design is the big lever.** On P1's delivery tasks a step-wise agent uses 5–13×
-   less energy per success than P1's Reflexion agent, and one Thor serves 4–16 step-wise drones
-   instead of 2.
+7. **The agent design is the big lever.**
+   - On P1's delivery tasks a step-wise agent uses 5–13× less energy per success than P1's
+     Reflexion agent, counting a mission as a success if it delivered and returned.
+   - Under the strict check, which also fails flights through buildings, it is about 1–10×.
+   - One Thor serves 4–16 step-wise drones instead of 2.
 8. **Runaway thinking is where P1's energy goes.**
    - On the 12 CLGSCE tasks, calls that hit the 32K cap take 57% (Reflexion) and 70% (tool
      calling) of LLM time, and none produced a usable answer.
    - On those tasks the tool-calling agent spends 2.9× Reflexion's energy per success.
+9. **The runaway calls are repetition loops.**
+   - 120 of the 121 capped Reflexion calls and all 127 capped tool-calling calls end in text
+     that repeats itself. P1 decodes at temperature 0.
+   - An online loop stop would save 31–44% of board energy (upper bound) and stop none of the
+     1,337 calls that finished on their own.
+   - A fixed 16K cut saves 27–34% and stops 14–32 of them.
+10. **P1's results of 3 October agree on the drone side.**
+    - Their drone numbers reproduce from our copy of the traces.
+    - They price a generated token at 75–90× a prefilled one. We used 67×, so our retention
+      ceilings are if anything generous.
+    - They saw no thermal throttling at room temperature.
 
 **The most kept state could save** (P / (P + r·O) as a share of LLM time, at the Thor's r ≈ 67;
 the doc's summary chart):
@@ -139,6 +159,9 @@ saving ≤ P / (P + r · O)
   - On an A5000 it is about 108–127, depending on model and concurrency.
   - r is a time ratio at batch 1. Batching makes each decoded token cheaper, which lowers r and
     raises every ceiling; at batch 16 on the WS the energy ratio is about 8.
+  - P1's own energy fit (3 October) puts the Thor at 75–90×. At 90 every ceiling in this doc
+    falls by up to a quarter: for example, P1 Reflexion from 2.1% to 1.6% and the step-wise
+    missions from 20–72% to 16–66%.
 
 The task enters neither P nor O. It sets how many calls and waits there are, and how long each
 wait lasts. On the Thor, re-prefilling a 20K-token context costs as much as decoding ~300
@@ -278,13 +301,15 @@ task longer than 10 minutes.
     P1's agents gain at most 1.6% from kept state (see
     [Many drones on one box](#many-drones-on-one-box-does-a-memory-controller-help)).
 
-**One anomaly to check on the devices.**
+**The cache-miss anomaly is explained.**
 - In the Reflexion runs, most same-role calls that repeat an earlier prompt missed the cache:
   73 of 116 for advanced tasks and 105 of 182 for AeroEval. These misses often came right after
   a 32K decode.
-- Our guess is that Gemma's sliding-window state is lost after long decodes, a hybrid-model
-  effect.
-- It costs 0.3–1.1% of LLM time.
+- P1 reports KV-cache evictions in 33% of its drone runs with a single request in flight, and
+  45 of those 47 runs contain a call that looped to the cap.
+- The prompt, the loop and the earlier cached prompts overflow P1's 80K-token pool, which is a
+  server setting on a 128 GB Thor.
+- It costs 0.3–1.1% of LLM time. Our earlier guess, lost sliding-window state, is not needed.
 
 **P1's two agents on the same 12 CLGSCE tasks** (Thor, measured): the tool-calling agent spends
 2.9× the energy per success of Reflexion, and runaway thinking is the reason.
@@ -301,6 +326,59 @@ task longer than 10 minutes.
 - The last row is an upper bound from the traces: the decode time those calls spent past 16K
   tokens, at the board's 71.9 W, assuming the rest of each run goes as recorded. A fixed 16K
   cut would also stop 14 (Reflexion) and 32 (tool calling) calls that finished on their own.
+- Stopping each call when it starts to loop, rather than at a fixed 16K, would save 31%
+  (Reflexion) and 36% (tool calling) of board energy on these tasks and stop none of the calls
+  that finished (next section).
+
+## Runaway calls are repetition loops
+
+Every call that hit its output-token limit in P1's drone runs is a repetition loop. Stopping the
+loop, rather than cutting at a fixed length, saves more energy and stops no call that would have
+finished (2026-10-04).
+
+![Capped calls are loops; where an online loop stop would cut](../2026-10-04-drone-runaways/figures/loops.png)
+
+- **(a)** The most repetitive 16,000 characters of each call, compressed:
+  - calls that hit their limit shrink to 1–9% of their size (one call to 11%), the mark of
+    text repeating itself;
+  - calls that finished on their own shrink to 14–29%, like ordinary reasoning and code.
+- **(b)** Where an online loop detector fires: at a median of 35% of a Reflexion call (about
+  11,200 tokens) and 44% of a tool-calling call (about 14,500). That is before the 16K mark for
+  86% and 61% of them.
+- **Coverage:**
+  - 120 of the 121 capped Reflexion calls (115 at 32,768 tokens; 6 validator or generator calls
+    at 8,192 or 4,096) and all 127 tool-calling calls capped at 32,768.
+  - None of the 1,337 calls that finished on their own is flagged.
+
+| Stop rule (upper bound, board energy) | Reflexion, 16 tasks | Reflexion, 12 CLGSCE tasks | Tool calling, 12 CLGSCE tasks |
+| --- | --- | --- | --- |
+| Online loop stop | 44%; stops 0 finished calls | 31%; 0 | 36%; 0 |
+| Fixed cut at 16K tokens | 34%; stops 14 | 27%; 14 | 34%; 32 |
+| Either | 45%; 14 | 34%; 14 | 40%; 32 |
+
+![P1, slide 396: share of LLM time in calls that hit the token limit, and pass rates of runs with and without one](../2026-10-04-drone-runaways/p1_figures/p1_capped_calls_s396.png)
+
+P1's own figure (deck of 3 October, slide 396, cropped to the drone rows): runs with a capped call
+pass 39% of the time, against 92% without. Our copy of the traces gives the same numbers.
+
+**Why the loops happen, and what it means:**
+
+- **The likely cause is greedy decoding.**
+  - Every P1 configuration runs at temperature 0 with thinking on.
+  - On the WS, Qwen3.5-9B with thinking ran away only under greedy decoding, never in 21 sampled
+    missions.
+  - Qwen's model cards warn that greedy decoding in thinking mode causes endless repetition.
+  - Whether Gemma-4 still loops under sampling is not measured.
+- **For P1**, this is a cheap fix to report. Sampling as the model card recommends, or a
+  repetition stop, would remove most of the 57–70% of LLM time these calls take.
+- **For option A**, it is a concrete, safe mechanism, but it cuts both ways:
+  - if the fix is configuration, it is not research;
+  - P1's own paper plans an early-abort policy, so A has to be coordinated with P1.
+- **Method** (`analysis/p1_loops.py`):
+  - The detector compresses the last 4,000 or 16,000 characters every 1,000 characters, and
+    fires when the result stays below 10% of the window for 3 checks in a row.
+  - Savings are the decode time not spent, at the board's 71.9 W, over the sweep's measured
+    board energy, assuming the rest of each run goes as recorded.
 
 ## Step-wise agents (1): aerogen on its own tasks
 
@@ -510,9 +588,54 @@ reaches 60% at 1 GiB and 16 drones):
 The two sides differ in models (Gemma against the Qwen3.5 and K2 stand-ins), simulators and
 success checks. P1's Gazebo flights run at 10× real time, which only flatters P1's side.
 
+The step-wise side counts a mission as a success if it delivered and returned. With the strict
+check, which also fails flights through buildings, its energy per success rises to 52–242 kJ, and
+the ratio to P1's Reflexion falls from 5–13× to 0.9–9.6×.
+
 **Not tested yet:** longer missions, memory that changes over time (co-located models), Gemma's
 own step-wise token counts, mixed agents on one box, and power modes. The simulated default also
 loses less under pressure than live SGLang, which understates headroom by a few percent at most.
+
+## P1's results of 3 October (drone)
+
+P1's drone results, shown at the paper meeting on 2026-10-03, reproduce from our copy of the same
+traces. Three of them sharpen this doc: the price of a generated token, the KV-cache evictions,
+and the absence of thermal throttling.
+
+| Gemma-4-26B-A4B on the Thor, Reflexion | P1's deck | Our recomputation |
+| --- | --- | --- |
+| Runs passed | 71% | 71% (102 of 143) |
+| LLM time in calls that hit the token limit | 71% | 71% |
+| Pass rate of runs with / without such a call | 39% / 92% | 39% / 92% |
+| Failed runs: share of runs / of board energy | 29% / 63% | 29% / 63% |
+| Prompt tokens from the prefix cache; prefill's share of LLM time | 26%; 1.8% | 26%; 1.8% |
+| Energy of a generated token ÷ a prefilled one | 75× average, 90× marginal | 74× |
+| Runs with a KV-cache eviction | 33% | 33% (47 runs, 45 with a looping call) |
+
+![P1, slide 394: energy of a generated vs a prefilled token](../2026-10-04-drone-runaways/p1_figures/p1_token_price_s394.png)
+
+A generated token costs 75–90× a prefilled one in energy and carries 97% of the LLM energy. We
+used 67×, a time ratio, so every retention ceiling in this doc is if anything generous.
+
+![P1, slide 400: largest prompt per run and runs with a KV-cache eviction](../2026-10-04-drone-runaways/p1_figures/p1_context_evictions_s400.png)
+
+Drone prompts stay far below the window the server allows. The evictions come from the looping
+calls, as explained above.
+
+![P1, slide 405: GPU temperature over each sweep](../2026-10-04-drone-runaways/p1_figures/p1_thermal_s405.png)
+
+**There is no thermal throttling.**
+- The hottest drone reading was 77 °C over 63 h on the Thor.
+- No GPU clock fell below 98% of its pinned value in 392 h of P1 runs at room temperature.
+- So thermal state does not change a serving decision here. P1 plans hot-enclosure runs.
+
+**Other points:**
+- **Repeats differ at temperature 0:** 23–25% of drone prompts took more than one path over 3
+  repeats.
+- **The second row** in P1's figures is Orin 64 with Devstral-24B, a tool-calling configuration
+  (31% pass) whose traces we do not have yet.
+- **Timeline:** P1's last runs end on Thu 8 October, and their paper is due on Sat 10 October.
+  We get P1's repository on Mon 6 October.
 
 ## Serving costs and what changes on the edge
 
@@ -560,8 +683,8 @@ minutes. What remains is a choice of what P5 studies, and the professor makes it
 
 | Option | What P5 studies | Evidence for | Against |
 | --- | --- | --- | --- |
-| **A. Decode-side energy on P1's agents (our lean)** | Stopping runaway thinking, thinking budgets, admitting and batching long decodes on the Thor | Calls that hit the 32K cap take 57% (Reflexion) and 70% (tool calling) of LLM time on the 12 CLGSCE tasks, and none produced a usable answer. Stopping them at 16K tokens would save about 27–34% of board energy (upper bound from the traces). P1's agents keep the Thor busy with a single drone | No longer about kept state. The effect on mission success is unmeasured. Reasoning-length control is an active research area we have not reviewed yet |
-| B. A step-wise agent on P1's tasks | The agent design itself | 5–13× less energy per success on P1's delivery tasks, and 4–16 drones per Thor instead of 2. Post-wait steps stay short with two stand-in models | The win belongs to the agent, which is P1's territory; a memory controller on top adds at most about 10% (simulated). Not P1's agent, and success needs a building-aware sim |
+| **A. Decode-side energy on P1's agents (our lean)** | Stopping runaway thinking, thinking budgets, admitting and batching long decodes on the Thor | Calls that hit the 32K cap take 57% (Reflexion) and 70% (tool calling) of LLM time on the 12 CLGSCE tasks, and none produced a usable answer. Every one of them is a repetition loop: an online loop stop would save 31–44% of board energy (upper bound) and stop no call that finished, against 27–34% and 14–32 wrongly stopped calls for a fixed 16K cut. P1's agents keep the Thor busy with a single drone | No longer about kept state. The loops likely come from greedy decoding, so the fix may be configuration rather than research. P1's own paper plans an early-abort policy. Reasoning-length control is an active research area we have not reviewed yet |
+| B. A step-wise agent on P1's tasks | The agent design itself | 5–13× less energy per success on P1's delivery tasks (0.9–9.6× under the strict check), and 4–16 drones per Thor instead of 2. Post-wait steps stay short with two stand-in models | The win belongs to the agent, which is P1's territory; a memory controller on top adds at most about 10% (simulated). Not P1's agent, and success needs a building-aware sim |
 | C. Standard benchmarks (τ²-bench, BFCL) with injected waits | The original question on another workload | Easy comparison with prior work, including Adaptive KV Retention | The same capacity and compute limits probably apply (not simulated). Loses the drone story; every wait is synthetic |
 | D. Memory that changes over time | Admission and retention when co-located models (perception, VLM, the simulator) take and release unified memory | The one memory-side case the simulation could not test. Under tight memory the default loses up to 60% to capacity | Untested. Needs a device, or a co-located workload emulated on the WS |
 
@@ -572,18 +695,24 @@ minutes. What remains is a choice of what P5 studies, and the professor makes it
 
 **Why A now.** It is where P1's measured energy goes, on P1's device, with P1's agents
 unchanged. B's finding still matters, but as a result to hand to P1 (their agent design costs
-5–13× per success), not as a serving controller. D is the alternative if P5 should stay on
+about 1–13× per success, depending on the success check), not as a serving controller. D is the alternative if P5 should stay on
 retained state.
 
 **Where A could be wrong:**
 
-1. **Success.** A cut or a budget may cost missions. All 173 capped calls ended at the token
-   limit, but a fixed 16K cut would also stop 14 (Reflexion) and 32 (tool calling) calls that
-   finished on their own.
-2. **Novelty.** Thinking budgets and early exit are studied for datacenter reasoning models.
-   What the edge adds (board power, weak batching on a mixture of experts, one drone saturating
-   the device) has to carry the contribution.
-3. **Scope.** It drops P5's original question about retained state. The professor may prefer D.
+1. **Success.** A cut or a budget may cost missions.
+   - All 173 capped calls ended at the token limit.
+   - A fixed 16K cut would also stop 14 (Reflexion) and 32 (tool calling) calls that finished
+     on their own. The loop stop stops none of them on these traces.
+2. **Novelty.**
+   - Thinking budgets and early exit are studied for datacenter reasoning models.
+   - If greedy decoding causes the loops, the fix is configuration.
+   - What the edge adds (board power, weak batching on a mixture of experts, one drone
+     saturating the device) has to carry the contribution.
+3. **Overlap with P1.** P1's paper plans an early-abort policy of its own, so A has to be agreed
+   with P1. P5 could offer the loop stop to P1's paper, or the two could split the work: P1 at
+   the level of whole runs, P5 within a call.
+4. **Scope.** It drops P5's original question about retained state. The professor may prefer D.
 
 ## Decisions needed
 
@@ -592,9 +721,15 @@ retained state.
   fixed budgets for these workloads.
 - [ ] **Scope (professor):** leave retained state for decode-side energy (A), or stay on it with
   co-located models (D)?
-- [ ] **Report to P1 (P1's mentor):** on the same 12 tasks their tool-calling agent spends 2.9×
-  Reflexion's energy per success, and capped thinking calls take 57–70% of their LLM time; a
-  step-wise agent uses 5–13× less energy per success on their delivery tasks.
+- [ ] **Report to P1 (P1's mentor):**
+  - on the same 12 tasks, their tool-calling agent spends 2.9× Reflexion's energy per success;
+  - capped thinking calls take 57–70% of their LLM time, and they are repetition loops at
+    temperature 0;
+  - their KV-cache evictions come from those loops;
+  - a step-wise agent uses 5–13× less energy per success on their delivery tasks (0.9–9.6×
+    under the strict check).
+- [ ] **The loop stop and P1's paper (Sandesh, professor):** offer it to P1 before their deadline
+  on Sat 10 October, or keep it for P5?
 - [ ] **P1's paradigms (P1's mentor):** is a step-wise agent with flight-level tools in P1's
   scope? P1's tool-calling and ReAct agents both act on whole programs.
 - [ ] **Workload (P1's mentor):** may P5 run P1's AeroEval tasks with a step-wise agent (D1–D3
@@ -605,22 +740,25 @@ retained state.
   private copy on the WS.
 - [ ] **Deployment assumption:** how many drones one edge box serves, which sets the memory
   pressure, and the go/no-go thresholds for the next stage.
-- [ ] **Timeline:** P1's deadline, when the devices return, and the ISP milestones.
+- [ ] **Timeline:** P1's runs end on Thu 8 October and their paper is due on Sat 10 October.
+  Still open: when the devices return to P5, and the ISP milestones.
 
 ## Next steps
 
 **Either way:**
 
-1. Refresh P1's numbers when the last 4 tool-calling runs finish (expected around 21:00 on
-   2026-10-03).
+1. Get P1's repository on Mon 6 October and refresh P1's numbers. The tool-calling sweep now runs
+   to 144 runs, including the AeroEval tasks.
 2. When the WS is reachable again, run one live memory-pressure test to anchor the simulator.
 
 **If A:**
 
-1. From P1's traces, find what predicts a runaway early (output length so far, repetition), and
-   replay a stop rule's savings and misses.
-2. Review the reasoning-budget and early-exit literature.
-3. Measure batching of long decodes on the WS, and on the Thor when it is free.
+1. Test whether sampling as the model card recommends removes the loops, on Gemma itself: on a
+   device, or a quantized Gemma on the WS. The loop stop is already replayed on P1's traces
+   (2026-10-04).
+2. Agree with P1 how the loop stop relates to their early-abort policy.
+3. Review the reasoning-budget and early-exit literature.
+4. Measure batching of long decodes on the WS, and on the Thor when it is free.
 
 **If B, as a finding for P1:** a building-aware sim guard, the large farm tasks (lawnmower,
 concentric circles), and Gemma-4-26B-A4B's output per step on a device.
@@ -638,10 +776,12 @@ Every number in this report comes from one of these sources:
 | Source | What | When |
 | --- | --- | --- |
 | P1 Thor traces | Reflexion final sweep (143 runs) and tool-calling sweep (104 of 108 runs); Gemma-4-26B-A4B; read-only copies | Reflexion to 2026-10-01; tool calling to 2026-10-03 16:16 |
+| P1's deck | P1's drone results and figures (EdgeAgentBench, slides 387–406), shown at the paper meeting | 2026-10-03 |
 | WS runs: aerogen | K2-Horizon-7B on aerogen's own 5 tasks, real-time pacing: one session (15 missions at low effort, 5 each at medium and high) and 1–8 sessions per GPU | 2026-10-01 |
 | WS runs: the deciding test | Qwen3.5-9B and K2-Horizon-7B on P1's D1–D3, 108 missions, 50× pacing | 2026-10-02 |
 | WS calibration | K2-Horizon-7B prefill and decode time and energy against length and batch | 2026-10-01 |
 | Simulation | The traces above replayed as 1–16 drones per box on Thor and WS costs, 12 policies, 5 seeds (`analysis/admission_sim.py`) | 2026-10-03 |
+| Loop analysis | Every LLM call's text in P1's traces replayed through an online loop detector (`analysis/p1_loops.py`) | 2026-10-04 |
 
 **Reproduce.**
 - `python3 -m analysis.stepwise_ceiling` writes `../2026-10-02-stepwise-d1/stepwise.json`:
@@ -656,6 +796,9 @@ Every number in this report comes from one of these sources:
 - `python3 -m analysis.admission_sim all` and `python3 -m analysis.admission_figures` write the
   many-drones simulation (`../2026-10-03-admission-sim/`); `python3 -m analysis.p1_runaway`
   writes P1's two-agent comparison (`p1_agents.json` there).
+- `python3 -m analysis.p1_loops` writes the loop analysis
+  (`../2026-10-04-drone-runaways/loops.json` and its figure). `analysis.stepwise_ceiling` also
+  writes the ceilings at r = 90, and `analysis.admission_figures` the strict-check counts.
 
 **Where P1's code is on the Thor** (read-only):
 
@@ -672,16 +815,26 @@ Every number in this report comes from one of these sources:
   - aerogen's kinematic sim has no buildings or physics.
   - P1's Gazebo runs at 10× real time.
   - Only delivery missions were tested.
+- **The success check.**
+  - The step-wise agent's success counts missions that delivered and returned.
+  - The strict check also fails flights through buildings, which the sim never showed the agent.
+  - The true rate is probably in between; the paradigm ratio spans 0.9–13.5× across the two.
 - **Memory pressure on P1's tasks.** Live runs of the deciding test had at most 2 sessions per
   GPU. Memory pressure with up to 16 drones is simulated, not yet measured live.
 - **Energy scope.** WS energy is NVML GPU energy; board, CPU and DRAM energy are not measured.
   On a Jetson the rails cover the whole board.
 - **Ceilings are time shares at batch 1.** Batching lowers r, but on the Thor Gemma's experts make
   it weak, and in simulation P1's agents gain at most 1.6% from kept state at any drone count.
+  P1's energy price ratio (75–90×) is above the 67× used here.
+- **The loop stop.**
+  - The detector is a compression heuristic tuned on these traces.
+  - Its savings are upper bounds that assume the rest of each run goes as recorded.
+  - P1's path counts and temperatures are quoted from P1's deck, not recomputed.
 - **Statistics.**
   - There was one run per concurrency configuration and 6–12 missions per test configuration,
     with no confidence intervals.
-  - Greedy repeats were identical, so each greedy configuration has 3 distinct trajectories.
+  - Greedy repeats on the WS were identical, so each greedy configuration has 3 distinct
+    trajectories.
 - **The simulators.** The 2026-10-01 one is within −23% to +38% of live energy and gives rankings
   only. The 2026-10-03 one is within −8% to +10% of live energy and 2–3% of measured LLM time,
   but under capped pools its default re-prefills about half of what live SGLang did.

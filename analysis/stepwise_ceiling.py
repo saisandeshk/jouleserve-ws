@@ -19,6 +19,8 @@ RUNS = REPO / "data/ws_runs"
 P1 = {"P1 Reflexion": REPO / "data/p1_thor_drone", "P1 tool calling": REPO / "data/p1_thor_toolcalling"}
 OUT = REPO / "reports/2026-10-02-stepwise-d1"
 R_THOR = 1811 / 27.0      # Gemma-4-26B-A4B on the Thor: cold prefill / decode tokens per second
+R_P1_ENERGY = 90.0        # sensitivity: P1's marginal energy price of a generated vs a prefilled token on
+                          # the Thor, drone (EdgeAgentBench deck, 3 Oct 2026; average price 75, our fit 74)
 ARMS = [  # (label, run-name prefix)
     ("Qwen3.5-9B thinking, greedy (P1 protocol)", "q_think_greedy"),
     ("Qwen3.5-9B thinking, sampled", "q_think_sampled"),
@@ -87,6 +89,7 @@ def arm_stats(missions, r_ws):
         peak_ctx_median=st.median(peak), peak_ctx_max=max(peak),
         reuse=C / P,
         ceiling_thor=P / (P + R_THOR * O), ceiling_thor_private=Ppriv / (P + R_THOR * O),
+        ceiling_r90=P / (P + R_P1_ENERGY * O), ceiling_r90_private=Ppriv / (P + R_P1_ENERGY * O),
         r_ws=r_ws, ceiling_ws=(P / (P + r_ws * O)) if r_ws else None,
         llm_s_per_mission_ws=st.median(llm_s), flight_s_per_mission=st.median(flight_s),
         # Thor projection (P1's model speed): nothing kept vs everything kept
@@ -111,6 +114,7 @@ def arm_stats(missions, r_ws):
         resume_share_gt_1k=(sum(o > 1000 for o in ro) / len(ro)) if ro else None,
         resume_ceiling_thor=(rP / (rP + R_THOR * rO)) if ro else None,
         resume_ceiling_thor_private=(rPpriv / (rP + R_THOR * rO)) if ro else None,
+        resume_ceiling_r90=(rP / (rP + R_P1_ENERGY * rO)) if ro else None,
     )
     return row
 
@@ -204,7 +208,7 @@ def main():
         # P1's prompts are rebuilt per role call: the whole prompt counts as P (an upper bound)
         result[k] = dict(label=k, calls=len(xs), out_median=st.median(xs), out_p90=pct(xs, 0.9),
                          share_out_gt_1k=sum(x > 1000 for x in xs) / len(xs),
-                         ceiling_thor=P / (P + R_THOR * O),
+                         ceiling_thor=P / (P + R_THOR * O), ceiling_r90=P / (P + R_P1_ENERGY * O),
                          ceiling_r8=P / (P + 8 * O))  # sensitivity: r at batch 16 on the WS (energy)
     # aerogen on its own tasks (2026-10-01, K2-Horizon-7B, one session)
     for prefix in ("e1_low", "e1_medium", "e1_high"):
@@ -218,7 +222,7 @@ def main():
     keys = ["missions", "passed_strict", "collisions", "calls_per_mission", "first_out_median", "first_out_max",
             "first_share_of_output", "resume_out_median", "resume_out_p90", "resume_out_max", "resume_share_gt_1k",
             "capped", "first_prompt", "peak_ctx_median", "reuse", "ceiling_thor", "ceiling_thor_private",
-            "resume_ceiling_thor", "resume_ceiling_thor_private", "ceiling_ws", "measured_saving_ws", "flight_s_per_mission",
+            "resume_ceiling_thor", "resume_ceiling_thor_private", "ceiling_r90", "ceiling_r90_private", "ceiling_ws", "measured_saving_ws", "flight_s_per_mission",
             "thor_llm_s_nokeep", "flight_share_thor"]
     for name, row in result.items():
         print(name, {k: (round(row[k], 3) if isinstance(row.get(k), float) else row.get(k)) for k in keys if k in row})

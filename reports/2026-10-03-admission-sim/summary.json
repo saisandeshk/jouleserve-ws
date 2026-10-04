@@ -32,56 +32,72 @@
     "succeeded": 6,
     "kj_per_mission": 31.066697333882615,
     "kj_per_success": 46.60004600082392,
-    "minutes_median": 10.122320583773279
+    "minutes_median": 10.122320583773279,
+    "succeeded_strict": 2,
+    "kj_per_strict_success": 139.80013800247175
    },
    "stepwise_qwen_think D2+D3": {
     "missions": 12,
     "succeeded": 10,
     "kj_per_mission": 25.40228336334602,
     "kj_per_success": 30.482740036015223,
-    "minutes_median": 9.227922921267753
+    "minutes_median": 9.227922921267753,
+    "succeeded_strict": 4,
+    "kj_per_strict_success": 76.20685009003806
    },
    "stepwise_qwen_nothink D1": {
     "missions": 9,
     "succeeded": 7,
     "kj_per_mission": 28.80805043298507,
     "kj_per_success": 37.03892198526652,
-    "minutes_median": 11.113295683027282
+    "minutes_median": 11.113295683027282,
+    "succeeded_strict": 5,
+    "kj_per_strict_success": 51.85449077937313
    },
    "stepwise_qwen_nothink D2+D3": {
     "missions": 12,
     "succeeded": 11,
     "kj_per_mission": 20.142625487912134,
     "kj_per_success": 21.97377325954051,
-    "minutes_median": 8.570254994182573
+    "minutes_median": 8.570254994182573,
+    "succeeded_strict": 1,
+    "kj_per_strict_success": 241.7115058549456
    },
    "stepwise_k2_high D1": {
     "missions": 8,
     "succeeded": 5,
     "kj_per_mission": 42.51553078127081,
     "kj_per_success": 68.0248492500333,
-    "minutes_median": 14.830800067535307
+    "minutes_median": 14.830800067535307,
+    "succeeded_strict": 5,
+    "kj_per_strict_success": 68.0248492500333
    },
    "stepwise_k2_high D2+D3": {
     "missions": 12,
     "succeeded": 9,
     "kj_per_mission": 28.98200979082368,
     "kj_per_success": 38.64267972109824,
-    "minutes_median": 9.352433354772877
+    "minutes_median": 9.352433354772877,
+    "succeeded_strict": 6,
+    "kj_per_strict_success": 57.96401958164736
    },
    "stepwise_k2_low D1": {
     "missions": 9,
     "succeeded": 6,
     "kj_per_mission": 28.3494588507049,
     "kj_per_success": 42.524188276057345,
-    "minutes_median": 10.952425881395152
+    "minutes_median": 10.952425881395152,
+    "succeeded_strict": 4,
+    "kj_per_strict_success": 63.78628241408602
    },
    "stepwise_k2_low D2+D3": {
     "missions": 12,
     "succeeded": 6,
     "kj_per_mission": 24.03011276643419,
     "kj_per_success": 48.06022553286838,
-    "minutes_median": 9.375094476991963
+    "minutes_median": 9.375094476991963,
+    "succeeded_strict": 2,
+    "kj_per_strict_success": 144.18067659860515
    }
   }
  },

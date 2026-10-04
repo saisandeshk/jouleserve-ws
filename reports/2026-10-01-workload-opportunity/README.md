@@ -1,5 +1,11 @@
 # Do the drone workloads create a retained-state opportunity?
 
+> **Update 2026-10-04.** The cache-miss anomaly in §2 (point 6) has a better explanation than
+> sliding-window state: 45 of the 47 Reflexion runs with a KV-cache eviction contain a call that
+> looped to the 32K cap and filled P1's 80K-token pool. The capped calls themselves are repetition
+> loops. See [`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md); current
+> numbers and options are in [`2026-10-02-p5-evidence`](../2026-10-02-p5-evidence/README.md).
+
 **JouleServe-WS evidence pack · 2026-10-01 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 Data: P1's Thor traces (read-only copies) and new measurements on the 2×A5000

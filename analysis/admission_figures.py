@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-from analysis.admission_sim import OUT, REPO, thor_device, workloads  # noqa: E402
+from analysis.admission_sim import OUT, REPO, WS_RUNS, thor_device, workloads  # noqa: E402
 from analysis.report_figures import BASE, C1, C2, C3, C4, INK2, MUTED, SURF, _style  # noqa: E402
 
 NS = (1, 2, 4, 8, 16)
@@ -125,10 +125,19 @@ def fig_retention(cells, path):
     plt.close(fig)
 
 
+def _strict_pass(mid):
+    """The strict delivery check (also fails flights through buildings, which aerogen's kinematic
+    sim does not model); the simulator's success is the lenient one (delivered and returned)."""
+    run, name = mid.split("/")
+    summ = json.loads((WS_RUNS / run / "sessions" / name / "summary.json").read_text())
+    return bool((summ.get("delivery_check") or {}).get("valid"))
+
+
 def paradigm_compare():
     """P1's own D1-D3: P1 Reflexion measured on the Thor vs. the step-wise agent projected onto
     the Thor (one drone; Gemma's prefill/decode rates and board power applied to the step-wise
-    missions' token counts and real-time flights)."""
+    missions' token counts and real-time flights). Step-wise success is reported both ways:
+    delivered and returned (lenient, as in the simulator) and the strict check."""
     out = {"p1_reflexion_measured": {}, "stepwise_projected": {}}
     runs = {}
     for f in glob.glob(str(REPO / "data/p1_thor_drone/*/*/instance_*/run_*/run_meta.json")):
@@ -157,9 +166,11 @@ def paradigm_compare():
                 es.append(thor.p_active * llm + thor.p_idle * (tot - llm))
                 ts.append(tot)
             ok = sum(m.success for m in ms)
+            strict = sum(_strict_pass(m.mid) for m in ms)
             out["stepwise_projected"][f"{key} {label}"] = dict(
                 missions=len(ms), succeeded=ok, kj_per_mission=st.mean(es) / 1e3,
-                kj_per_success=(sum(es) / ok / 1e3) if ok else None, minutes_median=st.median(ts) / 60)
+                kj_per_success=(sum(es) / ok / 1e3) if ok else None, minutes_median=st.median(ts) / 60,
+                succeeded_strict=strict, kj_per_strict_success=(sum(es) / strict / 1e3) if strict else None)
     return out
 
 

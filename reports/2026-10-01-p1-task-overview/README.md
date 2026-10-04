@@ -6,6 +6,10 @@
 > file is regenerated with the 104 runs. Current numbers and options:
 > [`2026-10-02-p5-evidence`](../2026-10-02-p5-evidence/README.md) and
 > [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md).
+>
+> **Update 2026-10-04.** The 32K-capped calls are repetition loops (120 of 121 Reflexion capped
+> calls, all 127 tool-calling ones), and the cache-miss anomaly in §5 comes from KV-cache evictions
+> during those loops: [`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md).
 
 **2026-10-01 (late), updated 2026-10-02 · Sai Sandesh (P5)**, prepared with Claude Code.
 

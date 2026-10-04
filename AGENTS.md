@@ -84,6 +84,11 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
   `tail /home/yash/final_sweep/<model>/sweep.log`).
 - **Ownership.** Ask Sandesh before vendoring P1 code, or the `aerogen_mcp` agent by another
   lab member (mayankarya), into this repo. Keep attribution in `vendor/*/README`.
+- **Credentials.** Never use credentials stored on the Thor (SSH keys, `gh` tokens, git
+  credential helpers) to reach GitHub or anything else. For example, never clone P1's private
+  repository through them; ask for access instead.
+- **P1's checkouts.** Never run git commands inside P1's checkouts: even `git status` can rewrite
+  `.git/index`. Copy a directory with `tar` instead.
 
 ### WS
 
@@ -202,3 +207,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
   `vendor/`, `tests/`, `env/`). Create directories as needed.
 - **Results.** Negative results count. If an opportunity is absent, report it with numbers
   and hand the choice to the professor.
+- **This repository is public.**
+  - Keep P1's unpublished material, such as deck figures and slides, out of git:
+    `reports/*/p1_figures/` is git-ignored.
+  - Check the visibility before pushing:
+    `gh repo view saisandeshk/jouleserve-ws --json visibility`.

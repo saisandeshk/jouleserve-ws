@@ -1,5 +1,15 @@
 # Can a memory controller beat SGLang's default? N drones sharing one edge box
 
+> **Update 2026-10-04** ([`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md)).
+> - P1's 3 Oct drone results reproduce from the same traces.
+> - The capped calls in §5 are repetition loops. An online loop stop would save 31% (Reflexion) and
+>   36% (tool calling) of board energy on the 12 CLGSCE tasks, without stopping any call that
+>   finished on its own.
+> - The paradigm ratio in item 5 counts delivered-and-returned missions. Under the strict check it
+>   is 0.9–9.6× instead of 4.6–13.5× (`summary.json` now holds both).
+> - At P1's energy price of a generated token (90× a prefilled one, against our 67×) every
+>   retention ceiling falls slightly. The conclusions stand.
+
 **2026-10-03 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 **The question.** The merged evidence doc left one hypothesis open: when several drones share
@@ -54,12 +64,17 @@ Data: [`sim.json`](sim.json), [`summary.json`](summary.json); figures: [`figures
    | Drones per Thor at ≤ 1.5× p95 mission time | 2 | 4–16 |
    | Energy per success, 1 → 16 drones | 3.1–3.2× lower | 4.7–8.5× lower |
 
+   - **Success check.** The step-wise agent counts a mission as a success if it delivered and
+     returned. With the strict check, which also fails flights through buildings, its energy per
+     success rises and the ratio to P1's Reflexion falls from 4.6–13.5× to 0.9–9.6×
+     ([`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md)).
+
 **What this means for Monday.**
 - **A retention-and-admission controller on top of SGLang is not a contribution** on these
   workloads and Thor/Orin-class memory. This is a negative result, reported as such.
 - **Option B's value is the agent design.** On P1's delivery tasks it gives roughly 5–13× less
-  energy per success, and 2–8× more drones per box. That is a finding about P1's benchmark,
-  not a serving controller; the controller adds ≤ 10% on top.
+  energy per success (0.9–9.6× under the strict check), and 2–8× more drones per box. That is
+  a finding about P1's benchmark, not a serving controller; the controller adds ≤ 10% on top.
 - **What is left for P5's question:**
   1. **The decode side (option A's lever).** It is where P1's energy is. Calls that hit the
      32K cap take 57% (Reflexion) and 70% (tool calling, 104 runs) of P1's LLM time on the 12
@@ -197,6 +212,13 @@ tool-calling sweep refreshed to 104 of its 108 runs on 2026-10-03 16:16
 - **A fixed 16K cut would also stop** 14 (Reflexion) and 32 (tool calling) calls that finished
   on their own; at 8K it would stop 54 and 86. A useful stop rule has to predict runaways
   early, which is option A's first question.
+- **Update 2026-10-04: the capped calls are repetition loops.**
+  - Every Reflexion call capped at 32K but one, and all tool-calling ones, ends in text that
+    repeats itself.
+  - An online loop detector stops them at a median of 35–44% of the call, and would save 31%
+    (Reflexion) and 36% (tool calling) of board energy.
+  - It stops no call that finished on its own
+    ([`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md)).
 - **No other P1 activity on the Thor since 2026-10-01:** no Qwen3.8 runs, no new folders.
 
 ## What could still change this

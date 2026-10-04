@@ -24,6 +24,8 @@
   "reuse": 0.9234725067894762,
   "ceiling_thor": 0.2042517400150029,
   "ceiling_thor_private": 0.02941373986544474,
+  "ceiling_r90": 0.16057692822546915,
+  "ceiling_r90_private": 0.023124248512493506,
   "r_ws": 120.14473708104924,
   "ceiling_ws": 0.1253373690603414,
   "llm_s_per_mission_ws": 105.7360143387923,
@@ -41,6 +43,7 @@
   "resume_share_gt_1k": 0.02631578947368421,
   "resume_ceiling_thor": 0.5646654047908407,
   "resume_ceiling_thor_private": 0.08674936147088276,
+  "resume_ceiling_r90": 0.4915273994692239,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 38.66769549719844,
   "measured_saving_ws": 0.1134554218016939
@@ -70,6 +73,8 @@
   "reuse": 0.9562900082885406,
   "ceiling_thor": 0.5254466134868796,
   "ceiling_thor_private": 0.10560134504654181,
+  "ceiling_r90": 0.4521128277862117,
+  "ceiling_r90_private": 0.09086312767379105,
   "r_ws": 126.5235545494059,
   "ceiling_ws": 0.36987422417850546,
   "llm_s_per_mission_ws": 114.67335257073864,
@@ -87,6 +92,7 @@
   "resume_share_gt_1k": 0.021621621621621623,
   "resume_ceiling_thor": 0.5738269510892655,
   "resume_ceiling_thor_private": 0.11976399194141724,
+  "resume_ceiling_r90": 0.5008675770269253,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 36.71822314497876,
   "measured_saving_ws": 0.3436256965381645
@@ -116,6 +122,8 @@
   "reuse": 0.9382425088412347,
   "ceiling_thor": 0.7138942763611195,
   "ceiling_thor_private": 0.07748225967836878,
+  "ceiling_r90": 0.6503007377654116,
+  "ceiling_r90_private": 0.07058015773625079,
   "r_ws": 119.68826760228706,
   "ceiling_ws": 0.5830436397321719,
   "llm_s_per_mission_ws": 45.20207286463119,
@@ -133,6 +141,7 @@
   "resume_share_gt_1k": 0.0,
   "resume_ceiling_thor": 0.708370044339874,
   "resume_ceiling_thor_private": 0.0804694766756887,
+  "resume_ceiling_r90": 0.6441606569177654,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 38.815167117952385,
   "measured_saving_ws": 0.5323610771805584
@@ -162,6 +171,8 @@
   "reuse": 0.9560763619431941,
   "ceiling_thor": 0.6775291992261212,
   "ceiling_thor_private": 0.10255358796572929,
+  "ceiling_r90": 0.6102654071583876,
+  "ceiling_r90_private": 0.09237226555983748,
   "r_ws": 125.32623560824234,
   "ceiling_ws": 0.5292957639699748,
   "llm_s_per_mission_ws": 50.76446467079222,
@@ -179,6 +190,7 @@
   "resume_share_gt_1k": 0.010752688172043012,
   "resume_ceiling_thor": 0.6734724578374514,
   "resume_ceiling_thor_private": 0.10609505408393725,
+  "resume_ceiling_r90": 0.605854737309526,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 37.069015011055214,
   "measured_saving_ws": 0.48426432763692834
@@ -208,6 +220,8 @@
   "reuse": 0.8249923062432272,
   "ceiling_thor": 0.36398452837893547,
   "ceiling_thor_private": 0.16051398013673507,
+  "ceiling_r90": 0.29898757260005077,
+  "ceiling_r90_private": 0.13185089350691356,
   "r_ws": 124.47016126817051,
   "ceiling_ws": 0.2357037143184432,
   "llm_s_per_mission_ws": 231.47923345468007,
@@ -225,6 +239,7 @@
   "resume_share_gt_1k": 0.0,
   "resume_ceiling_thor": 0.7193974402839753,
   "resume_ceiling_thor_private": 0.3275474341484247,
+  "resume_ceiling_r90": 0.6564384388681589,
   "prefill_ws": 4106.0,
   "decode_ws": 32.9878258223964,
   "measured_saving_ws": 0.14414080980656768
@@ -254,6 +269,8 @@
   "reuse": 0.9720688622886023,
   "ceiling_thor": 0.4943765841865306,
   "ceiling_thor_private": 0.09916399066772048,
+  "ceiling_r90": 0.4215273293310649,
+  "ceiling_r90_private": 0.08455160193469723,
   "r_ws": 122.46357047069799,
   "ceiling_ws": 0.3487562773145665,
   "llm_s_per_mission_ws": 89.89329916075803,
@@ -271,6 +288,7 @@
   "resume_share_gt_1k": 0.015748031496062992,
   "resume_ceiling_thor": 0.6168148778909363,
   "resume_ceiling_thor_private": 0.1306340134200756,
+  "resume_ceiling_r90": 0.5453844010467582,
   "prefill_ws": 4106.0,
   "decode_ws": 33.52833813531876,
   "measured_saving_ws": 0.33070351201666226
@@ -300,6 +318,8 @@
   "reuse": 0.9191616406033684,
   "ceiling_thor": 0.5052911963140115,
   "ceiling_thor_private": 0.05988649918392915,
+  "ceiling_r90": 0.4322084165834166,
+  "ceiling_r90_private": 0.05122481684981685,
   "r_ws": 120.11622981428451,
   "ceiling_ws": 0.36320122564349666,
   "llm_s_per_mission_ws": 65.83977504773065,
@@ -317,6 +337,7 @@
   "resume_share_gt_1k": 0.0,
   "resume_ceiling_thor": 0.5687828663664481,
   "resume_ceiling_thor_private": 0.07231442266904736,
+  "resume_ceiling_r90": 0.49571883552326235,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 38.676872527749765,
   "measured_saving_ws": 0.3283420351591539
@@ -346,6 +367,8 @@
   "reuse": 0.9555937926988042,
   "ceiling_thor": 0.4857906732000048,
   "ceiling_thor_private": 0.08717931487406198,
+  "ceiling_r90": 0.4131727507450748,
+  "ceiling_r90_private": 0.07414740406050853,
   "r_ws": 125.98451676285171,
   "ceiling_ws": 0.33465311014847,
   "llm_s_per_mission_ws": 94.30026182590518,
@@ -363,6 +386,7 @@
   "resume_share_gt_1k": 0.0213903743315508,
   "resume_ceiling_thor": 0.5561347245699505,
   "resume_ceiling_thor_private": 0.10499787964838887,
+  "resume_ceiling_r90": 0.4828760532503284,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 36.875325860763496,
   "measured_saving_ws": 0.31130883572297613
@@ -392,6 +416,8 @@
   "reuse": 0.9202206533125564,
   "ceiling_thor": 0.7216212902280627,
   "ceiling_thor_private": 0.053151426874287505,
+  "ceiling_r90": 0.6589246892405826,
+  "ceiling_r90_private": 0.04853347304202287,
   "r_ws": 119.65311075214487,
   "ceiling_ws": 0.5923572649632148,
   "llm_s_per_mission_ws": 28.28713424562011,
@@ -409,6 +435,7 @@
   "resume_share_gt_1k": 0.0,
   "resume_ceiling_thor": 0.7161764608993849,
   "resume_ceiling_thor_private": 0.05644067294103695,
+  "resume_ceiling_r90": 0.6528435130363575,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 38.826571911400976,
   "measured_saving_ws": 0.5306469086144041
@@ -438,6 +465,8 @@
   "reuse": 0.9270313961857726,
   "ceiling_thor": 0.650592193547427,
   "ceiling_thor_private": 0.05927437664220774,
+  "ceiling_r90": 0.5811828991465648,
+  "ceiling_r90_private": 0.05295061084914851,
   "r_ws": 125.10659452875285,
   "ceiling_ws": 0.49956868434472296,
   "llm_s_per_mission_ws": 29.775384380482137,
@@ -455,6 +484,7 @@
   "resume_share_gt_1k": 0.007042253521126761,
   "resume_ceiling_thor": 0.6432105374412141,
   "resume_ceiling_thor_private": 0.06306833206457382,
+  "resume_ceiling_r90": 0.5732966254424727,
   "prefill_ws": 4645.720109040978,
   "decode_ws": 37.134094541860996,
   "measured_saving_ws": 0.44194593379281727
@@ -484,6 +514,8 @@
   "reuse": 0.9827333191145844,
   "ceiling_thor": 0.41878380850299723,
   "ceiling_thor_private": 0.14059407837612753,
+  "ceiling_r90": 0.3493767147465405,
+  "ceiling_r90_private": 0.11729273247563368,
   "r_ws": 122.35724138163691,
   "ceiling_ws": 0.2831448171650223,
   "llm_s_per_mission_ws": 139.93741485569626,
@@ -501,6 +533,7 @@
   "resume_share_gt_1k": 0.00546448087431694,
   "resume_ceiling_thor": 0.680821733396217,
   "resume_ceiling_thor_private": 0.23830584637136862,
+  "resume_ceiling_r90": 0.613853304740745,
   "prefill_ws": 4106.0,
   "decode_ws": 33.557474438257636,
   "measured_saving_ws": 0.24071155459388954
@@ -530,6 +563,8 @@
   "reuse": 0.974594380946383,
   "ceiling_thor": 0.5276537105771293,
   "ceiling_thor_private": 0.10125416751309785,
+  "ceiling_r90": 0.4543067827981262,
+  "ceiling_r90_private": 0.08717925064426124,
   "r_ws": 123.66201563093773,
   "ceiling_ws": 0.37729941258047595,
   "llm_s_per_mission_ws": 32.40876500995364,
@@ -547,6 +582,7 @@
   "resume_share_gt_1k": 0.006802721088435374,
   "resume_ceiling_thor": 0.6780795530513399,
   "resume_ceiling_thor_private": 0.13856890990922444,
+  "resume_ceiling_r90": 0.6108646251934586,
   "prefill_ws": 4106.0,
   "decode_ws": 33.20340509614629,
   "measured_saving_ws": 0.3548744535984574
@@ -558,6 +594,7 @@
   "out_p90": 32768,
   "share_out_gt_1k": 0.3990291262135922,
   "ceiling_thor": 0.020978611753578427,
+  "ceiling_r90": 0.015718676897968107,
   "ceiling_r8": 0.1522974865256762
  },
  "P1 tool calling": {
@@ -567,6 +604,7 @@
   "out_p90": 32768,
   "share_out_gt_1k": 0.6339754816112084,
   "ceiling_thor": 0.006429990056609351,
+  "ceiling_r90": 0.004799924476699845,
   "ceiling_r8": 0.051467013156881194
  },
  "e1_low_n1": {
@@ -594,6 +632,8 @@
   "reuse": 0.9276111203368586,
   "ceiling_thor": 0.5003173416187321,
   "ceiling_thor_private": 0.12952994806801837,
+  "ceiling_r90": 0.4273325387922068,
+  "ceiling_r90_private": 0.11063450524909124,
   "r_ws": 112.4931506849315,
   "ceiling_ws": 0.3738289168227843,
   "llm_s_per_mission_ws": 71.20121285901405,
@@ -610,7 +650,8 @@
   "resume_out_mean": 121.75510204081633,
   "resume_share_gt_1k": 0.02040816326530612,
   "resume_ceiling_thor": 0.6095290948985419,
-  "resume_ceiling_thor_private": 0.1665771511391695
+  "resume_ceiling_thor_private": 0.1665771511391695,
+  "resume_ceiling_r90": 0.5377582644628099
  },
  "e1_medium_n1": {
   "label": "aerogen own tasks, K2 medium effort",
@@ -637,6 +678,8 @@
   "reuse": 0.9122084743643016,
   "ceiling_thor": 0.28301590042716074,
   "ceiling_thor_private": 0.09790615593864756,
+  "ceiling_r90": 0.22731009615494835,
+  "ceiling_r90_private": 0.078635361783509,
   "r_ws": 112.4931506849315,
   "ceiling_ws": 0.19051839030456563,
   "llm_s_per_mission_ws": 175.50725710042752,
@@ -653,7 +696,8 @@
   "resume_out_mean": 245.6769230769231,
   "resume_share_gt_1k": 0.046153846153846156,
   "resume_ceiling_thor": 0.4687796591433413,
-  "resume_ceiling_thor_private": 0.17011306727403888
+  "resume_ceiling_thor_private": 0.17011306727403888,
+  "resume_ceiling_r90": 0.39674263436780144
  },
  "e1_high_n1": {
   "label": "aerogen own tasks, K2 high effort",
@@ -680,6 +724,8 @@
   "reuse": 0.9615752827549111,
   "ceiling_thor": 0.3167699092317005,
   "ceiling_thor_private": 0.13965773039182336,
+  "ceiling_r90": 0.25679990911675493,
+  "ceiling_r90_private": 0.11321811645259464,
   "r_ws": 112.4931506849315,
   "ceiling_ws": 0.2165729073937882,
   "llm_s_per_mission_ws": 273.52469518058933,
@@ -696,6 +742,7 @@
   "resume_out_mean": 285.8918918918919,
   "resume_share_gt_1k": 0.04054054054054054,
   "resume_ceiling_thor": 0.4708185710304935,
-  "resume_ceiling_thor_private": 0.21518748064179632
+  "resume_ceiling_thor_private": 0.21518748064179632,
+  "resume_ceiling_r90": 0.3987033866751806
  }
 }

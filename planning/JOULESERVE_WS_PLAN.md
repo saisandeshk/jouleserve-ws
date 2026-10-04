@@ -2,6 +2,10 @@
 
 Status: **v1.0** (2026-09-30). This is the master plan for the workstation build.
 - **2026-10-01:** first evidence pack (Track A + aerogen, M2-style): [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md). Direction decision pending; see its §6–7.
+- **2026-10-02 to 10-04:** the merged evidence doc ([`../reports/2026-10-02-p5-evidence/README.md`](../reports/2026-10-02-p5-evidence/README.md)), with the results below.
+  - A memory controller beats SGLang's default by at most ~10% in simulation (2026-10-03).
+  - P1's runaway calls are repetition loops (2026-10-04).
+  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12; current state in [`../HANDOFF.md`](../HANDOFF.md)).
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 
@@ -32,7 +36,7 @@ not a rewrite.
 
 **Not in scope on the WS:**
 - DVFS/power-limit control: needs root. It's a Jetson axis.
-- Thermal policy: the A5000's thermals are not the edge's.
+- Thermal policy: the A5000's thermals are not the edge's. On the edge too, P1 measured no thermal throttling in 392 h at room temperature (2026-10-03); only hot enclosures are open.
 - Claims about unified-memory contention: only measurable on Jetson.
 
 ## 1. What we know (inputs to the design)

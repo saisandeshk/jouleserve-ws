@@ -1,5 +1,9 @@
 # Track B — prior-work review: index and synthesis
 
+> **Notes from P1's measurements (2026-10-03/04).**
+> - **Thermal.** P1 saw no thermal throttling in 392 h of agent runs at room temperature. Thermal-aware systems (TAWS, EnerInfer) matter here only for hot enclosures.
+> - **Runaways.** P1's 32K-capped thinking calls are repetition loops under greedy decoding. So the prior work that bears on option A is reasoning-length control and early exit, which is not yet reviewed. See [`../../reports/2026-10-04-drone-runaways/README.md`](../../reports/2026-10-04-drone-runaways/README.md).
+
 Status: 2026-09-30. There is one doc per system in this folder, all following `_TEMPLATE.md`:
 workloads, assumptions, controller, results, what JouleServe-WS can take, what JouleServe must
 add, and workstation → edge. The docs were written by parallel reviewers from primary sources.
