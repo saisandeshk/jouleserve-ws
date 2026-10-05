@@ -37,6 +37,8 @@ def select(rows, how, seed=0, srcs=("thor_rfx", "thor_tc")):
     rng = random.Random(seed)
     if how == "full":
         return [r for r in rows if r["src"] in srcs and r["kind"] in ("loop", "control")]
+    if how == "rfx":                                     # Thor Reflexion only (no tools): pilot sizes
+        return select(rows, "pilot", seed, srcs=("thor_rfx",))
     if how == "o32":
         loops = [r for r in rows if r["src"] == "o32_e4b" and r["kind"] == "loop"]
         ctrl = [r for r in rows if r["src"] == "o32_e4b" and r["kind"] == "control"]
@@ -136,7 +138,7 @@ async def drive(a, run):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prompts", default="data/a_e1/prompts.jsonl")
-    ap.add_argument("--select", default="pilot", choices=("pilot", "full", "o32"))
+    ap.add_argument("--select", default="pilot", choices=("pilot", "full", "o32", "rfx"))
     ap.add_argument("--arms", default="greedy,sampled:0")
     ap.add_argument("--gateway", default="http://127.0.0.1:31000")
     ap.add_argument("--server", default="http://127.0.0.1:30000")
