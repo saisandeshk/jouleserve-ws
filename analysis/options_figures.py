@@ -27,35 +27,54 @@ def fig_a_e1():
     a = _load("a_e1")
     if not a:
         return
-    cells = a["cells"]
-    groups = [("thor_rfx", "loop", "Thor Reflexion:\nlooped on P1's device"), ("thor_tc", "loop", "Thor tool calling:\nlooped on P1's device"),
-              ("thor_rfx", "control", "Thor Reflexion:\nfinished on P1's device"), ("thor_tc", "control", "Thor tool calling:\nfinished on P1's device"),
-              ("o32_e4b", "loop", "Orin 32 E4B:\nlooped"), ("o32_e4b", "control", "Orin 32 E4B:\nfinished")]
+    # one panel per model: the 26B through llama.cpp, and gemma-4-E4B
+    cells = {}
+    for k, v in a["cells"].items():
+        run, rest = k.split("|", 1)
+        if "g26b" in run:
+            cells["26B · " + rest] = v
+        elif "e4b" in run:
+            cells["E4B · " + rest] = v
+    return _fig_a_e1_panels(cells)
+
+
+def _fig_a_e1_panels(cells):
+    groups = [("thor_rfx", "loop", "Thor Reflexion:\nlooped on P1's device"),
+              ("thor_rfx", "control", "Thor Reflexion:\nfinished on P1's device"),
+              ("thor_tc", "loop", "Thor tool calling:\nlooped on P1's device"),
+              ("thor_tc", "control", "Thor tool calling:\nfinished on P1's device"),
+              ("o32_e4b", "loop", "Orin 32 E4B:\nlooped on P1's device"), ("o32_e4b", "control", "Orin 32 E4B:\nfinished")]
     groups = [g for g in groups if any(k.endswith(f"|{g[0]}|{g[1]}") for k in cells)]
-    arms = sorted({k.split("|")[0] for k in cells}, key=lambda x: (x != "greedy", x))
-    fig, ax = plt.subplots(figsize=(9, 3.8))
-    w = 0.8 / max(1, len(arms))
-    for j, arm in enumerate(arms):
-        xs, ys, lo, hi = [], [], [], []
-        for i, (src, kind, _) in enumerate(groups):
-            c = cells.get(f"{arm}|{src}|{kind}")
-            if not c:
-                continue
-            xs.append(i + (j - (len(arms) - 1) / 2) * w)
-            ys.append(c["loop_rate"])
-            l, h = c["loop_ci"] or (c["loop_rate"], c["loop_rate"])
-            lo.append(c["loop_rate"] - l)
-            hi.append(h - c["loop_rate"])
-        col = C2 if arm == "greedy" else [C1, C3, C4][min(j - 1, 2)]
-        ax.bar(xs, ys, w * 0.9, color=col, label=("greedy (P1's protocol)" if arm == "greedy" else
-                                                    f"Gemma's default sampling ({arm.split(':')[1] if ':' in arm else ''})"))
-        ax.errorbar(xs, ys, yerr=[lo, hi], fmt="none", ecolor=INK2, lw=0.8, capsize=2)
-    ax.set_xticks(range(len(groups)), [g[2] for g in groups], fontsize=8)
-    ax.set_ylabel("share of calls that loop")
-    ax.set_ylim(0, 1.05)
-    ax.set_title("A-E1: P1's recorded prompts replayed on gemma-4-E4B (WS)", loc="left", fontweight="bold")
+    order = ["26B · greedy", "26B · sampled:0", "E4B · greedy", "E4B · sampled:0", "E4B · sampled:1"]
+    colors = {"26B · greedy": C2, "26B · sampled:0": C1, "E4B · greedy": C4, "E4B · sampled:0": C3, "E4B · sampled:1": C3}
+    names = {"26B · greedy": "gemma-4-26B (4-bit, llama.cpp), greedy = P1's protocol",
+             "26B · sampled:0": "gemma-4-26B, Gemma's default sampling",
+             "E4B · greedy": "gemma-4-E4B (SGLang), greedy", "E4B · sampled:0": "gemma-4-E4B, sampling (2 seeds)"}
+    fig, ax = plt.subplots(figsize=(10, 4.2))
+    seen, x = set(), 0.0
+    ticks = []
+    for src, kind, label in groups:
+        present = [a for a in order if f"{a}|{src}|{kind}" in cells]
+        w = 0.8 / max(1, len(present))
+        for j, a in enumerate(present):
+            c = cells[f"{a}|{src}|{kind}"]
+            xi = x + (j - (len(present) - 1) / 2) * w
+            lo, hi = c["loop_ci"] or (c["loop_rate"], c["loop_rate"])
+            ax.bar(xi, max(c["loop_rate"], 0.004), w * 0.88, color=colors[a],
+                   label=names.get(a) if names.get(a) and a not in seen else None)
+            ax.errorbar([xi], [c["loop_rate"]], yerr=[[c["loop_rate"] - lo], [hi - c["loop_rate"]]], fmt="none",
+                        ecolor=INK2, lw=0.7, capsize=2)
+            ax.text(xi, hi + 0.02, f"{c['loops']}/{c['n']}", ha="center", fontsize=7, color=INK2)
+            seen.add(a)
+        ticks.append((x, label))
+        x += 1.0
+    ax.set_xticks([t for t, _ in ticks], [l for _, l in ticks], fontsize=8)
+    ax.set_ylabel("share of calls that loop (95% CI)")
+    ax.set_ylim(0, 1.08)
+    ax.set_title("A-E1: P1's recorded prompts replayed on the WS: does sampling remove the loops?", loc="left",
+                 fontweight="bold")
     _style(ax, "y")
-    ax.legend(fontsize=8, frameon=False)
+    ax.legend(fontsize=7.5, frameon=False, loc="upper right")
     fig.tight_layout()
     fig.savefig(F / "a_e1_loops.png", dpi=160)
     plt.close(fig)

@@ -130,21 +130,23 @@ def summarize(run_dirs, prompts_file):
                        s_median=round(st.median(r["s"] for r in rs), 1),
                        generator_finished=len(gen), program_parses=parsed, program_valid=valid,
                        recorded_tokens_median=round(st.median(r["recorded"]["completion_tokens"] for r in rs)))
-            out["cells"][f"{arm}|{src}|{kind}"] = row
+            out["cells"][f"{Path(d).name}|{arm}|{src}|{kind}"] = row
     # decision rules (D15)
     rules = {}
-    for src in ("thor_rfx", "thor_tc", "o32_e4b"):
-        g = out["cells"].get(f"greedy|{src}|loop")
+    runs = sorted({k.split("|")[0] for k in out["cells"]})
+    for run, src in ((r, s_) for r in runs for s_ in ("thor_rfx", "thor_tc", "o32_e4b")):
+        cells = {k.split("|", 1)[1]: v for k, v in out["cells"].items() if k.startswith(run + "|")}
+        g = cells.get(f"greedy|{src}|loop")
         if not g:
             continue
         reproduced = g["loop_rate"] >= 0.5
-        sampled = [v for k, v in out["cells"].items() if k.startswith("sampled") and k.endswith(f"|{src}|loop")]
+        sampled = [v for k, v in cells.items() if k.startswith("sampled") and k.endswith(f"|{src}|loop")]
         s_loops = sum(v["loops"] for v in sampled)
         s_n = sum(v["n"] for v in sampled)
-        ctrl_g = out["cells"].get(f"greedy|{src}|control")
-        ctrl_s = [v for k, v in out["cells"].items() if k.startswith("sampled") and k.endswith(f"|{src}|control")]
+        ctrl_g = cells.get(f"greedy|{src}|control")
+        ctrl_s = [v for k, v in cells.items() if k.startswith("sampled") and k.endswith(f"|{src}|control")]
         ctrl_s_fin = sum(v["finished"] for v in ctrl_s) / max(1, sum(v["n"] for v in ctrl_s))
-        rules[src] = dict(
+        rules[f"{run}|{src}"] = dict(
             greedy_loop_rate_on_thor_loops=g["loop_rate"], reproduction_check=reproduced,
             sampled_loop_rate_on_thor_loops=round(s_loops / s_n, 4) if s_n else None,
             sampled_ci=wilson(s_loops, s_n),

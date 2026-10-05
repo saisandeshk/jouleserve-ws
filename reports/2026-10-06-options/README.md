@@ -39,13 +39,13 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
 | **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Unknown: no measurement yet **[pending: C-E1]** | Vision burst: 0.6% of LLM time at one agent [P1-meas]; several agents **[pending: D-E2]** | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
-| **K2 Evidence** | Energy measured; loop stop replayed offline on recorded text; sampling unmeasured on Gemma **[pending: A-E1]** | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | None | Mechanism read from server counters; multi-agent unmeasured | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
+| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | None | Mechanism read from server counters; multi-agent unmeasured | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; greedy loops are model-general [lit] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
 | **K6 Feasibility** | Detector, gateway and decode guard built (§3) | aerogen driver exists; needs a building-aware sim | τ²-bench (MIT) and the gateway; needs a user-simulator model | Gateway and replayer built; burst policy to build | Configuration; small study |
 | **K7 Dependence on P1** | High: P1's paper claims the loop finding; split to agree | High: agent design is P1's territory | Low | Medium: P1's answer on `ask_vlm`; devices for real unified memory | Medium: P1 proposed these remedies (MB5, not run) and deferred its KV-pool sweep (E4) |
-| **K8 Risk** | Sampling may remove the loops (a configuration fix) | Attributable to agent engineering; strict range includes parity | Waits are synthetic; may collapse like traffic | Effect small; a 2026 elastic-KV paper found ~1% | A good static setting may capture it all |
+| **K8 Risk** | Realised for drones: sampling removes the loops (a configuration fix for P1); what is left is smaller | Attributable to agent engineering; strict range includes parity | Waits are synthetic; may collapse like traffic | Effect small; a 2026 elastic-KV paper found ~1% | A good static setting may capture it all |
 
 ## 3. A. Decode-side energy
 
@@ -71,9 +71,9 @@ per successful task, losing Y runs, where sampling alone recovers Z%."
   Orin 32 E4B (7 lost) [P1-meas].
 
 **Evidence against.**
-- The likely cause is greedy decoding: P1 runs temperature 0, Gemma-4's own default is temperature 1.0,
-  top_k 64, top_p 0.95, and on the WS Qwen3.5 ran away only under greedy decoding (0 runaways in 21 sampled
-  missions) [WS-meas]. If sampling removes the loops, the fix is configuration. **[pending: A-E1]**
+- The cause is greedy decoding: on the WS, P1's 26B loops on 77% of P1's loop prompts under greedy and on none
+  under Gemma-4's own default sampling (A-E1, below); Qwen3.5 ran away only under greedy too (0 of 21 sampled
+  missions) [WS-meas]. So the drone fix is configuration.
 - P1's paper now reports the loop finding itself (offline detector, stop-at-first-cap bound).
 - The traffic workload is ungraded, so "runs lost" there counts completions, not correct answers.
 
@@ -94,8 +94,9 @@ can replay P1's exact prompts on a stand-in model.
 build now, agree the split after 10 Oct). P1's prompts are needed on the WS GPUs for A-E1/A-E2 **[waiting:
 Sandesh's permission]**.
 
-**What would change our mind.** Sampling removes ≥ 90% of the loops on Gemma-4 without hurting finished calls
-(A-E1's rule): A shrinks to a configuration finding for P1 plus a safety net.
+**What would change our mind.** This happened for the drone agents: sampling removes the loops on P1's 26B
+without hurting finished calls (A-E1). A now rests on the traffic agent's repeated caps, a safety net, and
+budgets; A-E2 tests the safety net.
 
 **This week.**
 - **A-E4, traffic's capped calls** (`a_e4.json`; P1's traces) [P1-meas]:
@@ -114,7 +115,27 @@ Sandesh's permission]**.
     and it says loops depend on more than greedy decoding: on the model, and apparently on the serving stack or
     device (E4B looped on all 5 on P1's Orin 32; P1 reports inference varying between repeats there).
   - **P1's gemma-4-26B-A4B through llama.cpp (4-bit GGUF; SGLang cannot run any 26B on our GPUs) reproduces the
-    loops under greedy:** **[results being filled in]**.
+    loops under greedy, and Gemma's default sampling removes them** (P1's Thor Reflexion prompts, 30 that looped
+    and 20 that finished on P1's device; one sampling seed):
+
+    | | Greedy (P1's protocol) | Gemma's default sampling |
+    | --- | --- | --- |
+    | Looped on P1's Thor (30) | **23 loop (77%; 95% CI 59-88%)**; 7 finish | **0 loop (0-11%)**; 29 finish, 28/28 programs valid |
+    | Finished on P1's Thor (20) | 6 loop (30%) | 0 loop; 20 finish |
+    | Output tokens, median (loop prompts) | 11,574 (stopped by the detector) | 8,136 |
+    | GPU energy for the 50 prompts | 685 kJ (loops stopped early) | 483 kJ |
+
+    The greedy loops trip the detector at a median 11.6K tokens, as P1's did on the Thor (35% of 32,768). The
+    4-bit model loops somewhat more readily than P1's bf16 one (6 of 20 controls). Verdict under the
+    pre-registered rule: **sampling removes the loops**.
+
+    ![A-E1](figures/a_e1_loops.png)
+
+  - **What this means for A.** The largest energy item in P1's drone runs (capped decodes, 67-69% of board energy
+    on Thor gemma) looks like a decoding configuration problem: P1 runs temperature 0, the model's own
+    generation config samples (temperature 1.0, top_k 64, top_p 0.95). The fix for P1 is one line, and it belongs
+    in P1's paper. What remains for P5 under A is the safety net (an online stop for residual loops, A-E2's
+    retries), the traffic agent's repeated capped tool calls (A-E4), budgets and batching of long decodes.
 - A-E2 (stop and retry) **[pending: queued on the 26B]**; A-E5 (batching) **[partial: granite done]**.
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
