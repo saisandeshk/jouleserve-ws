@@ -84,9 +84,9 @@ class Agent:
             if P + O > self.a.ctx:
                 status = "overflow"
                 break
-            if prev is None:
-                ids = _rand(self.rng, P)
-                first = ids
+            if prev is None or self.a.no_reuse:
+                ids = _rand(self.rng, P)         # --no-reuse: every prompt fresh, nothing can be cached
+                first = first or ids
             else:
                 grown = prev + prev_out if self.a.keep_output else prev
                 ids = grown + _rand(self.rng, P - len(grown)) if P >= len(grown) else \
@@ -194,6 +194,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--bursts", action="store_true", help="replay vision-tool bursts as concurrent requests")
     ap.add_argument("--keep-output", action="store_true", help="keep generated IDs in the next prompt")
+    ap.add_argument("--no-reuse", action="store_true", help="fresh IDs for every prompt (drop state at every wait)")
     ap.add_argument("--grace", type=float, default=300, help="seconds after --horizon before running sessions are cut")
     ap.add_argument("--name", required=True)
     ap.add_argument("--note", default="")
