@@ -294,7 +294,12 @@ def energy_map():
                 acc["capped_decode" if c["capped"] else "other_decode"] += e - pf
             for t in r["tools"]:
                 e = t["energy"] if t["energy"] is not None else med.get(t["tool"], 0.0) * (t["t1"] - t["t0"])
-                acc["vision_tool" if t["tool"] == "ask_vlm" else "other_tools"] += e
+                # Devstral's validate_drone_code runs an LLM call inside the tool: count that energy once.
+                for c in r["calls"]:
+                    a, b = max(t["t0"], c["t0"]), min(t["t1"], c["t1"])
+                    if b > a:
+                        e -= (c["energy"] or 0.0) * (b - a) / max(1e-9, c["t1"] - c["t0"])
+                acc["vision_tool" if t["tool"] == "ask_vlm" else "other_tools"] += max(0.0, e)
         tot = sum(acc.values())
         shares = {a: v / E for a, v in acc.items()}
         shares["rest"] = max(0.0, 1 - tot / E)

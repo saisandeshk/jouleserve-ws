@@ -24,6 +24,7 @@ CHROME = next((c for c in (os.environ.get("SLIDE_CHROME"),
                            "/opt/brave.com/brave/brave", "/usr/bin/brave-browser") if c and os.path.exists(c)), None)
 BLOBS = {
          "/_blob/9b83a2f30d74e4643cf604a6c3e5c385": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/energy_map.png",
+         "/_blob/ac0899687989131477a339e394564bd9": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/energy_map.png",
          "/_blob/0725e2d95ddb66817859bc91d90a1c4c": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/opportunity.png",
          "/_blob/e13847c3ea658fccc4e758076f83b0c4": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/caps.png",
          "/_blob/69c5f109f1ab9aed0331081ab4d51247": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/traffic_sim.png",

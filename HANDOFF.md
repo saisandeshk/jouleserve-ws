@@ -71,11 +71,18 @@ which git already keeps.
   dated reports. Revisions and slide counts: see "Artifacts" below.
 - **Artifacts** (all private until Sandesh shares them from their Share menu):
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (repo copy above; keep in sync).
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 125; repo copy above, keep in
+    sync). 5 diagrams, a native chart of kept-state value, our figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure.
+    **One fix left:** its embedded `energy_map.png` is the first version (Devstral "other tools" bar 20%); the
+    table under it is right (7%). Re-upload `reports/2026-10-05-p1-repo/figures/energy_map.png` and swap the
+    image (the agent's upload was blocked by the permission check).
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
-    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (no repo copy). One open comment
-    in it (ours) asks how many drones per device to plan for.
-  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.0.
+    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 149; no repo copy). New
+    chapter 18 (the traffic workload), §11 memory on a Jetson, §16 P1's repository, paper and corrections,
+    §19.5–19.7 traffic evidence, 8 new self-test questions, 10 glossary terms. One open comment in it (ours)
+    asks how many drones per device to plan for.
+  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.0 (artifact
+    version 8, 132 slides: 23 new, about 60 changed).
     - The single main reference, updated weekly: a new log slide (section 13, newest first), the
       at-a-glance slide and the changelog; matured results move into Findings.
     - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt),
@@ -119,8 +126,8 @@ milestones (master plan M3–M5) should not be built as planned: rewrite them af
 
 **Kept state is worth little on P1's agents, drone or traffic** (P1's measured runs, one agent per device;
 `reports/2026-10-05-p1-repo` §2).
-- **Drone:** the cache saved 0.2–0.5% of LLM time on Thor; the ceiling P/(P+r·O) is 0.9–2.6% (pooled 2.1% and
-  0.6% at r ≈ 67 in the earlier reports; per task 0.3–14%). Prompts are rebuilt per call.
+- **Drone:** the cache saved 0.2–0.5% of LLM time on Thor; the ceiling P/(P+r·O) is 0.9–2.6% on Thor and
+  3.5% on Orin 32 E4B (Devstral 23%; pooled 2.1% and 0.6% at r ≈ 67 in the earlier reports; per task 0.3–14%). Prompts are rebuilt per call.
 - **Traffic:** contexts only grow (every prompt repeats the previous one; up to 106K tokens on Thor; 56–82%
   of prompt tokens from cache), but the cache saved 1.1–4.2% of LLM time and the ceiling at each
   configuration's own r (117–312) is 1.7–7.2% (Qwen2.5-VL, which writes 107 tokens per call: 15% and 26%).
@@ -165,8 +172,8 @@ milestones (master plan M3–M5) should not be built as planned: rewrite them af
 **Earlier results that still stand.**
 - **Two drone agents** (same 12 tasks, Thor): tool calling passes 67% at 231 kJ per success, Reflexion 87%
   at 79 kJ (2.9×).
-- **P1's drone KV evictions are a side effect of the loops** (45 of 47 evicting Reflexion runs contain a
-  capped call).
+- **P1's drone KV evictions are a side effect of the loops** (46 of the 48 evicting Reflexion runs
+  contain a capped call, all 144 runs; 45 of 47 in our 143-run copy).
 - **A step-wise agent on P1's delivery tasks keeps its steps short** (WS, 108 missions): median 55–99 output
   tokens after a tool result; ceiling at r = 67: 20–72% of mission LLM time, private state 3–16%; 72%
   deliver everything but only 27% pass the strict check.

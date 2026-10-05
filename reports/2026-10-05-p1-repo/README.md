@@ -382,7 +382,8 @@ recorded. Runs lost are runs that still passed (drone) or completed (traffic).
   had lowered because the window was nearly full. That is capacity, not runaway decoding.
 
 **Where each configuration's energy goes** (P1's measured board energy; each call's energy split into prefill and
-decode by its time to first token; `energy_map.json`):
+decode by its time to first token; `energy_map.json`; a Devstral tool, `validate_drone_code`, runs an LLM call inside
+it, and that energy is counted once, as the call):
 
 ![Shares of board energy by phase](figures/energy_map.png)
 
@@ -390,7 +391,7 @@ decode by its time to first token; `energy_map.json`):
 | --- | --- | --- | --- | --- | --- |
 | Drone · Thor · gemma · Reflexion | 67% | 27% | 2% | 0% | 3% |
 | Drone · Thor · gemma · tool calling | 69% | 28% | 1% | 0% | 2% |
-| Drone · Orin 64 · Devstral | 5% | 66% | 21% | 0% | 20% |
+| Drone · Orin 64 · Devstral | 5% | 66% | 21% | 0% | 7% |
 | Drone · Orin 32 · gemma-E4B | 16% | 76% | 3% | 0% | 5% |
 | Traffic · Thor · gemma | 38% | 49% | 2% | 6% | 2% |
 | Traffic · Thor · granite | 19% | 78% | 1% | 0% | 2% |
