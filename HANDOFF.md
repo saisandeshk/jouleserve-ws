@@ -1,10 +1,12 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-05 (early morning IST). Today's work:
-- reviewed P1's paper-meeting deck of 2026-10-03;
-- found that the runaway calls are repetition loops;
-- updated every doc, local and both Claude Docs, with the drone findings;
-- built the P5 reference deck to v1.0 (all 14 sections plus the appendix, 109 slides).
+**Last updated:** 2026-10-05 (IST). Latest work, in order:
+- 2026-10-04: reviewed P1's paper-meeting deck; found that the runaway calls are repetition loops; updated
+  every doc with the drone findings; built the P5 reference deck to v1.0 (109 slides);
+- 2026-10-05: **P1's repository arrived** (Sandesh cloned it to `data/edge-agent-bench`). Mapped it (task 1)
+  and reran our analyses on its drone and traffic data (task 2):
+  [`reports/2026-10-05-p1-repo/README.md`](reports/2026-10-05-p1-repo/README.md). **Task 3 (update every
+  doc, the Claude Docs and the deck with it) waits for Sandesh's go.**
 
 The professor meeting is on **Monday 2026-10-05**. Rules, machines, recipes and WS gotchas are in
 [`AGENTS.md`](AGENTS.md). This file holds the state at the time of writing.
@@ -30,7 +32,21 @@ appending history, which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline (paper due Sat 2026-10-10).
   P5 has the 2×A5000 workstation, and WS work must pay off later.
 
-## 2. Situation as of 2026-10-04 ~20:00 IST
+## 2. Situation as of 2026-10-05
+
+- **P1's repository** (`dream-lab/edge-agent-bench`) is a read-only clone in `data/edge-agent-bench`
+  (git-ignored; HEAD `3c47ebc`, Sun 4 Oct 19:02; its remote is P1's GitHub: never push, never modify).
+  - 2,055 runs: 3 graded drone cells (Thor gemma Reflexion, Orin 64 Devstral tool calling, Orin 32
+    gemma-E4B tool calling) and 8 traffic cells (ungraded). Thor drone tool calling is **not** in it; keep
+    using our copy `data/p1_thor_toolcalling/` (104 runs).
+  - Our loader `analysis/p1_repo.py` reads all 12 configurations (cache in `data/p1_cache/`).
+  - P1's analysis and paper are written by Mayank Arya (`mayankarya`, also aerogen's author).
+  - **P1's paper now claims the loop finding** (offline detector, "stop at the first capped call" bound of
+    50.2% that loses 22 runs) and **has dropped its early-abort plan** ("out of scope"). It assumes one
+    request in flight. P1 deferred its KV-pool sweep (E4) and warm-cache arm (E5), which overlap P5.
+  - Corrections for P1 (report §7): `ask_vlm` is a burst of requests to the agent's own server, not a
+    second model; their loop threshold misses long-period loops; the drone Orin 32 caps are 1,024-token
+    evaluator calls; Devstral's prefix cache is off (about 9% of its LLM time).
 
 - **Not pushed: the GitHub repo is PUBLIC.**
   - `gh repo view` reports `saisandeshk/jouleserve-ws` as public.
@@ -136,6 +152,7 @@ appending history, which git already keeps.
 | Analysis | `analysis/sessions.py`, `report_figures.py`, `headroom_sim.py`, `sim_validate.py`, `p1_cache_misses.py`, `doc_charts.py`, `p1_per_task.py`, `stepwise_ceiling.py` | One session model for P1 traces and WS runs; ceilings (`stepwise.json` also holds r = 90 ceilings since 2026-10-04) |
 | Admission/retention simulator | `analysis/admission_sim.py`, `admission_figures.py` | N drones per box, per-model state layouts, 12 policies + unlimited memory; Thor and WS device models. `summary.json` holds the paradigm comparison under both success checks (2026-10-04) |
 | P1 runaway analysis | `analysis/p1_runaway.py`, **`analysis/p1_loops.py`** (2026-10-04) | Two-agent comparison and fixed-cut savings; online loop detector replay, savings vs fixed cuts, cross-check of P1's drone numbers, eviction overlap |
+| P1 repository analyses (2026-10-05) | `analysis/p1_repo.py` (loader), `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py` | All 12 configurations: value of kept state, idle gaps, vision-tool bursts, prefix reuse; capped calls, loops and four stop rules; N traffic agents per device at real KV pools |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/launch_qwen35_tp1.sh`, `env/queue*.sh` | K2 pinned to revision `f846b1e` |
 
 Not built: the gateway, live policies, a Jetson telemetry adapter, the CLGSCE port. If the
@@ -143,6 +160,25 @@ negative result stands, the gateway and policy milestones (master plan M3–M5) 
 built as planned; rewrite them after the direction decision.
 
 ## 4. What we know (details, figures and caveats in the reports)
+
+**P1's traffic and the repo's drone cells** (2026-10-05, `reports/2026-10-05-p1-repo`; measured on P1's
+runs unless marked simulated).
+- **Traffic contexts accumulate** (prompts never shrink; 56–82% from cache), **but kept state is worth
+  1–4% of LLM time** (ceiling 1.7–7.2% at each configuration's own r; Qwen2.5-VL 15% / 26%). Outputs are
+  a median 107–999 tokens per call; idle gaps a median 1.0–2.8 s; no prefix is shared between sessions
+  (the system prompt opens with the current time).
+- **The vision tool fills the KV pool at one agent per device:** 8–45 concurrent requests to the agent's
+  own server; on Orin 64 gemma it evicts the paused context before all 62 following calls (90% recomputed,
+  0.6% of LLM time). Option D's live case, but small.
+- **Many traffic agents per device (simulated, real KV pools):** no policy beats SGLang's default by more
+  than 2.4% in 48 cells; on the Orins capacity binds (gap to unlimited memory up to 64% at 8 agents;
+  doubling the pool cuts energy per completed task 31–46%).
+- **Capped calls:** drone = loops (Thor Reflexion 121/122 incl. P1's 144th run; online stop 43.5%, no
+  finished call stopped). Traffic = mostly not text loops where text survives; the waste is a cap inside a
+  tool call followed by a retry that caps again (121 of 158 on Thor gemma). Stopping at the second
+  consecutive cap saves 27% (Thor gemma, 1 run lost) and 25% (Orin 32 E4B, 7 lost).
+- **Thermal** (P1's paper): 0 throttle samples in 434 h, peak 81.3 °C. **Repeat divergence** is traced by
+  P1 to inputs (timestamp in the prompt, simulator noise), except gemma-E4B on the Orin 32.
 
 **P1's drone agents leave no retained-state opportunity** (Thor traces, Gemma-4-26B-A4B; P1's
 own deck agrees).
@@ -178,8 +214,9 @@ own deck agrees).
     Reflexion runs (and 40 of 44 tool-calling ones) contain a capped call, which overflows P1's
     80K-token pool cap.
   - This explains our 2026-10-01 same-role cache-miss anomaly, which costs 0.3–1.1%.
-- **Overlap:** P1's paper plans an early-abort policy (kill runs predicted to fail at iteration
-  2) as its systems contribution. Option A overlaps it.
+- **Overlap (updated 2026-10-05):** P1's paper reports the loops itself and suggests "stop or retry at
+  the first capped call", but dropped its early-abort policy as out of scope. Option A must be an online,
+  run-preserving stop evaluated as a control policy, plus the traffic retry case.
 
 **P1's deck, drone side (2026-10-03; reproduced from our copy where marked).**
 - **Reproduced from our copy:**
@@ -262,17 +299,13 @@ missions).
    changelog; fill the traffic (section 8) and reasoning-length (section 7) placeholders when
    their inputs arrive.
 
-**From Monday:**
-1. Get P1's repository and refresh P1's numbers (the tool-calling sweep runs to 144). Then rerun:
-   - `analysis.p1_runaway`, `analysis.p1_loops` and `analysis.p1_per_task`;
-   - `analysis.stepwise_ceiling`, `analysis.admission_sim` and `analysis.admission_figures`.
-2. Analyse P1's traffic traces with the same tools:
-   - ceilings and cache value;
-   - whether the 8K-capped calls are loops too;
-   - why the Orin 64 window is 12,288 tokens;
-   - what `ask_vlm` does to memory and GPU time.
-
-   This may revive option D on P1's own workload.
+**Now (2026-10-05):**
+1. Task 3, on Sandesh's go: update the docs (evidence repo copy and Claude Doc, teaching guide, plans,
+   review notes), the deck (traffic slide in section 8, findings, options, weekly log, at-a-glance,
+   changelog) with `reports/2026-10-05-p1-repo`.
+2. Send P1 the corrections in report §7 (Sandesh decides how, before P1's 10 Oct deadline).
+3. When P1 pushes its Thor drone tool-calling cell or traffic grades, rerun `analysis.p1_repo` with
+   `refresh=True` and the four analyses.
 3. **If A:**
    - test whether sampling removes the loops on Gemma (a device, or a quantized Gemma on the WS);
    - agree with P1 how the loop stop relates to their early-abort policy;

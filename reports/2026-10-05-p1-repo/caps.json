@@ -1,0 +1,965 @@
+{
+ "d_thor_gemma_rfx": {
+  "label": "Drone \u00b7 Thor \u00b7 gemma-26B \u00b7 Reflexion",
+  "runs": 144,
+  "calls": 1049,
+  "capped": 122,
+  "caps": {
+   "32768": 116,
+   "8192": 3,
+   "4096": 3
+  },
+  "capped_share_of_llm_time": 0.7054389050709159,
+  "runs_with_cap": 57,
+  "ok_rate_with_cap": 0.38596491228070173,
+  "ok_rate_without_cap": 0.9195402298850575,
+  "capped_with_complete_text": 122,
+  "loops_ours": 121,
+  "finished_long_calls_with_text": 173,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.3498790635410804,
+  "loops_p1_rule": 94,
+  "capped_checked_p1_rule": 122,
+  "p1_rule_missed_ratios": [
+   0.101,
+   0.101,
+   0.101,
+   0.104,
+   0.104,
+   0.104,
+   0.104,
+   0.106,
+   0.106,
+   0.106,
+   0.108,
+   0.108,
+   0.108,
+   0.11,
+   0.11,
+   0.11,
+   0.111,
+   0.112,
+   0.124,
+   0.138,
+   0.142,
+   0.155,
+   0.156,
+   0.164,
+   0.164,
+   0.164,
+   0.177,
+   0.279
+  ],
+  "capped_after_capped": 3,
+  "capped_llm_share_by_kind": {
+   "loop": 0.6996354851393841,
+   "not_loop": 0.005803419931531692,
+   "no_text": 0.0
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.43542778885920846,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.33738225434368824,
+    "finished_calls_stopped": 24
+   },
+   "first_cap": {
+    "saved_share": 0.5024435905711785,
+    "runs_stopped": 57,
+    "ok_runs_lost": 22
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.0002881560338531484,
+    "runs_stopped": 3,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "d_thor_gemma_tc": {
+  "label": "Drone \u00b7 Thor \u00b7 gemma-26B \u00b7 tool calling",
+  "runs": 104,
+  "calls": 571,
+  "capped": 143,
+  "caps": {
+   "32768": 127,
+   "1024": 16
+  },
+  "capped_share_of_llm_time": 0.7062977099382464,
+  "runs_with_cap": 46,
+  "ok_rate_with_cap": 0.34782608695652173,
+  "ok_rate_without_cap": 0.9310344827586207,
+  "capped_with_complete_text": 143,
+  "loops_ours": 127,
+  "finished_long_calls_with_text": 194,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.44322714823106907,
+  "loops_p1_rule": 78,
+  "capped_checked_p1_rule": 127,
+  "p1_rule_missed_ratios": [
+   0.102,
+   0.104,
+   0.105,
+   0.105,
+   0.105,
+   0.105,
+   0.109,
+   0.112,
+   0.113,
+   0.115,
+   0.115,
+   0.121,
+   0.128,
+   0.133,
+   0.133,
+   0.133,
+   0.135,
+   0.135,
+   0.136,
+   0.137,
+   0.137,
+   0.137,
+   0.14,
+   0.147,
+   0.152,
+   0.156,
+   0.16,
+   0.16,
+   0.161,
+   0.161,
+   0.161,
+   0.165,
+   0.165,
+   0.165,
+   0.169,
+   0.169,
+   0.169,
+   0.172,
+   0.172,
+   0.172,
+   0.173,
+   0.178,
+   0.178,
+   0.183,
+   0.183,
+   0.183,
+   0.184,
+   0.184,
+   0.208
+  ],
+  "capped_after_capped": 75,
+  "capped_llm_share_by_kind": {
+   "loop": 0.7035217302373425,
+   "not_loop": 0.0027759797009038844,
+   "no_text": 0.0
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.3571775521032306,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.3460075730753123,
+    "finished_calls_stopped": 75
+   },
+   "first_cap": {
+    "saved_share": 0.6311044420766195,
+    "runs_stopped": 46,
+    "ok_runs_lost": 16
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.3446314560672463,
+    "runs_stopped": 31,
+    "ok_runs_lost": 7
+   }
+  }
+ },
+ "d_o64_devstral_tc": {
+  "label": "Drone \u00b7 Orin 64 \u00b7 Devstral-24B \u00b7 tool calling",
+  "runs": 144,
+  "calls": 920,
+  "capped": 3,
+  "caps": {
+   "8192": 3
+  },
+  "capped_share_of_llm_time": 0.06471710544814319,
+  "runs_with_cap": 3,
+  "ok_rate_with_cap": 0.0,
+  "ok_rate_without_cap": 0.3191489361702128,
+  "capped_with_complete_text": 3,
+  "loops_ours": 3,
+  "finished_long_calls_with_text": 7,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.20932910023375084,
+  "loops_p1_rule": 3,
+  "capped_checked_p1_rule": 3,
+  "p1_rule_missed_ratios": [],
+  "capped_after_capped": 0,
+  "capped_llm_share_by_kind": {
+   "loop": 0.06471710544814319,
+   "not_loop": 0.0,
+   "no_text": 0.0
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.04225973814368998,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.026723974637351322,
+    "finished_calls_stopped": 0
+   },
+   "first_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 3,
+    "ok_runs_lost": 0
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 0,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "d_o32_e4b_tc": {
+  "label": "Drone \u00b7 Orin 32 \u00b7 gemma-E4B \u00b7 tool calling",
+  "runs": 108,
+  "calls": 686,
+  "capped": 93,
+  "caps": {
+   "32768": 5,
+   "1024": 88
+  },
+  "capped_share_of_llm_time": 0.17356743772719693,
+  "runs_with_cap": 49,
+  "ok_rate_with_cap": 0.08163265306122448,
+  "ok_rate_without_cap": 0.7966101694915254,
+  "capped_with_complete_text": 93,
+  "loops_ours": 5,
+  "finished_long_calls_with_text": 328,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.16822474826368028,
+  "loops_p1_rule": 5,
+  "capped_checked_p1_rule": 5,
+  "p1_rule_missed_ratios": [],
+  "capped_after_capped": 3,
+  "capped_llm_share_by_kind": {
+   "loop": 0.10945503379367537,
+   "not_loop": 0.06411240393352158,
+   "no_text": 0.0
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.08645806316199119,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.0804398639593489,
+    "finished_calls_stopped": 1
+   },
+   "first_cap": {
+    "saved_share": 0.41874561618266243,
+    "runs_stopped": 49,
+    "ok_runs_lost": 4
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.029941577784699337,
+    "runs_stopped": 3,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "t_thor_gemma": {
+  "label": "Traffic \u00b7 Thor \u00b7 gemma-26B",
+  "runs": 252,
+  "calls": 1469,
+  "capped": 158,
+  "caps": {
+   "8000": 158
+  },
+  "capped_share_of_llm_time": 0.4228569886662153,
+  "runs_with_cap": 33,
+  "ok_rate_with_cap": 0.12121212121212122,
+  "ok_rate_without_cap": 0.9954337899543378,
+  "capped_with_complete_text": 21,
+  "loops_ours": 16,
+  "finished_long_calls_with_text": 205,
+  "finished_flagged_ours": 1,
+  "loop_fire_position_median": 0.4313691657320335,
+  "loops_p1_rule": 16,
+  "capped_checked_p1_rule": 51,
+  "p1_rule_missed_ratios": [
+   0.115,
+   0.116,
+   0.117,
+   0.139,
+   0.218,
+   0.364,
+   0.367,
+   0.369,
+   0.389,
+   0.393,
+   0.404,
+   0.407,
+   0.417,
+   0.417,
+   0.42,
+   0.439,
+   0.444,
+   0.456,
+   0.464,
+   0.464,
+   0.468,
+   0.468,
+   0.469,
+   0.472,
+   0.476,
+   0.483,
+   0.486,
+   0.493,
+   0.494,
+   0.514,
+   0.526,
+   0.529,
+   0.529,
+   0.551,
+   0.561
+  ],
+  "capped_after_capped": 121,
+  "capped_llm_share_by_kind": {
+   "loop": 0.04165610503210261,
+   "not_loop": 0.012962567054989868,
+   "no_text": 0.3682383165791228
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.019518428273999133,
+    "finished_calls_stopped": 1
+   },
+   "half_cap": {
+    "saved_share": 0.1909278239996856,
+    "finished_calls_stopped": 111
+   },
+   "first_cap": {
+    "saved_share": 0.3724041717513161,
+    "runs_stopped": 33,
+    "ok_runs_lost": 4
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.27335114295261914,
+    "runs_stopped": 13,
+    "ok_runs_lost": 1
+   }
+  }
+ },
+ "t_thor_granite": {
+  "label": "Traffic \u00b7 Thor \u00b7 granite-8B",
+  "runs": 189,
+  "calls": 994,
+  "capped": 41,
+  "caps": {
+   "8000": 41
+  },
+  "capped_share_of_llm_time": 0.1939703229880509,
+  "runs_with_cap": 33,
+  "ok_rate_with_cap": 0.09090909090909091,
+  "ok_rate_without_cap": 0.9935897435897436,
+  "capped_with_complete_text": 29,
+  "loops_ours": 4,
+  "finished_long_calls_with_text": 255,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.9379885356956749,
+  "loops_p1_rule": 8,
+  "capped_checked_p1_rule": 41,
+  "p1_rule_missed_ratios": [
+   0.121,
+   0.262,
+   0.265,
+   0.268,
+   0.273,
+   0.281,
+   0.284,
+   0.298,
+   0.308,
+   0.327,
+   0.337,
+   0.344,
+   0.346,
+   0.353,
+   0.354,
+   0.359,
+   0.361,
+   0.371,
+   0.371,
+   0.372,
+   0.384,
+   0.386,
+   0.389,
+   0.393,
+   0.395,
+   0.402,
+   0.41,
+   0.419,
+   0.42,
+   0.422,
+   0.423,
+   0.436,
+   0.442
+  ],
+  "capped_after_capped": 6,
+  "capped_llm_share_by_kind": {
+   "loop": 0.019291175235453928,
+   "not_loop": 0.11692540640592944,
+   "no_text": 0.057753741346667525
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.0013855842705654052,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.0938729306834339,
+    "finished_calls_stopped": 117
+   },
+   "first_cap": {
+    "saved_share": 0.0910461342258761,
+    "runs_stopped": 33,
+    "ok_runs_lost": 3
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 6,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "t_thor_qwen36": {
+  "label": "Traffic \u00b7 Thor \u00b7 Qwen3.6-35B-A3B",
+  "runs": 84,
+  "calls": 439,
+  "capped": 5,
+  "caps": {
+   "8000": 5
+  },
+  "capped_share_of_llm_time": 0.0916559701792777,
+  "runs_with_cap": 5,
+  "ok_rate_with_cap": 0.6,
+  "ok_rate_without_cap": 0.9873417721518988,
+  "capped_with_complete_text": 2,
+  "loops_ours": 2,
+  "finished_long_calls_with_text": 52,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.7159978831366933,
+  "loops_p1_rule": 1,
+  "capped_checked_p1_rule": 5,
+  "p1_rule_missed_ratios": [
+   0.17,
+   0.316,
+   0.322,
+   0.357
+  ],
+  "capped_after_capped": 0,
+  "capped_llm_share_by_kind": {
+   "loop": 0.0363332367179324,
+   "not_loop": 0.0,
+   "no_text": 0.0553227334613453
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.011773358187741651,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.033565768682443174,
+    "finished_calls_stopped": 18
+   },
+   "first_cap": {
+    "saved_share": 0.014815150181667888,
+    "runs_stopped": 5,
+    "ok_runs_lost": 3
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 0,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "t_o64_gemma": {
+  "label": "Traffic \u00b7 Orin 64 \u00b7 gemma-26B",
+  "runs": 227,
+  "calls": 787,
+  "capped": 66,
+  "caps": {
+   "706": 1,
+   "1318": 1,
+   "628": 1,
+   "639": 1,
+   "2176": 1,
+   "1381": 1,
+   "3556": 1,
+   "871": 1,
+   "1855": 1,
+   "1771": 1,
+   "1687": 1,
+   "1603": 1,
+   "1519": 1,
+   "1435": 1,
+   "1351": 1,
+   "1472": 1,
+   "696": 3,
+   "1860": 1,
+   "1776": 1,
+   "1692": 1,
+   "1608": 1,
+   "1524": 1,
+   "1440": 1,
+   "1356": 1,
+   "1272": 1,
+   "1188": 1,
+   "1104": 1,
+   "1020": 1,
+   "936": 1,
+   "852": 1,
+   "768": 1,
+   "879": 1,
+   "949": 1,
+   "865": 1,
+   "952": 1,
+   "1169": 1,
+   "3576": 1,
+   "948": 1,
+   "886": 1,
+   "751": 1,
+   "2488": 1,
+   "2422": 1,
+   "861": 1,
+   "1203": 1,
+   "1119": 1,
+   "1035": 1,
+   "951": 1,
+   "867": 1,
+   "783": 1,
+   "699": 1,
+   "615": 1,
+   "531": 1,
+   "747": 1,
+   "2376": 1,
+   "1213": 1,
+   "1129": 1,
+   "1045": 1,
+   "961": 1,
+   "877": 1,
+   "793": 1,
+   "709": 1,
+   "625": 1,
+   "541": 1,
+   "2573": 1
+  },
+  "capped_share_of_llm_time": 0.13293751196451867,
+  "runs_with_cap": 30,
+  "ok_rate_with_cap": 0.0,
+  "ok_rate_without_cap": 0.8578680203045685,
+  "capped_with_complete_text": 30,
+  "loops_ours": 0,
+  "finished_long_calls_with_text": 24,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": null,
+  "loops_p1_rule": 0,
+  "capped_checked_p1_rule": 7,
+  "p1_rule_missed_ratios": [
+   0.27,
+   0.284,
+   0.291,
+   0.378,
+   0.387,
+   0.427,
+   0.436
+  ],
+  "capped_after_capped": 36,
+  "capped_llm_share_by_kind": {
+   "loop": 0.0,
+   "not_loop": 0.06409701003668909,
+   "no_text": 0.06884050192782958
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.0,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.04895125400186008,
+    "finished_calls_stopped": 54
+   },
+   "first_cap": {
+    "saved_share": 0.04752193355163956,
+    "runs_stopped": 30,
+    "ok_runs_lost": 0
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.03960542168873114,
+    "runs_stopped": 5,
+    "ok_runs_lost": 0
+   }
+  }
+ },
+ "t_o64_granite": {
+  "label": "Traffic \u00b7 Orin 64 \u00b7 granite-8B",
+  "runs": 189,
+  "calls": 910,
+  "capped": 36,
+  "caps": {
+   "643": 1,
+   "8000": 14,
+   "3764": 1,
+   "3123": 1,
+   "655": 2,
+   "6220": 1,
+   "654": 1,
+   "644": 1,
+   "668": 1,
+   "4455": 1,
+   "4359": 1,
+   "4853": 1,
+   "517": 2,
+   "512": 2,
+   "6746": 1,
+   "5119": 1,
+   "528": 1,
+   "3912": 1,
+   "3816": 1,
+   "3720": 1
+  },
+  "capped_share_of_llm_time": 0.12952858304236511,
+  "runs_with_cap": 31,
+  "ok_rate_with_cap": 0.12903225806451613,
+  "ok_rate_without_cap": 0.8291139240506329,
+  "capped_with_complete_text": 27,
+  "loops_ours": 1,
+  "finished_long_calls_with_text": 194,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.4724622030237581,
+  "loops_p1_rule": 1,
+  "capped_checked_p1_rule": 25,
+  "p1_rule_missed_ratios": [
+   0.16,
+   0.199,
+   0.25,
+   0.284,
+   0.296,
+   0.314,
+   0.324,
+   0.353,
+   0.356,
+   0.356,
+   0.357,
+   0.358,
+   0.367,
+   0.383,
+   0.386,
+   0.389,
+   0.393,
+   0.4,
+   0.401,
+   0.401,
+   0.405,
+   0.407,
+   0.407,
+   0.409
+  ],
+  "capped_after_capped": 3,
+  "capped_llm_share_by_kind": {
+   "loop": 0.005615620586939208,
+   "not_loop": 0.08659463552626641,
+   "no_text": 0.0373183269291595
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.0028760515837393578,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.0612988766946582,
+    "finished_calls_stopped": 57
+   },
+   "first_cap": {
+    "saved_share": 0.03157288574868106,
+    "runs_stopped": 31,
+    "ok_runs_lost": 4
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.00437040812365893,
+    "runs_stopped": 2,
+    "ok_runs_lost": 1
+   }
+  }
+ },
+ "t_o32_granite": {
+  "label": "Traffic \u00b7 Orin 32 \u00b7 granite-8B",
+  "runs": 178,
+  "calls": 1110,
+  "capped": 50,
+  "caps": {
+   "1548": 1,
+   "8000": 32,
+   "2510": 1,
+   "2414": 1,
+   "1800": 1,
+   "6801": 1,
+   "5584": 1,
+   "1816": 1,
+   "1720": 1,
+   "1573": 1,
+   "653": 2,
+   "3898": 1,
+   "2622": 1,
+   "1346": 1,
+   "4726": 1,
+   "1439": 1,
+   "1343": 1,
+   "655": 1
+  },
+  "capped_share_of_llm_time": 0.1734262275500335,
+  "runs_with_cap": 37,
+  "ok_rate_with_cap": 0.13513513513513514,
+  "ok_rate_without_cap": 0.900709219858156,
+  "capped_with_complete_text": 31,
+  "loops_ours": 6,
+  "finished_long_calls_with_text": 230,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": 0.8168028004667445,
+  "loops_p1_rule": 7,
+  "capped_checked_p1_rule": 38,
+  "p1_rule_missed_ratios": [
+   0.228,
+   0.23,
+   0.241,
+   0.267,
+   0.298,
+   0.307,
+   0.311,
+   0.314,
+   0.315,
+   0.317,
+   0.318,
+   0.324,
+   0.33,
+   0.341,
+   0.344,
+   0.349,
+   0.351,
+   0.352,
+   0.362,
+   0.367,
+   0.367,
+   0.37,
+   0.372,
+   0.38,
+   0.381,
+   0.389,
+   0.389,
+   0.395,
+   0.406,
+   0.416,
+   0.44
+  ],
+  "capped_after_capped": 11,
+  "capped_llm_share_by_kind": {
+   "loop": 0.027266311342670643,
+   "not_loop": 0.08126152499476809,
+   "no_text": 0.06489839121259479
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.007727578365700224,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.08487890292902753,
+    "finished_calls_stopped": 63
+   },
+   "first_cap": {
+    "saved_share": 0.04495709254591845,
+    "runs_stopped": 37,
+    "ok_runs_lost": 5
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.009936171164599356,
+    "runs_stopped": 7,
+    "ok_runs_lost": 1
+   }
+  }
+ },
+ "t_o32_e4b": {
+  "label": "Traffic \u00b7 Orin 32 \u00b7 gemma-E4B",
+  "runs": 252,
+  "calls": 864,
+  "capped": 76,
+  "caps": {
+   "8000": 64,
+   "7453": 1,
+   "7369": 1,
+   "1397": 1,
+   "1313": 1,
+   "1229": 1,
+   "1145": 1,
+   "1061": 1,
+   "977": 1,
+   "893": 1,
+   "809": 1,
+   "725": 1,
+   "641": 1
+  },
+  "capped_share_of_llm_time": 0.3669917087930768,
+  "runs_with_cap": 11,
+  "ok_rate_with_cap": 0.9090909090909091,
+  "ok_rate_without_cap": 1.0,
+  "capped_with_complete_text": 1,
+  "loops_ours": 0,
+  "finished_long_calls_with_text": 160,
+  "finished_flagged_ours": 1,
+  "loop_fire_position_median": null,
+  "loops_p1_rule": 0,
+  "capped_checked_p1_rule": 66,
+  "p1_rule_missed_ratios": [
+   0.234,
+   0.273,
+   0.294,
+   0.301,
+   0.304,
+   0.321,
+   0.323,
+   0.4,
+   0.415,
+   0.427,
+   0.427,
+   0.428,
+   0.431,
+   0.435,
+   0.438,
+   0.439,
+   0.439,
+   0.442,
+   0.443,
+   0.444,
+   0.444,
+   0.446,
+   0.449,
+   0.45,
+   0.451,
+   0.452,
+   0.452,
+   0.452,
+   0.454,
+   0.455,
+   0.455,
+   0.456,
+   0.457,
+   0.457,
+   0.457,
+   0.458,
+   0.46,
+   0.461,
+   0.461,
+   0.461,
+   0.462,
+   0.462,
+   0.462,
+   0.463,
+   0.463,
+   0.465,
+   0.467,
+   0.473,
+   0.473,
+   0.474,
+   0.474,
+   0.477,
+   0.48,
+   0.48,
+   0.483,
+   0.487,
+   0.489,
+   0.49,
+   0.491,
+   0.491,
+   0.494,
+   0.494,
+   0.494,
+   0.501,
+   0.501,
+   0.507
+  ],
+  "capped_after_capped": 64,
+  "capped_llm_share_by_kind": {
+   "loop": 0.0,
+   "not_loop": 0.00043095984828722114,
+   "no_text": 0.36656074894478957
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.0,
+    "finished_calls_stopped": 1
+   },
+   "half_cap": {
+    "saved_share": 0.1662914081746285,
+    "finished_calls_stopped": 36
+   },
+   "first_cap": {
+    "saved_share": 0.30125240694715305,
+    "runs_stopped": 11,
+    "ok_runs_lost": 10
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.2500158496818029,
+    "runs_stopped": 8,
+    "ok_runs_lost": 7
+   }
+  }
+ },
+ "t_o32_qwenvl": {
+  "label": "Traffic \u00b7 Orin 32 \u00b7 Qwen2.5-VL-7B",
+  "runs": 252,
+  "calls": 628,
+  "capped": 0,
+  "caps": {},
+  "capped_share_of_llm_time": 0.0,
+  "runs_with_cap": 0,
+  "ok_rate_with_cap": null,
+  "ok_rate_without_cap": 0.9920634920634921,
+  "capped_with_complete_text": 0,
+  "loops_ours": 0,
+  "finished_long_calls_with_text": 0,
+  "finished_flagged_ours": 0,
+  "loop_fire_position_median": null,
+  "loops_p1_rule": 0,
+  "capped_checked_p1_rule": 0,
+  "p1_rule_missed_ratios": [],
+  "capped_after_capped": 0,
+  "capped_llm_share_by_kind": {
+   "loop": 0.0,
+   "not_loop": 0.0,
+   "no_text": 0.0
+  },
+  "stop_rules": {
+   "loop": {
+    "saved_share": 0.0,
+    "finished_calls_stopped": 0
+   },
+   "half_cap": {
+    "saved_share": 0.0,
+    "finished_calls_stopped": 0
+   },
+   "first_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 0,
+    "ok_runs_lost": 0
+   },
+   "second_consecutive_cap": {
+    "saved_share": 0.0,
+    "runs_stopped": 0,
+    "ok_runs_lost": 0
+   }
+  }
+ }
+}
