@@ -1,10 +1,15 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-05 (IST). Latest work:
+**Last updated:** 2026-10-05 evening (IST). Latest work:
+- **The WS is back** (rebooted 5 Oct 10:52; P5's own machine, not one of P1's lanes). Its clone is pulled to
+  `5373f35` and `~/jsw-dev` is synced (now with `analysis/`). WS experiment options W1–W9 are listed in §6 for
+  Sandesh to choose from; nothing has been launched.
+- **`NOTES_FOR_P1.md` was sent** to P1 by Sandesh (5 Oct). P1's reply will come through Sandesh.
+- **The Thor is off-limits** until Sandesh says otherwise (5 Oct): no access at all, not even read-only.
 - **P1's repository arrived (Mon 5 Oct).** Sandesh cloned it to `data/edge-agent-bench`. We mapped it,
   reran our analyses on its drone and traffic data
   ([`reports/2026-10-05-p1-repo/README.md`](reports/2026-10-05-p1-repo/README.md)), and wrote five corrections
-  for P1 ([`NOTES_FOR_P1.md`](reports/2026-10-05-p1-repo/NOTES_FOR_P1.md), not sent).
+  for P1 ([`NOTES_FOR_P1.md`](reports/2026-10-05-p1-repo/NOTES_FOR_P1.md)).
 - **Every doc was updated with it** (Sandesh asked: local docs, HANDOFF, both Claude Docs and the deck; traffic
   included; P1's figures allowed in the private artifacts; more plots and diagrams). See §2 for the state of
   each.
@@ -34,7 +39,7 @@ which git already keeps.
   controller is not a contribution; the energy is in runaway decodes, and the edge effect with large numbers
   is capacity. The direction is open (§6).
 - **Resources:** the edge devices are with P1 until their deadline (Sat 2026-10-10). P5 has the 2×A5000
-  workstation (unreachable since 2 Oct, see below).
+  workstation, under its full control (back since 5 Oct, see below).
 
 ## 2. Situation as of 2026-10-05
 
@@ -54,11 +59,16 @@ which git already keeps.
     loses 22 runs), the capacity finding (window overflows on the Orins) and the vision-tool energy finding.
     It assumes one request in flight, **dropped its early-abort plan** ("out of scope"), and deferred its
     KV-pool sweep (E4) and warm-cache arm (E5), which overlap P5.
-  - **Corrections for P1** (`NOTES_FOR_P1.md`, for Sandesh to forward before 10 Oct): (1) `ask_vlm` is a
+  - **Corrections for P1** (`NOTES_FOR_P1.md`, **sent by Sandesh on 5 Oct**; P1 is reviewing): (1) `ask_vlm` is a
     burst of requests to the agent's own server, not a second model; (2) their loop threshold misses
     long-period loops (94 vs our 121 of 122); (3) the drone Orin 32 caps are 1,024-token evaluator calls;
     (4) Orin 64's context guard truncates calls their 8,000-token rule does not count; (5) Devstral's prefix
     cache is off (about 9% of its LLM time).
+    - **Caveat on (1):** P1's microbenchmark `analysis/microbench/mb6_vlm_tool.py` calls "the vision-language
+      model behind `ask_vlm`" at its own endpoint, run "with the agent model's server running and once
+      without", so P1 thinks of it as a separate server. Our evidence is only the agent server's
+      running-request counter. Both may hold where the agent model reads images (gemma, Qwen3.6; granite has
+      no image tasks). Wait for P1's answer before building on (1).
 - **The professor meeting is postponed** (no new date). Nothing has been shown to the professor yet.
 - **Pushed to the public repo** (2026-10-05, Sandesh's choice after being asked about visibility).
   - `saisandeshk/jouleserve-ws` is public and now holds P1's unpublished numbers in `reports/`; all local
@@ -95,13 +105,24 @@ which git already keeps.
       uses the Playwright headless shell if present, else Brave (`/opt/brave.com/brave/brave`) headless; it
       is approximate and flags overflow and overlaps.
     - Reasoning-length control (slide `rw-reasoning`) is still a placeholder: that literature is unread.
-- **WS:** unreachable since 2026-10-02 ~23:00 (last checked 2026-10-03 16:50; not checked since, at
-  Sandesh's request). P1's schedule shows four "workstation" lanes (Sol/Terra runs from Sun 4 Oct): ask
-  Sandesh whether ours is one.
+- **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes): back since a
+  reboot on 5 Oct 10:52.
+  - At 21:45 it was idle: GPUs at 47/15 MiB, no tmux server. The venvs, `~/work/aeroeval`, the AirSim build
+    and both K2 revisions (`f846b1e` pinned, `85d46bb`) are intact. Nothing ran after 2 Oct 01:31, and all
+    23 run directories are in local `data/ws_runs/`.
+  - Clone `~/jouleserve-ws` pulled to `5373f35`; `~/jsw-dev` synced with `jsw/`, `env/`, `analysis/`.
+  - **Feasibility checked 5 Oct** (nothing launched yet): SGLang 0.5.20 in the legacy venv has Gemma-4
+    (`gemma4_causal.py`, `gemma4_mm.py`), granite and Qwen2.5-VL model code. On Hugging Face (all ungated,
+    bf16): gemma-4-E4B-it 8.0B and granite-4.2-8b 8.8B parameters fit one A5000; gemma-4-26B-A4B-it 25.8B
+    (~52 GB) does not fit even both GPUs, so it needs a quantized checkpoint (e.g.
+    `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit`, `RedHatAI/gemma-4-26B-A4B-it-FP8-dynamic`), untested on Ampere.
+- **Thor: off-limits** (Sandesh, 5 Oct): no ssh at all, not even read-only, until Sandesh says otherwise.
+  Use P1's repository and our local copies.
 - **P1's schedule** (P1's docs, 3 Oct): thor-1 runs gemma tool calling (99/144 on 3 Oct), then granite, then
   Devstral, to about Thu 8 Oct; P1's last runs end Thu 8 Oct ~16:40; some Orins are free from Tue 6 Oct "for
   re-runs". After the deadline nothing is written down.
-- **Sandesh** said (2026-10-01) they have their own idea for the next step; not yet shared.
+- **Sandesh's** earlier idea for the next step (1 Oct) is superseded by events; they choose among the WS
+  options in §6 instead.
 
 ## 3. What is built (JouleServe-WS pieces)
 
@@ -193,8 +214,17 @@ and F4; H4 has a live but small case (the vision tool).
 ## 5. Still-valid notes from the 2026-09-30 audit
 
 - **The CLGSCE port** (needed only if P1's agents run on the WS) is mostly done in legacy. Left to do:
-  re-copy 2 changed files, `advanced.txt` and P1's harness; patch the hard-coded RPC port 41451; replace
-  P1's `pkill -x thor_headless` reset. P1's repository now holds the agents' data but not their code.
+  get the 2 files that changed on the Thor on 23 Sep (`clgsce_mcp_server.py`, `clgsce_subagents.py`; with
+  the Thor off-limits they must come from P1); patch the hard-coded RPC port 41451; replace P1's
+  `pkill -x thor_headless` reset. `advanced.txt` and P1's harness are now in `data/p1_aeroeval_src/`. P1's
+  repository holds the agents' data but not their code.
+- **What P1's traces allow us to replay** (checked 5 Oct):
+  - Drone: every `llm_calls` record holds the full prompt `messages`, the reasoning and the output, with the
+    decoding settings (temperature 0, top_k 1, seed 42). All 265 capped Thor calls have their prompts (122
+    Reflexion in the repository, 143 tool calling in `data/p1_thor_toolcalling/`), so they replay exactly.
+  - Traffic: the trace keeps the system prompt, the question and the assistant turns, but tool results are
+    empty and the 7 tool definitions are absent. Traffic replays only by token counts (synthetic text). The
+    traffic agent's code is not in the repository.
 - **P1-style sessions (40–55K tokens) do not fit a one-GPU pool.** They need tp2, a lower `max_tokens`, or
   FP8 KV.
 - **P1's AeroEval agent, task sets and Reflexion harness** are in `data/p1_aeroeval_src/` (read-only copies,
@@ -202,8 +232,8 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 6. Next steps
 
-1. **Sandesh:** review the updated docs and deck v2.0, share them when ready, and decide whether and how to
-   send `NOTES_FOR_P1.md` to P1 before Sat 10 Oct.
+1. **Sandesh:** choose the WS experiments (item 6). Review the updated docs and deck v2.0 and share them when
+   ready. Pass on P1's reply to `NOTES_FOR_P1.md` when it comes.
 2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
    11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
 3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
@@ -217,16 +247,32 @@ and F4; H4 has a live but small case (the vision tool).
 5. **If D (memory that changes over time):** the vision-tool burst is the case: replay it on the WS (a
    burst of concurrent requests while a long context is paused) and size what pinning or burst admission
    saves under small pools.
-6. **When the WS is back:** Qwen3.5 energy calibration; one live memory-pressure run to anchor the
-   simulators; one long mission (lawnmower or circles).
+6. **WS experiments: options offered to Sandesh on 5 Oct, none chosen yet.** Usefulness as rated then:
+   - **W1 (A, highest):** do Gemma-4's loops survive sampling? Replay the 265 capped Thor prompts plus finished
+     long calls as controls, under P1's greedy settings and the model card's sampling. Needs a quantized
+     gemma-4-26B-A4B (smoke test first); the greedy arm must loop on the WS for the comparison to count.
+   - **W2 (A, high):** stop and retry. Abort where the online detector fires, retry, and check whether the
+     retry finishes with a usable program, and at what cost. An increment on W1.
+   - **W3 (both, high):** a live trace replayer. It plays P1's recorded runs (token counts, prefix
+     structure, tool gaps) as N agents on a capped pool, to anchor the simulators' "default within 2.4%" and
+     the capacity knee. It needs no agent code, so it also runs on a Jetson after 10 Oct.
+   - **W4 (D, medium):** a vision burst on a 12.4K pool, built on W3. Compare the default, pinning the paused
+     context and admitting the burst at lower concurrency, then N agents.
+   - **W5 (calibration, medium-low):** decode batching on Gemma-4 (MoE) vs dense models; Qwen3.5 energy
+     calibration folded in.
+   - **W6 (capacity, medium):** FP8 vs bf16 KV, comparing pool size against loop and finish rates.
+   - **W7 (A, after D12):** P1's CLGSCE agent live on the WS. Needs the 2 files from P1 and Sandesh's OK.
+   - **W8 (low now):** thinking budget against energy per success. **W9 (B/C):** long step-wise missions,
+     τ²-bench.
+   - Suggested order: W1+W2 on GPU0 and W3 on GPU1 in parallel, then W4. One Gemma set-up serves W1, W2, W4
+     and W5.
 
 ## 7. Open questions for Sandesh
 
-1. Their plan for the next step (they said they have one).
-2. **Send `NOTES_FOR_P1.md` to P1 before 10 Oct?** And: offer the online loop stop to P1's paper, or keep it
-   for P5?
-3. When will the professor meeting be rescheduled, and is the WS one of P1's four "workstation" lanes? Is
-   it back up?
+1. **Which WS experiments (§6 item 6), and in what order?**
+2. P1's reply to `NOTES_FOR_P1.md` (sent 5 Oct), especially on `ask_vlm`'s server. And: offer the online
+   loop stop to P1's paper, or keep it for P5?
+3. When will the professor meeting be rescheduled?
 4. The P1 mentor's answers to the task overview's §9: which 8 AeroEval tasks; whether a step-wise paradigm
    is in P1's scope; whether P5 may run P1's AeroEval tasks with a step-wise agent; drones per edge box.
 5. Direction and scope (A–D), the go/no-go thresholds (D4), and `N_edge`.
@@ -240,6 +286,6 @@ and F4; H4 has a live but small case (the vision tool).
 3. P1's data: `git -C data/edge-agent-bench log --oneline -3` (read-only; do not pull without Sandesh).
 4. WS, if reachable: `nvidia-smi; tmux ls; ls ~/work/runs`; copy runs with
    `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`.
-5. Thor: read-only and busy-check safe; prefer the repository to copies.
+5. Thor: **off-limits** until Sandesh says otherwise (5 Oct). Use the repository and the local copies.
 6. Deck work: check `data/p5deck/` exists (else restore it from the artifact with `Artifact` read), and
    that the renderer finds a browser.
