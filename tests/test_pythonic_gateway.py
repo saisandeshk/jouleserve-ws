@@ -15,6 +15,8 @@ TOOLS = [{"type": "function", "function": {"name": n, "parameters": {"type": "ob
 SCRIPTS = {
     "mark": [{"reasoning_content": "plan "}, {"content": "connect(namespace=\"drone0\")\n"}, {"content": "<|channel>thought\nI have"}],
     "arrow": [{"reasoning_content": "plan "}, {"content": "connect(namespace=\"drone0\")"}, {"content": "\n"}, {"content": "-> {\"status\""}],
+    "nameless": [{"reasoning_content": "plan "}, {"content": "connect(namespace=\"drone0\")\n"},
+                 {"content": "<|channel>thought", "tool_calls": [{"index": 0, "function": {"arguments": ""}}]}],
     "split": [{"content": "connect(names"}, {"content": "pace=\"drone0\")\narm()\n"}, {"content": "takeoff(height=5, speed=1.0)\n-"}],
 }
 

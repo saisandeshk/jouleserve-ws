@@ -185,6 +185,12 @@ class Gateway:
                     resp = web.StreamResponse(headers={"Content-Type": "text/event-stream"})
                     await resp.prepare(request)
                 await self._chat_upstream(call, resp if call.client_stream else None)
+                # a tool-call parser can emit an empty fragment (no function name); it is not a call
+                nameless = [k for k, v in call.tool_calls.items() if not (v.get("function") or {}).get("name")]
+                for k in nameless:
+                    del call.tool_calls[k]
+                if nameless:
+                    call.meta = dict(call.meta or {}, dropped_nameless_tool_calls=len(nameless))
                 if self.pythonic_fallback != "off" and not call.client_stream and not call.tool_calls:
                     text = "".join(call.content)
                     tc = pythonic.leading_calls(text, call.body.get("tools"))[0] \
@@ -245,7 +251,8 @@ class Gateway:
                         if d.get("content"):
                             call.content.append(d["content"])
                             pieces.append(d["content"])
-                            if self.pythonic_fallback == "first" and not call.tool_calls:
+                            if self.pythonic_fallback == "first" and not any(
+                                    (v.get("function") or {}).get("name") for v in call.tool_calls.values()):
                                 _, moved = pythonic.leading_calls("".join(call.content), call.body.get("tools"))
                                 if moved:                    # calls written, now imagining their results
                                     stop = True

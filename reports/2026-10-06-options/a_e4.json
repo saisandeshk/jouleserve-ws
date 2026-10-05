@@ -1,0 +1,208 @@
+{
+ "t_thor_gemma": {
+  "config": "t_thor_gemma",
+  "runs": 252,
+  "calls": 1469,
+  "capped": 158,
+  "capped_energy_share": 0.4296246211551366,
+  "capped_kind": {
+   "no_turn_text": 106,
+   "inside_tool_call_dropped": 30,
+   "inside_reasoning": 21,
+   "tool_call_kept": 1
+  },
+  "tools_in_capped_calls": {
+   "run_python": 31
+  },
+  "after_a_cap": {
+   "capped": 121,
+   "end_of_run": 27,
+   "uncapped": 10
+  },
+  "chains": {
+   "21": 1,
+   "2": 4,
+   "1": 24,
+   "13": 1,
+   "16": 3,
+   "4": 1,
+   "8": 1,
+   "17": 1,
+   "15": 1
+  },
+  "longest_chain": 21,
+  "repeat_cap_energy_share": 0.32879247100273423,
+  "runs_with_cap": 33,
+  "completed_with_cap": 4,
+  "completed_without_cap": 218,
+  "runs_without_cap": 219,
+  "reasoning_tokens_before_dropped_call_median": 911.5
+ },
+ "t_o32_e4b": {
+  "config": "t_o32_e4b",
+  "runs": 252,
+  "calls": 864,
+  "capped": 76,
+  "capped_energy_share": 0.3686429705244842,
+  "capped_kind": {
+   "inside_tool_call_dropped": 62,
+   "tool_call_kept": 1,
+   "context_guard": 12,
+   "inside_answer_text": 1
+  },
+  "tools_in_capped_calls": {
+   "run_python": 63
+  },
+  "after_a_cap": {
+   "capped": 64,
+   "uncapped": 10,
+   "end_of_run": 2
+  },
+  "chains": {
+   "20": 1,
+   "5": 2,
+   "17": 1,
+   "1": 3,
+   "8": 1,
+   "2": 1,
+   "10": 1,
+   "3": 2
+  },
+  "longest_chain": 20,
+  "repeat_cap_energy_share": 0.30734487457107607,
+  "runs_with_cap": 11,
+  "completed_with_cap": 10,
+  "completed_without_cap": 241,
+  "runs_without_cap": 241,
+  "reasoning_tokens_before_dropped_call_median": 652
+ },
+ "t_thor_granite": {
+  "config": "t_thor_granite",
+  "runs": 189,
+  "calls": 994,
+  "capped": 41,
+  "capped_energy_share": 0.19431819622857796,
+  "capped_kind": {
+   "inside_reasoning": 29,
+   "tool_call_kept": 7,
+   "inside_tool_call_dropped": 5
+  },
+  "tools_in_capped_calls": {
+   "run_python": 12
+  },
+  "after_a_cap": {
+   "end_of_run": 29,
+   "capped": 6,
+   "uncapped": 6
+  },
+  "chains": {
+   "1": 29,
+   "2": 6
+  },
+  "longest_chain": 2,
+  "repeat_cap_energy_share": 0.02940212907850449,
+  "runs_with_cap": 33,
+  "completed_with_cap": 3,
+  "completed_without_cap": 155,
+  "runs_without_cap": 156,
+  "reasoning_tokens_before_dropped_call_median": 6196
+ },
+ "t_o64_gemma": {
+  "config": "t_o64_gemma",
+  "runs": 257,
+  "calls": 877,
+  "capped": 82,
+  "capped_energy_share": 0.14628717280382883,
+  "capped_kind": {
+   "context_guard": 82
+  },
+  "tools_in_capped_calls": {},
+  "after_a_cap": {
+   "end_of_run": 37,
+   "capped": 45
+  },
+  "chains": {
+   "1": 30,
+   "7": 1,
+   "9": 3,
+   "14": 1,
+   "2": 2
+  },
+  "longest_chain": 14,
+  "repeat_cap_energy_share": 0.07363623651770457,
+  "runs_with_cap": 37,
+  "completed_with_cap": 0,
+  "completed_without_cap": 220,
+  "runs_without_cap": 220,
+  "reasoning_tokens_before_dropped_call_median": 769
+ },
+ "t_o64_granite": {
+  "config": "t_o64_granite",
+  "runs": 189,
+  "calls": 910,
+  "capped": 36,
+  "capped_energy_share": 0.1294176359030205,
+  "capped_kind": {
+   "context_guard": 22,
+   "inside_reasoning": 11,
+   "tool_call_kept": 2,
+   "inside_answer_text": 1
+  },
+  "tools_in_capped_calls": {
+   "run_python": 2
+  },
+  "after_a_cap": {
+   "end_of_run": 28,
+   "uncapped": 5,
+   "capped": 3
+  },
+  "chains": {
+   "1": 31,
+   "2": 1,
+   "3": 1
+  },
+  "longest_chain": 3,
+  "repeat_cap_energy_share": 0.009283477568282348,
+  "runs_with_cap": 31,
+  "completed_with_cap": 4,
+  "completed_without_cap": 158,
+  "runs_without_cap": 158,
+  "reasoning_tokens_before_dropped_call_median": 794
+ },
+ "t_o32_granite": {
+  "config": "t_o32_granite",
+  "runs": 189,
+  "calls": 1124,
+  "capped": 50,
+  "capped_energy_share": 0.17321277611843164,
+  "capped_kind": {
+   "context_guard": 18,
+   "inside_reasoning": 20,
+   "tool_call_kept": 8,
+   "inside_tool_call_dropped": 2,
+   "inside_answer_text": 1,
+   "no_turn_text": 1
+  },
+  "tools_in_capped_calls": {
+   "run_python": 10
+  },
+  "after_a_cap": {
+   "end_of_run": 32,
+   "capped": 11,
+   "uncapped": 7
+  },
+  "chains": {
+   "1": 32,
+   "2": 4,
+   "3": 2,
+   "4": 1
+  },
+  "longest_chain": 4,
+  "repeat_cap_energy_share": 0.028081047376577205,
+  "runs_with_cap": 37,
+  "completed_with_cap": 6,
+  "completed_without_cap": 146,
+  "runs_without_cap": 152,
+  "reasoning_tokens_before_dropped_call_median": 1031.5
+ }
+}

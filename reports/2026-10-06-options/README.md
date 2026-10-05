@@ -38,8 +38,8 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | 5–13× less energy per success on P1's D1–D3 (0.9–9.6× strict) [proj] | Unknown: no measurement yet **[pending: C-E1]** | Vision burst: 0.6% of LLM time at one agent [P1-meas]; several agents **[pending: D-E2]** | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
-| **K2 Evidence** | Energy measured; loop stop replayed offline on recorded text; sampling unmeasured on Gemma **[pending: A-E1]** | Projected from 108 WS missions with Qwen3.5/K2, not Gemma **[pending: B-E1]** | None | Mechanism read from server counters; multi-agent unmeasured | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
+| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Unknown: no measurement yet **[pending: C-E1]** | Vision burst: 0.6% of LLM time at one agent [P1-meas]; several agents **[pending: D-E2]** | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
+| **K2 Evidence** | Energy measured; loop stop replayed offline on recorded text; sampling unmeasured on Gemma **[pending: A-E1]** | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | None | Mechanism read from server counters; multi-agent unmeasured | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; greedy loops are model-general [lit] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
@@ -97,8 +97,18 @@ Sandesh's permission]**.
 **What would change our mind.** Sampling removes ≥ 90% of the loops on Gemma-4 without hurting finished calls
 (A-E1's rule): A shrinks to a configuration finding for P1 plus a safety net.
 
-**This week.** A-E1 (sampling) **[pending]**; A-E2 (stop and retry) **[pending]**; A-E5 (batching of long
-decodes) **[pending]**; A-E4 (traffic's capped tool calls) **[pending]**.
+**This week.**
+- **A-E4, traffic's capped calls** (`a_e4.json`; P1's traces) [P1-meas]:
+  - On gemma the waste is a few runs looping through capped `run_python` calls: on Thor gemma 121 of 158 capped
+    calls follow a capped call, chains run up to 21 calls, and the repeats after a run's first cap hold 33% of its
+    LLM-call energy. Orin 32 E4B: 64 of 76, chains up to 20, 31%.
+  - Where the text survives, the cap hits inside a dropped `run_python` body (30 on Thor gemma, 62 of 76 on E4B)
+    or inside the reasoning (21 on Thor gemma). Granite caps mostly inside its reasoning and rarely repeats
+    (repeats ≤ 3% of energy); Orin 64 gemma's caps are all the context guard (capacity).
+  - Runs with a cap complete 4 of 33 times on Thor gemma but 10 of 11 on E4B: on E4B the retries eventually work,
+    at great cost, so a blunt stop would lose completions where a better retry might keep them.
+- A-E1 (sampling) **[pending: on gemma-4-E4B, see §11]**; A-E2 (stop and retry) **[pending]**; A-E5 (batching)
+  **[partial: granite done]**.
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
 > offline position on all 1,620 recorded Thor calls, reproducing the 121 + 127 counts), the gateway
@@ -127,7 +137,7 @@ growing conversation is reused, and it fits M× more drones per device."
 **Evidence against.**
 - Under the strict check (order, descent and hold, no flight through a building) the ratio falls to 0.9–9.6×;
   only 27% of step-wise missions pass it, because the kinematic sim has no buildings [WS-meas].
-- The models are stand-ins; Gemma-4's own step sizes are unmeasured. **[pending: B-E1]**
+- Gemma-4's own step sizes were unmeasured until this week; now measured with gemma-4-E4B (B-E1, below).
 - The win belongs to the agent, which is P1's territory; a memory controller adds at most ~10% on top [sim].
 
 **Novelty** (`lit_B.md`; 25 works). The direction is known with energy numbers: iterative designs (Reflexion,
@@ -147,8 +157,23 @@ mentor (task overview §9); extending aerogen needs its author's OK.
 **What would change our mind.** Gemma-4 writes long steps after tool results (median > 300 tokens, B-E1's rule),
 or a fair whole-program arm with guardrail prompts closes the gap.
 
-**This week.** B-E1 (Gemma as a step-wise agent) **[pending]**; B-E2 (projection with Gemma's steps)
-**[pending]**.
+**This week: B-E1 and B-E2** (`b_e1.json`, `b_e2.json`; WS, gemma-4-E4B with P1's weights, aerogen's loop, P1's
+D1–D3 texts and delivery world, thinking on, 33 missions).
+- **E4B keeps its steps short.** After a tool result it writes a median 63 tokens under P1's greedy protocol (p90
+  121, max 284) and 68 when sampled (p90 169, max 539); the planning call writes a median 1,204–1,574; no call hit
+  its cap. B-E1's rule (median ≤ 300) holds for P1's model family [WS-meas].
+- **It passes the strict check more often than the 2 Oct stand-ins:** 9 of 11 greedy missions and 7 of 13 sampled
+  (Qwen3.5 and K2: 27%) [WS-meas].
+- **Projected at Thor gemma-26B prices** (the 2 Oct method): 26.6 kJ per strict success on D1 and 26.2 on D2+D3,
+  against P1's Reflexion measured at 499 kJ (D1) and 284 kJ (D2; D3 had no passes): **11–19×** [proj]. At Orin 32
+  E4B prices (P1's fit on its own E4B calls): 14–19 kJ [proj].
+- **But E4B does not always use its tool-call format.** With aerogen's prompt (whose examples show calls as
+  Python text) it sometimes writes the call as text, or writes the whole mission in one reply with imagined tool
+  results. The gateway converts such calls (`jsw/gateway/pythonic.py`), but 9 of 33 missions (1 greedy, 8
+  sampled) still ended at the first call because of a conversion bug, since fixed and not yet re-run. These
+  missions are left out of the numbers above.
+- Caveats: the projection applies the 26B's per-token costs to E4B's token counts (as the 2 Oct projection
+  applied them to Qwen's); the kinematic sim has no buildings; one run per configuration.
 
 > **WS version (G2).** The aerogen driver (`jsw/workloads/aerogen_driver.py`) runs a step-wise agent on P1's
 > task texts; a building-aware sim (B-P1) waits for the author's OK.
@@ -307,9 +332,12 @@ will state whether this week's evidence changes it.
 - P1's data: the repository at `3c47ebc` (drone 3 cells, traffic 8 cells) and our copy of P1's Thor drone
   tool-calling sweep (104 runs).
 - **Local data integrity (2026-10-05).** The laptop's RAM corrupts files held in its page cache: three files of
-  P1's clone read back with single-bit flips, while the disk copies match P1's commits. The published analyses
-  were built before this was noticed; their outputs are being re-verified with hash-checked reads
-  **[pending]**. Data processing that can move to the WS (ECC memory) does.
-- WS stand-ins: a 4-bit gemma-4-26B-A4B (P1 runs bf16), gemma-4-E4B and granite-4.2-8B (P1's exact weights);
-  SGLang 0.5.20 (P1: 0.5.16); NVML GPU energy, not board energy.
+  P1's clone read back with single-bit flips, while the disk copies match P1's commits. All data processing
+  moved to the WS (ECC memory): P1's repository cloned there from GitHub at `3c47ebc`, our tool-calling copy moved
+  with matching SHA-256. **Re-verified:** the 5 Oct analyses rerun on the WS give byte-identical `opportunity.json`
+  and `caps.json`.
+- **No stand-in for P1's gemma-4-26B-A4B runs on our A5000s** (D13's outcome, 2026-10-06): in SGLang 0.5.20 the
+  4-bit MoE kernel supports only SiLU (Gemma uses GELU), the FP8 MoE kernel needs an FP8 type only newer GPUs have
+  (fp8e4nv), and bf16 (52 GB) exceeds both GPUs. Experiments use gemma-4-E4B and granite-4.2-8B, P1's exact weights;
+  the 26B tests wait for a Jetson. SGLang 0.5.20 (P1: 0.5.16); NVML GPU energy, not board energy.
 - Literature depth varies per work (`lit_*.md`); most 2026 preprints were read through summaries or abstracts.
