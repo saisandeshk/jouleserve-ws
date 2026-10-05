@@ -6,9 +6,11 @@
 A session file has one JSON object per line: {"id", "source", "ok", "steps": [{"prompt", "out", "wait_s", "tool",
 "burst"}]}, built by `to_sessions()` below from analysis/p1_repo.py runs or analysis/sessions.py sessions.
 Each call goes to SGLang's native /generate through the gateway with synthetic token IDs:
-- the prompt has exactly the recorded length. A call's prompt is the previous prompt, plus the token IDs the
-  engine actually generated last time, plus fresh IDs for the tool result, so prefix reuse is real. A prompt
-  shorter than the previous one (a rebuilt prompt) keeps the session's first prompt as far as it fits;
+- the prompt has exactly the recorded length. By default a call's prompt is the previous prompt plus fresh IDs
+  (the visible answer and the tool result): P1's thinking agents drop the reasoning from the history, so only
+  the previous prompt is reusable, as P1's own cache counts show (cached = previous prompt in 81-100% of calls).
+  With --keep-output the token IDs the engine generated last time are kept too (agents that keep all output).
+  A prompt shorter than that (a rebuilt prompt) keeps the session's first prompt as far as it fits;
 - the output has exactly the recorded length (ignore_eos, max_new_tokens);
 - the recorded tool wait follows each call (scaled by --speed), announced to the gateway as tool_start/tool_end;
 - a step with "burst": {"n", "prompt", "out"} sends n concurrent tool-tagged requests during its wait instead of
@@ -64,6 +66,14 @@ class Agent:
         return sum(not isinstance(x, Exception) for x in res)
 
     async def session(self, sess, k):
+        try:
+            return await self._session(sess, k)
+        except asyncio.CancelledError:
+            self.run.event("session_end", sid=f"{self.a.name}-s{self.slot}-{k}", session=sess["id"], slot=self.slot,
+                           status="cut", recorded_ok=sess.get("ok"))
+            raise
+
+    async def _session(self, sess, k):
         sid = f"{self.a.name}-s{self.slot}-{k}"
         t0 = time.monotonic()
         self.run.event("session_start", sid=sid, session=sess["id"], slot=self.slot, steps=len(sess["steps"]))
@@ -78,7 +88,7 @@ class Agent:
                 ids = _rand(self.rng, P)
                 first = ids
             else:
-                grown = prev + prev_out
+                grown = prev + prev_out if self.a.keep_output else prev
                 ids = grown + _rand(self.rng, P - len(grown)) if P >= len(grown) else \
                     first[:min(P, len(first))] + _rand(self.rng, P - min(P, len(first)))
             body = {"input_ids": ids, "sampling_params": {"max_new_tokens": O, "ignore_eos": True, "temperature": 0}}
@@ -137,8 +147,11 @@ async def drive(args, run):
     for slot, ag in enumerate(agents):
         await asyncio.sleep(args.stagger)
         tasks.append(asyncio.create_task(ag.loop(pool, t_end)))
-    await asyncio.gather(*tasks)
-    run.note(t_replay_end=time.monotonic())
+    done, pending = await asyncio.wait(tasks, timeout=max(0.0, t_end + args.grace - time.monotonic()))
+    for t in pending:                                   # sessions still running at horizon + grace are cut
+        t.cancel()
+    await asyncio.gather(*pending, return_exceptions=True)
+    run.note(t_replay_end=time.monotonic(), cut_slots=len(pending))
 
 
 def to_sessions(runs, source, cap_tool_wait=None, burst_tools=("ask_vlm",), burst=None):
@@ -180,6 +193,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--bursts", action="store_true", help="replay vision-tool bursts as concurrent requests")
+    ap.add_argument("--keep-output", action="store_true", help="keep generated IDs in the next prompt")
+    ap.add_argument("--grace", type=float, default=300, help="seconds after --horizon before running sessions are cut")
     ap.add_argument("--name", required=True)
     ap.add_argument("--note", default="")
     a = ap.parse_args()

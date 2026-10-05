@@ -62,9 +62,13 @@ def package_versions(*names) -> dict:
 
 
 class Run:
-    def __init__(self, name: str, args: dict | None = None, gpu: int | None = None, server: str | None = None,
+    def __init__(self, name: str, args: dict | None = None, gpu: int | str | list | None = None, server: str | None = None,
                  root: Path | None = None, metrics_hz: float = 2.0, nvml_hz: float = 10.0, extra: dict | None = None):
-        self.name, self.gpu, self.server = name, gpu, server.rstrip("/") if server else None
+        self.name, self.server = name, server.rstrip("/") if server else None
+        if isinstance(gpu, str):
+            gpu = [int(x) for x in gpu.split(",") if x != ""]
+        self.gpus = [] if gpu is None else [gpu] if isinstance(gpu, int) else list(gpu)
+        self.gpu = self.gpus[0] if self.gpus else None
         self.dir = Path(root or RUNS_ROOT) / name
         self.dir.mkdir(parents=True, exist_ok=True)
         self.args, self.extra = args or {}, extra or {}
@@ -93,8 +97,9 @@ class Run:
         self._events = open(self.dir / "events.jsonl", "a")
         self._calls = open(self.dir / "calls.jsonl", "a")
         from jsw.telemetry.samplers import NvmlSampler, SglangMetricsSampler
-        if self.gpu is not None:
-            self.samplers.append(NvmlSampler(str(self.dir / "nvml.jsonl"), self.gpu, hz=self.nvml_hz))
+        for i, g in enumerate(self.gpus):          # one file per GPU: nvml.jsonl, nvml_g<k>.jsonl (TP>1)
+            self.samplers.append(NvmlSampler(str(self.dir / ("nvml.jsonl" if i == 0 else f"nvml_g{g}.jsonl")), g,
+                                             hz=self.nvml_hz))
         if self.server:
             self.samplers.append(SglangMetricsSampler(str(self.dir / "sglang_metrics.jsonl"), self.server,
                                                       hz=self.metrics_hz))
@@ -140,7 +145,11 @@ class Run:
 
 # ---------------------------------------------------------------------- energy
 def load_nvml(run_dir) -> list[dict]:
-    p = Path(run_dir) / "nvml.jsonl"
+    return load_nvml_file(Path(run_dir) / "nvml.jsonl")
+
+
+def load_nvml_file(p) -> list[dict]:
+    p = Path(p)
     rows = []
     if p.exists():
         for line in open(p):
@@ -151,8 +160,13 @@ def load_nvml(run_dir) -> list[dict]:
 
 
 def gpu_energy_j(run_dir_or_rows, t0: float, t1: float) -> float | None:
-    """GPU energy (J) between two t_mono instants, by linear interpolation of NVML's cumulative counter."""
-    rows = load_nvml(run_dir_or_rows) if not isinstance(run_dir_or_rows, list) else run_dir_or_rows
+    """GPU energy (J) between two t_mono instants, by linear interpolation of NVML's cumulative counter. A run
+    directory sums every GPU it sampled (nvml.jsonl and nvml_g<k>.jsonl)."""
+    if not isinstance(run_dir_or_rows, list):
+        files = sorted(Path(run_dir_or_rows).glob("nvml*.jsonl"))
+        parts = [gpu_energy_j(load_nvml_file(f), t0, t1) for f in files]
+        return sum(p for p in parts if p is not None) if any(p is not None for p in parts) else None
+    rows = run_dir_or_rows
     if len(rows) < 2 or t1 <= t0:
         return None
 

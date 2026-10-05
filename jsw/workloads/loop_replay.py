@@ -141,7 +141,7 @@ def main():
     ap.add_argument("--gateway", default="http://127.0.0.1:31000")
     ap.add_argument("--server", default="http://127.0.0.1:30000")
     ap.add_argument("--model", default="gemma-4-26B-A4B-it-fp8")
-    ap.add_argument("--gpu", type=int, default=0)
+    ap.add_argument("--gpu", default="0", help="GPU index or list, e.g. 0,1 when the model runs with TP=2")
     ap.add_argument("--concurrency", type=int, default=8)
     ap.add_argument("--max-tokens", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
