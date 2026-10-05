@@ -107,8 +107,15 @@ Sandesh's permission]**.
     (repeats ≤ 3% of energy); Orin 64 gemma's caps are all the context guard (capacity).
   - Runs with a cap complete 4 of 33 times on Thor gemma but 10 of 11 on E4B: on E4B the retries eventually work,
     at great cost, so a blunt stop would lose completions where a better retry might keep them.
-- A-E1 (sampling) **[pending: on gemma-4-E4B, see §11]**; A-E2 (stop and retry) **[pending]**; A-E5 (batching)
-  **[partial: granite done]**.
+- **A-E1, do the loops survive sampling?** (`a_e1.json`; P1's recorded prompts replayed exactly) [WS-meas]:
+  - **gemma-4-E4B does not loop on the WS, even greedy:** 0 of 60 of the 26B's Thor loop prompts (95% upper bound
+    11%), 0 of 40 controls, and 0 of its own 5 Orin 32 loop prompts under greedy or two sampled seeds. Every call
+    finished, in a median 1.9-4.4K tokens. Under the pre-registered rule this is inconclusive (no reproduction),
+    and it says loops depend on more than greedy decoding: on the model, and apparently on the serving stack or
+    device (E4B looped on all 5 on P1's Orin 32; P1 reports inference varying between repeats there).
+  - **P1's gemma-4-26B-A4B through llama.cpp (4-bit GGUF; SGLang cannot run any 26B on our GPUs) reproduces the
+    loops under greedy:** **[results being filled in]**.
+- A-E2 (stop and retry) **[pending: queued on the 26B]**; A-E5 (batching) **[partial: granite done]**.
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
 > offline position on all 1,620 recorded Thor calls, reproducing the 121 + 127 counts), the gateway
@@ -211,7 +218,14 @@ CacheScout; Track B F1–F10). What the edge adds would come only through the in
 **What would change our mind.** τ²-bench steps are short enough that the ceiling P/(P + r·O) at a Jetson r is ≥ 20%
 of LLM time (C-E1's rule).
 
-**This week.** C-E1 (τ²-bench shape and ceiling, then N sessions) **[pending]**.
+**This week: C-E1** (`c_e1.json`; tau2-bench on the WS, gemma-4-E4B as the agent with thinking on and as the
+user simulator, one conversation at a time) [WS-meas]:
+- **Airline (20 tasks, mean reward 0.50, 10 passed):** about 10 agent calls per conversation; the context starts
+  at 3.9K tokens and grows a median 182 tokens per step (peak 5.8K); 93.5% of prompt tokens come from the cache.
+- **But each step writes a median 333 tokens (p90 831), 83% of it reasoning**, so the most kept state could save
+  is 7.5% of LLM time at E4B's own Jetson price (r = 147), 3.7-9.2% at the traffic prices and 16-19% only at the
+  drone prices (r = 52-63). C-E1's rule: in between (below 20% at every Jetson r, above 10% at some).
+- Retail **[running]**; airline with the agent's thinking off (C's best case: short steps) **[queued]**.
 
 > **WS version (G2).** C-P1 (τ²-bench through the gateway with published baselines) is built only if C-E1 finds
 > an opportunity.
@@ -253,7 +267,17 @@ unified-memory behaviour needs a device.
 
 **What would change our mind.** D-E2: the best policy stays within 5% of the default at 4 agents.
 
-**This week.** D-E2 (vision burst with N agents on the WS) **[pending]**.
+**This week: D-E2** (`d_e2.json`; P1's Orin 32 E4B traffic sessions with `ask_vlm` bursts, replayed on gemma-4-E4B
+with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
+- **The mechanism reproduces live:** at a 12,415-token pool the call after a burst recomputes 88-100% of its
+  paused prefix (P1's Orin 64 data: 90%); at the full 63.5K pool, 43%.
+- **The first policies changed nothing measurable** (energy per completed session within -4% to +8% of the default,
+  one run each): admission never held a request (the burst arrived before the pool-usage metric rose) and pinning
+  cannot protect a context when the burst alone exceeds the free pool. A fair re-test (burst capped at 2 requests,
+  with and without pinning) is **[queued]**.
+- **Capacity dominates:** with 4 agents, the 63.5K pool needs 3.25 kJ per completed session against 7.92 kJ at
+  12.4K (2.4x less) and completes 46 sessions against 19 in the same time; 4-5 sessions per run at 12.4K could not
+  run at all (prompts larger than the pool, as P1's Orin 64 overflows). That is CAP's lever, measured live.
 
 > **WS version (G2).** Built: the gateway with tool-tagged routes and tool events, and the trace replayer
 > (`jsw/workloads/replay.py`) with burst injection. **[pending: D-P1 burst-aware memory policy]**
