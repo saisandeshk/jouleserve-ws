@@ -10,9 +10,11 @@ A=~/work/aeroeval/orig/system_prompts
 COMMON=(--world-prompt $A/world_information/common_world_delivery.txt
         --runtime-prompt $A/modularized_new/navigation/runtime_information.txt
         --pace-speedup 50 --seed 42 --mission-timeout-s 3600 --max-tokens 32768 --gpu $GPU)
+# BASE: the gateway in front of the server (default: the server itself), e.g. http://127.0.0.1:31001/s/b-e1/v1
+BASE=${BASE:-http://127.0.0.1:$PORT/v1}
 case "$WHICH" in
-  e4b)  M=(--base-url http://127.0.0.1:$PORT/v1 --model gemma-4-E4B-it); P=e4b ;;
-  g26b) M=(--base-url http://127.0.0.1:$PORT/v1 --model gemma-4-26B-A4B-it-fp8); P=g26b ;;
+  e4b)  M=(--base-url $BASE --model gemma-4-E4B-it); P=e4b ;;
+  g26b) M=(--base-url $BASE --model gemma-4-26B-A4B-it-awq); P=g26b ;;
 esac
 GREEDY=(--temperature 0 --top-p 1 --top-k 1)
 SAMPLED=(--temperature 1.0 --top-p 0.95 --top-k 64)

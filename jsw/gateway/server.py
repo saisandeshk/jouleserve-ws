@@ -28,6 +28,7 @@ from pathlib import Path
 import aiohttp
 from aiohttp import web
 
+from jsw.gateway import pythonic
 from jsw.policies.base import STOP, Policy
 
 
@@ -94,8 +95,10 @@ def _parse_metrics(text: str) -> dict:
 
 
 class Gateway:
-    def __init__(self, upstream: str, log_dir: Path, policy: Policy, tick_s: float = 0.5):
+    def __init__(self, upstream: str, log_dir: Path, policy: Policy, tick_s: float = 0.5,
+                 pythonic_fallback: str = "off"):
         self.upstream, self.policy, self.tick_s = upstream.rstrip("/"), policy, tick_s
+        self.pythonic_fallback = pythonic_fallback     # off | all | first (see jsw/gateway/pythonic.py)
         self.log_dir = Path(log_dir).expanduser()
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.sessions: dict[str, Session] = {}
@@ -110,7 +113,8 @@ class Gateway:
         self.http = aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=0),
                                           timeout=aiohttp.ClientTimeout(total=None, sock_read=1800))
         self._tick_task = asyncio.create_task(self._tick())
-        self.log_event(None, "gateway_start", upstream=self.upstream, **self.policy.describe())
+        self.log_event(None, "gateway_start", upstream=self.upstream, pythonic_fallback=self.pythonic_fallback,
+                       **self.policy.describe())
 
     async def stop(self, app):
         self._tick_task.cancel()
@@ -178,6 +182,14 @@ class Gateway:
                     resp = web.StreamResponse(headers={"Content-Type": "text/event-stream"})
                     await resp.prepare(request)
                 await self._chat_upstream(call, resp if call.client_stream else None)
+                if self.pythonic_fallback != "off" and not call.client_stream and not call.tool_calls:
+                    text = "".join(call.content)
+                    tc = pythonic.leading_calls(text, call.body.get("tools"))[0] \
+                        if self.pythonic_fallback == "first" else pythonic.parse(text, call.body.get("tools"))
+                    if tc:
+                        call.tool_calls = dict(enumerate(tc))
+                        call.content, call.finish_reason = [], "tool_calls"
+                        call.meta = dict(call.meta or {}, pythonic_fallback=len(tc))
                 self.log_call(call)
                 retry = await self.policy.on_complete(call)
                 if not isinstance(retry, dict) or call.client_stream:
@@ -230,6 +242,11 @@ class Gateway:
                         if d.get("content"):
                             call.content.append(d["content"])
                             pieces.append(d["content"])
+                            if self.pythonic_fallback == "first" and not call.tool_calls:
+                                _, moved = pythonic.leading_calls("".join(call.content), call.body.get("tools"))
+                                if moved:                    # calls written, now imagining their results
+                                    stop = True
+                                    call.stopped_by = "pythonic_first"
                         for tc in d.get("tool_calls") or []:
                             slot = call.tool_calls.setdefault(tc.get("index", 0), {"type": "function", "function": {}})
                             if tc.get("id"):
@@ -254,7 +271,7 @@ class Gateway:
                         await client.write(raw if raw.endswith(b"\n\n") else raw.rstrip(b"\n") + b"\n\n")
                     if stop:
                         call.stopped_by = call.stopped_by or "policy"
-                        call.finish_reason = "length"
+                        call.finish_reason = "stop" if call.stopped_by == "pythonic_first" else "length"
                         asyncio.create_task(self.abort_upstream(call.rid))
                         if client is not None:
                             fin = {"id": j.get("id"), "object": "chat.completion.chunk", "model": j.get("model"),
@@ -339,7 +356,10 @@ class Gateway:
         return web.json_response({"ok": True})
 
     async def passthrough(self, request: web.Request):
-        url = self.upstream + request.path_qs
+        path = request.path_qs
+        if path.startswith("/s/"):                      # /s/<sid>/flush_cache etc.: drop the session prefix
+            path = "/" + path.split("/", 3)[3]
+        url = self.upstream + path
         data = await request.read() if request.can_read_body else None
         async with self.http.request(request.method, url, data=data,
                                      headers={"Content-Type": request.headers.get("Content-Type", "application/json")}) as r:
@@ -371,10 +391,11 @@ def make_app(gw: Gateway) -> web.Application:
     r.add_post("/s/{sid}/{tool:tool}/generate", gw.generate)
     r.add_post("/s/{sid}/event", gw.event)
     r.add_get("/gateway/status", gw.status)
-    for path in ("/v1/models", "/metrics", "/health", "/get_server_info", "/server_info", "/get_model_info"):
-        r.add_get(path, gw.passthrough)
-    for path in ("/flush_cache", "/abort_request", "/open_session", "/close_session"):
-        r.add_post(path, gw.passthrough)
+    for prefix in ("", "/s/{sid}"):
+        for path in ("/v1/models", "/metrics", "/health", "/get_server_info", "/server_info", "/get_model_info"):
+            r.add_get(prefix + path, gw.passthrough)
+        for path in ("/flush_cache", "/abort_request", "/open_session", "/close_session"):
+            r.add_post(prefix + path, gw.passthrough)
     app.on_startup.append(gw.start)
     app.on_cleanup.append(gw.stop)
     return app
@@ -388,8 +409,12 @@ def main():
     ap.add_argument("--log-dir", required=True)
     ap.add_argument("--policy", default=None, help="module:Class (default: no policy)")
     ap.add_argument("--policy-args", default="{}")
+    ap.add_argument("--pythonic-fallback", default="off", choices=("off", "all", "first"),
+                    help="turn content that is only Python-style calls to the request's tools into tool calls; "
+                         "'first' also stops a reply when it opens a new thought after its calls")
     a = ap.parse_args()
-    gw = Gateway(a.upstream, Path(a.log_dir), load_policy(a.policy, json.loads(a.policy_args)))
+    gw = Gateway(a.upstream, Path(a.log_dir), load_policy(a.policy, json.loads(a.policy_args)),
+                 pythonic_fallback=a.pythonic_fallback)
     web.run_app(make_app(gw), host=a.host, port=a.port, access_log=None, print=None)
 
 
