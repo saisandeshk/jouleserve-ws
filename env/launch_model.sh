@@ -35,12 +35,14 @@ case "$NAME" in
     SERVED=granite-4.2-8b; PARSE="" ;;
   *) echo "unknown model $NAME" >&2; exit 2 ;;
 esac
-# TP>1: the venv's NCCL 2.29.7 is a CUDA-13 build that fails on driver 560 ("CUDA driver version is insufficient");
-# preload a CUDA-12 NCCL (pip nvidia-nccl-cu12 2.32.3 in ~/work/nccl-cu12, 2026-10-06). The GPUs share no NVLink and
-# sit on different sockets, so SGLang's custom all-reduce (P2P) is off too.
+# The venv's NCCL 2.29.7 is a CUDA-13 build that fails on driver 560 ("CUDA driver version is insufficient").
+# Always preload a CUDA-12 NCCL (pip nvidia-nccl-cu12 2.32.3 in ~/work/nccl-cu12, 2026-10-06): TP>1 needs it, and
+# so does TP=1 whenever a request uses a grammar (forced tool_choice, JSON schema): SGLang then all-reduces the
+# sampled token IDs, which crashed the server with the CUDA-13 NCCL. With TP>1, SGLang's custom all-reduce (P2P)
+# is off too: the GPUs share no NVLink and sit on different sockets.
+export LD_PRELOAD=~/work/nccl-cu12/nvidia/nccl/lib/libnccl.so.2 SGLANG_NCCL_SO_PATH=~/work/nccl-cu12/nvidia/nccl/lib/libnccl.so.2
 TPX=()
 if [ "${TP:-1}" -gt 1 ]; then
-  export LD_PRELOAD=~/work/nccl-cu12/nvidia/nccl/lib/libnccl.so.2 SGLANG_NCCL_SO_PATH=~/work/nccl-cu12/nvidia/nccl/lib/libnccl.so.2
   TPX=(--disable-custom-all-reduce)
 fi
 if [ "$GPU" = 0 ]; then CORES=0-9,20-29; elif [ "$GPU" = 1 ]; then CORES=10-19,30-39; else CORES=0-39; fi  # GPU=0,1 for TP=2

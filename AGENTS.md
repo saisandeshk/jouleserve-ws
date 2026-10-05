@@ -208,6 +208,30 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Foreground `sleep` is blocked for the agent.** Wait on WS jobs with a background
   `until …; do sleep N; done` over ssh.
 
+### 6c. P1's models on the WS (set up 2026-10-05/06; `env/launch_model.sh`, `planning/OPTIONS_PLAN.md` S1)
+
+- **Launch:** `env/launch_model.sh <gemma-e4b|granite8b|...> <gpu> <port> [flags]`. Weights come from
+  `env/fetch_models.py` (pinned revisions) and are served offline. Smoke-test with `env/smoke_model.py <port>`.
+- **Always preload a CUDA-12 NCCL** (the launcher does it). The venv's NCCL 2.29.7 is a CUDA-13 build that fails on
+  driver 560. It crashed even single-GPU servers: SGLang all-reduces sampled token IDs whenever a request uses a
+  grammar (a forced `tool_choice`, a JSON schema). The fix lives in `~/work/nccl-cu12` (pip `nvidia-nccl-cu12`
+  2.32.3, user install); TP=2 additionally needs `--disable-custom-all-reduce` (no NVLink, different sockets).
+- **gemma-4-E4B** (P1's weights): 63,509 full + 50,807 sliding-window tokens at 0.88; thinking on/off, `gemma4`
+  tool calls and images work. With prompts whose examples show tool calls as Python text it sometimes writes
+  calls as text: the gateway's `--pythonic-fallback first` converts them.
+- **granite-4.2-8b** (P1's weights, dense): 26,467 tokens at 0.88 (P1's Orin 32 granite pool).
+- **gemma-4-26B-A4B cannot run on the A5000s in SGLang 0.5.20** (D13's outcome): the 4-bit MoE kernel is
+  SiLU-only (Gemma uses GELU), the FP8 MoE kernel needs fp8e4nv (sm89+), and bf16 (52 GB) exceeds both GPUs. Things
+  learned on the way: a text-only config must carry SGLang's Gemma-4 renaming (base `head_dim` = full attention,
+  `swa_*` = sliding window) and an ignore list with SGLang's module names (`model.layers.*`).
+- **Venvs:** `~/work/venv-analysis` (numpy, scipy, matplotlib, aiohttp; run the analyses here),
+  `~/work/venv-tau2` (Python 3.12, tau2-bench + websockets), `~/work/venv-aerogen` (aerogen driver, calibration).
+- **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub,
+  pinned to `3c47ebc`) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
+  it has ECC memory, while the laptop's RAM flipped bits in cached files on 2026-10-05.
+- **Long jobs run as WS-side queues** (`env/queue_*.sh` in tmux), so they continue if the laptop drops; each run
+  writes `~/work/runs/<name>/` (manifest, calls, events, NVML, metrics) through `jsw/runner/run.py`.
+
 ## 7. Conventions
 
 - **Keep it lean.** The legacy attempt accumulated heavy process and got bloated. Prefer the
