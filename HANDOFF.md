@@ -1,18 +1,27 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-05 evening (IST). Latest work:
-- **A work plan for the time until the professor meeting:**
-  [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) with [`planning/TRACKER.md`](planning/TRACKER.md)
-  (v1.0, **approved by Sandesh on 5 Oct**; work started that evening; stop and report when G1 is done).
-  - G1: an even-handed case for options A–D (plus capacity, if Sandesh agrees), with the same criteria and
-    cheap experiments that fill each option's gaps.
-  - G2: working WS versions. A shared base first (models, gateway, trace replayer, loop detector, runner),
-    then A's decode guard and D's burst-aware memory policy.
-  - Sandesh's framing (5 Oct): the choice is the professor's; work without stopping, timelines aside; a
-    separate comparison doc first, merged later; it is fine to build the online loop stop now and agree the
-    split with P1 after 10 Oct.
-- **The WS is back** (rebooted 5 Oct 10:52; P5's own machine, not one of P1's lanes). Its clone is pulled and
-  `~/jsw-dev` is synced (now with `analysis/`). Nothing has been launched.
+**Last updated:** 2026-10-06 ~01:40 (IST). Latest work (overnight 5-6 Oct, G1 of the options plan in progress):
+- **Follow [`planning/TRACKER.md`](planning/TRACKER.md)** (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.0,
+  approved 5 Oct; stop and report to Sandesh when G1 is done). The comparison doc is
+  [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md) (CMP-1 done; results being added).
+- **Experiments run unattended on the WS as tmux queues** (they survive the laptop dropping):
+  - GPU0 `q-g0` (`env/queue_g0_chain2.sh`): A-E1 on gemma-4-E4B (greedy pilot, then E4B's own Orin 32 prompts),
+    then P1's 26B through llama.cpp (4-bit GGUF, Reflexion prompts, greedy vs sampled), then RET-E1 (granite).
+  - GPU1 `q-g1` then `q-g1b`: D-E2 (vision bursts, 4 policies), C-E1 (tau2-bench), CAP-E1 (FP8 KV).
+  - Results land in `~/work/runs/<name>/`; analyses `analysis/{a_e1,b_e1,b_e2,a_e4,c_e1,d_e2,ret_e1}.py` and
+    `analysis/options_figures.py` run on the WS (`~/work/venv-analysis`) and write `reports/2026-10-06-options/`.
+- **Done so far:** four literature reviews (Sonnet subagents; `lit_*.md`, 20 review docs); B-E1/B-E2 (P1's E4B keeps
+  step-wise steps short; 11-19x less energy per strict success than P1's Reflexion, projected); A-E4 (repeated capped
+  `run_python` calls hold ~a third of gemma's traffic LLM energy); the shared base (gateway, decode guard, burst
+  policy, replayer, loop detector, runner, calibration).
+- **Findings that change the plan:** no stand-in for P1's gemma-4-26B runs on the A5000s in SGLang 0.5.20 (D13
+  outcome; AGENTS.md §6c); gemma-4-E4B does not loop on the 26B's loop prompts, hence the llama.cpp arm.
+- **P1's data is on the WS** (Sandesh's permission, 6 Oct): `~/work/p1/` (GitHub clone at `3c47ebc`; tool-calling copy
+  with matching SHA-256).
+- **Laptop RAM is unreliable** (5 Oct): three P1 files read back with bit flips from the page cache (disk copies
+  intact), plus power cuts and restarts. Process data on the WS (ECC); commit often. The 5 Oct analyses were
+  re-run on the WS: byte-identical outputs.
+- **The WS is back** (since 5 Oct 10:52; P5's own machine with full control).
 - **`NOTES_FOR_P1.md` was sent** to P1 by Sandesh (5 Oct). P1's reply will come through Sandesh.
 - **The Thor is off-limits** until Sandesh says otherwise (5 Oct): no access at all, not even read-only.
 - **P1's repository arrived (Mon 5 Oct).** Sandesh cloned it to `data/edge-agent-bench`. We mapped it,
