@@ -9,6 +9,11 @@
 >   ([`../reports/2026-10-03-admission-sim/README.md`](../reports/2026-10-03-admission-sim/README.md)).
 > - **2026-10-04:** P1's runaway calls are repetition loops, and P1's 3 Oct drone results
 >   reproduce ([`../reports/2026-10-04-drone-runaways/README.md`](../reports/2026-10-04-drone-runaways/README.md)).
+> - **2026-10-05:** P1's repository arrived (read-only clone in `data/edge-agent-bench`). The traffic agent
+>   accumulates context, but kept state is still worth 1–4% of its LLM time; drone and traffic results in
+>   [`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md). The repository has
+>   no Thor drone tool-calling cell, so `data/p1_thor_toolcalling/` stays in use. The direction decision is
+>   postponed with the professor meeting (D12 open).
 
 Status: **draft v0.4** (2026-09-30). This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.
@@ -158,6 +163,7 @@ different model (D1), and the full metric set. There is no replay and there are 
 - Remove the single-run busy check.
 - Add an **N-session concurrent driver**. With temperature 0, top-k 1 and seed 42, identical task instances produce identical trajectories, so concurrent sessions draw **different tasks/instances**.
   - **Correction, 2026-10-04.** That holds for our WS greedy runs. On P1's Jetsons, 23–25% of drone prompts took more than one path in 3 repeats at temperature 0 (P1's deck).
+  - **Update, 2026-10-05.** P1's paper traces the divergence to inputs (simulator noise fed back to the agent; a timestamp in every traffic prompt), except gemma-E4B on the Orin 32, where inference itself differs.
 
 **Paradigm.**
 - There is **no tool-calling paradigm** for drone on the P1 device: all 126 runs are `reflexion`, and the only switch is `P1_ENABLE_REFLEXION`.

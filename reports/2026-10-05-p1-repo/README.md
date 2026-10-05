@@ -32,7 +32,14 @@ gemma. Stopping a run at its second consecutive capped call would save 27% of th
 completed run.
 
 P1's paper reports the loop finding itself, but with an offline detector and as an upper bound, not as a
-control policy; it has dropped its early-abort plan. Details are in §8.
+control policy; it has dropped its early-abort plan. Details are in §8. Five corrections for P1 are in §7 and,
+ready to forward, in [`NOTES_FOR_P1.md`](NOTES_FOR_P1.md).
+
+![The energy is in runaway decodes, not in kept state](figures/summary.png)
+
+Each dot is one configuration (P1's measured runs, one agent per device). Across the x-axis is the most that
+keeping a session's state could save; up the y-axis, the share of board energy spent decoding calls that hit
+their token limit. Every configuration sits far from the top right.
 
 ## Summary
 
@@ -145,7 +152,53 @@ control policy; it has dropped its early-abort plan. Details are in §8.
 **People.** P1's analysis and paper are written by Mayank Arya (`mayankarya`), the author of aerogen; drone
 runs by Aayushi, traffic by Priyanshu.
 
+**The traffic agent** (P1's harness, as recorded in the traces). It answers one question about a city's
+traffic cameras per run, with native tool calling and one growing conversation:
+
+```mermaid
+flowchart LR
+    Q["Question about a camera,<br/>day and time window"] --> L["LLM call<br/>(thinking + one tool call)"]
+    L --> T{"Tool requested?"}
+    T -- "yes" --> X["Run the tool<br/>get_traffic_series · run_python · get_camera_frames ·<br/>ask_vlm · resolve_location · geocode · web_search"]
+    X --> A["Append the result<br/>to the conversation"]
+    A --> L
+    T -- "no: answer" --> D["Done (completed)"]
+    L -. "step 20 reached" .-> G["Gave up (no_convergence)"]
+    A -. "prompt exceeds the window" .-> O["Overflow (input_ceiling)"]
+    X -. "ask_vlm sends 8–45 image requests<br/>to the agent's own server" .-> L
+```
+
+**What P5 takes from the repository, and where it overlaps P1:**
+
+```mermaid
+flowchart LR
+    subgraph Data["Raw data (P1's device owners)"]
+        D1["drones/: 3 cells, 396 runs<br/>(+ our Thor tool-calling copy)"]
+        D2["traffic/: 8 cells, 1,659 runs<br/>traces + 1 s KV vitals"]
+    end
+    subgraph Pipe["P1's pipeline"]
+        P1a["tidy tables · gates"]
+        P1b["Layer 1 per-call cost model"]
+        P1c["Layer 2 skeleton bootstrap<br/>validation · selection"]
+    end
+    subgraph Paper["P1's paper (due Sat 10 Oct)"]
+        R["Findings incl. loops (offline)<br/>capacity · vision tool"]
+    end
+    D1 --> P1a --> P1b --> P1c --> R
+    D2 --> P1a
+    D1 --> Ours["P5: analysis/p1_repo.py loader<br/>opportunity · caps · traffic sim"]
+    D2 --> Ours
+    Ours -. "corrections (§7)" .-> R
+    R -. "overlap: loop stop, capacity remedies" .-> Ours
+```
+
 ## 2. Traffic: accumulating context, little to save
+
+![Prompt tokens at every call of every traffic run, against each device's context window](figures/context_growth.png)
+
+Every traffic prompt repeats the previous one and adds a tool result (100% of call pairs; the context grows a
+median 0.4–2.7K tokens per step, 67–90% of it tool output). On Orin 64 gemma the 12,288-token window cuts runs
+short; on Thor, prompts reach 106K tokens.
 
 ![Value of kept state and idle gaps, all 12 configurations](figures/opportunity.png)
 
@@ -176,7 +229,7 @@ repeats an earlier prompt's text (§6).
   the drone reports' value, the traffic ceilings are 6.5–15% (37% for Qwen2.5-VL).
 
 **Why traffic still has little to save.**
-- **Shape.** Contexts accumulate (above), but each step writes a median 545–999 tokens with reasoning, and
+- **Shape.** Contexts accumulate (above), but each step writes a median 424–999 tokens with reasoning, and
   decode is 96–99% of LLM time except for Qwen2.5-VL.
 - **Price.** On a Jetson a generated token costs 117–312 prefilled ones in time (P1's energy prices for traffic:
   46–121× average, 138–1,335× marginal).
@@ -191,6 +244,17 @@ repeats an earlier prompt's text (§6).
 
 P1 describes `ask_vlm` as a second model on the same GPU. The server's own counters (the vitals stream's
 1 s KV samples) show something else.
+
+```mermaid
+flowchart LR
+    A["Agent's call ends;<br/>its context stays cached<br/>(evictable)"] --> B["ask_vlm sends 8–45<br/>image requests to the<br/>same SGLang server"]
+    B --> C{"Pool big enough for<br/>burst + paused context?"}
+    C -- "Thor: 247K pool" --> K["Context kept;<br/>next call reuses it"]
+    C -- "Orin 64 gemma: 12.4K pool" --> E["Paused context evicted<br/>(LRU) to admit the burst"]
+    E --> R["Next call recomputes<br/>~90% of its prefix"]
+```
+
+![One Orin 64 gemma run: the burst takes the pool and the agent's paused context is evicted](figures/vlm_burst.png)
 
 | Configuration | ask_vlm calls | Running requests during it (median / max) | KV used during it, peak (share of pool) | Next call missed its prefix (> 64 tokens) | Prefix recomputed | Recompute, share of LLM time |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -264,6 +328,19 @@ per device (`analysis/traffic_sim.py`).
 
 ![Capped calls by kind, and what stop rules would save](figures/caps.png)
 
+![Runs with a capped call, call by call: on gemma the caps come in chains](figures/cap_chains.png)
+
+```mermaid
+flowchart TB
+    subgraph Drone["Drone (P1's Reflexion / tool calling, 32K cap)"]
+        d1["Generator thinks"] --> d2["Text starts repeating<br/>(a loop)"] --> d3["Runs to 32,768 tokens;<br/>no usable answer"] --> d4["Reflect and retry<br/>(up to 3 attempts)"]
+    end
+    subgraph Traffic["Traffic (8K cap)"]
+        t1["Model writes a long<br/>tool-call body (run_python)"] --> t2["Cap hits inside the call;<br/>parser drops it"] --> t3["Agent sees no result<br/>and asks again"] --> t4["Caps again<br/>(121 of 158 on Thor gemma)"]
+        t4 --> t2
+    end
+```
+
 | Configuration | Capped calls | Share of LLM time | Loops (our detector) / with text | P1's rule | Online loop stop | Stop at 2nd consecutive cap | Stop at first cap (P1's bound) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Drone · Thor · Reflexion | 122 | 71% | 121 / 122 | 94 / 122 | 43.5%, 0 finished calls stopped | 0.0% | 50.2%, 22 passing runs lost |
@@ -304,6 +381,30 @@ recorded. Runs lost are runs that still passed (drone) or completed (traffic).
 - **Orin 64's caps are the context guard.** All 66 capped calls on Orin 64 gemma ended at a budget the guard
   had lowered because the window was nearly full. That is capacity, not runaway decoding.
 
+**Where each configuration's energy goes** (P1's measured board energy; each call's energy split into prefill and
+decode by its time to first token; `energy_map.json`):
+
+![Shares of board energy by phase](figures/energy_map.png)
+
+| Configuration | Decode in capped calls | Other decode | Prefill | Vision tool | Other tools |
+| --- | --- | --- | --- | --- | --- |
+| Drone · Thor · gemma · Reflexion | 67% | 27% | 2% | 0% | 3% |
+| Drone · Thor · gemma · tool calling | 69% | 28% | 1% | 0% | 2% |
+| Drone · Orin 64 · Devstral | 5% | 66% | 21% | 0% | 20% |
+| Drone · Orin 32 · gemma-E4B | 16% | 76% | 3% | 0% | 5% |
+| Traffic · Thor · gemma | 38% | 49% | 2% | 6% | 2% |
+| Traffic · Thor · granite | 19% | 78% | 1% | 0% | 2% |
+| Traffic · Thor · Qwen3.6 | 7% | 64% | 2% | 24% | 4% |
+| Traffic · Orin 64 · gemma | 10% | 63% | 3% | 20% | 4% |
+| Traffic · Orin 64 · granite | 12% | 84% | 1% | 0% | 2% |
+| Traffic · Orin 32 · granite | 17% | 80% | 1% | 0% | 1% |
+| Traffic · Orin 32 · gemma-E4B | 33% | 56% | 2% | 5% | 4% |
+| Traffic · Orin 32 · Qwen2.5-VL | 0% | 76% | 14% | 0% | 7% |
+
+Prefill, the only part kept state can save, is 0.7–3.4% of energy everywhere except Devstral (21%) and
+Qwen2.5-VL (14%), which barely generate. Decode in capped calls takes 38–69% of board energy on Thor gemma (traffic, drone), 33% on Orin 32
+gemma-E4B traffic, and 0–19% elsewhere.
+
 ## 6. Drone update
 
 - **Thor Reflexion with P1's 144th run.** The run (D2, instance 3, run 3) ended partial after a 32,768-token
@@ -334,7 +435,7 @@ recorded. Runs lost are runs that still passed (drone) or completed (traffic).
 | Stop at first capped call: drone Thor / traffic Thor gemma | 50.2% (22 lost) / 37.3% (4) | 50.2% (22) / 37.2% (4) |
 | Capped calls on Orin 64 gemma traffic | 0 (cap = 8,000 only) | 66, all at budgets the context guard lowered |
 
-**Corrections to send to P1.**
+**Corrections to send to P1** (with evidence and code, ready to forward: [`NOTES_FOR_P1.md`](NOTES_FOR_P1.md)).
 1. `ask_vlm` is a burst of concurrent requests to the agent's own server, not a second model (§3).
 2. Their loop threshold misses long-period loops. Our detector finds 121 of 122 drone Thor loops against
    their 94.
@@ -370,6 +471,19 @@ recorded. Runs lost are runs that still passed (drone) or completed (traffic).
 
 ## 9. What changes for P5's options
 
+```mermaid
+flowchart TB
+    S["Where does an edge agent's energy go?<br/>(P1's runs, 12 configurations)"] --> K{"Kept state worth<br/>managing?"}
+    K -- "No: 1–4% measured, ≤ 7% ceiling;<br/>default within 2.4% with N agents" --> R["Retention controller:<br/>not a contribution here"]
+    S --> C{"Capped decodes?"}
+    C -- "Yes: 38–69% of energy on Thor gemma" --> A["Option A: decode-side energy<br/>online loop stop · retry policy for dropped calls ·<br/>sampling (P1 claims the loop finding)"]
+    S --> M{"Memory binds?"}
+    M -- "Orins: window overflows;<br/>pool caps consolidation" --> Cap["Capacity: FP8 KV, smaller fixed prompt<br/>(configuration, unless it changes at run time)"]
+    M -- "Vision-tool bursts evict<br/>the paused context" --> D["Option D: memory that changes over time<br/>(live case, 0.6% here)"]
+    S --> B["Option B: agent design (report to P1)"]
+    S --> CC["Option C: standard benchmarks with injected waits"]
+```
+
 - **A memory controller is not a contribution on P1's workloads, drone or traffic.** Kept state is worth
   1–4% of LLM time per agent. With many agents, SGLang's default is within 2.4% of every policy. The large
   gaps are capacity: FP8 KV, smaller fixed prompts, capped tool outputs.
@@ -392,7 +506,8 @@ recorded. Runs lost are runs that still passed (drone) or completed (traffic).
 | Opportunity, waits, vision-tool bursts, prefix reuse | `analysis/p1_opportunity.py` | `opportunity.json` |
 | Capped calls, loops, stop rules | `analysis/p1_caps.py` (reuses `p1_loops.detect`) | `caps.json` |
 | Many traffic agents per device | `analysis/traffic_sim.py` (reuses `admission_sim.simulate`) | `traffic_sim.json` |
-| Figures | `analysis/p1_repo_figures.py` | `figures/` |
+| Figures and the energy map | `analysis/p1_repo_figures.py` | `figures/`, `energy_map.json` |
+| Notes for P1 | (this report) | [`NOTES_FOR_P1.md`](NOTES_FOR_P1.md) |
 
 ```
 python3 -m analysis.p1_repo          # parse (about 2 s once cached)
@@ -415,3 +530,5 @@ python3 -m analysis.p1_repo_figures
   measurements on these devices. The vision tool's requests are tool time.
 - **P1's paper and plans** are quoted from the repository as of 4 Oct. P1 may change them before
   10 Oct.
+- **P1's own figures** (from its 3 Oct deck and repository) are used in P5's private docs and deck only.
+  They are kept out of this public repository, in the git-ignored `p1_figures/`.

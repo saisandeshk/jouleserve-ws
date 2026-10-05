@@ -19,8 +19,30 @@ import tempfile
 
 ROOT, OUT = sys.argv[1], sys.argv[2]
 IDS = sys.argv[3:]
-CHROME = os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell")
+CHROME = next((c for c in (os.environ.get("SLIDE_CHROME"),
+                           os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell"),
+                           "/opt/brave.com/brave/brave", "/usr/bin/brave-browser") if c and os.path.exists(c)), None)
 BLOBS = {
+         "/_blob/9b83a2f30d74e4643cf604a6c3e5c385": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/energy_map.png",
+         "/_blob/0725e2d95ddb66817859bc91d90a1c4c": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/opportunity.png",
+         "/_blob/e13847c3ea658fccc4e758076f83b0c4": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/caps.png",
+         "/_blob/69c5f109f1ab9aed0331081ab4d51247": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/traffic_sim.png",
+         "/_blob/6f92e179632458f8a738d7f68d97e449": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/context_growth.png",
+         "/_blob/3b9e1ffc315a4523ab7b4ff3d5029a10": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/vlm_burst.png",
+         "/_blob/06cfad8f6b15ab92d06afa38aa1e8bfc": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/cap_chains.png",
+         "/_blob/14cc5c90983217638598d85dfce0bc06": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/energy_map.png",
+         "/_blob/3eafc85b5bcd7f79f7cde7e6ddeaf587": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/figures/summary.png",
+         "/_blob/d4e3799f63749666a2dcda2e17c36477": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_turn_vs_task_s391.png",
+         "/_blob/b750cc64cfb12ebad9ad2aedc42c9b98": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_token_price_by_workload_s394.png",
+         "/_blob/2ad18d5eab60a3fb93354b0321096f33": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_capped_calls_s396.png",
+         "/_blob/0fb0c0326bc6ef0e4e73498090e5028e": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_failure_energy_s397.png",
+         "/_blob/1d95df64268861ec0c334456fa096206": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_prefill_cache_s398.png",
+         "/_blob/d57dcc2895ae68cd798b2c610b54efe1": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_context_window_s400.png",
+         "/_blob/e4c6c0e80f499fbf9e71bbfcad3ca8c7": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_vision_tool_energy_s401.png",
+         "/_blob/657bd5bbc32db6c1ccbe344a923d94f4": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_path_agreement_s403.png",
+         "/_blob/44c129d837b1bec66c3fc4aef31f9528": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_thermal_s405.png",
+         "/_blob/637dfc9509cc9fed33f53dc1b40998a8": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_window_budget_repo.png",
+         "/_blob/4a86d261662a78f48508481a8bfd905e": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-05-p1-repo/p1_figures/p1_token_price_s393.png",
          "/_blob/4b538ccc9cf4f178e3608db80da82808": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-01-workload-opportunity/figures/time_split.png",
          "/_blob/e0c130ece5d8cd561bf6484b8f214df1": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-02-stepwise-d1/figures/output_per_step_cdf.png",
          "/_blob/eeecb9f7c5e2e427d730760b9746fd80": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-03-admission-sim/figures/retention_value.png",
@@ -120,13 +142,13 @@ for sid in ids:
             f"<body>{src}<script>{JS}</script><script>Promise.race([document.fonts.ready, new Promise(r=>setTimeout(r,4000))]).then(()=>{{{CHECK}}});</script></body></html>")
     pf = os.path.abspath(os.path.join(OUT, f"{sid}.html"))
     open(pf, "w").write(page)
-    common = [CHROME, "--no-sandbox", "--hide-scrollbars", "--allow-file-access-from-files",
+    common = [CHROME] + ([] if CHROME.endswith("chrome-headless-shell") else ["--headless=new", "--disable-gpu"]) + ["--no-sandbox", "--hide-scrollbars", "--allow-file-access-from-files",
               "--window-size=1920,1080", "--virtual-time-budget=8000"]
     with tempfile.TemporaryDirectory() as ud:
-        subprocess.run(common + [f"--user-data-dir={ud}", f"--screenshot={os.path.join(OUT, sid + '.png')}", "file://" + pf],
+        subprocess.run(common + [*([f"--user-data-dir={ud}"] if CHROME.endswith("chrome-headless-shell") else []), f"--screenshot={os.path.join(OUT, sid + '.png')}", "file://" + pf],
                        capture_output=True, timeout=120)
     with tempfile.TemporaryDirectory() as ud:
-        res = subprocess.run(common + [f"--user-data-dir={ud}", "--dump-dom", "file://" + pf], capture_output=True, text=True, timeout=120)
+        res = subprocess.run(common + [*([f"--user-data-dir={ud}"] if CHROME.endswith("chrome-headless-shell") else []), "--dump-dom", "file://" + pf], capture_output=True, text=True, timeout=120)
     dom = res.stdout
     if '<pre id="report">' not in dom:
         print("   dump failed:", len(dom), res.stderr[-300:])

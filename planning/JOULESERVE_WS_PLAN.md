@@ -5,7 +5,11 @@ Status: **v1.0** (2026-09-30). This is the master plan for the workstation build
 - **2026-10-02 to 10-04:** the merged evidence doc ([`../reports/2026-10-02-p5-evidence/README.md`](../reports/2026-10-02-p5-evidence/README.md)), with the results below.
   - A memory controller beats SGLang's default by at most ~10% in simulation (2026-10-03).
   - P1's runaway calls are repetition loops (2026-10-04).
-  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12; current state in [`../HANDOFF.md`](../HANDOFF.md)).
+- **2026-10-05:** P1's repository arrived; drone and traffic analysed ([`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md)).
+  - Traffic (P1's accumulating-context agent): kept state is worth 1–4% of LLM time; with 1–8 agents per device at real KV pools no policy beats SGLang's default by more than 2.4% (simulated); capacity binds on the Orins.
+  - The vision tool's request bursts evict the paused agent's context on Orin 64 (a live, small case of H4 / option D).
+  - P1's paper claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4.
+  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct is postponed, with no new date; current state in [`../HANDOFF.md`](../HANDOFF.md).
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 

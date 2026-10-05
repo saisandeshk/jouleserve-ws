@@ -1,5 +1,9 @@
 # Does a thinking model keep its steps short? A step-wise agent on P1's delivery tasks
 
+> **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's own traffic agent is an accumulating-context agent too, with
+> steps of a median 424–999 output tokens (more than the 55–99 here, because its models think at every
+> step). Its kept state is worth 1–4% of LLM time.
+>
 > **Update 2026-10-03.** `stepwise.json` and the figure were regenerated with 104 of the 108
 > runs of P1's tool-calling sweep (median 3,406 output tokens per call, 63% over 1K); the text
 > below quotes the first 35 runs (median 3,802). Many drones per box are simulated in

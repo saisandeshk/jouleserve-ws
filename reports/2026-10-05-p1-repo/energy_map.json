@@ -1,0 +1,98 @@
+{
+ "d_thor_gemma_rfx": {
+  "capped_decode": 0.6747645086873764,
+  "other_decode": 0.27294765380094504,
+  "prefill": 0.01771736499997265,
+  "vision_tool": 0.0,
+  "other_tools": 0.03273043072355071,
+  "rest": 0.0018400417881552222
+ },
+ "d_thor_gemma_tc": {
+  "capped_decode": 0.6920151461506246,
+  "other_decode": 0.2842442340238672,
+  "prefill": 0.0072515782235583566,
+  "vision_tool": 0.0,
+  "other_tools": 0.015278438228208473,
+  "rest": 0.001210603373741348
+ },
+ "d_o64_devstral_tc": {
+  "capped_decode": 0.05344794927470265,
+  "other_decode": 0.6636835775057323,
+  "prefill": 0.20966341170421768,
+  "vision_tool": 0.0,
+  "other_tools": 0.20351000009140477,
+  "rest": 0.0
+ },
+ "d_o32_e4b_tc": {
+  "capped_decode": 0.1608797279186978,
+  "other_decode": 0.7555323397918674,
+  "prefill": 0.03434634203436512,
+  "vision_tool": 0.0,
+  "other_tools": 0.04688479581364246,
+  "rest": 0.0023567944414272235
+ },
+ "t_thor_gemma": {
+  "capped_decode": 0.38186306284352256,
+  "other_decode": 0.4918406495519887,
+  "prefill": 0.02089767859260018,
+  "vision_tool": 0.05897675811904667,
+  "other_tools": 0.022513063566510366,
+  "rest": 0.023908787326331504
+ },
+ "t_thor_granite": {
+  "capped_decode": 0.18774585615343728,
+  "other_decode": 0.7751699367669905,
+  "prefill": 0.014072412174508435,
+  "vision_tool": 0.0,
+  "other_tools": 0.01778750600430247,
+  "rest": 0.005224288900761209
+ },
+ "t_thor_qwen36": {
+  "capped_decode": 0.06713153840434169,
+  "other_decode": 0.644746238386687,
+  "prefill": 0.01566451446885851,
+  "vision_tool": 0.23904557410655072,
+  "other_tools": 0.040206501554653135,
+  "rest": 0.0
+ },
+ "t_o64_gemma": {
+  "capped_decode": 0.09790252472953717,
+  "other_decode": 0.6275102172806812,
+  "prefill": 0.03012827736264805,
+  "vision_tool": 0.19660067827101993,
+  "other_tools": 0.03715851773095892,
+  "rest": 0.010699784625154751
+ },
+ "t_o64_granite": {
+  "capped_decode": 0.12259773794696949,
+  "other_decode": 0.8357626997243538,
+  "prefill": 0.014948574617565455,
+  "vision_tool": 0.0,
+  "other_tools": 0.02060761665838776,
+  "rest": 0.006083371052723496
+ },
+ "t_o32_granite": {
+  "capped_decode": 0.16975781128121936,
+  "other_decode": 0.8030713143782652,
+  "prefill": 0.012943660724329297,
+  "vision_tool": 0.0,
+  "other_tools": 0.007840816593338486,
+  "rest": 0.006386397022847712
+ },
+ "t_o32_e4b": {
+  "capped_decode": 0.33263060843489456,
+  "other_decode": 0.55515639066719,
+  "prefill": 0.016222391416994324,
+  "vision_tool": 0.050579940282885656,
+  "other_tools": 0.03814831093848385,
+  "rest": 0.007262358259551571
+ },
+ "t_o32_qwenvl": {
+  "capped_decode": 0.0,
+  "other_decode": 0.761566397379407,
+  "prefill": 0.14250237893023612,
+  "vision_tool": 9.609546115273494e-05,
+  "other_tools": 0.06723318721845031,
+  "rest": 0.02860194101075375
+ }
+}

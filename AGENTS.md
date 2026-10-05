@@ -34,6 +34,9 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
    findings F1–F10, prioritized baselines and hypotheses H1–H5.
 5. `review/*.csv` and `review/paper_cards.md`: evidence carried over from the legacy repo. Its
    "N1→N5 ladder" framing is historical.
+6. The newest report named in `HANDOFF.md` (as of 2026-10-05, `reports/2026-10-05-p1-repo/`, which covers
+   P1's repository, drone and traffic). The shared summary of all reports is
+   `reports/2026-10-02-p5-evidence/README.md` (repo copy of the evidence Claude Doc).
 
 ## 3. Machines
 
@@ -42,6 +45,7 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 | Local checkout | `~/Study/ISP/jouleserve-ws` | docs, analysis, git |
 | WS `resiliente-2053` | `ssh saisandeshk@10.24.32.174` | all P5 compute. 2× RTX A5000 24 GB, no NVLink, no root. Clone at `~/jouleserve-ws` |
 | P1 Thor `dream-thor-1` | `ssh yash@10.24.24.79` | P1's live sweep device; source of the drone code and traces. **Read-only** |
+| P1's repository clone | `data/edge-agent-bench` (local, git-ignored) | P1's raw drone and traffic runs, pipeline and paper (`dream-lab/edge-agent-bench`, cloned by Sandesh 2026-10-05). **Read-only**; rules in §4 |
 | Orin 32/64, other Thors | — | allocated to P1 until their deadline |
 
 - **Code flow:** edit locally, push to `git@github.com:saisandeshk/jouleserve-ws.git`, then
@@ -82,13 +86,27 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
   `reports/2026-10-01-p1-task-overview/README.md` §2.
 - **Timing.** Make big copies only while no sweep is running (check
   `tail /home/yash/final_sweep/<model>/sweep.log`).
-- **Ownership.** Ask Sandesh before vendoring P1 code, or the `aerogen_mcp` agent by another
-  lab member (mayankarya), into this repo. Keep attribution in `vendor/*/README`.
+- **Ownership.** Ask Sandesh before vendoring P1 code, or the `aerogen_mcp` agent by
+  mayankarya (Mayank Arya, P1's analysis lead), into this repo. Keep attribution in `vendor/*/README`.
 - **Credentials.** Never use credentials stored on the Thor (SSH keys, `gh` tokens, git
   credential helpers) to reach GitHub or anything else. For example, never clone P1's private
   repository through them; ask for access instead.
 - **P1's checkouts.** Never run git commands inside P1's checkouts: even `git status` can rewrite
   `.git/index`. Copy a directory with `tar` instead.
+
+### P1's repository clone (`data/edge-agent-bench`)
+
+- **Read only.** Never edit, create or delete files in it, and never run its `make` targets or scripts in
+  place: they write `analysis/outputs/` and a telemetry cache inside the clone. To run P1's code, copy it
+  to a scratch directory first. Our own loader (`analysis/p1_repo.py`) reads the raw files directly.
+- **Never push** (its remote is P1's GitHub) and never commit in it. `git log`/`show` are fine; `git pull`
+  only when Sandesh asks.
+- **Nothing from it goes into our git:** it sits under the git-ignored `data/`. Our analyses commit only
+  derived numbers and our own figures. P1's own figures (from the repository or P1's decks) go only into
+  `reports/*/p1_figures/` (git-ignored) and P5's private artifacts.
+- **Who is who:** P1's analysis and paper are written by Mayank Arya (`mayankarya`, also the author of
+  aerogen); drone runs by Aayushi, traffic runs by Priyanshu. The paper is double-blind until Sat
+  2026-10-10.
 
 ### WS
 

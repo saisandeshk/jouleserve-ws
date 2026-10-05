@@ -1,5 +1,10 @@
 # P1's drone tasks: what AeroEval is, and which tasks can give P5 an opportunity
 
+> **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's repository arrived. Its drone cells are Thor gemma Reflexion (the
+> same 144 runs; our copy missed one), Orin 64 Devstral tool calling and Orin 32 gemma-E4B tool calling; the
+> Thor gemma tool-calling sweep is **not** in it, so our 104-run copy stays in use. The open questions for
+> P1's mentor in §9 are still open.
+>
 > **Update 2026-10-03.** The tool-calling numbers below are from the first 35 runs of P1's
 > sweep. With 104 of 108 runs: 70 passed, capped calls take 70% of LLM time (127 of 571 calls),
 > and 30 of 34 failures include one; the pooled ceiling is still 0.6%. `per_task.json` beside this

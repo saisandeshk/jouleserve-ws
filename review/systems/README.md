@@ -3,6 +3,13 @@
 > **Notes from P1's measurements (2026-10-03/04).**
 > - **Thermal.** P1 saw no thermal throttling in 392 h of agent runs at room temperature. Thermal-aware systems (TAWS, EnerInfer) matter here only for hot enclosures.
 > - **Runaways.** P1's 32K-capped thinking calls are repetition loops under greedy decoding. So the prior work that bears on option A is reasoning-length control and early exit, which is not yet reviewed. See [`../../reports/2026-10-04-drone-runaways/README.md`](../../reports/2026-10-04-drone-runaways/README.md).
+>
+> **Notes from P1's repository (2026-10-05;** [`../../reports/2026-10-05-p1-repo/README.md`](../../reports/2026-10-05-p1-repo/README.md)**).**
+> - **F1 extends to traffic.** P1's traffic agent grows one context (56–82% of prompt tokens from cache), yet kept state saves 1–4% of LLM time: outputs are long (a median 424–999 tokens per call) and a generated token costs 117–312 prefilled ones in time on these Jetsons.
+> - **F3 is narrower than we thought.** Traffic tools mostly return in 0.5–3 s; only the vision tool (median 53–158 s) and some data queries wait long. Physical drone flights remain the 10 s–10 min case.
+> - **F4 holds.** Decode dominates (84–99% of LLM time); capped decodes take 38–69% of board energy on Thor gemma (33% on Orin 32 gemma-E4B traffic, 0–19% elsewhere).
+> - **F5/H4: a live case.** `ask_vlm` sends 8–45 concurrent requests to the agent's own server; on a 12.4K-token pool (Orin 64) it evicts the paused agent context every time. The cost is small (0.6% of LLM time) because prefill is cheap, but it is the one memory-pressure mechanism at one agent per device.
+> - **P1's paper is now the closest internal work** to option A: it reports the loops (offline detector) and a "stop at the first capped call" bound. Not cited by P1: INFERCEPT, Continuum, TokenCake, CacheScout, Adaptive KV Retention, or reasoning-length control.
 
 Status: 2026-09-30. There is one doc per system in this folder, all following `_TEMPLATE.md`:
 workloads, assumptions, controller, results, what JouleServe-WS can take, what JouleServe must

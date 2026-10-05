@@ -2,6 +2,14 @@
 
 **2026-10-04 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's repository holds the
+> one Reflexion run our copy missed (D2, instance 3, run 3): it is a loop too, so the counts are now 121 of 122
+> capped Reflexion calls, and the online loop stop saves 43.5% over 16 tasks with no finished call stopped.
+> P1's paper now reports the loops itself, with an offline rule (last 6,000 characters below 10%) that finds
+> 94 of 122, and a "stop at the first capped call" bound (50.2%, 22 passing runs lost); it no longer plans an
+> early-abort policy. Traffic caps are different: mostly not text loops, but a cap inside a tool call followed
+> by a retry that caps again.
+
 P1 presented new results at the paper meeting with the professor on 2026-10-03 (the
 EdgeAgentBench deck, slides 387–406). This report covers the **drone** part only. It does three
 things:

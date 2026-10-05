@@ -1,5 +1,10 @@
 # Do the drone workloads create a retained-state opportunity?
 
+> **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's repository adds its traffic agent, which grows one context the way
+> aerogen does (56–82% of prompt tokens from cache), yet kept state saves only 1–4% of its LLM time: outputs
+> are long and a generated token costs 117–312 prefilled ones on the Jetsons. With 1–8 traffic agents per
+> device no memory policy beats SGLang's default by more than 2.4% (simulated at real KV pools).
+>
 > **Update 2026-10-04.** The cache-miss anomaly in §2 (point 6) has a better explanation than
 > sliding-window state: 45 of the 47 Reflexion runs with a KV-cache eviction contain a call that
 > looped to the 32K cap and filled P1's 80K-token pool. The capped calls themselves are repetition

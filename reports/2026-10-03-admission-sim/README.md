@@ -1,5 +1,10 @@
 # Can a memory controller beat SGLang's default? N drones sharing one edge box
 
+> **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). The same simulator now replays P1's traffic traces (`analysis/traffic_sim.py`):
+> 1–8 agents on 6 Jetson configurations at their real KV pools. The answer is the same: the best of 12
+> policies beats the default by at most 2.4%. On the Orins capacity binds (doubling the pool cuts energy
+> per completed task 31–46% at 8 agents).
+>
 > **Update 2026-10-04** ([`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md)).
 > - P1's 3 Oct drone results reproduce from the same traces.
 > - The capped calls in §5 are repetition loops. An online loop stop would save 31% (Reflexion) and
