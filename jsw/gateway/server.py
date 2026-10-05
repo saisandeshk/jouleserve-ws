@@ -79,6 +79,9 @@ class Call:
             max_tokens=self.body.get("max_tokens") or (self.body.get("sampling_params") or {}).get("max_new_tokens"),
             temperature=self.body.get("temperature", (self.body.get("sampling_params") or {}).get("temperature")),
             priority=self.body.get("priority"), meta=self.meta,
+            # the reply's opening text when a policy or the tool-call fallback acted, or a reply had no tool call
+            content_head=("".join(self.content)[:300] if (self.stopped_by or self.meta or (
+                self.route == "chat" and not self.tool_calls and self.body.get("tools"))) else None),
         )
 
 

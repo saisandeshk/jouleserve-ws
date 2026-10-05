@@ -38,11 +38,23 @@ def gateway_counts(missions):
             "stopped_first_total": sum(c.get("stopped_by") == "pythonic_first" for c in gw)}
 
 
+def load_missions(prefix, suffix):
+    """Like stepwise_ceiling.load_missions, for B-E1's run names (<prefix>-<suffix>)."""
+    import glob
+    out = []
+    for sd in sorted(glob.glob(str(sc.RUNS / f"{prefix}-{suffix}" / "sessions" / "*"))):
+        summ = json.loads(Path(sd, "summary.json").read_text()) if Path(sd, "summary.json").exists() else {}
+        calls = [c for c in sc._jsonl(Path(sd, "llm_calls.jsonl")) if c.get("completion_tokens") is not None]
+        if calls:
+            out.append(dict(dir=sd, summary=summ, calls=calls, tools=sc._jsonl(Path(sd, "tool_calls.jsonl"))))
+    return out
+
+
 def main():
     result = {}
     for suffix in ("d1", "d23"):
         for label, prefix in ARMS:
-            ms = sc.load_missions(prefix, suffix)
+            ms = load_missions(prefix, suffix)
             ms = [m for m in ms if m["summary"]]
             if not ms:
                 continue
@@ -51,7 +63,7 @@ def main():
             row.update(prefill_ws=pre, decode_ws=dec)
             result[f"{prefix}-{suffix}"] = dict(label=label, task_set=suffix, **row)
     for label, prefix in ARMS:                                    # D1-D3 pooled per arm
-        ms = [m for sf in ("d1", "d23") for m in sc.load_missions(prefix, sf) if m["summary"]]
+        ms = [m for sf in ("d1", "d23") for m in load_missions(prefix, sf) if m["summary"]]
         if ms:
             result[f"{prefix}-all"] = dict(label=label, task_set="d1-d3", **sc.arm_stats(ms, None))
     result["gateway"] = gateway_counts([])
