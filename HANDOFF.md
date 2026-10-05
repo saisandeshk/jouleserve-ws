@@ -60,10 +60,11 @@ which git already keeps.
     (4) Orin 64's context guard truncates calls their 8,000-token rule does not count; (5) Devstral's prefix
     cache is off (about 9% of its LLM time).
 - **The professor meeting is postponed** (no new date). Nothing has been shown to the professor yet.
-- **Not pushed: our GitHub repo is PUBLIC.**
-  - `gh repo view` reported `saisandeshk/jouleserve-ws` as public; it holds P1's unpublished numbers in
-    `reports/`. All commits since 2026-10-04 are local only. Sandesh decides on visibility (private is
-    advisable before P1's double-blind submission) and then pushes.
+- **Pushed to the public repo** (2026-10-05, Sandesh's choice after being asked about visibility).
+  - `saisandeshk/jouleserve-ws` is public and now holds P1's unpublished numbers in `reports/`; all local
+    commits up to the task-3 work are on `origin/main`.
+  - `gh` is not logged in on this machine (HTTP 401); the public API (`curl
+    https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
   - P1's own figures (deck and repository) are kept out of git: `reports/*/p1_figures/` is git-ignored.
 - **Docs updated 2026-10-05** (task 3): the evidence Claude Doc and its repo copy
   [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md), the teaching guide
@@ -71,11 +72,9 @@ which git already keeps.
   dated reports. Revisions and slide counts: see "Artifacts" below.
 - **Artifacts** (all private until Sandesh shares them from their Share menu):
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 125; repo copy above, keep in
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 126; repo copy above, keep in
     sync). 5 diagrams, a native chart of kept-state value, our figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure.
-    **One fix left:** its embedded `energy_map.png` is the first version (Devstral "other tools" bar 20%); the
-    table under it is right (7%). Re-upload `reports/2026-10-05-p1-repo/figures/energy_map.png` and swap the
-    image (the agent's upload was blocked by the permission check).
+    The corrected `energy_map.png` (Devstral "other tools" 7%) was swapped in at revision 126.
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
     https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 149; no repo copy). New
     chapter 18 (the traffic workload), §11 memory on a Jetson, §16 P1's repository, paper and corrections,
@@ -205,21 +204,20 @@ and F4; H4 has a live but small case (the vision tool).
 
 1. **Sandesh:** review the updated docs and deck v2.0, share them when ready, and decide whether and how to
    send `NOTES_FOR_P1.md` to P1 before Sat 10 Oct.
-2. **Sandesh:** decide on the repo's visibility, then push the local commits.
-3. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
+2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
    11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
-4. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
+3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
    in `data/edge-agent-bench` only if Sandesh agrees (it is P1's clone), then rerun `analysis.p1_repo`
    (`load(key, refresh=True)`), `p1_opportunity`, `p1_caps`, `traffic_sim`, `p1_repo_figures`, and update
    the report, the docs and the deck.
-5. **If A (decode-side energy):** test whether sampling removes the loops on Gemma (a device after 10 Oct,
+4. **If A (decode-side energy):** test whether sampling removes the loops on Gemma (a device after 10 Oct,
    or a quantized Gemma on the WS); design a retry policy for dropped tool calls (traffic); review the
    reasoning-budget and early-exit literature (`rw-reasoning`); agree the split with P1, whose paper now
    claims the loop finding.
-6. **If D (memory that changes over time):** the vision-tool burst is the case: replay it on the WS (a
+5. **If D (memory that changes over time):** the vision-tool burst is the case: replay it on the WS (a
    burst of concurrent requests while a long context is paused) and size what pinning or burst admission
    saves under small pools.
-7. **When the WS is back:** Qwen3.5 energy calibration; one live memory-pressure run to anchor the
+6. **When the WS is back:** Qwen3.5 energy calibration; one live memory-pressure run to anchor the
    simulators; one long mission (lawnmower or circles).
 
 ## 7. Open questions for Sandesh
@@ -227,19 +225,18 @@ and F4; H4 has a live but small case (the vision tool).
 1. Their plan for the next step (they said they have one).
 2. **Send `NOTES_FOR_P1.md` to P1 before 10 Oct?** And: offer the online loop stop to P1's paper, or keep it
    for P5?
-3. **The repo's visibility:** make it private before pushing?
-4. When will the professor meeting be rescheduled, and is the WS one of P1's four "workstation" lanes? Is
+3. When will the professor meeting be rescheduled, and is the WS one of P1's four "workstation" lanes? Is
    it back up?
-5. The P1 mentor's answers to the task overview's §9: which 8 AeroEval tasks; whether a step-wise paradigm
+4. The P1 mentor's answers to the task overview's §9: which 8 AeroEval tasks; whether a step-wise paradigm
    is in P1's scope; whether P5 may run P1's AeroEval tasks with a step-wise agent; drones per edge box.
-6. Direction and scope (A–D), the go/no-go thresholds (D4), and `N_edge`.
-7. Timeline: when the devices return to P5 after 2026-10-10, and the ISP milestones.
+5. Direction and scope (A–D), the go/no-go thresholds (D4), and `N_edge`.
+6. Timeline: when the devices return to P5 after 2026-10-10, and the ISP milestones.
 
 ## 8. Resume checklist for a new session
 
 1. Read `AGENTS.md`, then this file.
 2. `git status`, `git log --oneline -5`. Before any `git push`, check the visibility:
-   `gh repo view saisandeshk/jouleserve-ws --json visibility`.
+   `gh repo view saisandeshk/jouleserve-ws --json visibility` (if `gh` is logged out: `curl -s https://api.github.com/repos/saisandeshk/jouleserve-ws`).
 3. P1's data: `git -C data/edge-agent-bench log --oneline -3` (read-only; do not pull without Sandesh).
 4. WS, if reachable: `nvidia-smi; tmux ls; ls ~/work/runs`; copy runs with
    `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`.
