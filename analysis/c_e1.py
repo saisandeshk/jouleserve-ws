@@ -49,6 +49,8 @@ def ceiling(convs, r):
 
 def rewards(run_dir, domain):
     f = Path(run_dir) / f"{domain}.json"
+    if f.is_dir():                                   # tau2 writes <save-to>/results.json
+        f = f / "results.json"
     if not f.exists():
         return None
     j = json.loads(f.read_text())

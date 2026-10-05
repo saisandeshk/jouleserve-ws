@@ -1,0 +1,275 @@
+{
+ "api_names": [
+  "fly_body",
+  "fly_to",
+  "get_drone_position",
+  "get_position",
+  "get_yaw",
+  "go_home",
+  "land",
+  "set_yaw",
+  "takeoff"
+ ],
+ "runs": [
+  "/home/saisandeshk/work/runs/a-e1-pilot-e4b-greedy",
+  "/home/saisandeshk/work/runs/a-e1-o32-e4b"
+ ],
+ "cells": {
+  "greedy|thor_rfx|control": {
+   "n": 20,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.1611
+   ],
+   "finished": 20,
+   "finish_rate": 1.0,
+   "capped_no_loop": 0,
+   "tokens_median": 1918,
+   "tokens_mean": 2325,
+   "s_median": 48.7,
+   "generator_finished": 16,
+   "program_parses": 10,
+   "program_valid": 10,
+   "recorded_tokens_median": 5838
+  },
+  "greedy|thor_rfx|loop": {
+   "n": 30,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.1135
+   ],
+   "finished": 30,
+   "finish_rate": 1.0,
+   "capped_no_loop": 0,
+   "tokens_median": 3342,
+   "tokens_mean": 3418,
+   "s_median": 80.2,
+   "generator_finished": 28,
+   "program_parses": 23,
+   "program_valid": 23,
+   "recorded_tokens_median": 32768
+  },
+  "greedy|thor_tc|control": {
+   "n": 20,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.1611
+   ],
+   "finished": 20,
+   "finish_rate": 1.0,
+   "capped_no_loop": 0,
+   "tokens_median": 3340,
+   "tokens_mean": 3133,
+   "s_median": 69.8,
+   "generator_finished": 11,
+   "program_parses": 11,
+   "program_valid": 11,
+   "recorded_tokens_median": 3878
+  },
+  "greedy|thor_tc|loop": {
+   "n": 30,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.1135
+   ],
+   "finished": 30,
+   "finish_rate": 1.0,
+   "capped_no_loop": 0,
+   "tokens_median": 3631,
+   "tokens_mean": 3569,
+   "s_median": 77.4,
+   "generator_finished": 30,
+   "program_parses": 30,
+   "program_valid": 30,
+   "recorded_tokens_median": 32768
+  },
+  "greedy|o32_e4b|control": {
+   "n": 40,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.0876
+   ],
+   "finished": 38,
+   "finish_rate": 0.95,
+   "capped_no_loop": 2,
+   "tokens_median": 3582,
+   "tokens_mean": 4845,
+   "s_median": 70.2,
+   "generator_finished": 25,
+   "program_parses": 23,
+   "program_valid": 23,
+   "recorded_tokens_median": 3225
+  },
+  "greedy|o32_e4b|loop": {
+   "n": 5,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.4345
+   ],
+   "finished": 5,
+   "finish_rate": 1.0,
+   "capped_no_loop": 0,
+   "tokens_median": 4223,
+   "tokens_mean": 3832,
+   "s_median": 84.3,
+   "generator_finished": 5,
+   "program_parses": 5,
+   "program_valid": 5,
+   "recorded_tokens_median": 32768
+  },
+  "sampled:0|o32_e4b|control": {
+   "n": 40,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.0876
+   ],
+   "finished": 38,
+   "finish_rate": 0.95,
+   "capped_no_loop": 2,
+   "tokens_median": 3486,
+   "tokens_mean": 5059,
+   "s_median": 73.8,
+   "generator_finished": 25,
+   "program_parses": 19,
+   "program_valid": 19,
+   "recorded_tokens_median": 3225
+  },
+  "sampled:0|o32_e4b|loop": {
+   "n": 5,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.4345
+   ],
+   "finished": 4,
+   "finish_rate": 0.8,
+   "capped_no_loop": 1,
+   "tokens_median": 4368,
+   "tokens_mean": 9970,
+   "s_median": 97.2,
+   "generator_finished": 5,
+   "program_parses": 4,
+   "program_valid": 4,
+   "recorded_tokens_median": 32768
+  },
+  "sampled:1|o32_e4b|control": {
+   "n": 40,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.0876
+   ],
+   "finished": 37,
+   "finish_rate": 0.925,
+   "capped_no_loop": 3,
+   "tokens_median": 3437,
+   "tokens_mean": 5871,
+   "s_median": 78.2,
+   "generator_finished": 25,
+   "program_parses": 22,
+   "program_valid": 22,
+   "recorded_tokens_median": 3225
+  },
+  "sampled:1|o32_e4b|loop": {
+   "n": 5,
+   "errors": 0,
+   "loops": 0,
+   "loop_rate": 0.0,
+   "loop_ci": [
+    0.0,
+    0.4345
+   ],
+   "finished": 3,
+   "finish_rate": 0.6,
+   "capped_no_loop": 2,
+   "tokens_median": 6014,
+   "tokens_mean": 16625,
+   "s_median": 120.1,
+   "generator_finished": 5,
+   "program_parses": 3,
+   "program_valid": 3,
+   "recorded_tokens_median": 32768
+  }
+ },
+ "arms": {
+  "a-e1-pilot-e4b-greedy:greedy": {
+   "gpu_energy_kj": 299.4,
+   "wall_s": 1618
+  },
+  "a-e1-o32-e4b:greedy": {
+   "gpu_energy_kj": 273.9,
+   "wall_s": 1475
+  },
+  "a-e1-o32-e4b:sampled:0": {
+   "gpu_energy_kj": 285.5,
+   "wall_s": 1539
+  },
+  "a-e1-o32-e4b:sampled:1": {
+   "gpu_energy_kj": 420.8,
+   "wall_s": 2270
+  }
+ },
+ "rules": {
+  "thor_rfx": {
+   "greedy_loop_rate_on_thor_loops": 0.0,
+   "reproduction_check": false,
+   "sampled_loop_rate_on_thor_loops": null,
+   "sampled_ci": [
+    null,
+    null
+   ],
+   "controls_finish_greedy": 1.0,
+   "controls_finish_sampled": null,
+   "verdict": "inconclusive: the stand-in does not reproduce P1's loops"
+  },
+  "thor_tc": {
+   "greedy_loop_rate_on_thor_loops": 0.0,
+   "reproduction_check": false,
+   "sampled_loop_rate_on_thor_loops": null,
+   "sampled_ci": [
+    null,
+    null
+   ],
+   "controls_finish_greedy": 1.0,
+   "controls_finish_sampled": null,
+   "verdict": "inconclusive: the stand-in does not reproduce P1's loops"
+  },
+  "o32_e4b": {
+   "greedy_loop_rate_on_thor_loops": 0.0,
+   "reproduction_check": false,
+   "sampled_loop_rate_on_thor_loops": 0.0,
+   "sampled_ci": [
+    0.0,
+    0.2775
+   ],
+   "controls_finish_greedy": 0.95,
+   "controls_finish_sampled": 0.9375,
+   "verdict": "inconclusive: the stand-in does not reproduce P1's loops"
+  }
+ }
+}

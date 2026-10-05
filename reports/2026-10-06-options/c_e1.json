@@ -1,0 +1,65 @@
+{
+ "run": "/home/saisandeshk/work/runs/c-e1",
+ "domains": {
+  "airline": {
+   "agent_calls": 224,
+   "user_calls": 151,
+   "conversations": 23,
+   "calls_per_conversation": 10,
+   "first_prompt_median": 3895,
+   "peak_prompt_median": 5753,
+   "growth_per_step_median": 182,
+   "out_median": 332.5,
+   "out_p90": 831,
+   "reasoning_share": 0.8326103097157403,
+   "reuse": 0.9345867037305318,
+   "ceiling_ws": null,
+   "r_ws": null,
+   "ceiling_jetson": {
+    "Thor gemma (traffic)": 0.07542644920756021,
+    "Thor granite": 0.03701390900164591,
+    "Orin 64 gemma": 0.09225335663621563,
+    "Orin 32 E4B": 0.07542644920756021,
+    "Thor drone gemma": 0.1599128380729157,
+    "Thor drone tool calling": 0.18740119931808158
+   },
+   "rewards": {
+    "tasks": 20,
+    "rewarded": 20,
+    "mean_reward": 0.5,
+    "passed": 10
+   },
+   "verdict": "in between (10-20%)"
+  },
+  "retail": {
+   "agent_calls": 80,
+   "user_calls": 48,
+   "conversations": 7,
+   "calls_per_conversation": 10,
+   "first_prompt_median": 4452,
+   "peak_prompt_median": 8202,
+   "growth_per_step_median": 247,
+   "out_median": 295.0,
+   "out_p90": 863,
+   "reasoning_share": 0.802316338226051,
+   "reuse": 0.89550558295737,
+   "ceiling_ws": null,
+   "r_ws": null,
+   "ceiling_jetson": {
+    "Thor gemma (traffic)": 0.09892106035209663,
+    "Thor granite": 0.04917983292704073,
+    "Orin 64 gemma": 0.12030736310085813,
+    "Orin 32 E4B": 0.09892106035209663,
+    "Thor drone gemma": 0.20391985038558194,
+    "Thor drone tool calling": 0.2368401921584423
+   },
+   "rewards": {
+    "tasks": 3,
+    "rewarded": 2,
+    "mean_reward": 0.0,
+    "passed": 0
+   },
+   "verdict": "opportunity (ceiling >= 20% at a Jetson r)"
+  }
+ }
+}

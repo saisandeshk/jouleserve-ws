@@ -15,19 +15,21 @@ if ! curl -s -m 3 http://127.0.0.1:$PORT/v1/models | grep -q gemma-4-E4B; then
   tmux new-session -d -s g$GPU-e4b "cd ~/jsw-dev && env/launch_model.sh gemma-e4b $GPU $PORT 2>&1 | tee ~/work/logs/c_e1_server.log"
   for i in $(seq 1 120); do curl -s -m 3 http://127.0.0.1:$PORT/v1/models | grep -q gemma && break; sleep 5; done
 fi
-NAME=c-e1${SMOKE:+-smoke}
+THINK=${THINK:-true}
+DOMAINS=${DOMAINS:-airline retail}
+NAME=c-e1${SMOKE:+-smoke}$([ "$THINK" = false ] && echo -nothink)
 mkdir -p ~/work/runs/$NAME
 tmux kill-session -t gw-c-e1 2>/dev/null
 tmux new-session -d -s gw-c-e1 "cd ~/jsw-dev && $PY -m jsw.gateway.server --upstream http://127.0.0.1:$PORT --port $GW \
   --log-dir ~/work/runs/$NAME/gw --pythonic-fallback first 2>&1 | tee ~/work/logs/gw_$NAME.log"
 sleep 3
-for D in airline retail; do
+for D in $DOMAINS; do
   [ -n "$SMOKE" ] && [ "$D" = retail ] && break
-  A="{\"api_base\": \"http://127.0.0.1:$GW/s/tau-agent-$D/v1\", \"api_key\": \"EMPTY\", \"temperature\": 1.0, \"top_p\": 0.95, \"max_tokens\": 8000, \"extra_body\": {\"top_k\": 64, \"chat_template_kwargs\": {\"enable_thinking\": true}}}"
+  A="{\"api_base\": \"http://127.0.0.1:$GW/s/tau-agent-$D/v1\", \"api_key\": \"EMPTY\", \"temperature\": 1.0, \"top_p\": 0.95, \"max_tokens\": 8000, \"extra_body\": {\"top_k\": 64, \"chat_template_kwargs\": {\"enable_thinking\": $THINK}}}"
   U="{\"api_base\": \"http://127.0.0.1:$GW/s/tau-user-$D/v1\", \"api_key\": \"EMPTY\", \"temperature\": 0.0, \"max_tokens\": 2000, \"extra_body\": {\"chat_template_kwargs\": {\"enable_thinking\": false}}}"
   log "$NAME $D"
   ( cd ~/work/tau2-bench && $TAU run --domain $D --agent llm_agent --agent-llm openai/gemma-4-E4B-it --agent-llm-args "$A" \
-      --user user_simulator --user-llm openai/gemma-4-E4B-it --user-llm-args "$U" --num-tasks ${SMOKE:+2}${SMOKE:-$NT} \
+      --user user_simulator --user-llm openai/gemma-4-E4B-it --user-llm-args "$U" --num-tasks $([ -n "$SMOKE" ] && echo 2 || echo $NT) \
       --max-concurrency 1 --seed 300 --save-to ~/work/runs/$NAME/$D.json > ~/work/logs/${NAME}_$D.log 2>&1 )
   log "$NAME $D done rc=$?"
 done

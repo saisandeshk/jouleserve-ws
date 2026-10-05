@@ -37,19 +37,19 @@ How to use it:
 | ID | Option | Task | Wave | Depends | Status | Output | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CMP-1 | all | Comparison doc skeleton from existing evidence | 0 | — | done | `reports/2026-10-06-options/README.md` | Skeleton with today's evidence and literature for A, B, C, D, CAP; [pending] slots for this week |
-| A-E1 | A | Do the loops survive sampling? Pilot (60 + 40), then full | 1 | S1a, S4, S5 | doing | `env/queue_wave2b.sh`, `analysis/a_e1.py` | On gemma-4-E4B (D13): pilot greedy on GPU0, sampled on GPU1 (started 01:25), then E4B's own Orin 32 prompts |
-| A-E2 | A | Stop and retry: R1 resample, R2 nudge, R3 lower budget | 2 | A-E1 | todo | `data/ws_runs/a-e2-*` | Stretch: grade in x86 AirSim with P1's checker |
+| A-E1 | A | Do the loops survive sampling? Pilot (60 + 40), then full | 1 | S1a, S4, S5 | doing | `a_e1.json`, `env/queue_g0_chain2.sh` | E4B: 0 loops on all 100 Thor prompts under greedy and 0 on its own 5 Orin 32 loop prompts (greedy and sampled): reproduction fails on E4B. P1's 26B via llama.cpp (4-bit GGUF): greedy loops on 18 of 24 Thor loop prompts so far (reproduces) and 5 of 16 controls; sampled arm running |
+| A-E2 | A | Stop and retry: R1 resample, R2 nudge, R3 lower budget | 2 | A-E1 | todo | `env/queue_a_e2.sh`, `analysis/a_e2.py` | Queued on GPU1 (llama.cpp 26B) after the GPU1 tail: resample / nudge / budget on the prompts that loop under greedy |
 | A-E3 | A | Literature: reasoning-length control, early exit, repetition, serving-side reasoning | 0 | — | done | `reports/2026-10-06-options/lit_A.md`, 6 review docs | Partly covered: Word Salad Chopper, AgentStop, Fail-Fast, Dynasor; open: engine-side stop + retry + energy per success on Jetson |
 | A-E4 | A | Traffic's capped tool calls (analysis only) | 2 | — | todo | comparison §A | No replay possible (tool results not recorded) |
 | A-E5 | A, sim | Decode batching: Gemma-4 MoE vs dense, 4K–32K context | 3 | S1 | doing | `jsw/costs/calibrate2.py`, `~/work/runs/calib/granite8b_tp1_gpu0.json` | Granite (dense): prefill 4.2K tok/s; decode 27 ms/step at batch 1, +4.5% at batch 16; 5.3 -> 0.41 J/token (13x). E4B (MoE-free, SWA) pending |
 | B-E1 | B | Gemma (E4B, 26B-4bit) as a step-wise agent on D1–D3 | 1 | S1a, S1b | done | `reports/2026-10-06-options/b_e1.json` | E4B keeps steps short: after a tool result median 63 (greedy) / 68 (sampled) tokens, max 539; planning call 1.2-1.6K; 0 capped; strict pass 9/11 greedy, 7/13 sampled. 9 of 33 missions ended at the first call (E4B wrote the call as text; gateway conversion bug open) |
 | B-E2 | B | Redo the step-wise projections with Gemma's step sizes | 3 | B-E1 | doing | `analysis/b_e2.py` | Projection at Thor gemma-26B and Orin 32 E4B prices |
 | B-E3 | B | Literature: agent design (code-as-action, ReAct, plan-and-execute, drone agents) | 0 | — | done | `reports/2026-10-06-options/lit_B.md`, 4 review docs | Direction known with energy (Cost of Dynamic Reasoning, Sustainable Agents, EpG); the exact comparison not found; fits P1 |
-| C-E1 | C | τ²-bench: single-session shape and ceiling, then N sessions with injected waits | 2 | S1, (S3) | todo | `env/queue_c_e1.sh`, `analysis/c_e1.py` | Queued after D-E2 (GPU1): tau2 airline + retail, 20 tasks each, E4B agent (thinking) and user |
-| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | todo | `env/queue_ret_e1.sh`, `analysis/ret_e1.py` | Queued after A-E1 (wave 3, GPU0): N = 1, 4, 8 default + 8 no-reuse, 40 min each |
-| D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | todo | `env/queue_d_e2.sh`, `analysis/d_e2.py` | Queued after A-E1 (wave 3, GPU1): 4 policies x N 1, 4 at 12.4K; default vs both at full pool |
+| C-E1 | C | τ²-bench: single-session shape and ceiling, then N sessions with injected waits | 2 | S1, (S3) | doing | `c_e1.json` | Airline (20 tasks, reward 0.50): context grows 182 tokens/step, 93.5% reuse, output median 333 (83% reasoning); ceiling 7.5% at E4B's Jetson r, 3.7-9.2% at traffic r, 16-19% at drone r: in between. Retail running; thinking-off airline (C's best case) queued |
+| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | todo | `env/queue_ret_e1.sh`, `analysis/ret_e1.py` | Queued on GPU0 after the 26B arm (~05:30) |
+| D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | doing | `d_e2.json` | 10 runs done: the burst evicts the paused prefix live (88-100% recomputed at 12.4K, P1's Orin 64: 90%); policies within -4..+8% but never engaged (admission raced the metrics poll; pin cannot help when the burst exceeds the pool). Capacity: 63.5K vs 12.4K pool at N=4 cuts energy per session 2.4x. Fair re-test (burst capped at 2, +-pin) queued (D-E2b) |
 | D-E3 | D | Literature: unified memory, co-located models | 0 | — | done | `reports/2026-10-06-options/lit_D.md`, 5 review docs | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning exist; tool foreknowledge on unified memory not found; effect may be small |
-| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | todo | `data/ws_runs/cap-e1-*` | Only if D17 says CAP is in |
+| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | todo | `env/queue_cap_e1.sh` | Queued on GPU1 after C-E1: granite FP8 KV at N=8 (live capacity), E4B FP8 KV on A-E1 pilot and B-E1 D1 |
 | CAP-E2 | CAP | Literature: KV quantization, prompt and tool-loading | 0 | — | done | `reports/2026-10-06-options/lit_CAP.md`, 5 review docs | Each lever studied; energy per task and a run-time controller across levers not found |
 | CMP-2 | all | Full comparison, Sandesh's review | 4 | all | todo | comparison doc | Then merge into the evidence doc and the deck |
 
@@ -78,6 +78,10 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-06 04:25:** A-E1 on E4B done (no loops anywhere: inconclusive); 26B on llama.cpp reproduces the loops under greedy;
+  D-E2 first pass done (mechanism reproduced, policies did not engage; re-test queued); C-E1 airline done. All remaining
+  experiments queued on the WS (GPU0: 26B sampled, RET-E1; GPU1: C-E1 retail, CAP-E1, D-E2b, E4B calibration + C-E1
+  thinking-off, A-E2).
 - **2026-10-06 01:25:** P1's repository cloned on the WS from GitHub (`3c47ebc`); our tool-calling copy moved with
   matching SHA-256 (756 files). The 5 Oct analyses rerun on the WS (ECC memory) give byte-identical `opportunity.json`
   and `caps.json`. B-E1 done. The 26B stand-in is impossible on Ampere in SGLang 0.5.20; A-E1 moved to E4B.
