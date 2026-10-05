@@ -1,9 +1,18 @@
 # HANDOFF — jouleserve-ws
 
 **Last updated:** 2026-10-05 evening (IST). Latest work:
-- **The WS is back** (rebooted 5 Oct 10:52; P5's own machine, not one of P1's lanes). Its clone is pulled to
-  `5373f35` and `~/jsw-dev` is synced (now with `analysis/`). WS experiment options W1–W9 are listed in §6 for
-  Sandesh to choose from; nothing has been launched.
+- **A work plan for the time until the professor meeting:**
+  [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) with [`planning/TRACKER.md`](planning/TRACKER.md)
+  (v1.0, **approved by Sandesh on 5 Oct**; work started that evening; stop and report when G1 is done).
+  - G1: an even-handed case for options A–D (plus capacity, if Sandesh agrees), with the same criteria and
+    cheap experiments that fill each option's gaps.
+  - G2: working WS versions. A shared base first (models, gateway, trace replayer, loop detector, runner),
+    then A's decode guard and D's burst-aware memory policy.
+  - Sandesh's framing (5 Oct): the choice is the professor's; work without stopping, timelines aside; a
+    separate comparison doc first, merged later; it is fine to build the online loop stop now and agree the
+    split with P1 after 10 Oct.
+- **The WS is back** (rebooted 5 Oct 10:52; P5's own machine, not one of P1's lanes). Its clone is pulled and
+  `~/jsw-dev` is synced (now with `analysis/`). Nothing has been launched.
 - **`NOTES_FOR_P1.md` was sent** to P1 by Sandesh (5 Oct). P1's reply will come through Sandesh.
 - **The Thor is off-limits** until Sandesh says otherwise (5 Oct): no access at all, not even read-only.
 - **P1's repository arrived (Mon 5 Oct).** Sandesh cloned it to `data/edge-agent-bench`. We mapped it,
@@ -232,8 +241,8 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 6. Next steps
 
-1. **Sandesh:** choose the WS experiments (item 6). Review the updated docs and deck v2.0 and share them when
-   ready. Pass on P1's reply to `NOTES_FOR_P1.md` when it comes.
+1. **Follow `planning/TRACKER.md`** (plan approved 5 Oct; stop and report to Sandesh when G1 is done). Also: review the updated docs and deck v2.0 and share them when ready; pass on P1's
+   reply to `NOTES_FOR_P1.md` when it comes.
 2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
    11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
 3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
@@ -247,7 +256,8 @@ and F4; H4 has a live but small case (the vision tool).
 5. **If D (memory that changes over time):** the vision-tool burst is the case: replay it on the WS (a
    burst of concurrent requests while a long context is paused) and size what pinning or burst admission
    saves under small pools.
-6. **WS experiments: options offered to Sandesh on 5 Oct, none chosen yet.** Usefulness as rated then:
+6. **WS experiments.** Superseded by `planning/OPTIONS_PLAN.md`; its §10 maps these labels to the plan's task
+   IDs. The options as first offered on 5 Oct, with their usefulness as rated then:
    - **W1 (A, highest):** do Gemma-4's loops survive sampling? Replay the 265 capped Thor prompts plus finished
      long calls as controls, under P1's greedy settings and the model card's sampling. Needs a quantized
      gemma-4-26B-A4B (smoke test first); the greedy arm must loop on the WS for the comparison to count.
@@ -269,7 +279,7 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 7. Open questions for Sandesh
 
-1. **Which WS experiments (§6 item 6), and in what order?**
+1. Answered 5 Oct: the plan is approved (D13–D17 as proposed, capacity in, our lean stated at the end).
 2. P1's reply to `NOTES_FOR_P1.md` (sent 5 Oct), especially on `ask_vlm`'s server. And: offer the online
    loop stop to P1's paper, or keep it for P5?
 3. When will the professor meeting be rescheduled?

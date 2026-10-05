@@ -10,6 +10,7 @@ Status: **v1.0** (2026-09-30). This is the master plan for the workstation build
   - The vision tool's request bursts evict the paused agent's context on Orin 64 (a live, small case of H4 / option D).
   - P1's paper claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4.
   - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct is postponed, with no new date; current state in [`../HANDOFF.md`](../HANDOFF.md).
+- **2026-10-05 (evening):** until D12, the work follows [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (tracker: [`TRACKER.md`](TRACKER.md)). It builds an even-handed case for options A–D and their WS versions, on a shared base (models, gateway, trace replayer) that reuses this plan's §3 design.
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 
