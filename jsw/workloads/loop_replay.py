@@ -113,6 +113,10 @@ async def one(http, gw, row, arm, model, run, out_dir, sem, max_tokens):
 async def drive(a, run):
     rows = [json.loads(x) for x in open(a.prompts)]
     picked = select(rows, a.select, a.seed)
+    if a.from_run:                                 # A-E2: only the prompts that looped in an earlier run's arm
+        looped = {json.loads(x)["id"] for x in open(Path(a.from_run) / "calls.jsonl")
+                  if json.loads(x).get("stopped_by") == "loop" and json.loads(x).get("arm") == a.from_arm}
+        picked = [r for r in rows if r["id"] in looped]
     if a.limit:
         picked = picked[:a.limit]
     rng = random.Random(a.seed)
@@ -148,6 +152,8 @@ def main():
     ap.add_argument("--max-tokens", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--from-run", default="", help="replay only the prompts that looped in this run's --from-arm")
+    ap.add_argument("--from-arm", default="greedy")
     ap.add_argument("--name", required=True)
     a = ap.parse_args()
     from jsw.runner.run import Run
