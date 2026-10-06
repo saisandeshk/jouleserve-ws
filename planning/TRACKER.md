@@ -37,19 +37,19 @@ How to use it:
 | ID | Option | Task | Wave | Depends | Status | Output | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CMP-1 | all | Comparison doc skeleton from existing evidence | 0 | — | done | `reports/2026-10-06-options/README.md` | Skeleton with today's evidence and literature for A, B, C, D, CAP; [pending] slots for this week |
-| A-E1 | A | Do the loops survive sampling? Pilot (60 + 40), then full | 1 | S1a, S4, S5 | doing | `a_e1.json`, `env/queue_g0_chain2.sh` | E4B: 0 loops on all 100 Thor prompts under greedy and 0 on its own 5 Orin 32 loop prompts (greedy and sampled): reproduction fails on E4B. P1's 26B via llama.cpp (4-bit GGUF): greedy loops on 18 of 24 Thor loop prompts so far (reproduces) and 5 of 16 controls; sampled arm running |
-| A-E2 | A | Stop and retry: R1 resample, R2 nudge, R3 lower budget | 2 | A-E1 | todo | `env/queue_a_e2.sh`, `analysis/a_e2.py` | Queued on GPU1 (llama.cpp 26B) after the GPU1 tail: resample / nudge / budget on the prompts that loop under greedy |
+| A-E1 | A | Do the loops survive sampling? Pilot (60 + 40), then full | 1 | S1a, S4, S5 | done | `a_e1.json`, `figures/a_e1_loops.png` | 26B (4-bit, llama.cpp) on P1's Thor Reflexion prompts: greedy loops 23/30 (77%), Gemma's default sampling 0/30 (CI 0-11%) with 28/28 valid programs; rule: sampling removes the loops. E4B (SGLang) never loops, even on its own Orin 32 loop prompts: inconclusive for E4B |
+| A-E2 | A | Stop and retry: R1 resample, R2 nudge, R3 lower budget | 2 | A-E1 | done | `a_e2.json` | Resample after an online stop: 17/17 re-looping calls recovered with valid output; 19.7K tokens vs 32.8K recorded (-40%); rule (<=50% cost) not met; sampling from the start cheaper. Nudge (greedy + note) re-loops 7/10. Budget dropped |
 | A-E3 | A | Literature: reasoning-length control, early exit, repetition, serving-side reasoning | 0 | — | done | `reports/2026-10-06-options/lit_A.md`, 6 review docs | Partly covered: Word Salad Chopper, AgentStop, Fail-Fast, Dynasor; open: engine-side stop + retry + energy per success on Jetson |
 | A-E4 | A | Traffic's capped tool calls (analysis only) | 2 | — | todo | comparison §A | No replay possible (tool results not recorded) |
-| A-E5 | A, sim | Decode batching: Gemma-4 MoE vs dense, 4K–32K context | 3 | S1 | doing | `jsw/costs/calibrate2.py`, `~/work/runs/calib/granite8b_tp1_gpu0.json` | Granite (dense): prefill 4.2K tok/s; decode 27 ms/step at batch 1, +4.5% at batch 16; 5.3 -> 0.41 J/token (13x). E4B (MoE-free, SWA) pending |
+| A-E5 | A, sim | Decode batching: Gemma-4 MoE vs dense, 4K–32K context | 3 | S1 | done | `~/work/runs/calib/*.json` | Batch 1 -> 16 cuts J/token 13x (granite 5.3 -> 0.41) and 13.5x (E4B 3.40 -> 0.25); step +4.5% / +20%. 26B not calibratable in SGLang |
 | B-E1 | B | Gemma (E4B, 26B-4bit) as a step-wise agent on D1–D3 | 1 | S1a, S1b | done | `reports/2026-10-06-options/b_e1.json` | E4B keeps steps short: after a tool result median 63 (greedy) / 68 (sampled) tokens, max 539; planning call 1.2-1.6K; 0 capped; strict pass 9/11 greedy, 7/13 sampled. 9 of 33 missions ended at the first call (E4B wrote the call as text; gateway conversion bug open) |
 | B-E2 | B | Redo the step-wise projections with Gemma's step sizes | 3 | B-E1 | doing | `analysis/b_e2.py` | Projection at Thor gemma-26B and Orin 32 E4B prices |
 | B-E3 | B | Literature: agent design (code-as-action, ReAct, plan-and-execute, drone agents) | 0 | — | done | `reports/2026-10-06-options/lit_B.md`, 4 review docs | Direction known with energy (Cost of Dynamic Reasoning, Sustainable Agents, EpG); the exact comparison not found; fits P1 |
-| C-E1 | C | τ²-bench: single-session shape and ceiling, then N sessions with injected waits | 2 | S1, (S3) | doing | `c_e1.json` | Airline (20 tasks, reward 0.50): context grows 182 tokens/step, 93.5% reuse, output median 333 (83% reasoning); ceiling 7.5% at E4B's Jetson r, 3.7-9.2% at traffic r, 16-19% at drone r: in between. Retail running; thinking-off airline (C's best case) queued |
-| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | todo | `env/queue_ret_e1.sh`, `analysis/ret_e1.py` | Queued on GPU0 after the 26B arm (~05:30) |
-| D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | doing | `d_e2.json` | 10 runs done: the burst evicts the paused prefix live (88-100% recomputed at 12.4K, P1's Orin 64: 90%); policies within -4..+8% but never engaged (admission raced the metrics poll; pin cannot help when the burst exceeds the pool). Capacity: 63.5K vs 12.4K pool at N=4 cuts energy per session 2.4x. Fair re-test (burst capped at 2, +-pin) queued (D-E2b) |
+| C-E1 | C | τ²-bench: single-session shape and ceiling, then N sessions with injected waits | 2 | S1, (S3) | done | `c_e1.json`, `c_e1_nothink.json` | Thinking on: ceiling 7.5% (airline) / 9.9% (retail) at E4B's Jetson r: borderline. Thinking off (airline, same 10/20 reward): 75-token steps, ceiling 25% (WS 33%): opportunity |
+| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | doing | `env/queue_ret_e1.sh`, `analysis/ret_e1.py` | Running on both GPUs (lock files): n1, n4 on GPU0; n8nr, n8 on GPU1; done ~08:15 |
+| D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | done | `d_e2.json` | Mechanism reproduced live (88-100% of the paused prefix recomputed at 12.4K). Pin + burst cap 2 cuts it to 37% at one agent but costs +11% energy per session; at 4 agents capacity dominates (+3..14%). Capacity: 63.5K vs 12.4K pool at N=4: 2.4x less energy per session |
 | D-E3 | D | Literature: unified memory, co-located models | 0 | — | done | `reports/2026-10-06-options/lit_D.md`, 5 review docs | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning exist; tool foreknowledge on unified memory not found; effect may be small |
-| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | todo | `env/queue_cap_e1.sh` | Queued on GPU1 after C-E1: granite FP8 KV at N=8 (live capacity), E4B FP8 KV on A-E1 pilot and B-E1 D1 |
+| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | doing | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,467); 8 agents live: 14.7 kJ/session (bf16 pair = RET-E1 n8). Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run; the Orins are Ampere-class |
 | CAP-E2 | CAP | Literature: KV quantization, prompt and tool-loading | 0 | — | done | `reports/2026-10-06-options/lit_CAP.md`, 5 review docs | Each lever studied; energy per task and a run-time controller across levers not found |
 | CMP-2 | all | Full comparison, Sandesh's review | 4 | all | todo | comparison doc | Then merge into the evidence doc and the deck |
 
@@ -57,7 +57,7 @@ How to use it:
 
 | ID | Option | Task | Wave | Depends | Status | Output | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A-P1 | A | Decode guard policy (three stop actions, consecutive-cap rule) | 2 | S2, S4 | doing | `jsw/policies/decode_guard.py` | Built; tested against a fake engine (stop at char 6,000, abort upstream, resampled retry, session stop after k caps) |
+| A-P1 | A | Decode guard policy (three stop actions, consecutive-cap rule) | 2 | S2, S4 | done | `jsw/policies/decode_guard.py` | Run live in A-E1/A-E2 (stops, resample/nudge retries) on P1's 26B; not yet inside a live agent loop |
 | D-P1 | D | Burst-aware memory policy (pin, burst admission, both) | 3 | S2, S3 | done | `jsw/policies/burst_memory.py` | Pin (priority eviction), burst admission k, both; evaluated by D-E2 |
 | A-P2 | A | P1's CLGSCE agent live behind A-P1 | 4+ | A-P1 | blocked | — | Needs the 2 changed CLGSCE files from P1 and Sandesh's OK |
 | C-P1 | C | τ²-bench through the gateway with published baselines | 4+ | C-E1 | todo | — | Only if C-E1 finds an opportunity |
@@ -78,6 +78,9 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-06 06:50:** A-E1 done (sampling removes the 26B's loops), A-E2 done, A-E5 done, C-E1 done (thinking decides),
+  D-E2 done (policies cost more than recompute), CAP-E1 partly (FP8 doubles granite's pool; Gemma FP8 KV not on Ampere).
+  RET-E1 running on both GPUs. Then CMP-2.
 - **2026-10-06 04:25:** A-E1 on E4B done (no loops anywhere: inconclusive); 26B on llama.cpp reproduces the loops under greedy;
   D-E2 first pass done (mechanism reproduced, policies did not engage; re-test queued); C-E1 airline done. All remaining
   experiments queued on the WS (GPU0: 26B sampled, RET-E1; GPU1: C-E1 retail, CAP-E1, D-E2b, E4B calibration + C-E1

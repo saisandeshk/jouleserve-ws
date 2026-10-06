@@ -312,7 +312,7 @@ D12 stays the professor's direction decision (open). New decisions in this plan:
 
 | ID | Decision | Status |
 | --- | --- | --- |
-| D13 | Stand-in for gemma-4-26B-A4B on the WS: the 4-bit compressed-tensors checkpoint (`cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit`, 17.2 GB) on one GPU; FP8-dynamic over two GPUs as fallback | approved; to be confirmed by S1's smoke test |
+| D13 | Stand-in for gemma-4-26B-A4B on the WS: the 4-bit compressed-tensors checkpoint (`cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit`, 17.2 GB) on one GPU; FP8-dynamic over two GPUs as fallback | **outcome 2026-10-06:** neither runs on Ampere in SGLang 0.5.20 (4-bit MoE SiLU-only; FP8 MoE needs fp8e4nv). The 26B runs through llama.cpp as a 4-bit GGUF (unsloth UD-Q4_K_XL) for A-E1/A-E2; gemma-4-E4B elsewhere |
 | D14 | The replayer drives SGLang's native `/generate` with synthetic token IDs and recorded lengths. Text effects (loops, tool parsing) are outside its scope; A-E1/A-E2 replay real text instead | **approved** 2026-10-05 |
 | D15 | The decision rules in §2.4 | **approved** 2026-10-05 |
 | D16 | The comparison criteria K1–K8 and template (§2.1–2.3) | **approved** 2026-10-05 |
