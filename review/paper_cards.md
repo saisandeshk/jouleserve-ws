@@ -4,7 +4,7 @@ The assigned papers, EnerInfer and Camel, are reviewed in depth. The remaining c
 
 ## 1. EnerInfer: Energy-Aware On-Device LLM Inference
 
-**Source and status.** Zou et al., arXiv:2606.23001v2, June 2026. The local assigned copy is [`../papers/EnerInfer.pdf`](../papers/EnerInfer.pdf). Treat it as a preprint unless publication status is separately verified.
+**Source and status.** Zou et al., arXiv:2606.23001v2, June 2026. The local assigned copy is `papers/EnerInfer.pdf` in the legacy repo (`~/Study/ISP/JouleServe`; PDFs are not kept here). Treat it as a preprint unless publication status is separately verified.
 
 ### Research problem
 
@@ -69,7 +69,7 @@ Implement an **EnerInfer-style baseline** on the available Jetson action surface
 
 ## 2. Camel: Energy-Aware LLM Inference on Resource-Constrained Devices
 
-**Source and status.** Xu et al., arXiv:2508.09173v1, August 2025. The local assigned copy is [`../papers/Camel.pdf`](../papers/Camel.pdf). Treat it as a preprint unless publication status is separately verified.
+**Source and status.** Xu et al., arXiv:2508.09173v1, August 2025. The local assigned copy is `papers/Camel.pdf` in the legacy repo (`~/Study/ISP/JouleServe`; PDFs are not kept here). Treat it as a preprint unless publication status is separately verified.
 
 ### Research problem
 

@@ -320,8 +320,8 @@ no GPU.
 Each wave ends with the tracker updated, runs copied to `data/ws_runs/`, and GPUs back to idle.
 
 **As run (5–6 Oct):** waves 0–3 and CMP-2 finished on 2026-10-06 08:40; the order changed with D13's outcome (the
-26B moved to llama.cpp, A-E1 ran first on E4B) and P1's data reaching the WS. Wave 4's upgrades wait for
-Sandesh's review.
+26B moved to llama.cpp, A-E1 ran first on E4B) and P1's data reaching the WS. The merge into the evidence doc, the
+teaching guide and the deck (v2.1) was done the same day; wave 4's upgrades wait for Sandesh's review.
 
 ## 5. Experiment protocol (WS)
 

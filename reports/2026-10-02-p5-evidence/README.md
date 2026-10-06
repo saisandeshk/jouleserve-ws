@@ -1,6 +1,6 @@
 # JouleServe (P5): drone and traffic evidence, and options
 
-**2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code.
+**2026-10-06 · Sai Sandesh (P5)**, prepared with Claude Code.
 
 This is the repo copy of the Claude Doc
 [JouleServe (P5): drone and traffic evidence, and options](https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7),
@@ -9,14 +9,17 @@ which is private until Sandesh shares it. It merges the detailed reports, which 
 [`2026-10-01-p1-task-overview`](../2026-10-01-p1-task-overview/README.md),
 [`2026-10-02-stepwise-d1`](../2026-10-02-stepwise-d1/README.md),
 [`2026-10-03-admission-sim`](../2026-10-03-admission-sim/README.md),
-[`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md) and
-[`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md) (P1's repository, drone and traffic).
+[`2026-10-04-drone-runaways`](../2026-10-04-drone-runaways/README.md),
+[`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md) (P1's repository, drone and traffic) and
+[`2026-10-06-options`](../2026-10-06-options/README.md) (the options compared, with this week's workstation tests).
 
 - The doc's charts and diagrams appear here as tables, figures and Mermaid diagrams.
 - P1's figures are unpublished, so they are kept out of this public repository. The doc embeds them; here a
   one-line note names the P1 slide or file, and the images live in the git-ignored `../*/p1_figures/`.
 - Rewritten on 2026-10-05 with P1's repository (drone and traffic). The professor meeting planned for
   Mon 5 Oct is postponed (P1's deadline is Sat 10 Oct, and other lab projects too); its new date is not set.
+- Updated on 2026-10-06 with the workstation tests of each option ("Tested on the workstation" below); the
+  lean moved from A alone to CAP with A's safety net.
 
 P1's agents, drone and traffic, leave an edge serving system little retained state to manage. The traffic
 agent keeps one growing conversation and gets 56–82% of each prompt from the prefix cache, yet keeping its
@@ -26,67 +29,79 @@ state saved only 1–4% of LLM time on P1's Jetsons, and no retention policy cou
 is capacity, which configuration recovers: doubling the pool cuts energy per completed task by 31–46% at 8
 agents.
 
-The energy is in runaway decodes. Calls that hit their output-token limit take 38–69% of the board energy on
-Thor gemma (67–69% for the drone agents, 38% for traffic) and 33% on Orin 32 gemma-E4B traffic, against 0–19%
-everywhere else. In drone runs they are repetition loops (121 of
-122 Reflexion calls, 127 of 127 tool-calling calls capped at 32K); in traffic the waste is a capped tool call
-that is dropped and retried until it caps again. P1's paper now reports the loop finding itself, with an
-offline detector and a stop-at-first-cap bound, and has dropped its early-abort plan. We still lean towards
-option A, decode-side energy on P1's agents, coordinated with P1. The professor makes that call; the meeting is
-postponed.
+The energy is in runaway decodes and in capacity. Calls that hit their output-token limit take 38–69% of the
+board energy on Thor gemma (67–69% for the drone agents, 38% for traffic) and 33% on Orin 32 gemma-E4B traffic,
+against 0–19% everywhere else; in drone runs they are repetition loops. On 5–6 Oct we tested each option on the
+workstation with P1's models and recorded prompts ("Tested on the workstation" below). On a 4-bit stand-in for
+P1's gemma-4-26B, Gemma's default sampling removes the loops that greedy decoding produces. The simulator behind
+"the default is enough" held against a live engine within 14%, and an FP8 KV cache cut energy per session 62% at
+8 agents. The full comparison of options A–D and capacity (CAP) is in
+[`2026-10-06-options`](../2026-10-06-options/README.md); its lean, stated once, is capacity with A's safety net.
+The professor makes the call; the meeting planned for Mon 5 Oct is postponed, with no new date.
 
 ![What keeping state could save against the energy spent in capped calls, all 12 configurations](../2026-10-05-p1-repo/figures/summary.png)
 
 ## Summary
 
-1. **P1's repository arrived on Mon 5 Oct.**
+1. **Tested on the workstation, 5–6 Oct** (P1's models and recorded prompts; GPU energy).
+   - Greedy decoding loops on 77% of P1's drone loop prompts on a 4-bit stand-in for P1's 26B; Gemma's default
+     sampling on none.
+   - The simulator held against a live engine within 14%; at 8 agents on P1's Orin 32 granite pool SGLang keeps
+     no state at all, and an FP8 KV cache cuts energy per session 62%.
+   - P1's own gemma-4-E4B keeps step-wise steps short (median 63–68 tokens after a tool result).
+   - The vision burst's eviction reproduces live, but protecting the paused context costs more than
+     recomputing it.
+2. **P1's repository arrived on Mon 5 Oct.**
    - 2,055 runs in 11 configurations, 434 h and 21.3 kWh of measurement (P1's inventory).
    - 3 drone cells are graded; the 8 traffic cells are not, so a traffic run "completes" or fails.
    - Thor drone tool calling is not in it; we keep using our copy (104 runs).
-2. **P1's drone agents leave nothing to manage.**
+3. **P1's drone agents leave nothing to manage.**
    - Any retention policy could save at most 2.1% (Reflexion) or 0.6% (tool calling) of their LLM time
      (Thor traces, r ≈ 67).
    - The prefix cache actually saved 0.5% and 0.2%.
-3. **The traffic agent keeps one growing conversation.**
+4. **The traffic agent keeps one growing conversation.**
    - Every prompt repeats the previous one: the cached tokens equal the previous prompt in 81–100% of
      call pairs.
    - The context grows a median 0.4–2.7K tokens per step, 67–90% of it tool output, up to 106K tokens on
      Thor.
-4. **But keeping its state is worth 1–4% of LLM time** (measured; ceiling 1.7–7.2% at each configuration's
+5. **But keeping its state is worth 1–4% of LLM time** (measured; ceiling 1.7–7.2% at each configuration's
    own price of a generated token; Qwen2.5-VL 15% and 26%).
    - Outputs are a median 424–999 tokens per call, reasoning included (107 for Qwen2.5-VL).
    - A generated token costs 117–312 prefilled ones in time on these Jetsons.
    - The state idles a median 1.0–2.8 s between calls.
-5. **No prompt is shared between traffic sessions.** Every system prompt opens with the current date and
+6. **No prompt is shared between traffic sessions.** Every system prompt opens with the current date and
    time, so two sessions share about 39 characters.
-6. **The vision tool fills the KV pool at one agent per device.**
+7. **The vision tool fills the KV pool at one agent per device.**
    - `ask_vlm` sends a median 8–23 and up to 45 concurrent requests to the agent's own server.
    - On Orin 64 gemma it fills 99.5% of the 12.4K-token pool and evicts the paused context before all 62
      calls that follow it: 90% of the prefix is recomputed, 0.6% of LLM time.
-7. **Many agents per device: SGLang's default matches every policy** (simulated at real KV pools).
+8. **Many agents per device: SGLang's default matches every policy** (simulated at real KV pools; the
+   simulator held live within 14%).
    - Traffic: within 2.4% in 48 cells (1–8 agents, 6 configurations). Drones: within 9.9% in 455 cells.
    - On the Orins the gap to unlimited memory reaches 33–64% at 8 agents. Doubling the pool, about what an
-     FP8 KV cache buys, cuts energy per completed task by 31–46%.
-8. **Capped calls hold the energy on gemma:** 38–69% of board energy on Thor gemma (drone 67–69%, traffic
+     FP8 KV cache buys, cuts energy per completed task by 31–46% (62% live on the workstation for granite).
+9. **Capped calls hold the energy on gemma:** 38–69% of board energy on Thor gemma (drone 67–69%, traffic
    38%) and 33% on Orin 32 gemma-E4B traffic; 0–19% everywhere else (Orin 64 gemma traffic 10%; measured).
-9. **Drone runaways are repetition loops.**
-   - 121 of 122 capped Reflexion calls (with P1's 144th run) and 127 of 127 tool-calling calls capped at
-     32,768.
-   - An online loop stop would save 43.5% and 35.7% of board energy (upper bound) and stop no call that
-     finished on its own.
-10. **Traffic caps are repeated tool-call caps.**
+10. **Drone runaways are repetition loops.**
+    - 121 of 122 capped Reflexion calls (with P1's 144th run) and 127 of 127 tool-calling calls capped at
+      32,768.
+    - An online loop stop would save 43.5% and 35.7% of board energy (upper bound) and stop no call that
+      finished on its own.
+    - They come from greedy decoding: Gemma's default sampling removes them on a 4-bit stand-in for P1's 26B
+      (workstation, 6 Oct).
+11. **Traffic caps are repeated tool-call caps.**
     - A cap inside a tool call drops the call, and the agent retries: 121 of Thor gemma's 158 capped calls
       follow a capped call.
     - Stopping a run at its second consecutive cap saves 27% (Thor gemma, 1 completed run lost) and 25%
       (Orin 32 gemma-E4B, 7 lost).
-11. **The agent design is still the big lever on drones.** A step-wise agent uses 5–13× less energy per
+12. **The agent design is still the big lever on drones.** A step-wise agent uses 5–13× less energy per
     success than P1's Reflexion on P1's delivery tasks, 0.9–9.6× under the strict check (projected to the
-    Thor).
-12. **P1's paper and P5 now overlap on loops.**
+    Thor); with P1's own E4B, 11–19× greedy and 7–14× sampled under the strict check (projected).
+13. **P1's paper and P5 now overlap on loops.**
     - P1 reports the loop finding with an offline detector and a stop-at-first-cap bound (50.2%, losing 22
       passing runs), and has dropped its early-abort plan. It assumes one request in flight.
-    - Five corrections go back to P1 (below): the vision tool's mechanism, the loop threshold, the Orin 32
-      evaluator caps, the Orin 64 context guard and Devstral's cache.
+    - Five corrections went to P1 on 5 Oct (below): the vision tool's mechanism, the loop threshold, the Orin
+      32 evaluator caps, the Orin 64 context guard and Devstral's cache. P1's reply is pending.
 
 **The most kept state could save** (P / (P + r·O) as a share of LLM time, at the Thor's r ≈ 67; the doc's
 summary chart):
@@ -179,8 +194,8 @@ In practice, kept state is worth managing only when four things hold together:
 | --- | --- | --- | --- | --- |
 | Context accumulates | No: prompts rebuilt per role call | Yes | Yes | Yes: prompts never shrink |
 | Many long waits | No: at most 3 flights per run | Yes: ~14 calls per mission, 88% of time in flight | Yes: 13–22 calls per mission | No: 2–6 calls per run, idle a median 1.0–2.8 s |
-| Short steps | No: median 538–3,406 output tokens per call | Yes: median 44 after a wait | Yes: median 55–99 after a wait | No: median 424–999 (107 for Qwen2.5-VL) |
-| Memory contended | No: one session per device | Only with a capped pool | Not yet tested (at most 2 sessions) | On the Orins: windows end 11–21% of runs, vision bursts fill the pool |
+| Short steps | No: median 538–3,406 output tokens per call | Yes: median 44 after a wait | Yes: median 55–99 after a wait (63–68 with P1's E4B) | No: median 424–999 (107 for Qwen2.5-VL) |
+| Memory contended | No: one session per device | Only with a capped pool | Not yet tested (at most 2 sessions) | On the Orins: windows end 11–21% of runs, vision bursts fill the pool; at 8 agents on Orin 32 granite's pool nothing stays cached (workstation) |
 
 ![A P1 session and an aerogen mission on one clock](../2026-10-01-workload-opportunity/figures/timelines.png)
 
@@ -559,8 +574,9 @@ median 16% vs 99%). Not in this repository.
 **Why the loops happen, and what it means:**
 - **The likely cause is greedy decoding.** Every P1 configuration runs at temperature 0 with thinking on. On
   the WS, Qwen3.5-9B with thinking ran away only under greedy decoding, never in 21 sampled missions. Qwen's
-  model cards warn that greedy decoding in thinking mode causes endless repetition. Whether Gemma-4 still loops
-  under sampling is not measured.
+  model cards warn that greedy decoding in thinking mode causes endless repetition. Measured on 6 Oct on a 4-bit
+  stand-in for P1's 26B: greedy decoding loops on 23 of 30 of P1's loop prompts, Gemma's default sampling on none
+  ("Tested on the workstation").
 - **For P1**, it is a cheap fix to report: sampling as the model card recommends, or a repetition stop.
 - **For option A**, it is a concrete, safe mechanism, but it cuts both ways: if the fix is configuration, it is
   not research, and P1's paper now reports the finding with its own stop bound.
@@ -842,11 +858,49 @@ Drone Thor gemma: 1,811 and 27 tokens/s, 71.9 W while a call runs and 38.6 W oth
   long-context decode costs 13–22% for full-attention models at 20K tokens but ≤ 2% for sliding-window or linear
   attention (P1's fit).
 
+## Tested on the workstation, 5–6 Oct
+
+Each option's main gap was filled with the cheapest experiment that could close it, with a decision rule fixed
+before the run. They ran on the workstation (2× A5000) with P1's models and P1's recorded prompts and traces.
+gemma-4-E4B and granite-4.2-8b ran in SGLang; gemma-4-26B-A4B ran only as a 4-bit GGUF in llama.cpp, because no
+26B checkpoint runs in SGLang 0.5.20 on these GPUs. Energy is GPU energy (NVML), not board energy. The full
+comparison, with criteria, literature and caveats, is [`2026-10-06-options`](../2026-10-06-options/README.md).
+
+| Test | Option | Question | Result | Against its rule |
+| --- | --- | --- | --- | --- |
+| A-E1 | A | Do Gemma's loops survive sampling? | 26B on 30 of P1's Thor loop prompts: greedy loops on 23 (77%), Gemma's default sampling on none, with 28 of 28 valid programs (one seed). E4B never loops on the workstation | Sampling removes the loops (26B); E4B inconclusive |
+| A-E2 | A | After an online stop, does one retry finish? | A resampled retry finished all 17 calls that looped again, at a median 19.7K tokens against 32.8K recorded; a greedy retry with a nudge looped again 7 of 10 times | Not met (10 of 29 at half the cost or less): a safety net, costlier than sampling from the start |
+| A-E5 | A | How well do decodes batch? | Batch 1 → 16 cuts energy per generated token 13× (granite and E4B) | Report only |
+| B-E1, B-E2 | B | Does P1's own model keep step-wise steps short? | E4B: a median 63–68 tokens after a tool result; strict pass 9 of 11 greedy, 7 of 13 sampled; projected 26–40 kJ per strict success against P1's Reflexion at 284–499 kJ | Met |
+| C-E1 | C | Does τ²-bench offer a retained-state opportunity? | Contexts accumulate (92–96% reuse); kept state is worth 7.5–9.9% of LLM time at E4B's Jetson price with thinking on, 25% with thinking off | Borderline with thinking; opportunity without |
+| D-E2 | D | Do burst-aware policies pay with several agents? | The eviction reproduces (88–100% of the paused prefix recomputed at a 12.4K pool). Pinning plus a burst cap cuts it to 37% at one agent but costs 11% more energy; at 4 agents no policy reduces it | Not met (within 5% of the default) |
+| RET-E1 | RET | Does the simulator hold on a live engine? | P1's Orin 32 granite traffic at P1's pool, 1–8 agents: within 14.2% (2% except at 4 agents); an FP8 run it was not fitted on, within 6.4%. At 8 agents the default keeps no state (0 of 102 calls hit the cache) | Met |
+| CAP-E1 | CAP | What does an FP8 KV cache buy, and cost? | Granite's pool doubles; at 8 agents energy per completed session falls 62% (38.4 → 14.7 kJ) and sessions per hour rise 2.6×. Gemma-4 cannot use FP8 KV on Ampere-class GPUs (the Orins too) in SGLang 0.5.20, so quality was not measured | Undecided |
+
+![A-E1: the share of P1's recorded calls that loop when replayed on the workstation, greedy against sampled](../2026-10-06-options/figures/a_e1_loops.png)
+
+A-E1: the share of P1's recorded calls that loop when replayed on the workstation, with 95% intervals. Greedy is
+P1's protocol.
+
+![RET-E1: energy per completed session, live against simulated](../2026-10-06-options/figures/ret_e1.png)
+
+RET-E1: energy per completed session, live and simulated over the same span. The last pair is the FP8 run, which
+the simulator was not fitted on.
+
+**What this changes:**
+- **A:** the drone loops look like a decoding setting P1 can change in one line. What remains for P5 under A is
+  the safety net, traffic's repeated capped tool calls and batching.
+- **RET and CAP:** "nothing to manage" now has a live anchor, and the large measured numbers are capacity numbers.
+- **C:** whether kept state matters depends on whether the agent thinks at every step.
+- **D:** on these GPUs, recomputing the paused context is cheaper than protecting it.
+- **Caveats:** one run per cell; the 26B is a 4-bit stand-in on another engine; nothing ran on a Jetson yet.
+
 ## Options left for P5
 
 Both simulations answer the memory-controller question for P1's workloads: SGLang's default is within 2.4%
 (traffic) and 9.9% (drones) of every policy tried. On P1's agents there is little to manage at all: kept state is
-worth 1–4% of LLM time. What remains is a choice of what P5 studies, and the professor makes it.
+worth 1–4% of LLM time. A live check on the workstation agreed (RET-E1, within 14%). What remains is a choice of
+what P5 studies, and the professor makes it.
 
 ```mermaid
 flowchart LR
@@ -860,82 +914,97 @@ flowchart LR
   S -.-> BC["Options B and C<br/>B: agent design, reported to P1<br/>C: standard benchmarks with injected waits"]
 ```
 
+The decision tree predates CAP and this week's tests.
+
 | Option | What P5 studies | Evidence for | Against |
 | --- | --- | --- | --- |
-| **A. Decode-side energy on P1's agents (our lean)** | Stopping runaway decodes online, thinking budgets, retrying dropped tool calls, admitting and batching long decodes | Capped calls take 38–69% of board energy on Thor gemma (drone 67–69%, traffic 38%) and 33% on Orin 32 gemma-E4B traffic; 0–19% elsewhere. Drone caps are loops: an online stop saves 43.5% / 35.7% with no finished call stopped, against 50.2% and 22 lost runs for P1's first-cap rule. Traffic caps repeat: stopping at the second consecutive cap saves 27% / 25% (1 / 7 runs lost) | P1's paper now reports the loop finding and a stop bound. The loops likely come from greedy decoding, so the fix may be configuration. Traffic is ungraded. Reasoning-length control is an active area we have not reviewed |
-| B. A step-wise agent on P1's tasks | The agent design itself | 5–13× less energy per success on P1's delivery tasks (0.9–9.6× strict), 4–16 drones per Thor instead of 2 | The win belongs to the agent, which is P1's territory; a memory controller adds at most about 10%. Needs a building-aware sim |
-| C. Standard benchmarks (τ²-bench, BFCL) with injected waits | The original question on another workload | Easy comparison with prior work | P1's real tools take 0.5–3 s; long waits would be synthetic, and the same capacity and decode limits probably apply. Loses the drone and traffic story |
-| D. Memory that changes over time | Admission and retention when tools that run models (the vision tool) or co-located models take and release unified memory | P1's data has a live case: the vision burst evicts the paused context on Orin 64 (62 of 62 calls). Small pools cap consolidation (gap to unlimited memory 33–64% at 8 agents) | The recompute it causes is 0.6% of LLM time; the capacity gains are configuration (FP8 KV, smaller prompts). Needs a device or a WS emulation |
+| **A. Decode-side energy** | Stopping runaway decodes online, retries, thinking budgets, batching long decodes | Capped calls take 38–69% of board energy on Thor gemma; an online loop stop saves 43.5% / 35.7% and stops no finished call. Traffic's repeated capped tool calls hold 31–33% of gemma traffic LLM energy. A stop plus one resample recovers every looping call (workstation) | Gemma's default sampling removes the drone loops on a 4-bit stand-in (workstation), so the drone fix is configuration. P1's paper reports the loops. Partly covered in the literature (Word Salad Chopper, AgentStop, Dynasor) |
+| B. A step-wise agent on P1's tasks | The agent design itself | With P1's own E4B, steps after a tool result stay at a median 63–68 tokens; projected 11–19× less energy per strict success than P1's Reflexion (7–14× sampled); 4–16 drones per Thor instead of 2 (simulated) | The win belongs to the agent, which is P1's territory. The kinematic sim has no buildings; no Jetson run |
+| C. Standard benchmarks (τ²-bench) with injected waits | The original question on another workload | Easy comparison with prior work. τ²-bench contexts accumulate (92–96% reuse); without thinking, kept state is worth 25% of LLM time at E4B's Jetson price (workstation) | With thinking, 7.5–9.9%, close to traffic. Every wait is synthetic. The generic version is published (INFERCEPT, Continuum, Adaptive KV Retention) |
+| D. Memory that changes over time | Admission and retention when tools or co-located models take and release unified memory | The vision-burst eviction reproduces live (88–100% recomputed at a 12.4K pool); strong edge specificity | Worth 0.6% of LLM time at one agent. Pinning plus a burst cap costs 11% more energy than recomputing; at 4 agents capacity, not the burst, drives eviction (workstation) |
+| CAP. Capacity | KV precision, prompt size and output caps as levers, as configuration or chosen at run time | Live: FP8 KV cuts energy per session 62% at 8 granite agents; a 5× pool cuts it 2.4× at 4 E4B agents (workstation). Doubling the pool: −31–46% at 8 agents on the Orins (simulated). Overflows end 11–21% of Orin traffic runs | A good static setting may capture it all. FP8 KV for Gemma-4 does not run on Ampere (the Orins) in SGLang 0.5.20, and FP8 quality is unmeasured. P1 proposed these remedies (not run) |
 
 - **P1's agents stay in every option** as the case where a controller must not make things worse.
-- **What A must add beyond P1's paper:** an online stop that preserves runs, evaluated as a control policy
-  (energy per success, runs lost); a retry policy for traffic's dropped tool calls; sampling against greedy
-  decoding; batching long decodes when several agents share a box.
+- **Option letters:** A–C are as on 2026-10-02 (the 2026-10-01 report's A is B here, its C is A, and its A +
+  τ²-bench is C). D and CAP were added on 2026-10-05.
 
-**Why A still.** It is where P1's measured energy goes, on P1's devices, with P1's agents unchanged. B's finding
-and the five corrections go to P1. D is the alternative if P5 should stay on retained state; the vision-burst
-case makes it testable, but its measured prize is small.
+What changed with this week's tests: A's drone case became a configuration fix (sampling), D's live case costs
+more than it saves on these GPUs, C depends on whether the agent thinks, and capacity holds the largest measured
+numbers (CAP).
 
-**Where A could be wrong:**
-1. **Success.** A stop or a budget may cost runs: P1's first-cap rule loses 22 passing drone runs; our loop stop
-   loses none on these traces, but traffic success is not graded.
-2. **Novelty.** P1 now reports the loops; thinking budgets and early exit are studied for datacenter reasoning
-   models; if greedy decoding causes the loops, the fix is configuration. What the edge adds (board power, weak
-   batching on mixture-of-experts models, one agent saturating the device) has to carry it.
-3. **Overlap with P1.** A has to be agreed with P1: P1 owns the observation; P5 could own the online mechanism
-   and its evaluation.
-4. **Scope.** It drops P5's original question about retained state. The professor may prefer D.
+**Our lean, stated once (the comparison's §9): CAP with A's safety net**, studied as many agents sharing one edge
+box: how many agents to admit, at what KV precision and prompt size, with an online stop so that runaway decodes
+cannot hold the batch. It is where the large serving-layer numbers are (FP8 KV −62% per session at 8 agents;
+batching 13× per token), it stays in the serving layer, and it depends on P1 less than A or B do. The sampling
+result (A-E1) and the step-wise result (B) would go to P1. Until 5 Oct the lean was A alone; this week's tests
+moved it.
+
+**Where the lean could be wrong:**
+1. **A static setting may capture it all.** Then CAP is a measured design space, close to P1's deferred KV-pool
+   sweep, not a controller.
+2. **FP8 for Gemma on the Orins.** FP8 KV, the strongest lever, does not run for Gemma-4 on Ampere-class GPUs in
+   SGLang 0.5.20, and its cost in task success is unmeasured.
+3. **The devices.** Every capacity number is from the workstation or the simulator; it needs Jetson time after
+   10 Oct.
+4. **Scope.** If the professor wants retained state kept, C with non-thinking agents is the version with a number
+   (25%); D stays small.
 
 ## Decisions needed
 
-- [ ] **Direction (D12, professor):** option A (decode-side energy), B (the agent design, reported to P1), C
-  (standard benchmarks with injected waits) or D (memory that changes over time). The simulations rule out a
-  memory controller on fixed budgets for P1's drone and traffic agents. The meeting planned for Mon 5 Oct is
-  postponed (P1's deadline is Sat 10 Oct, and other lab projects are due too); no new date is set, so the
-  decision stays open.
-- [ ] **Scope (professor):** leave retained state for decode-side energy (A), or stay on it with the vision-tool
-  bursts and co-located models (D)?
-- [ ] **Send the five corrections to P1? (Sandesh):** [`NOTES_FOR_P1.md`](../2026-10-05-p1-repo/NOTES_FOR_P1.md)
-  is ready; send it before Sat 10 Oct, or not. And: offer the online loop stop to P1's paper, or keep it for P5?
-- [ ] **Repository visibility (Sandesh):** our GitHub repo is public and holds P1's unpublished numbers in
-  `reports/`; make it private before pushing the local commits, ahead of P1's double-blind submission?
-- [ ] **WS and schedule (Sandesh):** is the WS one of P1's four "workstation" lanes, and is it back up? When do
-  the devices return to P5 after Sat 10 Oct, and what are the ISP milestones?
+- [ ] **Direction (D12, professor):** A, B, C, D, CAP or a combination (the comparison's §8). The simulations,
+  now with a live anchor, rule out a memory controller on fixed budgets for P1's drone and traffic agents. The
+  meeting planned for Mon 5 Oct is postponed; no new date is set.
+- [ ] **Scope (professor):** is a capacity-and-concurrency study (CAP with A) an acceptable continuation of P5's
+  retained-state question? Or should P5 move to decode-side energy alone (A), or stay on retained state with
+  non-thinking agents (C) or co-located models (D)?
+- [ ] **Review of the comparison (Sandesh):** is it even-handed, and is anything missing before the professor
+  sees it? Also D18, RET-E1's comparison method, taken during the run.
+- [ ] **Hand P1 two results before Sat 10 Oct? (Sandesh):** Gemma's default sampling removes the drone loops
+  (A-E1), and P1's own E4B keeps step-wise steps short (B). And what may P5 claim on loops (A) and capacity (CAP)?
+- [x] **Send the five corrections to P1:** [`NOTES_FOR_P1.md`](../2026-10-05-p1-repo/NOTES_FOR_P1.md) was sent
+  by Sandesh on 5 Oct; P1's reply is pending, especially on which server `ask_vlm` calls.
+- [x] **Repository visibility:** public, Sandesh's choice (5 Oct); P1's own figures stay out of git.
+- [x] **The WS:** P5's own machine, not one of P1's lanes; back since 5 Oct.
+- [ ] **Schedule (Sandesh):** when do the devices return to P5 after Sat 10 Oct, which Jetson time can repeat
+  A-E1 and the capacity runs on P1's setup, and what are the ISP milestones?
 - [ ] **P1's mentor:** is a step-wise agent with flight-level tools in P1's scope, and may P5 run P1's AeroEval
   tasks (D1–D3 and F1, then lawnmower and circles) with one, keeping P1's agents as the contrast? Which 8
   AeroEval tasks are meant (we found 5 original missions and 6 P1 variants)?
 - [ ] **aerogen (mayankarya):** permission to use and extend aerogen_mcp. Until then it stays a private copy on
   the WS.
-- [ ] **Deployment assumption:** how many drones one edge box serves, which sets the memory pressure, and the
-  go/no-go thresholds for the next stage.
+- [ ] **Deployment assumption:** how many agents one edge box serves. It sets the memory pressure (CAP, D), the
+  batching gains (A) and the go/no-go thresholds for the next stage.
 
 ## Next steps
 
 **Either way:**
-1. When the professor meeting is rescheduled, take the direction decision (D12) with this doc and the reference deck, then rewrite master-plan milestones M3–M5 for it.
-2. When P1 pushes its Thor drone tool-calling cells (gemma, granite, Devstral) or the traffic grades, rerun
-   `analysis.p1_repo` (refresh) and the four analyses.
-3. When the WS is back: Qwen3.5 energy calibration, one live memory-pressure test to anchor the simulators (with a
-   vision-style burst of concurrent requests), and one long mission (lawnmower or circles).
+1. When the professor meeting is rescheduled, take the direction decision (D12) with this doc, the options
+   comparison and the reference deck, then rewrite master-plan milestones M3–M5 for it.
+2. After Sandesh's review, build the WS version of the chosen or leading option (G2 of the options plan). The
+   shared serving layer (gateway, replayer, decode guard, burst policy) is built.
+3. When P1 pushes more data (Thor drone tool calling, granite and Devstral drone, traffic grades): pull in the
+   read-only clone only if Sandesh agrees, rerun `analysis.p1_repo` (refresh) and the analyses, and update the
+   reports, the docs and the deck.
+4. After 10 Oct, on a Jetson: repeat A-E1 (sampling) and the capacity runs on P1's own setup.
 
 **If A:**
-1. Test whether sampling as the model card recommends removes the loops, on Gemma itself (a device, or a
-   quantized Gemma on the WS).
-2. Build the online loop stop into the serving path and evaluate it as a control policy (energy per success,
-   runs lost), with a retry rule for traffic's dropped tool calls; use traffic grades when they come.
-3. Agree the split with P1, whose paper now claims the loop finding.
-4. Review the reasoning-budget and early-exit literature.
-5. Measure batching of long decodes on the WS, and on a Jetson when one is free.
+1. Agree the split with P1, whose paper claims the loop finding. The online stop with one resampled retry is
+   built and tested (A-E2).
+2. A retry policy for traffic's repeated capped tool calls (31–33% of gemma traffic LLM energy).
+3. Thinking budgets (reviewed: EdgeReasoning, Dynasor) and batching of long decodes on a Jetson.
 
 **If B, as a finding for P1:** a building-aware sim guard, the large farm tasks (lawnmower, concentric circles),
-and Gemma-4-26B-A4B's output per step on a device.
+and B-E1's sampled arm re-run with the fixed gateway.
 
-**If C:** stand up τ²-bench on the WS, one GPU as the agent and one as the user simulator, with waits drawn from
-P1's measured tool and flight times.
+**If C:** τ²-bench through the gateway with non-thinking agents and the published baselines (default, keep,
+discard, INFERCEPT-style, Continuum-style TTL), with waits drawn from P1's measured tool times.
 
-**If D:** emulate the vision burst on the WS (an agent plus concurrent image-like requests on one server, a
-small pool); compare pinning the paused context with admitting the burst at lower concurrency; extend the
-simulator to a budget that changes over time.
+**If D:** a co-located second model that takes and releases memory, and the simulator with a budget that changes
+over time; the burst policies are built (D-E2).
+
+**If CAP:** a quality pair for FP8 KV on a model where it runs (granite in a real agent loop) or on a newer GPU;
+the prompt-size and output-cap levers; capacity-aware admission (CAP-P1) on the replayer and the validated
+simulator.
 
 ## Data, methods and limitations
 
@@ -946,9 +1015,13 @@ simulator to a budget that changes over time.
 | P1's deck | P1's results and figures (EdgeAgentBench, slides 387–406) | 2026-10-03 |
 | WS runs: aerogen | K2-Horizon-7B on aerogen's own 5 tasks, real-time pacing; 1–8 sessions per GPU | 2026-10-01 |
 | WS runs: the deciding test | Qwen3.5-9B and K2-Horizon-7B on P1's D1–D3, 108 missions, 50× pacing | 2026-10-02 |
-| WS calibration | K2-Horizon-7B prefill and decode time and energy against length and batch | 2026-10-01 |
+| WS calibration | K2-Horizon-7B prefill and decode time and energy against length and batch; granite and E4B against batch and context (`jsw/costs/calibrate2.py`) | 2026-10-01, 2026-10-06 |
 | Simulations | Drones: 1–16 per box, Thor and WS costs, 12 policies, 5 seeds. Traffic: 1–8 per device, 6 configurations at real KV pools, 3 seeds | 2026-10-03, 2026-10-05 |
 | Loop and cap analyses | Every LLM call's text replayed through an online loop detector; four stop rules on 12 configurations | 2026-10-04, 2026-10-05 |
+| WS runs: P1's models | gemma-4-E4B and granite-4.2-8b (P1's weights) in SGLang 0.5.20; gemma-4-26B-A4B as unsloth's 4-bit GGUF in llama.cpp v0.6.0; one A5000 each, NVML GPU energy | 2026-10-05/06 |
+| WS runs: replays of P1's prompts | A-E1/A-E2: P1's recorded Thor drone prompts (121 + 127 loops, finished controls) replayed through the gateway, greedy vs sampled, stop and retry (`jsw/workloads/loop_replay.py`) | 2026-10-06 |
+| WS runs: replays of P1's traces | RET-E1, D-E2, CAP-E1: P1's traffic sessions replayed by token count with real prefix reuse, tool gaps and vision bursts (`jsw/workloads/replay.py`) | 2026-10-06 |
+| WS runs: agents | B-E1: aerogen's step-wise agent with E4B on P1's D1–D3 (33 missions); C-E1: τ²-bench airline and retail, 20 tasks each | 2026-10-06 |
 
 **Reproduce:**
 - `python3 -m analysis.p1_repo`, then `analysis.p1_opportunity`, `analysis.p1_caps`, `analysis.traffic_sim`
@@ -956,20 +1029,37 @@ simulator to a budget that changes over time.
 - `python3 -m analysis.stepwise_ceiling` (D1–D3 and the pooled drone ceilings), `analysis.p1_per_task`,
   `analysis.admission_sim all` and `analysis.admission_figures` (drone simulation), `analysis.p1_runaway` and
   `analysis.p1_loops` (drone runaways).
+- On the WS (`~/work/venv-analysis`): `analysis.a_e1`, `a_e2`, `a_e4`, `b_e1`, `b_e2`, `c_e1`, `d_e2`, `ret_e1`,
+  `cap_e1` and `options_figures` (write `../2026-10-06-options/`); the runs come from `env/queue_*.sh`.
 
 **What the evidence does not show:**
 - **Traffic success.** Traffic is ungraded: "completed" counts wrong answers as successes.
 - **Traffic text.** Loop counts cover only calls whose text survived, so they are lower bounds for gemma; the
   repeated-cap rule needs no text.
 - **The vision tool's code.** Its mechanism is read from the server's request counters, not from its source.
-- **P1's own model per step.** Qwen3.5-9B and K2-Horizon-7B stand in for Gemma-4-26B-A4B in the step-wise test.
+- **P1's own model per step.** Qwen3.5-9B and K2-Horizon-7B stood in for Gemma-4-26B-A4B in the step-wise test.
+  Since 6 Oct, P1's gemma-4-E4B is measured per step (B-E1); the 26B runs only as a 4-bit GGUF on another engine.
 - **Physical realism.** aerogen's sim has no buildings; P1's Gazebo runs at 10× real time; only delivery
   missions were tested step-wise.
 - **The success check** for step-wise drones: the truth is between the lenient and strict counts (0.9–13.5×).
-- **Memory pressure** with many agents is simulated, not measured live; device models are fitted at batch 1, and
-  batching follows our models, not measurements on these devices.
+- **Memory pressure** with many agents is simulated for drones; for traffic, 1–8 agents were measured live on the
+  workstation (RET-E1, within 14.2% of the simulator), not on a Jetson. Device models are fitted at batch 1.
 - **Energy scope.** WS energy is NVML GPU energy; P1's is whole-board energy. Savings are upper bounds that
   assume the rest of each run goes as recorded.
 - **Statistics.** 3 repeats per task instance on P1's side, one run per configuration on ours, no confidence
-  intervals.
+  intervals except A-E1/A-E2's rates (Wilson).
 - **P1's paper and plans** are quoted from the repository as of 4 Oct; P1 may change them before Sat 10 Oct.
+
+**Added with the workstation tests (2026-10-06):**
+- **Stand-ins.** The 26B results come from a 4-bit GGUF in llama.cpp, which loops more readily than P1's bf16
+  model (6 of 20 finished controls); one sampling seed. E4B never looped on the workstation, though it did on
+  P1's Orin 32.
+- **One run per cell** for D-E2, RET-E1 and CAP-E1; RET-E1 ran narrower than planned (Orin 32 granite at P1's
+  pool, N = 1, 4, 8, two policies, 45 minutes per point).
+- **Synthetic text in trace replays.** RET-E1, D-E2 and CAP-E1 replay token counts, waits and prefix structure;
+  they say nothing about answer quality, so FP8 KV's cost in task success is unmeasured.
+- **NVML's power reading runs above its energy counter** on the A5000s (229 W against 185 W over a 45-minute
+  run); every energy here comes from the counter. With a server loaded, an idle A5000 draws 66–74 W, so energies
+  compare runs on the same GPU, not devices.
+- **B-E1:** 9 of 33 missions ended at the first call through a tool-call format bug in the gateway, since fixed
+  and not re-run.

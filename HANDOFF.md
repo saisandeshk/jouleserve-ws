@@ -1,7 +1,9 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-06 ~08:40 (IST). Latest work (5-6 Oct): **G1 of the options plan is done**; reported to
-Sandesh, who reviews it before anything else starts.
+**Last updated:** 2026-10-06, after G1 (IST). Latest work (5-6 Oct): **G1 of the options plan is done**; reported to
+Sandesh, who is reviewing it. While he reviews, every doc was brought up to date at his request: the options plan
+(v1.1), the master plan and Track A notes, the review index, the dated reports, the evidence doc and its repo copy,
+the teaching guide, the deck (v2.1) and this file (artifact revisions in §2).
 - **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
   CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
   week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
@@ -111,16 +113,22 @@ which git already keeps.
   dated reports. Revisions and slide counts: see "Artifacts" below.
 - **Artifacts** (all private until Sandesh shares them from their Share menu):
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 126; repo copy above, keep in
-    sync). 5 diagrams, a native chart of kept-state value, our figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure.
-    The corrected `energy_map.png` (Devstral "other tools" 7%) was swapped in at revision 126.
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 138; repo copy
+    `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
+    figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure. **6 Oct (rev 127-138):** the section
+    "Tested on the workstation, 5-6 Oct" (results table, A-E1 and RET-E1 figures), the options table with CAP, our
+    lean (CAP with A's safety net; it was A until 5 Oct), decisions, next steps and caveats updated.
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
-    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 149; no repo copy). New
-    chapter 18 (the traffic workload), §11 memory on a Jetson, §16 P1's repository, paper and corrections,
-    §19.5–19.7 traffic evidence, 8 new self-test questions, 10 glossary terms. One open comment in it (ours)
-    asks how many drones per device to plan for.
-  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.0 (artifact
-    version 8, 132 slides: 23 new, about 60 changed).
+    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 165; no repo copy). Chapter 18
+    (the traffic workload), §11 memory on a Jetson, §16 P1's repository, §19.5–19.7 traffic evidence. **6 Oct:** new
+    chapter 21 (testing the options on the workstation: greedy vs sampling, stop and retry, the replayer, the
+    simulator check, FP8 KV, thinking and tau2, the vision burst, NVML energy), chapter 20 rewritten (five options,
+    the new lean), §12 and §15 status refreshed, 8 self-test questions and 10 glossary terms added; self-test and
+    glossary are now 22 and 23. One open comment in it (ours) asks how many drones per device to plan for.
+  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.1 (artifact
+    version 11, 137 slides). v2.1 (6 Oct): 5 new slides (`find-ws-tests`, `find-ws-sampling`, `find-ws-anchor`,
+    `find-ws-tau2-burst`, `opt-cap`), options, decision tree, lean, status, plan, log and related work
+    (`rw-reasoning` filled) updated.
     - The single main reference, updated weekly: a new log slide (section 13, newest first), the
       at-a-glance slide and the changelog; matured results move into Findings.
     - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt),
@@ -129,11 +137,10 @@ which git already keeps.
       on 2026-10-05 after a reboot wiped `/tmp`). Before editing in a new session, re-read the changed
       files from the artifact if someone may have edited it in the browser.
     - **Figures:** uploaded as artifact assets; the blob-id → local-file map is
-      `data/p5deck/blobs_2026-10-05.json` and `env/render_slides.py`'s `BLOBS`.
+      `data/p5deck/blobs_2026-10-05.json`, `blobs_2026-10-06.json` and `env/render_slides.py`'s `BLOBS`.
     - **Visual check** (Sandesh approved it): `python3 env/render_slides.py data/p5deck <out> [ids]`. It
       uses the Playwright headless shell if present, else Brave (`/opt/brave.com/brave/brave`) headless; it
       is approximate and flags overflow and overlaps.
-    - Reasoning-length control (slide `rw-reasoning`) is still a placeholder: that literature is unread.
 - **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes): back since a
   reboot on 5 Oct 10:52.
   - **6 Oct 08:40: idle** (GPUs at 47/15 MiB, no tmux server, no stale lock files). 68 run directories in

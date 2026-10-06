@@ -1,6 +1,6 @@
 # Tracker — P5 options (G1 the even-handed case, G2 the WS versions)
 
-**Updated:** 2026-10-06 08:40 (IST). Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.0, approved 2026-10-05).
+**Updated:** 2026-10-06 (IST), after G1. Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.0, approved 2026-10-05).
 **Stop point:** report to Sandesh when G1 (CMP-2) is done; otherwise keep working.
 
 How to use it:
@@ -49,7 +49,7 @@ How to use it:
 | D-E3 | D | Literature: unified memory, co-located models | 0 | — | done | `reports/2026-10-06-options/lit_D.md`, 5 review docs | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning exist; tool foreknowledge on unified memory not found; effect may be small |
 | CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | done | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,467); 8 agents live: 14.7 vs 38.4 kJ/session bf16 (-62%), 2.6x sessions/hour. Rule undecided: quality side could not run. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run; the Orins are Ampere-class |
 | CAP-E2 | CAP | Literature: KV quantization, prompt and tool-loading | 0 | — | done | `reports/2026-10-06-options/lit_CAP.md`, 5 review docs | Each lever studied; energy per task and a run-time controller across levers not found |
-| CMP-2 | all | Full comparison, Sandesh's review | 4 | all | done (review pending) | comparison doc | Then merge into the evidence doc and the deck |
+| CMP-2 | all | Full comparison, Sandesh's review | 4 | all | done (review pending) | comparison doc | Merged on 6 Oct into the evidence doc (rev 138, repo copy), the teaching guide (chapter 21) and the deck (v2.1) |
 
 ## G2 option versions
 
@@ -76,6 +76,10 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-06 (after G1):** at Sandesh's request, every doc brought up to date: options plan v1.1 (outcomes §2.5, D18),
+  master plan and Track A notes, review index (20 new docs), update notes in the dated reports, the evidence doc and
+  its repo copy, the teaching guide, the deck (v2.1, 137 slides), HANDOFF, AGENTS and a README; WS runs backed up
+  locally (SHA-256 checked).
 - **2026-10-06 09:00:** CMP-2 checked by an independent review (Sonnet): 8 number fixes (pool 26,648; nudge counts;
   B's sampled range 7-14x; C's rule fires for retail at Thor's drone prices), outcomes of every rule stated, and
   wording that leaned outside §9 neutralised.
