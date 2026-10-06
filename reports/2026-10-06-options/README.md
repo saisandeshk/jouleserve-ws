@@ -38,14 +38,14 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth ≤ 7.5-9.9% of LLM time at E4B's Jetson price (16-24% at Thor's) with a thinking agent [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; several agents **[pending: D-E2]** | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
-| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism reproduced live on the WS (D-E2); policy effect not yet measured fairly | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
+| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth ≤ 7.5-9.9% of LLM time at E4B's Jetson price (16-24% at Thor's) with a thinking agent [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
+| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; greedy loops are model-general [lit] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
 | **K6 Feasibility** | Detector, gateway and decode guard built (§3) | aerogen driver exists; needs a building-aware sim | τ²-bench (MIT) and the gateway; needs a user-simulator model | Gateway and replayer built; burst policy to build | Configuration; small study |
 | **K7 Dependence on P1** | High: P1's paper claims the loop finding; split to agree | High: agent design is P1's territory | Low | Medium: P1's answer on `ask_vlm`; devices for real unified memory | Medium: P1 proposed these remedies (MB5, not run) and deferred its KV-pool sweep (E4) |
-| **K8 Risk** | Realised for drones: sampling removes the loops (a configuration fix for P1); what is left is smaller | Attributable to agent engineering; strict range includes parity | Waits are synthetic; may collapse like traffic | Effect small; a 2026 elastic-KV paper found ~1% | A good static setting may capture it all |
+| **K8 Risk** | Realised for drones: sampling removes the loops (a configuration fix for P1); what is left is smaller | Attributable to agent engineering; strict range includes parity | Waits are synthetic; may collapse like traffic | Realised here: protecting the paused context costs more than recomputing it on these GPUs | A good static setting may capture it all |
 
 ## 3. A. Decode-side energy
 
@@ -311,10 +311,22 @@ unified-memory behaviour needs a device.
 with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
 - **The mechanism reproduces live:** at a 12,415-token pool the call after a burst recomputes 88-100% of its
   paused prefix (P1's Orin 64 data: 90%); at the full 63.5K pool, 43%.
-- **The first policies changed nothing measurable** (energy per completed session within -4% to +8% of the default,
-  one run each): admission never held a request (the burst arrived before the pool-usage metric rose) and pinning
-  cannot protect a context when the burst alone exceeds the free pool. A fair re-test (burst capped at 2 requests,
-  with and without pinning) is **[queued]**.
+- **The burst-aware policies (D-P1) stop the eviction but cost more than they save.** One run per cell; energy per
+  completed session against SGLang's default:
+
+  | Pool, agents | Default | Pin (agent > burst priority) | Burst capped at 2 | Pin + cap 2 | Prefix recomputed after a burst (default → pin + cap) |
+  | --- | --- | --- | --- | --- | --- |
+  | 12.4K, 1 | 10.75 kJ | -0.2% | — | **+11.4%** | **88% → 37%** |
+  | 12.4K, 4 | 7.92 kJ | -3.8% | +3.2% | +14.0% | 100% → 96% |
+  | 63.5K, 4 | 3.25 kJ | — | — | +0.7% (pin + cap 4) | 44% → 43% |
+
+  - At one agent, pinning the paused context and admitting the burst 2 requests at a time keeps most of the
+    context (recompute 88% → 37%), but the tool runs longer (5.3 s against 4.1 s per burst), so energy per
+    session rises 11%: on this GPU re-prefilling a ~7K-token context is cheaper than throttling the tool.
+  - At 4 agents the agents' contexts alone exceed the 12.4K pool, so eviction is capacity, not the burst;
+    throttling only slows the tool (+3% to +14%). (A first attempt at admission, gated on the pool-usage metric,
+    never engaged because the burst arrives within one metrics poll; pinning alone cannot help when the burst
+    exceeds the free pool.)
 - **Capacity dominates:** with 4 agents, the 63.5K pool needs 3.25 kJ per completed session against 7.92 kJ at
   12.4K (2.4x less) and completes 46 sessions against 19 in the same time; 4-5 sessions per run at 12.4K could not
   run at all (prompts larger than the pool, as P1's Orin 64 overflows). That is CAP's lever, measured live.

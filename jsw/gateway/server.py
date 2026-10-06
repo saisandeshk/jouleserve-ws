@@ -337,7 +337,7 @@ class Gateway:
                 call.usage = {k: mi.get(k) for k in ("prompt_tokens", "completion_tokens", "cached_tokens")}
                 call.finish_reason = (mi.get("finish_reason") or {}).get("type") if isinstance(
                     mi.get("finish_reason"), dict) else mi.get("finish_reason")
-                call.meta = {k: mi.get(k) for k in ("e2e_latency", "queue_time", "num_retractions")}
+                call.meta = dict(call.meta or {}, **{k: mi.get(k) for k in ("e2e_latency", "queue_time", "num_retractions")})
             except Exception as e:
                 call.error = repr(e)
             self.log_call(call)
