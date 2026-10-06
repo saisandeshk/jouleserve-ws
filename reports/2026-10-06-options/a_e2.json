@@ -366,5 +366,169 @@
     "recorded": 32768
    }
   ]
+ },
+ "a-e2-g26b-gguf-nudge": {
+  "run": "a-e2-g26b-gguf-nudge",
+  "prompts": 12,
+  "retried": 10,
+  "finished": 5,
+  "finished_valid": 4,
+  "finished_valid_ci": [
+   0.1381,
+   0.6094
+  ],
+  "finished_valid_under_half_cost": 1,
+  "tokens_total_median": 21285.5,
+  "tokens_stop_median": 13147.0,
+  "tokens_retry_median": 8963.0,
+  "recorded_median": 32768.0,
+  "gpu_kj_per_prompt": 26.8953355,
+  "rule_met": false,
+  "rows": [
+   {
+    "id": "thor_rfx/A16/instance_2/run_2/5",
+    "role": "generator",
+    "task": "A16",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 13389,
+    "tokens_retry": 14734,
+    "tokens_total": 28123,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A5/instance_2/run_3/1",
+    "role": "generator",
+    "task": "A5",
+    "retried": false,
+    "finished": true,
+    "valid": true,
+    "tokens_stop": 4522,
+    "tokens_retry": 0,
+    "tokens_total": 4522,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A7/instance_1/run_2/1",
+    "role": "generator",
+    "task": "A7",
+    "retried": true,
+    "finished": true,
+    "valid": true,
+    "tokens_stop": 16826,
+    "tokens_retry": 21146,
+    "tokens_total": 37972,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A20/instance_1/run_2/1",
+    "role": "generator",
+    "task": "A20",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 8412,
+    "tokens_retry": 11681,
+    "tokens_total": 20093,
+    "recorded": 7303
+   },
+   {
+    "id": "thor_rfx/A7/instance_2/run_1/1",
+    "role": "generator",
+    "task": "A7",
+    "retried": false,
+    "finished": true,
+    "valid": true,
+    "tokens_stop": 19532,
+    "tokens_retry": 0,
+    "tokens_total": 19532,
+    "recorded": 16418
+   },
+   {
+    "id": "thor_rfx/A16/instance_2/run_3/9",
+    "role": "generator",
+    "task": "A16",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 12819,
+    "tokens_retry": 13842,
+    "tokens_total": 26661,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A16/instance_3/run_1/1",
+    "role": "generator",
+    "task": "A16",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 14502,
+    "tokens_retry": 7976,
+    "tokens_total": 22478,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A20/instance_1/run_1/1",
+    "role": "generator",
+    "task": "A20",
+    "retried": true,
+    "finished": true,
+    "valid": true,
+    "tokens_stop": 7365,
+    "tokens_retry": 5636,
+    "tokens_total": 13001,
+    "recorded": 7303
+   },
+   {
+    "id": "thor_rfx/A5/instance_2/run_2/1",
+    "role": "generator",
+    "task": "A5",
+    "retried": true,
+    "finished": true,
+    "valid": false,
+    "tokens_stop": 12905,
+    "tokens_retry": 3653,
+    "tokens_total": 16558,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A16/instance_1/run_2/7",
+    "role": "generator",
+    "task": "A16",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 16230,
+    "tokens_retry": 9909,
+    "tokens_total": 26139,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A5/instance_2/run_1/1",
+    "role": "generator",
+    "task": "A5",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 9693,
+    "tokens_retry": 8017,
+    "tokens_total": 17710,
+    "recorded": 32768
+   },
+   {
+    "id": "thor_rfx/A8/instance_3/run_1/1",
+    "role": "generator",
+    "task": "A8",
+    "retried": true,
+    "finished": false,
+    "valid": false,
+    "tokens_stop": 23996,
+    "tokens_retry": 17241,
+    "tokens_total": 41237,
+    "recorded": 32768
+   }
+  ]
  }
 }

@@ -145,9 +145,14 @@ budgets; A-E2 tests the safety net.
     or less, so the pre-registered rule (>= 70% at <= 50%) is **not met**. Sampling from the start is cheaper
     (A-E1: a median 8.1K tokens on the same prompts, no loops).
   - So the online stop is a reliable **safety net** for deployments that must decode greedily (a stop plus one
-    resample recovers every looping call), not the main energy lever. The nudge variant (greedy retry with a note)
-    is **[running]**.
-- A-E5 (batching) **[partial: granite done]**.
+    resample recovers every looping call), not the main energy lever.
+  - **A nudge does not break a greedy loop:** retrying greedy with a note that the attempt repeated itself (12
+    prompts) re-looped in 7 of the 10 retries; only 2 ended valid. The retry has to change the decoding.
+- **A-E5, batching of decodes on one A5000** (`jsw/costs/calibrate2.py`; GPU energy) [WS-meas]: going from batch 1
+  to batch 16 cuts the energy per generated token 13x on granite-4.2-8b (5.3 → 0.41 J) and 13.5x on gemma-4-E4B
+  (3.40 → 0.25 J), while a decode step takes only 4.5% (granite) and 20% (E4B) longer. Concurrency is the strong
+  lever here, which P1's one-request-at-a-time setting leaves unused. (The 26B could not be calibrated in SGLang;
+  P1's Thor fit says its experts make batching weaker: a 16-request step ~5.3x one.)
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
 > offline position on all 1,620 recorded Thor calls, reproducing the 121 + 127 counts), the gateway
