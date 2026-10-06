@@ -91,8 +91,7 @@ takes ~5.3× one on Thor gemma [sim fit]) makes one runaway hold the device. Boa
 can replay P1's exact prompts on a stand-in model.
 
 **Dependence on P1.** P1 owns the observation; P5 could own the online mechanism and its evaluation (Sandesh:
-build now, agree the split after 10 Oct). P1's prompts are needed on the WS GPUs for A-E1/A-E2 **[waiting:
-Sandesh's permission]**.
+build now, agree the split after 10 Oct). The sampling result (A-E1) is a fix P1 can adopt directly.
 
 **What would change our mind.** This happened for the drone agents: sampling removes the loops on P1's 26B
 without hurting finished calls (A-E1). A now rests on the traffic agent's repeated caps, a safety net, and
@@ -158,7 +157,7 @@ budgets; A-E2 tests the safety net.
 > offline position on all 1,620 recorded Thor calls, reproducing the 121 + 127 counts), the gateway
 > (`jsw/gateway/`; ~0.3 ms per call) and the decode guard (`jsw/policies/decode_guard.py`: truncate, resample,
 > nudge or budget after a stop; a session stop after k consecutive caps), tested end to end against a fake
-> engine. **[pending: A-P1 evaluated on A-E2's prompts and a live agent]**
+> engine and run live in A-E1 (stops) and A-E2 (stop + retry on P1's 26B). Not yet run inside a live agent loop.
 
 ## 4. B. Agent design
 
@@ -344,7 +343,8 @@ with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
   run at all (prompts larger than the pool, as P1's Orin 64 overflows). That is CAP's lever, measured live.
 
 > **WS version (G2).** Built: the gateway with tool-tagged routes and tool events, and the trace replayer
-> (`jsw/workloads/replay.py`) with burst injection. **[pending: D-P1 burst-aware memory policy]**
+> (`jsw/workloads/replay.py`) with burst injection, and the burst-aware memory policy (`jsw/policies/burst_memory.py`:
+> pin by request priority, burst admission k), evaluated live in D-E2.
 
 ## 7. CAP. Capacity
 
@@ -365,8 +365,12 @@ capacity per quality point, and a run-time controller recovers X% beyond the bes
 
 **Evidence against.**
 - These are configuration choices; P1 already proposes them (MB5, not run).
-- FP8 KV quality on these agents is unmeasured **[pending: CAP-E1]**, and FP8 KV speed on Orin (sm_87, no
-  native FP8 attention) is unverified [lit].
+- **An FP8 KV cache for Gemma-4 does not run on Ampere-class GPUs in SGLang 0.5.20** (CAP-E1): Gemma-4 is
+  limited to the triton and TensorRT-LLM attention backends, and triton has no fp8e5 matmul on Ampere. The Orins
+  are Ampere-class (sm_87), so P1's proposed FP8 remedy is not available for its gemma configurations there
+  without another engine or SGLang version; granite (flashinfer) works [WS-meas].
+- FP8 KV quality on these agents stays unmeasured (the Gemma-4 runs could not start) [lit only: FP8 near-lossless
+  on reasoning; agent loss model-dependent].
 - With 7 tools, tool retrieval has little room (published gains appear at 19–46 tools) [lit].
 
 **Novelty** (`lit_CAP.md`; 24 works). Each lever is studied: role-aware INT2/INT4 KV within ~1 point on
@@ -382,7 +386,16 @@ them from live pool pressure across concurrent agents.
 **What would change our mind.** CAP-E1: FP8 KV shows no quality loss, so the best static setting is free and the
 run-time part has nothing to recover.
 
-**This week.** CAP-E1 (FP8 vs bf16 KV) **[pending]**.
+**This week: CAP-E1** [WS-meas]:
+- **FP8 KV doubles the pool:** granite-4.2-8b at the same memory fraction holds 53,296 tokens with fp8_e5m2 KV
+  against 26,467 in bf16 (2.01x).
+- **Live with 8 agents** (P1's Orin 32 granite traffic, 45 min): 34 sessions completed, 14.7 kJ per completed
+  session, 1.87 J per generated token; still capacity-bound (a median 4 requests running and 4 queued, the pool 88%
+  full, 8% of prompt tokens from the cache). The bf16 run at 8 agents (RET-E1) gives the comparison: **[filled with
+  RET-E1]**.
+- **D-E2 measured the capacity lever directly:** with 4 E4B agents, the 63.5K pool needs 3.25 kJ per completed
+  session against 7.92 kJ at 12.4K (2.4x less), and completes 46 sessions against 19 (§6).
+- **Gemma-4 with FP8 KV does not start on our GPUs** (see Evidence against), so its quality pairs were not run.
 
 > **WS version (G2).** CAP-P1 (capacity-aware admission) only if CAP-E1 finds a trade-off.
 
@@ -426,6 +439,11 @@ will state whether this week's evidence changes it.
   and `caps.json`.
 - **No stand-in for P1's gemma-4-26B-A4B runs on our A5000s** (D13's outcome, 2026-10-06): in SGLang 0.5.20 the
   4-bit MoE kernel supports only SiLU (Gemma uses GELU), the FP8 MoE kernel needs an FP8 type only newer GPUs have
-  (fp8e4nv), and bf16 (52 GB) exceeds both GPUs. Experiments use gemma-4-E4B and granite-4.2-8B, P1's exact weights;
-  the 26B tests wait for a Jetson. SGLang 0.5.20 (P1: 0.5.16); NVML GPU energy, not board energy.
+  (fp8e4nv), and bf16 (52 GB) exceeds both GPUs. The 26B runs instead through llama.cpp as a 4-bit GGUF (unsloth
+  UD-Q4_K_XL, on one A5000) for A-E1/A-E2; other experiments use gemma-4-E4B and granite-4.2-8B, P1's exact
+  weights. SGLang 0.5.20 (P1: 0.5.16); NVML GPU energy, not board energy.
+- **Idle power:** with a server loaded the A5000s draw 66-74 W when idle (10-20 W measured for K2 on 1 Oct), so WS
+  energy includes a large idle share; per-session energies compare runs on the same GPU, not devices.
+- **Statistics:** one run per cell for D-E2, RET-E1 and CAP-E1; Wilson intervals for A-E1/A-E2 rates; A-E1's
+  sampled arm uses one seed on the 26B.
 - Literature depth varies per work (`lit_*.md`); most 2026 preprints were read through summaries or abstracts.
