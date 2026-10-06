@@ -13,8 +13,8 @@
    "out_p90": 831,
    "reasoning_share": 0.8326103097157403,
    "reuse": 0.9345867037305318,
-   "ceiling_ws": null,
-   "r_ws": null,
+   "ceiling_ws": 0.10652534476963031,
+   "r_ws": 100.58398126968125,
    "ceiling_jetson": {
     "Thor gemma (traffic)": 0.07542644920756021,
     "Thor granite": 0.03701390900164591,
@@ -43,8 +43,8 @@
    "out_p90": 696,
    "reasoning_share": 0.7990224862048977,
    "reuse": 0.9215598947822577,
-   "ceiling_ws": null,
-   "r_ws": null,
+   "ceiling_ws": 0.1380461126432943,
+   "r_ws": 100.58398126968125,
    "ceiling_jetson": {
     "Thor gemma (traffic)": 0.09876225716458689,
     "Thor granite": 0.04909653109326416,

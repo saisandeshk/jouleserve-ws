@@ -38,7 +38,7 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth ≤ 7.5-9.9% of LLM time at E4B's Jetson price (16-24% at Thor's) with a thinking agent [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
+| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on, 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Doubling the pool: −31–46% energy per task at 8 agents [sim]; overflows end 11–21% of Orin runs [P1-meas] |
 | **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Simulated; FP8 quality on these agents unmeasured **[pending: CAP-E1]** |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
@@ -262,13 +262,20 @@ user simulator, one conversation at a time, 20 tasks per domain) [WS-meas]:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Airline | 10/20 (0.50) | 10 | 3.9K → 5.8K, +182 | 333 / 831; 83% | 93.5% | 7.5% | 16-19% |
 | Retail | 3/20 (0.20) | 10 | 4.5K → 7.5K, +197 | 280 / 696; 80% | 92% | 9.9% | 20-24% |
+| **Airline, thinking off** | 10/20 (0.50) | 6.5 | 3.9K → 5.4K, +212 | **75 / 227; 0%** | 96% | **25%** | **44-49%** |
 
 - **The context accumulates as published benchmarks promise** (92-94% of prompt tokens from the cache), but with
   thinking on each step writes hundreds of tokens, so kept state is worth at most 7.5-9.9% of LLM time at E4B's
   own Jetson price; only at Thor's cheapest price ratio does retail reach the rule's 20%. C-E1's rule:
   **borderline**; with a thinking agent, C collapses toward the traffic result.
-- **C's best case** is a non-thinking agent (short steps, as the step-wise drone agent showed): airline with the
-  agent's thinking off is **[queued]**.
+- **Without thinking, C has an opportunity.** With the agent's thinking off, E4B passes the same 10 of 20 airline
+  tasks, writes a median 75 tokens per step, and kept state is worth up to 25% of LLM time at E4B's own Jetson
+  price (33% on the WS, r = 101; 44-49% at Thor's): C-E1's rule says **opportunity**. Whether kept state matters
+  is decided by whether the agent thinks at each step, the same split as between P1's agents and the step-wise
+  agent (B).
+- But the opportunity is the one SGLang's radix cache already takes when memory is plentiful: tau2's tools return
+  in milliseconds, so state is lost only to memory pressure from other sessions, where the drone simulator found
+  the default within 9.9% of every policy for step-wise agents.
 - Waits: tau2's tools return in milliseconds; any edge story needs injected waits, which only matter if the
   ceiling is large to begin with.
 

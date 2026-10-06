@@ -1,0 +1,35 @@
+{
+ "run": "/home/saisandeshk/work/runs/c-e1-nothink",
+ "domains": {
+  "airline": {
+   "agent_calls": 261,
+   "user_calls": 186,
+   "conversations": 30,
+   "calls_per_conversation": 6.5,
+   "first_prompt_median": 3894.0,
+   "peak_prompt_median": 5388.5,
+   "growth_per_step_median": 212,
+   "out_median": 75,
+   "out_p90": 227,
+   "reasoning_share": 0.0,
+   "reuse": 0.9608822940682615,
+   "ceiling_ws": 0.3273173596408184,
+   "r_ws": 100.58398126968125,
+   "ceiling_jetson": {
+    "Thor gemma (traffic)": 0.24978055335508884,
+    "Thor granite": 0.13559679246576342,
+    "Orin 64 gemma": 0.29317051550093776,
+    "Orin 32 E4B": 0.24978055335508884,
+    "Thor drone gemma": 0.4372119130588414,
+    "Thor drone tool calling": 0.4848560969947766
+   },
+   "rewards": {
+    "tasks": 20,
+    "rewarded": 20,
+    "mean_reward": 0.5,
+    "passed": 10
+   },
+   "verdict": "opportunity (ceiling >= 20% at a Jetson r)"
+  }
+ }
+}
