@@ -31,6 +31,8 @@ OUT = REPO / "reports/2026-10-06-options/a_e2.json"
 
 def one(run_dir, api):
     d = Path(run_dir)
+    if not (d / "manifest.json").exists():
+        return None
     man = json.loads((d / "manifest.json").read_text())
     if "t_end_mono" not in man:
         return None

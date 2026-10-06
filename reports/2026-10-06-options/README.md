@@ -136,7 +136,18 @@ budgets; A-E2 tests the safety net.
     generation config samples (temperature 1.0, top_k 64, top_p 0.95). The fix for P1 is one line, and it belongs
     in P1's paper. What remains for P5 under A is the safety net (an online stop for residual loops, A-E2's
     retries), the traffic agent's repeated capped tool calls (A-E4), budgets and batching of long decodes.
-- A-E2 (stop and retry) **[pending: queued on the 26B]**; A-E5 (batching) **[partial: granite done]**.
+- **A-E2, stop and retry** (`a_e2.json`; the 29 prompts that looped under greedy in A-E1, replayed greedy on the
+  26B; the gateway stops a call where the detector fires and retries once) [WS-meas]:
+  - 17 of 29 looped again (greedy on llama.cpp is not bit-reproducible across its parallel slots, as P1 saw
+    repeats differ at temperature 0). **All 17 resampled retries finished with a valid result.** The stop came at a
+    median 12.2K tokens and the retry needed 7.7K: 19.7K in all, against P1's recorded 32,768 (about 40% saved).
+  - Overall 28 of 29 prompts ended with a valid result (95% CI 83-99%), but only 10 of 29 at half the recorded cost
+    or less, so the pre-registered rule (>= 70% at <= 50%) is **not met**. Sampling from the start is cheaper
+    (A-E1: a median 8.1K tokens on the same prompts, no loops).
+  - So the online stop is a reliable **safety net** for deployments that must decode greedily (a stop plus one
+    resample recovers every looping call), not the main energy lever. The nudge variant (greedy retry with a note)
+    is **[running]**.
+- A-E5 (batching) **[partial: granite done]**.
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
 > offline position on all 1,620 recorded Thor calls, reproducing the 121 + 127 counts), the gateway
