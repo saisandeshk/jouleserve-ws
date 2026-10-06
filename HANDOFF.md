@@ -1,13 +1,17 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-06, after G1 (IST). Latest work (5-6 Oct): **G1 of the options plan is done**; reported to
-Sandesh, who is reviewing it. While he reviews, every doc was brought up to date at his request: the options plan
-(v1.1), the master plan and Track A notes, the review index, the dated reports, the evidence doc and its repo copy,
-the teaching guide, the deck (v2.1) and this file (artifact revisions in §2).
+**Last updated:** 2026-10-07 (IST), a consistency pass over the docs (no new results). Latest work (5-6 Oct): **G1 of
+the options plan is done**; reported to Sandesh, who is reviewing it. Meanwhile, at Sandesh's request, every doc was
+brought up to date: the options plan (v1.1), the master plan and Track A notes, the review index, the dated reports,
+the evidence doc and its repo copy, the teaching guide, the deck (v2.1) and this file (artifact revisions in §2).
+- **P1 has pushed since our clone** (checked 7 Oct with `git ls-remote`, nothing fetched): P1's GitHub `main` is at
+  `d084f08`; our clones (local and WS) stay at `3c47ebc` until Sandesh agrees to a pull (§6 item 3).
 - **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
   CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
   week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
-  [`planning/TRACKER.md`](planning/TRACKER.md) (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.0).
+  [`planning/TRACKER.md`](planning/TRACKER.md) (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.1).
+  Its results were merged into the evidence doc, the teaching guide and the deck on 6 Oct; the comparison itself
+  stays a separate doc.
 - **What this week found** (details in the doc):
   - A: P1's drone runaways are a decoding setting: on P1's 26B (4-bit, llama.cpp) greedy decoding loops on 23/30 of
     P1's loop prompts, Gemma's default sampling on 0/30. An online stop + one resample recovers 17/17 looping calls
@@ -72,11 +76,11 @@ which git already keeps.
 - **Resources:** the edge devices are with P1 until their deadline (Sat 2026-10-10). P5 has the 2×A5000
   workstation, under its full control (back since 5 Oct, see below).
 
-## 2. Situation as of 2026-10-05
+## 2. Situation as of 2026-10-06
 
 - **P1's repository** (`dream-lab/edge-agent-bench`): read-only clone in `data/edge-agent-bench`
-  (git-ignored; HEAD `3c47ebc`, Sun 4 Oct 19:02). Its remote is P1's GitHub: never push, never write in it,
-  never run its `make` targets in place (`AGENTS.md` §4).
+  (git-ignored; HEAD `3c47ebc`, Sun 4 Oct 19:02; P1's GitHub is at `d084f08` since, not pulled). Its remote is
+  P1's GitHub: never push, never write in it, never run its `make` targets in place (`AGENTS.md` §4).
   - **Data:** 2,055 runs, 434 h, 21.3 kWh. 3 graded drone cells (Thor gemma-26B Reflexion, 144 runs; Orin 64
     Devstral-24B tool calling, 144; Orin 32 gemma-E4B tool calling, 108) and 8 traffic cells (1,659 runs,
     ungraded). Thor drone tool calling is **not** in the repository: we keep using our copy
@@ -95,11 +99,11 @@ which git already keeps.
     long-period loops (94 vs our 121 of 122); (3) the drone Orin 32 caps are 1,024-token evaluator calls;
     (4) Orin 64's context guard truncates calls their 8,000-token rule does not count; (5) Devstral's prefix
     cache is off (about 9% of its LLM time).
-    - **Caveat on (1):** P1's microbenchmark `analysis/microbench/mb6_vlm_tool.py` calls "the vision-language
-      model behind `ask_vlm`" at its own endpoint, run "with the agent model's server running and once
-      without", so P1 thinks of it as a separate server. Our evidence is only the agent server's
-      running-request counter. Both may hold where the agent model reads images (gemma, Qwen3.6; granite has
-      no image tasks). Wait for P1's answer before building on (1).
+    - **Caveat on (1):** P1's microbenchmark (`analysis/microbench/mb6_vlm_tool.py` in P1's repository, not ours)
+      calls "the vision-language model behind `ask_vlm`" at its own endpoint, run "with the agent model's server
+      running and once without", so P1 thinks of it as a separate server. Our evidence is only the agent server's
+      running-request counter. Both may hold where the agent model reads images (gemma, Qwen3.6; granite has no
+      image tasks). Wait for P1's answer before building on (1).
 - **The professor meeting is postponed** (no new date). Nothing has been shown to the professor yet.
 - **Pushed to the public repo** (2026-10-05, Sandesh's choice after being asked about visibility).
   - `saisandeshk/jouleserve-ws` is public and now holds P1's unpublished numbers in `reports/`; all local
@@ -272,23 +276,26 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 6. Next steps
 
-1. **G1 is done; wait for Sandesh's review of the comparison doc** (`reports/2026-10-06-options/README.md`). Then, as
-   Sandesh decides: merge it into the evidence doc and the deck (plan: "separate doc first, merge later"); start G2's
-   WS versions of the options (`planning/TRACKER.md`, G2 table); optional re-run of B-E1's sampled arm with the fixed
-   gateway (removes the format-failure caveat); pass on P1's reply to `NOTES_FOR_P1.md` when it comes.
+1. **G1 is done; wait for Sandesh's review of the comparison doc** (`reports/2026-10-06-options/README.md`). Its
+   results are already merged into the evidence doc, the teaching guide and the deck (6 Oct); fold in any review
+   changes there too. Then, as Sandesh decides: start G2's WS versions of the options (`planning/TRACKER.md`, G2
+   table); optional re-run of B-E1's sampled arm with the fixed gateway (removes the format-failure caveat); pass on
+   P1's reply to `NOTES_FOR_P1.md` when it comes.
 2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
    11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
 3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
    in `data/edge-agent-bench` only if Sandesh agrees (it is P1's clone), then rerun `analysis.p1_repo`
    (`load(key, refresh=True)`), `p1_opportunity`, `p1_caps`, `traffic_sim`, `p1_repo_figures`, and update
-   the report, the docs and the deck.
-4. **If A (decode-side energy):** test whether sampling removes the loops on Gemma (a device after 10 Oct,
-   or a quantized Gemma on the WS); design a retry policy for dropped tool calls (traffic); review the
-   reasoning-budget and early-exit literature (`rw-reasoning`); agree the split with P1, whose paper now
-   claims the loop finding.
-5. **If D (memory that changes over time):** the vision-tool burst is the case: replay it on the WS (a
-   burst of concurrent requests while a long context is paused) and size what pinning or burst admission
-   saves under small pools.
+   the report, the docs and the deck. **P1 has pushed** (`d084f08` on 7 Oct, content unknown): ask Sandesh about the
+   pull, for the local clone and for the WS copy (`~/work/p1/edge-agent-bench`).
+4. **If A (decode-side energy):** sampling vs greedy is answered on a 4-bit stand-in on the WS (A-E1: sampling
+   removes the loops); repeat it on P1's bf16 26B on a Jetson after 10 Oct. Still open: a retry policy for traffic's
+   dropped tool calls (A-E4), the decode guard inside a live agent loop, and the split with P1, whose paper claims
+   the loop finding.
+5. **If D (memory that changes over time):** the vision-burst replay is done (D-E2: the eviction reproduces; pinning
+   plus a burst cap costs 11% more energy than recomputing at one agent, and at 4 agents the best policy, pinning
+   alone, is 3.8% below the default, inside the 5% rule). What is left: P1's answer on which server `ask_vlm` calls,
+   and real unified-memory contention on a device.
 6. **WS experiments.** Superseded by `planning/OPTIONS_PLAN.md`; its §10 maps these labels to the plan's task
    IDs. The options as first offered on 5 Oct, with their usefulness as rated then:
    - **W1 (A, highest):** do Gemma-4's loops survive sampling? Replay the 265 capped Thor prompts plus finished

@@ -1,6 +1,7 @@
 # Tracker — P5 options (G1 the even-handed case, G2 the WS versions)
 
-**Updated:** 2026-10-06 (IST), after G1. Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.0, approved 2026-10-05).
+**Updated:** 2026-10-07 (IST), consistency pass after G1. Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.1; v1.0 approved
+2026-10-05).
 **Stop point:** report to Sandesh when G1 (CMP-2) is done; otherwise keep working.
 
 How to use it:
@@ -13,8 +14,9 @@ How to use it:
 ## Now
 
 - **2026-10-06 08:40: G1 is done** (CMP-2, `reports/2026-10-06-options/README.md`). Stopped here to report to Sandesh, as
-  agreed; nothing runs on the WS (servers torn down, GPUs idle). Next, after Sandesh's review: merge into the evidence
-  doc and the deck; G2's WS versions; optional B-E1 sampled re-run with the fixed gateway.
+  agreed; nothing runs on the WS (servers torn down, GPUs idle). Its results were merged into the evidence doc, the
+  teaching guide and the deck the same day. Next, after Sandesh's review: fold any review changes into those; G2's WS
+  versions; optional B-E1 sampled re-run with the fixed gateway.
 
 ## G2 shared base
 
@@ -22,8 +24,8 @@ How to use it:
 | --- | --- | --- | --- | --- | --- | --- |
 | S1a | Serve gemma-4-26B-A4B 4-bit on one GPU; smoke (chat, thinking, `gemma4` tools, pool, `/metrics`) | 0 | — | done (llama.cpp) | `env/derive_gemma26b_fp8.py`, `env/launch_model.sh` | No 26B stand-in runs on Ampere in SGLang 0.5.20: the 4-bit MoE kernel is SiLU-only (Gemma uses GELU); the FP8 MoE kernel needs fp8e4nv (sm89+). bf16 (52 GB) exceeds both GPUs. On the way: CUDA-12 NCCL preload makes TP=2 work; text-only and Marlin-safe derived checkpoints. D13 outcome: the 26B runs through llama.cpp v0.6.0 as a 4-bit GGUF (unsloth UD-Q4_K_XL, `env/launch_llamacpp.sh`), used for A-E1/A-E2 |
 | S1b | Serve gemma-4-E4B; smoke incl. images | 0 | — | done | `env/launch_model.sh gemma-e4b`, `~/work/logs/smoke_gemma_e4b.json` | Pools: 63,509 full + 50,807 SWA tokens at 0.88; thinking on/off, `gemma4` tool calls, images, /generate exact lengths, abort on disconnect all work |
-| S1c | Serve granite-4.2-8b; smoke; pool size | 0 | — | done | `env/launch_model.sh granite8b`, `~/work/logs/smoke_granite.json` | Pool 26,467 tokens at 0.88 (P1's Orin 32 granite pool: 26-27K; Orin 64's 32,768 needs a higher mem fraction) |
-| S1d | Record the recipes and gotchas; check FP8 `--kv-cache-dtype` on Ampere | 0 | S1a–c | done | `env/launch_model.sh`, AGENTS.md §6c | Recipes and gotchas in AGENTS.md §6c; FP8 KV: granite works (pool 2.01x), Gemma-4 cannot start on Ampere (CAP-E1) |
+| S1c | Serve granite-4.2-8b; smoke; pool size | 0 | — | done | `env/launch_model.sh granite8b`, `~/work/logs/smoke_granite.json` | Pool 26,467 tokens at 0.88 on GPU0, 26,648 on GPU1 (P1's Orin 32 granite pool: 26-27K; Orin 64's 32,768 needs a higher mem fraction) |
+| S1d | Record the recipes and gotchas; check FP8 `--kv-cache-dtype` on Ampere | 0 | S1a–c | done | `env/launch_model.sh`, AGENTS.md §6c | Recipes and gotchas in AGENTS.md §6c; FP8 KV: granite works (pool 2.0x on the same GPU), Gemma-4 cannot start on Ampere (CAP-E1) |
 | S2 | Gateway v0 (routes, streaming, call log, hooks, abort) | 1 | — | done | `jsw/gateway/server.py`, `tests/test_gateway.py` | v0: routes, streaming, aggregation, call log, hooks, abort, tool-tagged routes, pythonic tool-call fallback (`jsw/gateway/pythonic.py`); ~0.3 ms per call |
 | S3 | Trace replayer (`/generate`, exact lengths, real prefix reuse, tool gaps, burst injection) | 1 | S2, S5 | done | `jsw/workloads/replay.py`, `analysis/replay_sets.py` | Tested live on granite: exact lengths; prompt = previous prompt + fresh IDs (P1's thinking agents drop reasoning: cached = previous prompt, as P1's data shows); bursts from vitals; --no-reuse; horizon cut |
 | S4 | Streaming loop detector, parity with offline flags | 0 | — | done | `jsw/policies/loop_detector.py`, `tests/test_loop_detector.py` | Fires at the offline position on all recorded Thor calls; reproduces 121 + 127 |
@@ -44,10 +46,10 @@ How to use it:
 | B-E2 | B | Redo the step-wise projections with Gemma's step sizes | 3 | B-E1 | done | `b_e2.json`, `figures/b_e1_e2.png` | E4B step-wise 26-27 kJ per strict success vs P1's Reflexion 284-499 kJ measured (11-19x), Thor gemma-26B prices |
 | B-E3 | B | Literature: agent design (code-as-action, ReAct, plan-and-execute, drone agents) | 0 | — | done | `reports/2026-10-06-options/lit_B.md`, 4 review docs | Direction known with energy (Cost of Dynamic Reasoning, Sustainable Agents, EpG); the exact comparison not found; fits P1 |
 | C-E1 | C | τ²-bench: single-session shape and ceiling, then N sessions with injected waits | 2 | S1, (S3) | done | `c_e1.json`, `c_e1_nothink.json` | Thinking on: ceiling 7.5% (airline) / 9.9% (retail) at E4B's Jetson r: borderline. Thinking off (airline, same 10/20 reward): 75-token steps, ceiling 25% (WS 33%): opportunity |
-| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | done | `ret_e1.json`, `figures/ret_e1.png` | Anchor holds: simulator within 14% at every point (2% except N=4), FP8 run out of sample within 6%. Ranking degenerate: at N=8 the default keeps nothing (0/102 calls hit), so it ties with dropping state. Knee live: 57.2 -> 27.8 -> 38.4 kJ/session at N=1/4/8 |
+| RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | done | `ret_e1.json`, `figures/ret_e1.png` | Ran narrower than planned (GPU time): Orin 32 granite at P1's pool only, N = 1, 4, 8, default and no-reuse (keep not run), 45 min per point. Anchor holds: simulator within 14% at every point (2% except N=4), FP8 run out of sample within 6%. Ranking degenerate: at N=8 the default keeps nothing (0/102 calls hit), so it ties with dropping state. Knee live: 57.2 -> 27.8 -> 38.4 kJ/session at N=1/4/8 |
 | D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | done | `d_e2.json` | Mechanism reproduced live (88-100% of the paused prefix recomputed at 12.4K). Pin + burst cap 2 cuts it to 37% at one agent but costs +11% energy per session; at 4 agents capacity dominates (+3..14%). Capacity: 63.5K vs 12.4K pool at N=4: 2.4x less energy per session |
 | D-E3 | D | Literature: unified memory, co-located models | 0 | — | done | `reports/2026-10-06-options/lit_D.md`, 5 review docs | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning exist; tool foreknowledge on unified memory not found; effect may be small |
-| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | done | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,467); 8 agents live: 14.7 vs 38.4 kJ/session bf16 (-62%), 2.6x sessions/hour. Rule undecided: quality side could not run. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run; the Orins are Ampere-class |
+| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | done | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,648, both GPU1); 8 agents live: 14.7 vs 38.4 kJ/session bf16 (-62%), 2.6x sessions/hour. Rule undecided: quality side could not run. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run; the Orins are Ampere-class |
 | CAP-E2 | CAP | Literature: KV quantization, prompt and tool-loading | 0 | — | done | `reports/2026-10-06-options/lit_CAP.md`, 5 review docs | Each lever studied; energy per task and a run-time controller across levers not found |
 | CMP-2 | all | Full comparison, Sandesh's review | 4 | all | done (review pending) | comparison doc | Merged on 6 Oct into the evidence doc (rev 138, repo copy), the teaching guide (chapter 21) and the deck (v2.1) |
 
@@ -76,6 +78,9 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-07:** consistency pass over the docs (no new results): plan version cited as v1.1, merge status stated as
+  done, granite's bf16 pool labelled by GPU (26,467 GPU0, 26,648 GPU1), RET-E1's run scope, the Thor ban in AGENTS.md,
+  stale next steps in HANDOFF. P1's GitHub `main` is at `d084f08` (ours: `3c47ebc`); not pulled, waiting for Sandesh.
 - **2026-10-06 (after G1):** at Sandesh's request, every doc brought up to date: options plan v1.1 (outcomes §2.5, D18),
   master plan and Track A notes, review index (20 new docs), update notes in the dated reports, the evidence doc and
   its repo copy, the teaching guide, the deck (v2.1, 137 slides), HANDOFF, AGENTS and a README; WS runs backed up

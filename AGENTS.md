@@ -49,7 +49,7 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 |---|---|---|
 | Local checkout | `~/Study/ISP/jouleserve-ws` | docs, analysis, git |
 | WS `resiliente-2053` | `ssh saisandeshk@10.24.32.174` | all P5 compute. 2× RTX A5000 24 GB, no NVLink, no root. Clone at `~/jouleserve-ws` |
-| P1 Thor `dream-thor-1` | `ssh yash@10.24.24.79` | P1's live sweep device; source of the drone code and traces. **Read-only** |
+| P1 Thor `dream-thor-1` | `ssh yash@10.24.24.79` | P1's live sweep device; source of the drone code and traces. **Off-limits since 2026-10-05** (no access at all until Sandesh lifts it); read-only when allowed |
 | P1's repository clone | `data/edge-agent-bench` (local, git-ignored) | P1's raw drone and traffic runs, pipeline and paper (`dream-lab/edge-agent-bench`, cloned by Sandesh 2026-10-05). **Read-only**; rules in §4 |
 | Orin 32/64, other Thors | — | allocated to P1 until their deadline |
 
@@ -62,6 +62,8 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 
 ### P1 Thor: someone else's live experiment
 
+- **Off-limits since 2026-10-05** (Sandesh): no ssh at all, not even read-only, until Sandesh says otherwise. Use
+  P1's repository and our local copies. The rules below apply when access returns.
 - **Look only.** Use `ls`, `cat`, `tail`, `ps` and copies *out*.
   - Never write, install, launch, kill or restart anything there.
   - Never send requests to P1's SGLang server (port 30000), MCP server (8001) or Docker.
@@ -221,7 +223,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **gemma-4-E4B** (P1's weights): 63,509 full + 50,807 sliding-window tokens at 0.88; thinking on/off, `gemma4`
   tool calls and images work. With prompts whose examples show tool calls as Python text it sometimes writes
   calls as text: the gateway's `--pythonic-fallback first` converts them.
-- **granite-4.2-8b** (P1's weights, dense): 26,467 tokens at 0.88 (P1's Orin 32 granite pool).
+- **granite-4.2-8b** (P1's weights, dense): 26,467 tokens at 0.88 on GPU0, 26,648 on GPU1 (P1's Orin 32 granite pool:
+  26-27K). FP8 KV (`fp8_e5m2`) doubles it (53,296 on GPU1).
 - **gemma-4-26B-A4B cannot run on the A5000s in SGLang 0.5.20** (D13's outcome): the 4-bit MoE kernel is
   SiLU-only (Gemma uses GELU), the FP8 MoE kernel needs fp8e4nv (sm89+), and bf16 (52 GB) exceeds both GPUs. Things
   learned on the way: a text-only config must carry SGLang's Gemma-4 renaming (base `head_dim` = full attention,

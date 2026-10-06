@@ -19,7 +19,7 @@
 >   SGLang; gemma-4-26B only as a 4-bit GGUF in llama.cpp; recipes in `AGENTS.md` §6c). On the 26B, greedy decoding
 >   loops on 77% of P1's loop prompts and Gemma's default sampling on none.
 
-Status: **draft v0.4** (2026-09-30). This is a living document. Sections marked
+Status: **draft v0.4** (2026-09-30), with the update notes above to 2026-10-06. This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.
 
 ## 0. The question and the constraint

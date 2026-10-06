@@ -1,6 +1,6 @@
 # Notes for P1 (EdgeAgentBench) from P5's reading of the repository
 
-**2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code. For Sandesh to forward; nothing has been sent.
+**2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code. Sent to P1 by Sandesh on 2026-10-05.
 
 We read P1's repository read-only (`dream-lab/edge-agent-bench` at `3c47ebc`, 4 Oct 19:02) and reran
 P5's analyses on it. P1's own numbers reproduce from the same files: cache hit rates, prefill shares, capped

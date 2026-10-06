@@ -1,6 +1,7 @@
 # JouleServe-WS — build plan and reference
 
-Status: **v1.0** (2026-09-30). This is the master plan for the workstation build.
+Status: **v1.0** (2026-09-30), with the update notes below to 2026-10-06; M3–M5 are on hold until D12. This is the
+master plan for the workstation build.
 - **2026-10-01:** first evidence pack (Track A + aerogen, M2-style): [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md). Direction decision pending; see its §6–7.
 - **2026-10-02 to 10-04:** the merged evidence doc ([`../reports/2026-10-02-p5-evidence/README.md`](../reports/2026-10-02-p5-evidence/README.md)), with the results below.
   - A memory controller beats SGLang's default by at most ~10% in simulation (2026-10-03).

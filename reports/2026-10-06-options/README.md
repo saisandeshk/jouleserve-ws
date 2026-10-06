@@ -7,8 +7,8 @@
 This doc lays out every option P5 could take, with the same criteria and the same template, so the professor
 can choose with the pros, cons and open gaps side by side. Each option's gaps were filled this week (5-6 Oct)
 with the cheapest experiment that could close them, on the workstation and on P1's recorded data, each with a
-decision rule fixed before it ran (plan D15). It is a separate doc for now, to be merged into the evidence doc
-and the deck later. Our own lean is stated once, at the end (§9), and nowhere else.
+decision rule fixed before it ran (plan D15). It stays a separate doc; its results were merged into the evidence
+doc, the teaching guide and the deck on 6 Oct. Our own lean is stated once, at the end (§9), and nowhere else.
 
 **What this week found, in one line per option** (details and sources in §3-§8):
 - **A. Decode-side energy:** on a 4-bit stand-in for P1's 26B (llama.cpp, one sampled seed), greedy decoding
