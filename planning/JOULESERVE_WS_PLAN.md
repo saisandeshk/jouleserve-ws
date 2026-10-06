@@ -11,6 +11,12 @@ Status: **v1.0** (2026-09-30). This is the master plan for the workstation build
   - P1's paper claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4.
   - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct is postponed, with no new date; current state in [`../HANDOFF.md`](../HANDOFF.md).
 - **2026-10-05 (evening):** until D12, the work follows [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (tracker: [`TRACKER.md`](TRACKER.md)). It builds an even-handed case for options A–D and their WS versions, on a shared base (models, gateway, trace replayer) that reuses this plan's §3 design.
+- **2026-10-06:** G1 of the options plan is done: the options comparison
+  ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)), with WS experiments on P1's
+  models and recorded prompts. Built on the way, from this plan's §3 design: the gateway (`jsw/gateway/`, with
+  policy hooks), a trace replayer (`jsw/workloads/replay.py`), the runner (`jsw/runner/run.py`) and two gateway
+  policies (decode guard, burst-aware memory). The simulator (`analysis/admission_sim.py`) held against a live
+  engine within 14% (RET-E1). M3–M5 stay on hold until D12.
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 

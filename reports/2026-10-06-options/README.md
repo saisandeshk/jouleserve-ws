@@ -476,8 +476,10 @@ run-time part has nothing to recover.
   - **The capacity knee is live:** energy per session falls 2.1x from 1 to 4 agents, then rises 38% from 4 to 8 as
     the pool thrashes; twice the pool (FP8) at 8 agents is the cheapest point measured (2.6x below bf16 at 8, 1.9x
     below the best bf16 point).
-  - Caveats: one run per point; WS GPU energy, not Jetson board energy; the replay has P1's token counts, waits
-    and prefix structure but synthetic text, so it says nothing about answer quality.
+  - Caveats: narrower than planned (Orin 32 granite at P1's pool only; no half pools, no Orin 64, no N = 2, no
+    "keep" policy; 45 minutes per point, not 2 h); one run per point; WS GPU energy, not Jetson board energy; the
+    replay has P1's token counts, waits and prefix structure but synthetic text, so it says nothing about answer
+    quality.
 
   ![RET-E1: live vs simulated energy per session](figures/ret_e1.png)
 

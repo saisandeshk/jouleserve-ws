@@ -1,7 +1,11 @@
 # P5 options: the even-handed case and the WS versions — plan
 
-Status: **v1.0, approved by Sandesh on 2026-10-05** (decisions D13–D17 as proposed; capacity is in; our lean is
-stated once, separately, at the end of the comparison). Work started the same evening.
+Status: **v1.1** (2026-10-06). v1.0 was approved by Sandesh on 2026-10-05 (decisions D13–D17 as proposed; capacity
+is in; our lean is stated once, separately, at the end of the comparison). Work started the same evening.
+- **G1 is done (2026-10-06):** the comparison, [`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)
+  (CMP-2), is with Sandesh for review. Each evidence task's outcome against its decision rule is in §2.5.
+- **v1.1 changes:** §2.5 (outcomes), §3.1/§3.3 as built, D13's outcome, D18 (RET-E1's comparison method), outcomes
+  in §7. G2 continues after Sandesh's review.
 - **Tracker:** [`TRACKER.md`](TRACKER.md). This plan changes rarely; the tracker changes every working session.
 - **Relation to the master plan:** [`JOULESERVE_WS_PLAN.md`](JOULESERVE_WS_PLAN.md) milestones M3–M5 assume a
   retention/admission gateway and are on hold. Until the professor's direction decision (D12), this plan
@@ -121,6 +125,8 @@ Each task names its decision rule. The thresholds are proposals for Sandesh to c
 | **CMP-1** | all | Comparison doc skeleton from existing evidence | Write §2.1's outline with today's numbers | Sandesh reviews the template | — | 4 h |
 | CMP-2 | all | Full comparison | Fill from all tasks above | Sandesh's review | all | 6–8 h |
 
+Outcomes: §2.5.
+
 #### A-E1 — do the loops survive sampling?
 
 - **Prompts:** P1's recorded capped Thor prompts. All have full `messages`:
@@ -228,6 +234,23 @@ Each task names its decision rule. The thresholds are proposals for Sandesh to c
   finding to report to P1, and CAP weakens as a research option. Degradation means a run-time trade-off
   exists (a CAP or D angle).
 
+### 2.5 Outcomes against the decision rules (2026-10-06)
+
+Details, numbers and caveats: the comparison doc, §3–§8. [WS-meas] unless marked.
+
+| Task | Rule | Outcome | Verdict |
+| --- | --- | --- | --- |
+| A-E1 | Reproduction: greedy on the WS loops on ≥ 50% of the Thor loop prompts; then "sampling removes the loops" if sampled runs loop on ≤ 10% of them and the controls do not get worse | E4B (SGLang) never loops, even on its own Orin 32 loop prompts. A 4-bit GGUF of P1's 26B through llama.cpp (D13's outcome): greedy loops on 23/30 loop prompts (77%, CI 59–88%) and 6/20 controls; Gemma's default sampling on 0/30 and 0/20, 28/28 valid programs (one seed) | 26B: **sampling removes the loops**; E4B: inconclusive (no reproduction) |
+| A-E2 | Stop and retry preserves runs if ≥ 70% of retries end valid at ≤ 50% of the recorded call's energy (tokens as the proxy) | Resample: 17/17 re-looping calls recovered, 28/29 valid overall, but only 10/29 at ≤ 50% cost (median 19.7K vs 32.8K tokens). Nudge: 7 of 10 retries loop again. Budget: dropped | **Not met**: a safety net, costlier than sampling from the start |
+| A-E4 | Report only | Repeated capped `run_python` calls hold 33% (Thor gemma) and 31% (Orin 32 E4B) of traffic LLM-call energy [P1-meas] | — |
+| A-E5 | Report only | Batch 1 → 16 cuts energy per token 13× (granite) and 13.5× (E4B) | — |
+| B-E1 | Short steps if the median output after a tool result is ≤ 300 tokens | E4B: median 63 (greedy) / 68 (sampled); strict pass 9/11 and 7/13; 9 of 33 missions lost to a tool-format bug (fixed, not re-run) | **Met** |
+| B-E2 | Report only | 26–27 kJ per strict success greedy, 35–40 sampled, vs P1's Reflexion 284–499 kJ (Thor prices) [proj] | — |
+| C-E1 | Opportunity if the ceiling is ≥ 20% of LLM time at a Jetson r; collapses if < 10% at every r | Thinking on: 7.5% / 9.9% at E4B's r, 16–24% at Thor's drone r (retail ≥ 20%). Thinking off (airline): 25% at E4B's r | Thinking on: **borderline** (the rule fires for retail only at Thor's drone prices); thinking off: **opportunity** |
+| D-E2 | D is worth more than the burst's 0.6% if the best policy beats the default by > 5% at 4 agents | Mechanism reproduced (88–100% of the paused prefix recomputed at 12.4K). Best at 4 agents: pin, −3.8%; pin + cap 2 cuts recompute to 37% at one agent but costs +11% | **Not met**: within 5% |
+| RET-E1 | Anchor holds if live and simulated energy per completed task agree within ±15% at every point and the policies rank the same | Run narrower than specified (GPU time): Orin 32 granite only, P1's pool only (no half pools, no Orin 64), N = 1, 4, 8, two policies (default, no reuse; keep not run), 45 min per point. Within 14.2% at every point (2% except N = 4); FP8 run out of sample within 6.4%. Ranking: a tie in both, because at N = 8 the default keeps nothing (0/102 calls hit) | **Met** on the points run (ranking degenerate) |
+| CAP-E1 | No measurable FP8 degradation means capacity is free configuration; degradation means a trade-off | FP8 KV doubles granite's pool (53,296 vs 26,648) and cuts energy per session 62% at 8 agents. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20, so the quality pairs did not run | **Undecided** (quality side not measured) |
+
 ## 3. Goal G2: the WS versions
 
 ### 3.1 Shared base (every option needs these)
@@ -239,7 +262,7 @@ Each task names its decision rule. The thresholds are proposals for Sandesh to c
 | **S3** | Trace replayer | `jsw/workloads/replay.py` | Plays recorded runs (P1 traffic and drone via `analysis/p1_repo.py`, WS aerogen runs) as N closed-loop agents against the gateway. SGLang's native `/generate` with synthetic token IDs gives exact prompt lengths. Each call's prompt is the previous prompt + the previous **generated** IDs + a synthetic tool result, so prefix reuse is real. Outputs held to the recorded length (`ignore_eos`, `max_new_tokens`). Tool gaps replayed as waits. Optional vision-burst injection. Seeds and task mix as in the simulator | Replays one P1 run with prompt and output lengths within 1% and cache hits as expected; runs N = 8 | 8–10 h |
 | **S4** | Streaming loop detector | `jsw/policies/loop_detector.py` | The online detector of `analysis/p1_loops.py` (4,000- and 16,000-character windows, every 1,000 characters, fires after 3 checks below 10%) as an incremental class shared by the analyses and the gateway | Reproduces the offline flags exactly on P1's 265 capped and 173 finished calls | 2 h |
 | **S5** | Runner and manifest | `jsw/runner/` | One run directory format, manifest (git SHA, versions, server flags, model revision, GPU state, seeds), sampler start/stop, teardown check; factored out of `aerogen_driver.py` | aerogen driver, replayer and A-E1 all write the same format | 3 h |
-| S6 | Analysis helpers | `analysis/loop_replay.py`, `analysis/live_vs_sim.py` | A-E1/A-E2 tables and figures; live-vs-simulator comparison for RET-E1 and D-E2 | Figures for the comparison doc | 4 h |
+| S6 | Analysis helpers | as built: `jsw/workloads/loop_replay.py` (A-E1/A-E2 replays), `analysis/{a_e1,a_e2,a_e4,b_e1,b_e2,c_e1,d_e2,ret_e1,cap_e1,options_figures}.py` | A-E1/A-E2 tables and figures; live-vs-simulator comparison for RET-E1 and D-E2 | Figures for the comparison doc | 4 h |
 
 Open technical checks for S2/S3, made at the start of S2: whether `/generate` returns the output IDs for an
 `input_ids` request; whether a client disconnect aborts the request in 0.5.20; how `ignore_eos` interacts with
@@ -266,14 +289,18 @@ Upgrades, if time is left (in this order):
 
 ### 3.3 Code layout (new pieces)
 
+As built (2026-10-06):
+
 ```
-jsw/gateway/      server.py (routes, streaming), session.py (state, call log), hooks.py (policy interface)
-jsw/policies/     loop_detector.py, decode_guard.py (A-P1), burst_memory.py (D-P1)
-jsw/workloads/    replay.py (S3); aerogen_driver.py (existing)
-jsw/runner/       manifest.py, run.py (S5)
-env/              launch_gemma4_26b_awq_tp1.sh, launch_gemma4_e4b_tp1.sh, launch_granite_tp1.sh
-analysis/         loop_replay.py, live_vs_sim.py
-tests/            gateway (fake upstream), loop detector (offline parity), replayer (lengths)
+jsw/gateway/      server.py (routes, streaming, call log, policy hooks, abort), pythonic.py (text tool-call fallback)
+jsw/policies/     base.py (hook interface), loop_detector.py, decode_guard.py (A-P1), burst_memory.py (D-P1)
+jsw/workloads/    replay.py (S3), loop_replay.py (A-E1/A-E2); aerogen_driver.py (existing)
+jsw/runner/       run.py (S5: manifest, samplers, energy over a window)
+jsw/costs/        calibrate2.py (prefill, decode against batch and context, NVML energy)
+env/              launch_model.sh (gemma-e4b, granite8b, 26B attempts), launch_llamacpp.sh (26B GGUF),
+                  fetch_models.py, smoke_model.py, sync_ws.sh, queue_*.sh (WS-side tmux queues)
+analysis/         a_e1, a_e2, a_e4, b_e1, b_e2, c_e1, d_e2, ret_e1, cap_e1, options_figures, loop_prompts, replay_sets
+tests/            test_gateway (fake upstream), test_pythonic_gateway, test_loop_detector (offline parity)
 ```
 
 ## 4. Order of work
@@ -291,6 +318,10 @@ no GPU.
 | 4 | Upgrades (§3.2) | Upgrades | CMP-2; Sandesh's review; HANDOFF, then merge into the evidence doc and the deck |
 
 Each wave ends with the tracker updated, runs copied to `data/ws_runs/`, and GPUs back to idle.
+
+**As run (5–6 Oct):** waves 0–3 and CMP-2 finished on 2026-10-06 08:40; the order changed with D13's outcome (the
+26B moved to llama.cpp, A-E1 ran first on E4B) and P1's data reaching the WS. Wave 4's upgrades wait for
+Sandesh's review.
 
 ## 5. Experiment protocol (WS)
 
@@ -317,13 +348,14 @@ D12 stays the professor's direction decision (open). New decisions in this plan:
 | D15 | The decision rules in §2.4 | **approved** 2026-10-05 |
 | D16 | The comparison criteria K1–K8 and template (§2.1–2.3) | **approved** 2026-10-05 |
 | D17 | Capacity (CAP) as its own option in the comparison | **approved** 2026-10-05 |
+| D18 | RET-E1's comparison method, fixed before its data arrived: the simulator stops at the live run's span (the live run cuts its last sessions), takes its powers from NVML's energy counter like the live energy (the power reading runs 24% above it), and a difference under 2% counts as a tie in the ranking | **taken** 2026-10-06 during G1 (Claude); for Sandesh to confirm |
 
 ## 7. Risks and fallbacks
 
 | Risk | Fallback |
 | --- | --- |
-| The 4-bit Gemma does not run on Ampere in SGLang 0.5.20, or runs badly | FP8-dynamic over two GPUs; else E4B only, with the caveat that its drone loops are few (5) |
-| The quantized Gemma does not loop under greedy decoding (A-E1's reproduction check fails) | Report it as inconclusive; run E4B on its own capped prompts; defer the Gemma-26B test to a Thor after 10 Oct |
+| The 4-bit Gemma does not run on Ampere in SGLang 0.5.20, or runs badly | FP8-dynamic over two GPUs; else E4B only, with the caveat that its drone loops are few (5). **Happened:** neither ran; llama.cpp served a 4-bit GGUF instead (D13) |
+| The quantized Gemma does not loop under greedy decoding (A-E1's reproduction check fails) | Report it as inconclusive; run E4B on its own capped prompts; defer the Gemma-26B test to a Thor after 10 Oct. **Happened for E4B** (no loops at all); the 26B GGUF did loop |
 | The `gemma4` tool parser fails with aerogen's tool calls | Patch at run time in the driver (as for K2's `reasoning_content`); else run B-E1 with thinking off first |
 | `/generate` cannot give exact lengths or output IDs | Use the chat API with a tokenizer-checked synthetic text; accept ±2% length error |
 | granite's pool on one A5000 is below P1's Orin pools | Run the half-pool cells and the largest pool that fits; label it |
@@ -331,7 +363,7 @@ D12 stays the professor's direction decision (open). New decisions in this plan:
 | Building the prototypes biases the comparison | Rule 3 of §2.3: prototypes in a separate box |
 | P1 says `ask_vlm` is a separate server | D-E2 emulates a co-located second server instead (§2.4) |
 | P1 pushes new data mid-way | Rerun the affected analyses (`HANDOFF.md` §6 item 3) after Sandesh agrees to the pull |
-| The WS goes offline again | Short runs, copied back after each; analyses run locally |
+| The WS goes offline again | Short runs, copied back after each; analyses run locally. **Changed:** the laptop proved the weak link (power cuts, RAM bit flips), so runs became WS-side tmux queues and analyses run on the WS |
 
 ## 8. Sandesh's answers (2026-10-05)
 

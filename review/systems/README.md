@@ -11,7 +11,25 @@
 > - **F5/H4: a live case.** `ask_vlm` sends 8–45 concurrent requests to the agent's own server; on a 12.4K-token pool (Orin 64) it evicts the paused agent context every time. The cost is small (0.6% of LLM time) because prefill is cheap, but it is the one memory-pressure mechanism at one agent per device.
 > - **P1's paper is now the closest internal work** to option A: it reports the loops (offline detector) and a "stop at the first capped call" bound. Not cited by P1: INFERCEPT, Continuum, TokenCake, CacheScout, Adaptive KV Retention, or reasoning-length control.
 
-Status: 2026-09-30. There is one doc per system in this folder, all following `_TEMPLATE.md`:
+> **Notes from the options work (2026-10-06;** [`../../reports/2026-10-06-options/README.md`](../../reports/2026-10-06-options/README.md)**).**
+> Four literature reviews, one per option, by parallel reviewers (Sonnet), with 20 new system docs (§1b). The
+> per-option notes are `lit_A.md`, `lit_B.md`, `lit_D.md`, `lit_CAP.md` in the options report.
+> - **A (decode-side energy): partly covered.** Repetition-loop stop and recovery (Word Salad Chopper, Circular
+>   Reasoning), energy-motivated agent stop (AgentStop), stop and restart (Fail-Fast Restart-Smart), early exit in
+>   SGLang (Dynasor), thinking budgets on Jetson Orin (EdgeReasoning). Not found: an engine-side text detector for
+>   thinking agents with a retry policy and energy per successful task on Jetsons. This week's A-E1 adds that the
+>   drone loops are a greedy-decoding effect on a 4-bit stand-in of P1's 26B.
+> - **B (agent design): the direction is known with energy numbers** (Cost of Dynamic Reasoning, Engineering
+>   Sustainable Agents, EpG/A-LEMS, CodeAct, AeroGen); the exact step-wise vs whole-program comparison on embodied
+>   edge tasks was not found.
+> - **D (memory over time):** elastic KV (Prism/kvcached on SGLang 0.5.20, MorphServe), tool-aware pinning
+>   (Continuum, MORI), on-device KV (LLMS, mzCache, agent-memory); tool foreknowledge on unified memory not found.
+> - **CAP (capacity):** each lever is studied alone (TriAxialKV, FP8 KV studies, Less-is-More, CarbonCall, Complexity
+>   Trap); energy per successful agent task across levers, and a run-time controller among them, not found.
+> - **F1 holds on a standard benchmark too** (C-E1): tau2-bench reuses 92-96% of prompt tokens, yet with thinking
+>   on kept state is worth 7.5-9.9% of LLM time at E4B's Jetson price; without thinking 25%.
+
+Status: 2026-09-30 (§1b and the options notes added 2026-10-06). There is one doc per system in this folder, all following `_TEMPLATE.md`:
 workloads, assumptions, controller, results, what JouleServe-WS can take, what JouleServe must
 add, and workstation → edge. The docs were written by parallel reviewers from primary sources.
 
@@ -52,6 +70,34 @@ own depth. TAWS is abstract-only.
 | [agentsysbench.md](agentsysbench.md) | AgentSysBench | agent workload characterization | partial | motivation |
 | [mlperf-edge-agentic.md](mlperf-edge-agentic.md) + [mlperf-edge-agentic-tensorrt-edge-llm.md](mlperf-edge-agentic-tensorrt-edge-llm.md) | MLPerf Edge Agentic | edge agent benchmark (Thor) | partial | workload / contrast |
 | [workloads-catalog.md](workloads-catalog.md) | — | candidate workloads + shortlist | — | — |
+
+### 1b. Added 2026-10-06 (options work)
+
+Written by parallel reviewers for the options comparison; depth as each doc states (mostly partial: re-check
+numbers against the PDF before citing).
+
+| Doc | System | Option | Depth |
+|---|---|---|---|
+| [word-salad-chopper.md](word-salad-chopper.md) | Word Salad Chopper (EMNLP'25): probe detects repetition, chop and regenerate | A | partial |
+| [circular-reasoning-loop-prediction.md](circular-reasoning-loop-prediction.md) | Circular Reasoning: LoopBench, CUSUM loop predictor | A | partial |
+| [agentstop.md](agentstop.md) | AgentStop: energy-motivated termination of failing local agent runs | A | full (main text) |
+| [fail-fast-restart-smart.md](fail-fast-restart-smart.md) | FailFast-RestartSmart: monitor predicts failing trajectories, restarts | A | partial |
+| [dynasor-certaindex.md](dynasor-certaindex.md) | Dynasor / Certaindex: early exit of reasoning inside SGLang | A | partial |
+| [edgereasoning.md](edgereasoning.md) | EdgeReasoning: reasoning LLMs and token budgets on Jetson AGX Orin | A | partial |
+| [aerogen.md](aerogen.md) | AeroGen: single-shot drone programs vs closed-loop generation (P1's lineage) | B | full (main text) |
+| [cost-of-dynamic-reasoning.md](cost-of-dynamic-reasoning.md) | The Cost of Dynamic Reasoning: CoT, ReAct, Reflexion, LATS, LLMCompiler on one stack | B | partial |
+| [engineering-sustainable-agents.md](engineering-sustainable-agents.md) | Engineering Sustainable Agents: single vs multi-agent energy | B | partial |
+| [epg-a-lems.md](epg-a-lems.md) | EpG / A-LEMS: energy per successful goal | B | full (main text) |
+| [prism-kvcached.md](prism-kvcached.md) | Prism / kvcached: GPU memory ballooning, elastic KV for SGLang 0.5.20 | D | partial to full |
+| [morphserve.md](morphserve.md) | MorphServe: pressure-aware KV resizing, quantized layer swapping | D | full (main text) |
+| [nova.md](nova.md) | Nova: agentic VLM serving, vision-encoder offload to protect KV | D | full (main text) |
+| [llms-mobile-context.md](llms-mobile-context.md) | LLMS: LLM as a system service, KV compression and swapping on Jetson | D | partial to full |
+| [agent-memory-below-prompt.md](agent-memory-below-prompt.md) | agent-memory: persistent 4-bit KV per agent on unified memory | D, CAP | partial |
+| [triaxialkv.md](triaxialkv.md) | TriAxialKV: INT2/INT4 KV precision by role for agents | CAP | partial |
+| [ultraquant-fp8.md](ultraquant-fp8.md) | UltraQuant and the vLLM FP8 KV study | CAP | partial |
+| [less-is-more.md](less-is-more.md) | Less-is-More: dynamic tool selection on Jetson AGX Orin | CAP | full |
+| [carboncall.md](carboncall.md) | CarbonCall: carbon-aware function calling on Jetson AGX Orin | CAP | partial |
+| [complexity-trap.md](complexity-trap.md) | The Complexity Trap: observation masking vs summarization | CAP | partial |
 
 ## 2. Comparison matrix (condensed)
 

@@ -2,6 +2,12 @@
 
 **2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md)). Run on the WS with P1's models and data: Gemma's default sampling removes the
+> drone loops on a 4-bit stand-in for P1's 26B (A-E1); the vision burst's eviction reproduces live (D-E2), and
+> burst-aware policies do not pay for themselves; the traffic simulator held against a live engine within 14.2%
+> (RET-E1); FP8 KV cuts energy per session 62% at 8 granite agents (CAP-E1). P1's correction 1 (`ask_vlm` on the
+> agent's own server) is still unanswered.
+>
 P1's repository (`dream-lab/edge-agent-bench`, cloned read-only into the git-ignored
 `data/edge-agent-bench`, HEAD `3c47ebc` of Sun 4 Oct 19:02) holds 2,055 runs in 11 configurations: 3 graded
 drone cells and 8 traffic cells, which are not graded yet. This report reruns our analyses on all of it, plus

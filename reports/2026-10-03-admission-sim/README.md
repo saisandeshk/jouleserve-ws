@@ -1,5 +1,10 @@
 # Can a memory controller beat SGLang's default? N drones sharing one edge box
 
+> **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md), RET-E1). The simulator held against a live engine: P1's Orin 32 granite traffic
+> replayed on granite-4.2-8b at P1's pool, 1-8 agents, energy per completed session within 14.2% (2% except at 4
+> agents), and an FP8-KV run with twice the pool predicted within 6.4%. At 8 agents SGLang's default keeps no state
+> at all (0 of 102 calls hit the cache). Live, FP8 KV cuts energy per session 62% at 8 agents.
+>
 > **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). The same simulator now replays P1's traffic traces (`analysis/traffic_sim.py`):
 > 1–8 agents on 6 Jetson configurations at their real KV pools. The answer is the same: the best of 12
 > policies beats the default by at most 2.4%. On the Orins capacity binds (doubling the pool cuts energy

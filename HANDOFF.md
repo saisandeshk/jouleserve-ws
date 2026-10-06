@@ -136,15 +136,14 @@ which git already keeps.
     - Reasoning-length control (slide `rw-reasoning`) is still a placeholder: that literature is unread.
 - **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes): back since a
   reboot on 5 Oct 10:52.
-  - At 21:45 it was idle: GPUs at 47/15 MiB, no tmux server. The venvs, `~/work/aeroeval`, the AirSim build
-    and both K2 revisions (`f846b1e` pinned, `85d46bb`) are intact. Nothing ran after 2 Oct 01:31, and all
-    23 run directories are in local `data/ws_runs/`.
-  - Clone `~/jouleserve-ws` pulled to `5373f35`; `~/jsw-dev` synced with `jsw/`, `env/`, `analysis/`.
-  - **Feasibility checked 5 Oct** (nothing launched yet): SGLang 0.5.20 in the legacy venv has Gemma-4
-    (`gemma4_causal.py`, `gemma4_mm.py`), granite and Qwen2.5-VL model code. On Hugging Face (all ungated,
-    bf16): gemma-4-E4B-it 8.0B and granite-4.2-8b 8.8B parameters fit one A5000; gemma-4-26B-A4B-it 25.8B
-    (~52 GB) does not fit even both GPUs, so it needs a quantized checkpoint (e.g.
-    `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit`, `RedHatAI/gemma-4-26B-A4B-it-FP8-dynamic`), untested on Ampere.
+  - **6 Oct 08:40: idle** (GPUs at 47/15 MiB, no tmux server, no stale lock files). 68 run directories in
+    `~/work/runs/`, backed up to local `data/ws_runs/` (SHA-256 checked, 2,343 files).
+  - Clone `~/jouleserve-ws` pulled to the latest `main`; `~/jsw-dev` is the synced dev copy (`env/sync_ws.sh`,
+    stamp in `~/jsw-dev/REVISION`).
+  - Models on disk (pinned, offline): gemma-4-E4B, granite-4.2-8b, the 4-bit 26B checkpoints that do not run in
+    SGLang (derived text-only copies in `~/work/models/`), and the 26B GGUF (Hugging Face cache, unsloth) served by
+    `~/work/llama.cpp`; K2 and Qwen3.5 from before. Recipes:
+    `AGENTS.md` §6c.
 - **Thor: off-limits** (Sandesh, 5 Oct): no ssh at all, not even read-only, until Sandesh says otherwise.
   Use P1's repository and our local copies.
 - **P1's schedule** (P1's docs, 3 Oct): thor-1 runs gemma tool calling (99/144 on 3 Oct), then granite, then
@@ -220,7 +219,8 @@ what follows is the evidence from before them, still valid.
   consecutive cap saves 27% (Thor gemma, 1 completed run lost) and 25% (Orin 32 E4B, 7 lost).
 - **Orin 64's caps are the context guard** (budgets lowered near the window), not runaway decoding.
 - **The likely cause of drone loops is greedy decoding** (P1 runs temperature 0; on the WS Qwen3.5 ran away
-  only under greedy decoding). Gemma under sampling is not measured.
+  only under greedy decoding). **Measured 6 Oct (A-E1):** on a 4-bit GGUF of P1's 26B, greedy loops on 23 of 30
+  of P1's loop prompts and Gemma's default sampling on none.
 
 **Earlier results that still stand.**
 - **Two drone agents** (same 12 tasks, Thor): tool calling passes 67% at 231 kJ per success, Reflexion 87%

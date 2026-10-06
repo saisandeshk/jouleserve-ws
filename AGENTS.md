@@ -27,8 +27,9 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 
 1. `HANDOFF.md`: state as of the last session, audit findings, open questions, next steps.
 2. `planning/OPTIONS_PLAN.md` and `planning/TRACKER.md` (since 2026-10-05): **the current work plan**,
-   which puts master-plan M3–M5 on hold until the direction decision (D12). G1 builds an even-handed case for
-   options A–D; G2 builds their WS versions. Decisions D13–D17. The tracker holds task status.
+   which puts master-plan M3–M5 on hold until the direction decision (D12). G1 built an even-handed case for
+   options A–D and CAP (done 2026-10-06); G2 builds their WS versions. Decisions D13–D18. The tracker holds task
+   status.
 3. `planning/JOULESERVE_WS_PLAN.md`: **master plan**. It covers architecture, milestones M0–M6,
    edge plan, risks and decisions D6–D11.
 4. `planning/PLAN.md`: Track A working notes and measurements. It holds P1 trace analysis, WS
@@ -37,9 +38,10 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
    findings F1–F10, prioritized baselines and hypotheses H1–H5.
 6. `review/*.csv` and `review/paper_cards.md`: evidence carried over from the legacy repo. Its
    "N1→N5 ladder" framing is historical.
-7. The newest report named in `HANDOFF.md` (as of 2026-10-05, `reports/2026-10-05-p1-repo/`, which covers
-   P1's repository, drone and traffic). The shared summary of all reports is
-   `reports/2026-10-02-p5-evidence/README.md` (repo copy of the evidence Claude Doc).
+7. The newest report named in `HANDOFF.md` (as of 2026-10-06, `reports/2026-10-06-options/`, the options
+   comparison with this week's WS experiments; before it `reports/2026-10-05-p1-repo/`, P1's repository, drone and
+   traffic). The shared summary of all reports is `reports/2026-10-02-p5-evidence/README.md` (repo copy of the
+   evidence Claude Doc).
 
 ## 3. Machines
 
@@ -244,8 +246,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Keep docs consolidated.** Update `HANDOFF.md`, the two plans and the review index instead
   of adding new dated notes. Update `HANDOFF.md` at the end of every working session.
 - **Decisions** go into the tables: D1–D5 in `PLAN.md` §6, D6–D11 in
-  `JOULESERVE_WS_PLAN.md` §8, D13–D17 in `OPTIONS_PLAN.md` §6. D12 is the professor's direction
-  decision (open). The next free ID is **D18**.
+  `JOULESERVE_WS_PLAN.md` §8, D13–D18 in `OPTIONS_PLAN.md` §6. D12 is the professor's direction
+  decision (open). The next free ID is **D19**.
 - **Dates and numbers.**
   - Use absolute dates.
   - Label every number with its source: a Thor trace, a WS measurement or a paper.

@@ -14,6 +14,10 @@
 >   [`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md). The repository has
 >   no Thor drone tool-calling cell, so `data/p1_thor_toolcalling/` stays in use. The direction decision is
 >   postponed with the professor meeting (D12 open).
+> - **2026-10-06:** the options comparison ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md);
+>   plan [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md)). P1's models now run on the WS (gemma-4-E4B and granite-4.2-8b in
+>   SGLang; gemma-4-26B only as a 4-bit GGUF in llama.cpp; recipes in `AGENTS.md` §6c). On the 26B, greedy decoding
+>   loops on 77% of P1's loop prompts and Gemma's default sampling on none.
 
 Status: **draft v0.4** (2026-09-30). This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.

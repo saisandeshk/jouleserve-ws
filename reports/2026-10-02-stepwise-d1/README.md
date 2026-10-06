@@ -1,5 +1,10 @@
 # Does a thinking model keep its steps short? A step-wise agent on P1's delivery tasks
 
+> **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md), B-E1/B-E2). Measured with P1's own model, gemma-4-E4B (33 missions, thinking on):
+> after a tool result it writes a median 63 tokens greedy and 68 sampled; it passes the strict check 9 of 11 times
+> greedy and 7 of 13 sampled (27% for the models here). Projected at Thor gemma-26B prices: 26-27 kJ per strict
+> success greedy, 35-40 sampled, against P1's Reflexion 284-499 kJ measured.
+>
 > **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's own traffic agent is an accumulating-context agent too, with
 > steps of a median 424–999 output tokens (more than the 55–99 here, because its models think at every
 > step). Its kept state is worth 1–4% of LLM time.

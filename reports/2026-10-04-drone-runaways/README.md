@@ -2,6 +2,12 @@
 
 **2026-10-04 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md), A-E1/A-E2). Gemma under sampling is now measured, on a 4-bit GGUF of P1's
+> gemma-4-26B-A4B through llama.cpp: on 30 of P1's Thor Reflexion prompts that looped, greedy decoding loops on 23
+> (77%) and Gemma's default sampling (temperature 1.0, top_k 64, top_p 0.95; one seed) on none, with 28 of 28 valid
+> programs. An online stop plus one resampled retry recovers all 17 calls that looped again (median 19.7K tokens
+> against 32.8K). gemma-4-E4B in SGLang does not loop at all on the WS.
+>
 > **Update 2026-10-05** ([`2026-10-05-p1-repo`](../2026-10-05-p1-repo/README.md)). P1's repository holds the
 > one Reflexion run our copy missed (D2, instance 3, run 3): it is a loop too, so the counts are now 121 of 122
 > capped Reflexion calls, and the online loop stop saves 43.5% over 16 tasks with no finished call stopped.
