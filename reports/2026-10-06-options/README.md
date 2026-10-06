@@ -11,25 +11,28 @@ decision rule fixed before it ran (plan D15). It is a separate doc for now, to b
 and the deck later. Our own lean is stated once, at the end (§9), and nowhere else.
 
 **What this week found, in one line per option** (details and sources in §3-§8):
-- **A. Decode-side energy:** P1's drone runaways are a decoding setting. On P1's 26B, greedy decoding loops on
-  77% of P1's loop prompts and Gemma's own default sampling on none; an online stop plus one resample recovers
-  every looping call, at 60% of the capped cost. What is left for P5: traffic's repeated capped tool calls
-  (31-33% of gemma traffic LLM energy), the safety net, and batching (13x less energy per token at batch 16).
+- **A. Decode-side energy:** on a 4-bit stand-in for P1's 26B (llama.cpp, one sampled seed), greedy decoding
+  loops on 77% of P1's loop prompts and Gemma's own default sampling on none, so P1's drone runaways look like a
+  decoding setting. An online stop plus one resample recovers all 17 calls that looped again, at a median 60% of
+  the capped cost (the pre-registered cost rule was not met: 10 of 29 at half the cost or less). Also measured:
+  traffic's repeated capped tool calls (31-33% of gemma traffic LLM energy) and batching (13x less energy per
+  token at batch 16).
 - **B. Agent design:** with P1's own gemma-4-E4B, a step-wise agent keeps steps after tool results at a median
-  63-68 tokens and passes the strict check 9 of 11 times greedy; projected 11-19x less energy per strict success
-  than P1's Reflexion.
+  63-68 tokens and passes the strict check 9 of 11 times greedy (7 of 13 sampled); projected 11-19x less energy
+  per strict success than P1's Reflexion greedy, 7-14x sampled.
 - **C. Benchmarks:** tau2-bench's contexts accumulate (92-96% reuse), but with a thinking agent kept state is
-  worth 7.5-9.9% of LLM time at E4B's Jetson price; without thinking, 25%. Thinking decides.
-- **D. Memory over time:** the vision burst's eviction reproduces live (88-100% recomputed); pinning plus a
-  burst cap prevents it (37%) but costs 11% more energy than recomputing.
-- **CAP. Capacity:** the largest measured edge effects. Live, an FP8 KV cache doubles granite's pool and cuts
-  energy per completed session 62% at 8 agents (2.6x the sessions per hour); a 5x larger pool cuts it 2.4x at 4
-  agents. But FP8 KV for Gemma-4 does not run on Ampere (the Orins) in SGLang 0.5.20, and FP8 quality on these
-  agents is unmeasured.
+  worth 7.5-9.9% of LLM time at E4B's Jetson price (up to 24% at Thor's drone prices); without thinking, 25%.
+  Thinking decides.
+- **D. Memory over time:** the vision burst's eviction reproduces live (88-100% recomputed); at one agent pinning
+  plus a burst cap prevents most of it (37%) but costs 11% more energy than recomputing; at 4 agents no policy
+  reduces it.
+- **CAP. Capacity:** live, an FP8 KV cache doubles granite's pool and cuts energy per completed session 62% at 8
+  agents (2.6x the sessions per hour); a 5x larger pool cuts it 2.4x for E4B at 4 agents. But FP8 KV for Gemma-4
+  does not run on Ampere (the Orins) in SGLang 0.5.20, and FP8 quality on these agents is unmeasured.
 - **RET (the retention controller):** the simulator behind "no policy beats SGLang's default" holds live: on P1's
-  Orin 32 granite traffic at P1's pool it is within 14% of the live engine at 1-8 agents (2% except at 4 agents)
-  and predicted the FP8 pool's effect within 6%. At 8 agents the default keeps no state at all (0 of 102 calls
-  reuse a cached prefix), so dropping state costs the same: capacity binds, not retention.
+  Orin 32 granite traffic at P1's pool it is within 14.2% of the live engine at 1-8 agents (2% except at 4
+  agents; the rule allows 15%) and predicted the FP8 pool's effect within 6.4%. At 8 agents the default keeps no
+  state at all (0 of 102 calls reuse a cached prefix), so dropping state costs the same.
 
 Source tags: **[P1-meas]** measured on P1's Jetsons (board energy); **[WS-meas]** measured on our workstation
 (NVML GPU energy); **[sim]** our simulator; **[proj]** projected with a cost model; **[lit]** a paper (depth as
@@ -38,10 +41,10 @@ stated in the literature notes `lit_*.md`; re-check against the PDF before citin
 ## 1. The decision
 
 P5 asked how an edge serving system should manage the state an agent holds while it waits for a tool, to
-minimise energy per successful task on Jetson Orin and Thor. On P1's agents, that question is answered mostly
-"no": kept state is worth 1–4% of LLM time, and no memory policy beats SGLang's default by more than 2.4%
-(traffic) or 9.9% (drones) in simulation, a simulator that held live this week (RET, §8). So the professor chooses what P5 studies instead, or whether
-it stays with retained state in another form:
+minimise energy per successful task on Jetson Orin and Thor. On P1's agents the answer is "little to gain": kept
+state is worth 1–4% of LLM time, and no memory policy beats SGLang's default by more than 2.4% (traffic) or 9.9%
+(drones) in simulation, a simulator that held live this week (RET, §8). So the professor chooses what P5 studies
+instead, or whether it stays with retained state in another form:
 
 | Option | In one line |
 | --- | --- |
@@ -60,8 +63,8 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on, 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Live: FP8 KV (2x pool) cuts energy per session 62% at 8 agents; a 5x pool cuts it 2.4x at 4 agents; batching cuts J/token 13x [WS-meas]; doubling the pool: −31–46% at 8 agents on Jetsons [sim]; overflows end 11–21% of Orin runs [P1-meas] |
-| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured live (D-E2, RET-E1, CAP-E1); the simulator holds live within 14%; FP8 quality unmeasured (Gemma-4 FP8 KV cannot run on Ampere) [WS-meas] |
+| **K1 Prize** | Decode in capped calls: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–40 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19× greedy, 7–14× sampled) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on (up to 24% at Thor's drone prices), 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, pin + burst cap cuts the eviction at one agent (88% → 37%) at +11% energy; at 4 agents no policy reduces it (pin −4%, others +3–14%) [WS-meas] | Live: FP8 KV (2x pool) cuts energy per session 62% at 8 agents (granite); a 5x pool cuts it 2.4x at 4 agents (E4B); batching cuts J/token 13x [WS-meas]; doubling the pool: −31–46% at 8 agents on Jetsons [sim]; overflows end 11–21% of Orin runs [P1-meas] |
+| **K2 Evidence** | Energy measured; a 4-bit stand-in for P1's 26B (llama.cpp) loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling (one seed); E4B loops on none on the WS [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured live (D-E2, RET-E1, CAP-E1); the simulator holds live within 14.2%; FP8 quality unmeasured (Gemma-4 FP8 KV cannot run on Ampere) [WS-meas] |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; loops depend on model and stack (E4B on the WS never loops) [WS-meas] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
@@ -81,7 +84,7 @@ that run to their cap. An online, text-only stop in the serving layer with a ret
 per successful task, losing Y runs, where sampling alone recovers Z%."
 
 **Evidence for.**
-- Capped calls take 67–69% of board energy for both drone agents on Thor gemma, 38% for traffic on Thor
+- Decode in capped calls takes 67–69% of board energy for both drone agents on Thor gemma, 38% for traffic on Thor
   gemma and 33% for Orin 32 gemma-E4B traffic; 0–19% elsewhere [P1-meas].
 - In drone runs they are repetition loops: 121 of 122 capped Reflexion calls and 127 of 127 tool-calling
   calls capped at 32,768 [P1-meas, our detector on recorded text].
@@ -115,9 +118,9 @@ can replay P1's exact prompts on a stand-in model.
 **Dependence on P1.** P1 owns the observation; P5 could own the online mechanism and its evaluation (Sandesh:
 build now, agree the split after 10 Oct). The sampling result (A-E1) is a fix P1 can adopt directly.
 
-**What would change our mind.** This happened for the drone agents: sampling removes the loops on P1's 26B
-without hurting finished calls (A-E1). A now rests on the traffic agent's repeated caps, a safety net, and
-budgets; A-E2 tests the safety net.
+**What would change our mind.** This happened for the drone agents, on a 4-bit stand-in: sampling removes the
+loops on P1's 26B without hurting finished calls (A-E1). A then rests on the traffic agent's repeated caps, a
+safety net (A-E2: it works, but costs more than sampling from the start), budgets and batching.
 
 **This week.**
 - **A-E4, traffic's capped calls** (`a_e4.json`; P1's traces) [P1-meas]:
@@ -157,7 +160,8 @@ budgets; A-E2 tests the safety net.
     generation config samples (temperature 1.0, top_k 64, top_p 0.95). The fix for P1 is one line, and it belongs
     in P1's paper. What remains for P5 under A is the safety net (an online stop for residual loops, A-E2's
     retries), the traffic agent's repeated capped tool calls (A-E4), budgets and batching of long decodes.
-- **A-E2, stop and retry** (`a_e2.json`; the 29 prompts that looped under greedy in A-E1, replayed greedy on the
+- **A-E2, stop and retry** (`a_e2.json`; the 29 prompts that looped under greedy in A-E1, 23 of the 30 loop prompts
+  and 6 of the 20 controls, replayed greedy on the
   26B; the gateway stops a call where the detector fires and retries once) [WS-meas]:
   - 17 of 29 looped again (greedy on llama.cpp is not bit-reproducible across its parallel slots, as P1 saw
     repeats differ at temperature 0). **All 17 resampled retries finished with a valid result.** The stop came at a
@@ -168,11 +172,12 @@ budgets; A-E2 tests the safety net.
   - So the online stop is a reliable **safety net** for deployments that must decode greedily (a stop plus one
     resample recovers every looping call), not the main energy lever.
   - **A nudge does not break a greedy loop:** retrying greedy with a note that the attempt repeated itself (12
-    prompts) re-looped in 7 of the 10 retries; only 2 ended valid. The retry has to change the decoding.
+    prompts; 10 looped again and were retried) re-looped in 7 of the 10 retries, and only 2 of the 10 ended valid
+    (4 of the 12 prompts overall). The retry has to change the decoding.
 - **A-E5, batching of decodes on one A5000** (`jsw/costs/calibrate2.py`; GPU energy) [WS-meas]: going from batch 1
   to batch 16 cuts the energy per generated token 13x on granite-4.2-8b (5.3 → 0.41 J) and 13.5x on gemma-4-E4B
   (3.40 → 0.25 J), while a decode step takes only 4.5% (granite) and 20% (E4B) longer. Concurrency is the strong
-  lever here, which P1's one-request-at-a-time setting leaves unused. (The 26B could not be calibrated in SGLang;
+  lever on this GPU; P1's runs serve one request at a time. (The 26B could not be calibrated in SGLang;
   P1's Thor fit says its experts make batching weaker: a 16-request step ~5.3x one.)
 
 > **WS version (G2).** Built: the streaming loop detector (`jsw/policies/loop_detector.py`; fires at exactly the
@@ -210,8 +215,8 @@ LATS, multi-agent) cost far more than lighter loops (Cost of Dynamic Reasoning, 
 Agents; energy per successful goal, A-LEMS); code actions need fewer turns than JSON tool calls (CodeAct);
 single-shot drone programs beat closed-loop generation on tokens (AeroGen, the supervisor's group). Not found:
 step-wise vs whole-program vs Reflexion on the same embodied tasks with energy per success on edge hardware,
-and the serving effects (prefix reuse, drones per device). As a paradigm comparison it fits P1 and the AeroGen
-line better than a serving project.
+and the serving effects (prefix reuse, drones per device). As a paradigm comparison it overlaps P1's agent study and
+the AeroGen line more than serving work.
 
 **Edge specificity.** Through drones per device and through r, the price of a generated token in prefilled ones
 (52–312 on P1's Jetsons): short steps matter most where decode is expensive.
@@ -219,8 +224,8 @@ line better than a serving project.
 **Dependence on P1.** High. Running P1's AeroEval tasks with a step-wise agent is an open question for P1's
 mentor (task overview §9); extending aerogen needs its author's OK.
 
-**What would change our mind.** Gemma-4 writes long steps after tool results (median > 300 tokens, B-E1's rule),
-or a fair whole-program arm with guardrail prompts closes the gap.
+**What would change our mind.** Gemma-4 writes long steps after tool results (median > 300 tokens, B-E1's rule;
+it did not: medians 63-68), or a fair whole-program arm with guardrail prompts closes the gap (not tested).
 
 **This week: B-E1 and B-E2** (`b_e1.json`, `b_e2.json`; WS, gemma-4-E4B with P1's weights, aerogen's loop, P1's
 D1–D3 texts and delivery world, thinking on, 33 missions).
@@ -230,8 +235,11 @@ D1–D3 texts and delivery world, thinking on, 33 missions).
 - **It passes the strict check more often than the 2 Oct stand-ins:** 9 of 11 greedy missions and 7 of 13 sampled
   (Qwen3.5 and K2: 27%) [WS-meas].
 - **Projected at Thor gemma-26B prices** (the 2 Oct method): 26.6 kJ per strict success on D1 and 26.2 on D2+D3,
-  against P1's Reflexion measured at 499 kJ (D1) and 284 kJ (D2; D3 had no passes): **11–19×** [proj]. At Orin 32
-  E4B prices (P1's fit on its own E4B calls): 14–19 kJ [proj].
+  against P1's Reflexion measured at 499 kJ (D1) and 284 kJ (D2; D3 had no passes): **11–19×** greedy [proj];
+  sampled, 34.6 and 39.7 kJ (7–14×). At Orin 32 E4B prices (P1's fit on its own E4B calls): 17–19 kJ greedy, 22–27
+  kJ sampled [proj]. The projection reads 10 greedy and 12 sampled missions (one failed mission per arm is not
+  read by its loader; the strict successes, 9 and 7, are all included), so energy per strict success is slightly
+  low.
 - **But E4B does not always use its tool-call format.** With aerogen's prompt (whose examples show calls as
   Python text) it sometimes writes the call as text, or writes the whole mission in one reply with imagined tool
   results. The gateway converts such calls (`jsw/gateway/pythonic.py`), but 9 of 33 missions (1 greedy, 8
@@ -276,7 +284,7 @@ CacheScout; Track B F1–F10). What the edge adds would come only through the in
 **Dependence on P1.** Low; only P1's wait distributions.
 
 **What would change our mind.** τ²-bench steps are short enough that the ceiling P/(P + r·O) at a Jetson r is ≥ 20%
-of LLM time (C-E1's rule).
+of LLM time (C-E1's rule). Outcome below: without thinking, yes; with thinking, only at Thor's drone prices.
 
 **This week: C-E1** (`c_e1.json`; tau2-bench on the WS, gemma-4-E4B as the agent with thinking on and as the
 user simulator, one conversation at a time, 20 tasks per domain) [WS-meas]:
@@ -289,23 +297,25 @@ user simulator, one conversation at a time, 20 tasks per domain) [WS-meas]:
 
 - **The context accumulates as published benchmarks promise** (92-94% of prompt tokens from the cache), but with
   thinking on each step writes hundreds of tokens, so kept state is worth at most 7.5-9.9% of LLM time at E4B's
-  own Jetson price; only at Thor's cheapest price ratio does retail reach the rule's 20%. C-E1's rule:
-  **borderline**; with a thinking agent, C collapses toward the traffic result.
+  own Jetson price. The rule as written fires for retail (20-24% at Thor's drone prices, r = 52-63), not for
+  airline (at most 19%). We read it as **borderline**: the 20% needs the 26B's Thor price with E4B's step sizes;
+  at E4B's own device price both domains are below 10%, close to the traffic result.
 - **Without thinking, C has an opportunity.** With the agent's thinking off, E4B passes the same 10 of 20 airline
   tasks, writes a median 75 tokens per step, and kept state is worth up to 25% of LLM time at E4B's own Jetson
   price (33% on the WS, r = 101; 44-49% at Thor's): C-E1's rule says **opportunity**. Whether kept state matters
   is decided by whether the agent thinks at each step, the same split as between P1's agents and the step-wise
   agent (B).
+- The ceiling is an upper bound on what any retention policy could save; SGLang's radix cache already keeps state
+  when memory is plentiful (tau2's tools return in milliseconds), so a policy's share depends on memory pressure
+  from other sessions, which this single-session run does not measure (for step-wise drone agents the simulator
+  found the default within 9.9% of every policy).
+- Waits: tau2's tools return in milliseconds; an edge version needs injected waits, which matter in proportion to
+  the ceiling.
 
   ![C-E1: the most kept state could save on tau2-bench, at each Jetson's price ratio](figures/c_e1.png)
-- But the opportunity is the one SGLang's radix cache already takes when memory is plentiful: tau2's tools return
-  in milliseconds, so state is lost only to memory pressure from other sessions, where the drone simulator found
-  the default within 9.9% of every policy for step-wise agents.
-- Waits: tau2's tools return in milliseconds; any edge story needs injected waits, which only matter if the
-  ceiling is large to begin with.
 
 > **WS version (G2).** C-P1 (τ²-bench through the gateway with published baselines) is built only if C-E1 finds
-> an opportunity.
+> an opportunity: it did for non-thinking agents, so C-P1 would use them; the gateway already runs tau2-bench.
 
 ## 6. D. Memory that changes over time
 
@@ -342,14 +352,15 @@ it to pin, throttle or resize, judged by energy per task on unified memory.
 **Dependence on P1.** Medium: P1's answer on `ask_vlm` decides whether the contention is inside one engine; real
 unified-memory behaviour needs a device.
 
-**What would change our mind.** D-E2: the best policy stays within 5% of the default at 4 agents.
+**What would change our mind.** D-E2: the best policy stays within 5% of the default at 4 agents. Outcome below:
+it did (the best, pinning alone, is 3.8% below the default; the others cost more).
 
 **This week: D-E2** (`d_e2.json`; P1's Orin 32 E4B traffic sessions with `ask_vlm` bursts, replayed on gemma-4-E4B
 with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
 - **The mechanism reproduces live:** at a 12,415-token pool the call after a burst recomputes 88-100% of its
   paused prefix (P1's Orin 64 data: 90%); at the full 63.5K pool, 43%.
-- **The burst-aware policies (D-P1) stop the eviction but cost more than they save.** One run per cell; energy per
-  completed session against SGLang's default:
+- **At one agent the burst-aware policies (D-P1) stop most of the eviction but cost more than they save; at 4
+  agents none stops it.** One run per cell; energy per completed session against SGLang's default:
 
   | Pool, agents | Default | Pin (agent > burst priority) | Burst capped at 2 | Pin + cap 2 | Prefix recomputed after a burst (default → pin + cap) |
   | --- | --- | --- | --- | --- | --- |
@@ -366,7 +377,8 @@ with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
     exceeds the free pool.)
 - **Capacity dominates:** with 4 agents, the 63.5K pool needs 3.25 kJ per completed session against 7.92 kJ at
   12.4K (2.4x less) and completes 46 sessions against 19 in the same time; 4-5 sessions per run at 12.4K could not
-  run at all (prompts larger than the pool, as P1's Orin 64 overflows). That is CAP's lever, measured live.
+  run at all (prompts larger than the pool, as P1's Orin 64 overflows). This is the pool-size lever of CAP (§7),
+  measured live.
 
   ![D-E2: energy per session and eviction by the burst, per policy](figures/d_e2.png)
 
@@ -419,7 +431,7 @@ run-time part has nothing to recover.
 
 **This week: CAP-E1** [WS-meas]:
 - **FP8 KV doubles the pool:** granite-4.2-8b at the same memory fraction holds 53,296 tokens with fp8_e5m2 KV
-  against 26,467 in bf16 (2.01x).
+  against 26,648 in bf16 on the same GPU (2.0x; 26,467 on the other GPU).
 - **Live with 8 agents** (P1's Orin 32 granite traffic, 45 min): 34 sessions completed, 14.7 kJ per completed
   session, 1.87 J per generated token; still capacity-bound (a median 4 requests running and 4 queued, the pool 88%
   full, 8% of prompt tokens from the cache). The bf16 run at 8 agents (RET-E1, same traffic, same GPU, same 45
@@ -455,9 +467,9 @@ run-time part has nothing to recover.
   | 8, state dropped at every wait | 13 (6) | 0% | 38.4 kJ | +0.1% |
   | 8, FP8 KV (twice the pool; out of sample) | 34 (7) | 8% | 14.7 kJ | +6.4% |
 
-  - **The anchor holds** (D15 rule: within 15% at every point, the same policy ranking). The simulator is within 2%
-    except at 4 agents, where it is optimistic (14%); it predicted the FP8 pool's effect, which it was not fitted
-    on, within 6%.
+  - **The anchor holds, narrowly at 4 agents** (D15 rule: within 15% at every point, the same policy ranking). The
+    simulator is within 2% except at 4 agents, where it is optimistic (14.2%); it predicted the FP8 pool's effect,
+    which it was not fitted on, within 6.4%.
   - **The ranking test is degenerate, and that is the finding:** at 8 agents P1's pool is so oversubscribed that
     SGLang's default keeps no state between calls, so it does exactly what dropping state does. Live and simulated,
     the two policies tie. No retention policy has anything to manage there.
@@ -476,9 +488,9 @@ the KV-pool sweep and warm-cache arm (deferred; RET/D/CAP territory), agent para
 - **A + CAP, multi-agent consolidation on an edge box.** Energy per task falls as agents share a device (batching:
   13x less energy per token at batch 16) until capacity binds (small KV pools on the Orins). The serving layer then
   decides how many agents to admit, at what KV precision and prompt size, and keeps runaway decodes from holding
-  the batch (A's safety net). This is the measured part of the original P5 question that still has large numbers.
-- **A + D**: decode guard plus burst handling in one gateway. D's part showed no energy gain here, so this
-  combination adds little.
+  the batch (A's safety net). It keeps the original question's setting (many agents, small pools) with the
+  levers this week measured as large.
+- **A + D**: decode guard plus burst handling in one gateway. D's policies showed no energy gain in D-E2.
 - **B with P1**: the step-wise result belongs with P1's agent study (and the AeroGen line); P5 can contribute the
   serving measurements (steps per device, prefix reuse, agents per device).
 
@@ -488,11 +500,13 @@ Stated once, here; the professor makes the call.
 
 **Lean: CAP with A's safety net, studied as multi-agent consolidation on one edge box** (the first combination
 in §8). Why:
-- **It is where the large numbers are.** Every big effect measured this week is a capacity or concurrency
-  effect: twice the pool (FP8 KV) cuts energy per session 62% at 8 agents and a 5x pool 2.4x at 4 agents (both
-  live), batching cuts energy per token 13x. Every policy that manages kept state instead gains at most 2.4% (RET)
-  or costs more than recomputing (D); at 8 agents on P1's Orin 32 granite pool the engine keeps no state at all
-  (RET-E1), so there is nothing for such a policy to manage.
+- **It is where the large serving-layer numbers are.** Apart from A-E1's sampling result (a configuration fix that
+  belongs to P1) and B's projected agent-design gain, the large effects measured this week are capacity and
+  concurrency effects: twice the pool (FP8 KV) cuts energy per session 62% for granite at 8 agents, a 5x pool 2.4x
+  for E4B at 4 agents (both live; different models and workloads, so not one scale), batching cuts energy per
+  token 13x. Every policy that manages kept state instead gains at most 2.4% (traffic) or 9.9% (drones) in
+  simulation (RET) or costs more than recomputing (D); at 8 agents on P1's Orin 32 granite pool the engine keeps no
+  state at all (RET-E1), so there is nothing for such a policy to manage.
 - **It stays in the serving layer**, which is P5's part of the lab's plan, and reuses what is built: the gateway,
   the replayer, the calibration, the decode guard.
 - **The gap in the literature is specific:** each lever is studied alone; energy per successful agent task across

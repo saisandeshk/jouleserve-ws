@@ -76,6 +76,9 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-06 09:00:** CMP-2 checked by an independent review (Sonnet): 8 number fixes (pool 26,648; nudge counts;
+  B's sampled range 7-14x; C's rule fires for retail at Thor's drone prices), outcomes of every rule stated, and
+  wording that leaned outside §9 neutralised.
 - **2026-10-06 08:40: G1 done.** RET-E1 finished (anchor holds; at 8 agents the default keeps nothing); CAP-E1 closed (FP8 KV
   -62% energy per session at 8 agents; quality undecided). CMP-2 complete with figures, lean (§9) and questions (§10).
   WS servers torn down. Stopped to report to Sandesh.
