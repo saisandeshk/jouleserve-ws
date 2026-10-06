@@ -102,6 +102,7 @@ def live(run_dir):
     out_tok = sum(c.get("completion_tokens") or 0 for c in calls)
     prompt_tok = sum(c.get("prompt_tokens") or 0 for c in calls)
     cached = sum(c.get("cached_tokens") or 0 for c in calls)
+    hits = sum((c.get("cached_tokens") or 0) > 0 for c in calls)
     return dict(name=d.name, n=man["args"]["n"], no_reuse=man["args"].get("no_reuse", False),
                 pool=(man.get("server_info") or {}).get("max_total_num_tokens"), span_s=t1 - t0, energy_j=E,
                 sessions_started=len(starts), completed=len(done), cut=sum(e["status"] == "cut" for e in ends),
@@ -109,6 +110,7 @@ def live(run_dir):
                 energy_per_completed_j=E / len(done) if done else None,
                 energy_per_out_token_j=E / out_tok if out_tok else None,
                 sessions_per_hour=len(done) / (t1 - t0) * 3600, cache_share=cached / prompt_tok if prompt_tok else None,
+                calls=len(calls), calls_with_cache_hit=hits,
                 session_s_median=st.median(e["s"] for e in done) if done else None,
                 p_call_w=st.mean(pb) if pb else None, p_idle_w=st.mean(pi) if pi else None,
                 busy_share=len(pb) / max(1, len(pb) + len(pi)), p_reading_mean_w=st.mean(pr) if pr else None,
@@ -167,14 +169,29 @@ def main():
     d8 = next((r for r in rows if r["n"] == 8 and not r["no_reuse"]), None)
     r8 = next((r for r in rows if r["n"] == 8 and r["no_reuse"]), None)
     if d8 and r8 and d8["energy_per_completed_j"] and r8["energy_per_completed_j"]:
-        live_order = d8["energy_per_completed_j"] < r8["energy_per_completed_j"]
-        sim_order = d8["sim_cut"]["energy_per_session_j"] < r8["sim_cut"]["energy_per_session_j"]
-        rank = dict(live_default_cheaper=live_order, sim_default_cheaper=sim_order, same=live_order == sim_order,
-                    live_noreuse_vs_default=r8["energy_per_completed_j"] / d8["energy_per_completed_j"] - 1,
-                    sim_noreuse_vs_default=r8["sim_cut"]["energy_per_session_j"] / d8["sim_cut"]["energy_per_session_j"] - 1)
-    res["rule"] = dict(points=len(gaps), max_abs_gap=max(map(abs, gaps)) if gaps else None, ranking=rank,
-                       met=(bool(gaps) and max(map(abs, gaps)) <= 0.15 and bool(rank and rank["same"])))
-    print(json.dumps(res["rule"], indent=1))
+        # order of no reuse vs default: +1 no reuse costs more, -1 less, 0 a tie (within 2%, one run per cell)
+        def order(x):
+            return 0 if abs(x) < 0.02 else (1 if x > 0 else -1)
+        lv_d = float(r8["energy_per_completed_j"] / d8["energy_per_completed_j"] - 1)
+        sm_d = float(r8["sim_cut"]["energy_per_session_j"] / d8["sim_cut"]["energy_per_session_j"] - 1)
+        rank = dict(live_noreuse_vs_default=lv_d, sim_noreuse_vs_default=sm_d, live_order=order(lv_d),
+                    sim_order=order(sm_d), same=order(lv_d) == order(sm_d),
+                    default_cache_hits_n8=f"{d8['calls_with_cache_hit']}/{d8['calls']}",
+                    degenerate=d8["calls_with_cache_hit"] == 0)
+    res["rule"] = dict(points=len(gaps), max_abs_gap=float(max(map(abs, gaps))) if gaps else None, ranking=rank,
+                       met=bool(gaps) and max(map(abs, gaps)) <= 0.15 and bool(rank and rank["same"]))
+    # out of sample: the FP8-KV run of CAP-E1 (same traffic, 8 agents, twice the pool), same device model
+    fp8 = RUNS / "cap-e1-o32granite-n8-fp8kv"
+    if (fp8 / "manifest.json").exists():
+        lv = live(fp8)
+        dev, _ = device_from_calibration(lv["p_call_w"], lv["p_idle_w"])
+        sc = sim_for(lv, dev, sessions, cut=True)
+        res["fp8_check"] = dict(pool=lv["pool"], completed=lv["completed"], cut=lv["cut"],
+                                live_energy_per_completed_j=lv["energy_per_completed_j"],
+                                sim_cut_energy_per_session_j=sc["energy_per_session_j"], sim_cut_completed=sc["completed"],
+                                gap=sc["energy_per_session_j"] / lv["energy_per_completed_j"] - 1,
+                                calls_with_cache_hit=f"{lv['calls_with_cache_hit']}/{lv['calls']}")
+    print(json.dumps({k: res.get(k) for k in ("rule", "fp8_check")}, indent=1, default=str))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, indent=1, default=str))
 

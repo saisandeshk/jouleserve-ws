@@ -1,0 +1,81 @@
+{
+ "capacity_granite_n8": {
+  "bf16": {
+   "pool": 26648,
+   "completed": 13,
+   "cut": 6,
+   "errors": 0,
+   "energy_per_completed_j": 38437.88515384615,
+   "energy_per_out_token_j": 3.949826156035096,
+   "sessions_per_hour": 17.33326196704883,
+   "cache_share": 0.0,
+   "session_s_median": 775.1120335769956,
+   "p_call_w": 185.1117719104082,
+   "p_idle_w": 183.59760206693318
+  },
+  "fp8": {
+   "pool": 53296,
+   "completed": 34,
+   "cut": 7,
+   "errors": 0,
+   "energy_per_completed_j": 14683.32662033729,
+   "energy_per_out_token_j": 1.8719673668260328,
+   "sessions_per_hour": 45.333263493444946,
+   "cache_share": 0.08072800756718782,
+   "session_s_median": 419.85986141800095,
+   "p_call_w": 185.08299890759977,
+   "p_idle_w": 154.52936353723433
+  },
+  "fp8_vs_bf16_energy_per_session": -0.6179985823473939,
+  "fp8_vs_bf16_sessions_per_hour": 1.6153913544735636
+ },
+ "quality_e4b_a_e1_prompts": {
+  "bf16": {
+   "greedy|thor_rfx|control": {
+    "n": 20,
+    "loops": 0,
+    "finish_rate": 1.0,
+    "program_valid": 10,
+    "generator_finished": 16,
+    "tokens_median": 1918
+   },
+   "greedy|thor_rfx|loop": {
+    "n": 30,
+    "loops": 0,
+    "finish_rate": 1.0,
+    "program_valid": 23,
+    "generator_finished": 28,
+    "tokens_median": 3342
+   },
+   "greedy|thor_tc|control": {
+    "n": 20,
+    "loops": 0,
+    "finish_rate": 1.0,
+    "program_valid": 11,
+    "generator_finished": 11,
+    "tokens_median": 3340
+   },
+   "greedy|thor_tc|loop": {
+    "n": 30,
+    "loops": 0,
+    "finish_rate": 1.0,
+    "program_valid": 30,
+    "generator_finished": 30,
+    "tokens_median": 3631
+   }
+  },
+  "fp8": "not run: the server did not start (Gemma-4 FP8 KV on Ampere, SGLang 0.5.20)"
+ },
+ "quality_e4b_d1": {
+  "bf16": {
+   "missions": 6,
+   "delivered_all": 6,
+   "passed_strict": 6,
+   "collisions": 0,
+   "resume_out_median": 49.0,
+   "resume_out_p90": 90,
+   "first_out_median": 1574.0,
+   "capped": 0
+  }
+ }
+}

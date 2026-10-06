@@ -119,13 +119,24 @@ def fig_ret():
     if not r or not r.get("live"):
         return
     rows = sorted(r["live"], key=lambda x: (x["no_reuse"], x["n"]))
-    fig, ax = plt.subplots(figsize=(7, 3.4))
-    xs = range(len(rows))
-    ax.bar([x - 0.2 for x in xs], [(x["energy_per_completed_j"] or 0) / 1e3 for x in rows], 0.38, color=C1, label="live (WS)")
-    ax.bar([x + 0.2 for x in xs], [x["sim"]["energy_per_session_j"] / 1e3 for x in rows], 0.38, color=MUTED, label="simulator")
-    ax.set_xticks(list(xs), [f"N={x['n']}" + (" no reuse" if x["no_reuse"] else "") for x in rows])
+    fig, ax = plt.subplots(figsize=(8.5, 3.6))
+    live = [(x["energy_per_completed_j"] or 0) / 1e3 for x in rows]
+    sim = [x["sim_cut"]["energy_per_session_j"] / 1e3 for x in rows]
+    labels = [f"{x['n']} agent" + ("s" if x["n"] > 1 else "") + (",\nno reuse" if x["no_reuse"] else "") for x in rows]
+    f8 = r.get("fp8_check")
+    if f8:                              # CAP-E1's FP8-KV run: twice the pool, out of sample for the simulator
+        live.append(f8["live_energy_per_completed_j"] / 1e3)
+        sim.append(f8["sim_cut_energy_per_session_j"] / 1e3)
+        labels.append("8 agents,\nFP8 KV (2x pool)")
+    xs = range(len(live))
+    ax.bar([x - 0.2 for x in xs], live, 0.38, color=C1, label="live (WS)")
+    ax.bar([x + 0.2 for x in xs], sim, 0.38, color=MUTED, label="simulator, same span")
+    for x, a, b in zip(xs, live, sim):
+        ax.text(x + 0.2, b + max(live + sim) * 0.015, f"{b / a - 1:+.0%}" if a else "", ha="center", fontsize=8,
+                color=INK2)
+    ax.set_xticks(list(xs), labels, fontsize=8)
     ax.set_ylabel("kJ per completed session (GPU)")
-    ax.set_title("RET-E1: P1's Orin 32 granite traffic, live vs simulated", loc="left", fontweight="bold")
+    ax.set_title("RET-E1: P1's Orin 32 granite traffic at P1's pool, live vs simulated", loc="left", fontweight="bold")
     _style(ax, "y")
     ax.legend(fontsize=8, frameon=False)
     fig.tight_layout()
@@ -137,45 +148,59 @@ def fig_d():
     d = _load("d_e2")
     if not d:
         return
-    pols = ["default", "pin", "admit4", "both"]
-    groups = sorted({(r["pool"], r["n"]) for r in d})
-    fig, ax = plt.subplots(figsize=(8, 3.4))
+    pols = [("default", "SGLang default", MUTED), ("pin", "pin (agent > burst)", C1), ("admit2", "burst capped at 2", C4),
+            ("both2", "pin + cap 2", C3)]
+    groups = [(12415, 1), (12415, 4), (63509, 4)]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(10, 3.6), gridspec_kw={"width_ratios": [1.3, 1]})
     w = 0.2
-    for j, p in enumerate(pols):
-        ys = []
-        for g in groups:
-            r = next((x for x in d if (x["pool"], x["n"]) == g and x["policy"] == p), None)
-            ys.append((r["energy_per_completed_j"] or 0) / 1e3 if r else 0)
-        ax.bar([i + (j - 1.5) * w for i in range(len(groups))], ys, w * 0.9, color=[MUTED, C1, C4, C3][j], label=p)
-    ax.set_xticks(range(len(groups)), [f"pool {g[0]:,}\nN={g[1]}" for g in groups], fontsize=8)
-    ax.set_ylabel("kJ per completed session (GPU)")
-    ax.set_title("D-E2: vision bursts, P1's Orin 32 E4B traffic on gemma-4-E4B", loc="left", fontweight="bold")
-    _style(ax, "y")
-    ax.legend(fontsize=8, frameon=False, ncol=4)
+    for j, (p, name, col) in enumerate(pols):
+        for ax, key, scale in ((a1, "energy_per_completed_j", 1e3), (a2, "prefix_recomputed_share", 1)):
+            xs, ys = [], []
+            for i, g in enumerate(groups):
+                r = next((x for x in d if (x["pool"], x["n"]) == g and x["policy"] == p), None)
+                if r and r.get(key) is not None:
+                    xs.append(i + (j - 1.5) * w)
+                    ys.append(r[key] / scale)
+            ax.bar(xs, ys, w * 0.9, color=col, label=name if ax is a1 else None)
+    for ax in (a1, a2):
+        ax.set_xticks(range(len(groups)), [f"pool {g[0]:,}\n{g[1]} agent" + ("s" if g[1] > 1 else "") for g in groups],
+                      fontsize=8)
+        _style(ax, "y")
+    a1.set_ylabel("kJ per completed session (GPU)")
+    a1.set_title("Energy per session", loc="left", fontweight="bold")
+    a1.legend(fontsize=7.5, frameon=False)
+    a2.set_ylabel("paused prefix recomputed\nafter a burst")
+    a2.set_ylim(0, 1.05)
+    a2.set_title("Eviction by the burst", loc="left", fontweight="bold")
+    fig.suptitle("D-E2: vision bursts, P1's Orin 32 E4B traffic on gemma-4-E4B", x=0.01, ha="left", fontweight="bold",
+                 fontsize=10)
     fig.tight_layout()
     fig.savefig(F / "d_e2.png", dpi=160)
     plt.close(fig)
 
 
 def fig_c():
-    c = _load("c_e1")
+    c, c0 = _load("c_e1"), _load("c_e1_nothink")
     if not c or not c.get("domains"):
         return
-    fig, ax = plt.subplots(figsize=(7.5, 3.4))
-    doms = list(c["domains"])
-    rs = list(next(iter(c["domains"].values()))["ceiling_jetson"])
+    cols = [(f"tau2 {d}\nthinking on", v) for d, v in c["domains"].items()]
+    if c0 and c0.get("domains"):
+        cols += [(f"tau2 {d}\nthinking off", v) for d, v in c0["domains"].items()]
+    fig, ax = plt.subplots(figsize=(8.5, 3.6))
+    rs = list(cols[0][1]["ceiling_jetson"])
     w = 0.8 / len(rs)
     for j, rname in enumerate(rs):
-        ax.bar([i + (j - (len(rs) - 1) / 2) * w for i in range(len(doms))],
-               [c["domains"][d]["ceiling_jetson"][rname] or 0 for d in doms], w * 0.9,
+        ax.bar([i + (j - (len(rs) - 1) / 2) * w for i in range(len(cols))],
+               [v["ceiling_jetson"][rname] or 0 for _, v in cols], w * 0.9,
                color=[C1, C2, C3, C4, MUTED, INK2][j % 6], label=rname)
     ax.axhline(0.20, color=C2, lw=1, ls="--")
+    ax.text(-0.45, 0.205, "C-E1 rule: 20%", color=C2, fontsize=7.5, ha="left", va="bottom")
     ax.axhline(0.10, color=MUTED, lw=1, ls=":")
-    ax.set_xticks(range(len(doms)), [f"tau2 {d}" for d in doms])
+    ax.set_xticks(range(len(cols)), [k for k, _ in cols], fontsize=8)
     ax.set_ylabel("most kept state could save\n(share of LLM time)")
     ax.set_title("C-E1: tau2-bench with gemma-4-E4B, at each Jetson's price", loc="left", fontweight="bold")
     _style(ax, "y")
-    ax.legend(fontsize=7, frameon=False, ncol=2)
+    ax.legend(fontsize=7, frameon=False, ncol=2, loc="upper left")
     fig.tight_layout()
     fig.savefig(F / "c_e1.png", dpi=160)
     plt.close(fig)

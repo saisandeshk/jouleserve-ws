@@ -29,6 +29,12 @@ def done(d):
     return m.exists() and "t_end_mono" in json.loads(m.read_text())
 
 
+def server_failed(d):
+    """The run finished but its server never answered (Gemma-4 with FP8 KV does not start on Ampere)."""
+    m = json.loads((Path(d) / "manifest.json").read_text())
+    return "error" in (m.get("server_info") or {})
+
+
 def main():
     res = {}
     pairs = {"bf16": RUNS / "ret-e1-o32granite-n8-default", "fp8": RUNS / "cap-e1-o32granite-n8-fp8kv"}
@@ -46,7 +52,9 @@ def main():
     api = a_e1.known_api(REPO / "data/a_e1/prompts.jsonl")
     q = {}
     for k, d in {"bf16": RUNS / "a-e1-pilot-e4b-greedy", "fp8": RUNS / "cap-e1-e4b-fp8kv-controls"}.items():
-        if done(d):
+        if done(d) and server_failed(d):
+            q[k] = "not run: the server did not start (Gemma-4 FP8 KV on Ampere, SGLang 0.5.20)"
+        elif done(d):
             s = a_e1.summarize([d], REPO / "data/a_e1/prompts.jsonl")
             q[k] = {c.split("|", 1)[1]: {x: v[x] for x in ("n", "loops", "finish_rate", "program_valid", "generator_finished",
                                                            "tokens_median")} for c, v in s["cells"].items()}

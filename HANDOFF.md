@@ -1,21 +1,32 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-06 ~01:40 (IST). Latest work (overnight 5-6 Oct, G1 of the options plan in progress):
-- **Follow [`planning/TRACKER.md`](planning/TRACKER.md)** (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.0,
-  approved 5 Oct; stop and report to Sandesh when G1 is done). The comparison doc is
-  [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md) (CMP-1 done; results being added).
-- **Experiments run unattended on the WS as tmux queues** (they survive the laptop dropping):
-  - GPU0 `q-g0` (`env/queue_g0_chain2.sh`): A-E1 on gemma-4-E4B (greedy pilot, then E4B's own Orin 32 prompts),
-    then P1's 26B through llama.cpp (4-bit GGUF, Reflexion prompts, greedy vs sampled), then RET-E1 (granite).
-  - GPU1 `q-g1` then `q-g1b`: D-E2 (vision bursts, 4 policies), C-E1 (tau2-bench), CAP-E1 (FP8 KV).
-  - Results land in `~/work/runs/<name>/`; analyses `analysis/{a_e1,b_e1,b_e2,a_e4,c_e1,d_e2,ret_e1}.py` and
-    `analysis/options_figures.py` run on the WS (`~/work/venv-analysis`) and write `reports/2026-10-06-options/`.
-- **Done so far:** four literature reviews (Sonnet subagents; `lit_*.md`, 20 review docs); B-E1/B-E2 (P1's E4B keeps
-  step-wise steps short; 11-19x less energy per strict success than P1's Reflexion, projected); A-E4 (repeated capped
-  `run_python` calls hold ~a third of gemma's traffic LLM energy); the shared base (gateway, decode guard, burst
-  policy, replayer, loop detector, runner, calibration).
-- **Findings that change the plan:** no stand-in for P1's gemma-4-26B runs on the A5000s in SGLang 0.5.20 (D13
-  outcome; AGENTS.md §6c); gemma-4-E4B does not loop on the 26B's loop prompts, hence the llama.cpp arm.
+**Last updated:** 2026-10-06 ~08:40 (IST). Latest work (5-6 Oct): **G1 of the options plan is done**; reported to
+Sandesh, who reviews it before anything else starts.
+- **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
+  CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
+  week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
+  [`planning/TRACKER.md`](planning/TRACKER.md) (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.0).
+- **What this week found** (details in the doc):
+  - A: P1's drone runaways are a decoding setting: on P1's 26B (4-bit, llama.cpp) greedy decoding loops on 23/30 of
+    P1's loop prompts, Gemma's default sampling on 0/30. An online stop + one resample recovers 17/17 looping calls
+    at 60% of the capped cost; nudging fails. Traffic's repeated capped tool calls hold 31-33% of gemma traffic LLM
+    energy; batching cuts energy per token 13x at batch 16.
+  - B: P1's E4B as a step-wise agent writes a median 63-68 tokens after a tool result; 9/11 strict passes greedy;
+    11-19x less energy per strict success than P1's Reflexion (projected).
+  - C: tau2-bench with thinking on: kept state worth 7.5-9.9% of LLM time at E4B's Jetson price; thinking off: 25%.
+  - D: the vision-burst eviction reproduces live; pinning + a burst cap stop it but cost 11% more energy.
+  - CAP: FP8 KV doubles granite's pool and cuts energy per session 62% at 8 agents (live; quality unmeasured); a 5x
+    pool cuts it 2.4x at 4 agents; Gemma-4 FP8 KV cannot run on Ampere (the Orins) in SGLang 0.5.20.
+  - RET: the simulator behind "no policy beats the default" holds live within 14% (RET-E1, granite traffic at P1's
+    Orin 32 pool, 1-8 agents); at 8 agents the default keeps no state at all (0 of 102 calls hit the cache).
+  - Our lean (doc §9): CAP with A's safety net, as multi-agent consolidation on one edge box; hand the sampling fix
+    and the step-wise result to P1.
+- **Built for G2** (shared base and two option prototypes): gateway (`jsw/gateway/`, policy hooks, tool-tagged routes,
+  pythonic tool-call fallback), streaming loop detector, decode guard (A-P1), burst-aware memory policy (D-P1), trace
+  replayer (`jsw/workloads/replay.py`), P1-prompt replayer (`loop_replay.py`), runner/manifests, calibration
+  (`jsw/costs/calibrate2.py`), launchers for P1's models (`env/launch_model.sh`, `env/launch_llamacpp.sh`).
+- **WS:** all runs in `~/work/runs/` (copies of the analyses' JSONs and figures are in the repo); servers torn down
+  after RET-E1. Analyses run on the WS in `~/work/venv-analysis` (`python -m analysis.<name>`).
 - **P1's data is on the WS** (Sandesh's permission, 6 Oct): `~/work/p1/` (GitHub clone at `3c47ebc`; tool-calling copy
   with matching SHA-256).
 - **Laptop RAM is unreliable** (5 Oct): three P1 files read back with bit flips from the page cache (disk copies
@@ -156,11 +167,15 @@ which git already keeps.
 | **P1 repository analyses** (2026-10-05) | `analysis/p1_repo.py` (loader), `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py` | All 12 configurations: value of kept state, idle gaps, vision-tool bursts, prefix reuse; capped calls, loops and four stop rules; N traffic agents per device at real KV pools; energy by phase |
 | Slide renderer | `env/render_slides.py` | Visual check of the deck's slide files |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/launch_qwen35_tp1.sh`, `env/queue*.sh` | K2 pinned to revision `f846b1e` |
+| **Options work (5-6 Oct)** | `jsw/gateway/`, `jsw/policies/` (loop detector, decode guard, burst memory), `jsw/workloads/replay.py`, `loop_replay.py`, `jsw/runner/run.py`, `jsw/costs/calibrate2.py`, `env/launch_model.sh`, `env/launch_llamacpp.sh`, `analysis/{a_e1,a_e2,a_e4,b_e1,b_e2,c_e1,d_e2,ret_e1,cap_e1,options_figures}.py` | The shared base and option prototypes of `planning/OPTIONS_PLAN.md`; tests in `tests/` (run with the legacy venv: `python -m tests.<name>`) |
 
-Not built: the gateway, live policies, a Jetson telemetry adapter, the CLGSCE port. The gateway and policy
-milestones (master plan M3–M5) should not be built as planned: rewrite them after the direction decision.
+Not built: a Jetson telemetry adapter, the CLGSCE port, policies inside a live agent loop. Master plan M3–M5 should
+not be built as planned: rewrite them after the direction decision.
 
 ## 4. What we know (details, figures and caveats in the reports)
+
+**This week's results (5-6 Oct) are in `reports/2026-10-06-options/README.md`** (summary at the top of this file);
+what follows is the evidence from before them, still valid.
 
 **Kept state is worth little on P1's agents, drone or traffic** (P1's measured runs, one agent per device;
 `reports/2026-10-05-p1-repo` §2).
@@ -250,8 +265,10 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 6. Next steps
 
-1. **Follow `planning/TRACKER.md`** (plan approved 5 Oct; stop and report to Sandesh when G1 is done). Also: review the updated docs and deck v2.0 and share them when ready; pass on P1's
-   reply to `NOTES_FOR_P1.md` when it comes.
+1. **G1 is done; wait for Sandesh's review of the comparison doc** (`reports/2026-10-06-options/README.md`). Then, as
+   Sandesh decides: merge it into the evidence doc and the deck (plan: "separate doc first, merge later"); start G2's
+   WS versions of the options (`planning/TRACKER.md`, G2 table); optional re-run of B-E1's sampled arm with the fixed
+   gateway (removes the format-failure caveat); pass on P1's reply to `NOTES_FOR_P1.md` when it comes.
 2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
    11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
 3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
@@ -288,7 +305,8 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 7. Open questions for Sandesh
 
-1. Answered 5 Oct: the plan is approved (D13–D17 as proposed, capacity in, our lean stated at the end).
+1. Review of the G1 comparison doc (CMP-2): is it even-handed, is anything missing before the professor sees it,
+   and may P1 get the sampling result (A-E1) and the step-wise result (B) before their deadline (doc §10 Q5)?
 2. P1's reply to `NOTES_FOR_P1.md` (sent 5 Oct), especially on `ask_vlm`'s server. And: offer the online
    loop stop to P1's paper, or keep it for P5?
 3. When will the professor meeting be rescheduled?

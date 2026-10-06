@@ -224,6 +224,11 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
   SiLU-only (Gemma uses GELU), the FP8 MoE kernel needs fp8e4nv (sm89+), and bf16 (52 GB) exceeds both GPUs. Things
   learned on the way: a text-only config must carry SGLang's Gemma-4 renaming (base `head_dim` = full attention,
   `swa_*` = sliding window) and an ignore list with SGLang's module names (`model.layers.*`).
+- **The 26B runs through llama.cpp instead** (v0.6.0, built at `~/work/llama.cpp/build/bin/llama-server`):
+  `env/launch_llamacpp.sh <gpu> <port> [parallel] [ctx]` serves unsloth's `gemma-4-26B-A4B-it-UD-Q4_K_XL.gguf` on one
+  A5000 with an OpenAI-compatible API (used by A-E1/A-E2 through the gateway). No `/generate`, no SGLang metrics.
+- **NVML's power reading runs above its energy counter** on the A5000s (229 W against 185 W averaged over a
+  45-minute loaded run). Take energy, and any power used to model energy, from the counter (`gpu_energy_j`).
 - **Venvs:** `~/work/venv-analysis` (numpy, scipy, matplotlib, aiohttp; run the analyses here),
   `~/work/venv-tau2` (Python 3.12, tau2-bench + websockets), `~/work/venv-aerogen` (aerogen driver, calibration).
 - **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub,

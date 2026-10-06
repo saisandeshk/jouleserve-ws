@@ -22,10 +22,14 @@ and the deck later. Our own lean is stated once, at the end (§9), and nowhere e
   worth 7.5-9.9% of LLM time at E4B's Jetson price; without thinking, 25%. Thinking decides.
 - **D. Memory over time:** the vision burst's eviction reproduces live (88-100% recomputed); pinning plus a
   burst cap prevents it (37%) but costs 11% more energy than recomputing.
-- **CAP. Capacity:** the largest measured edge effects: 2.4x less energy per session with a 5x larger pool at 4
-  agents (live), FP8 KV doubles granite's pool; but FP8 KV for Gemma-4 does not run on Ampere (the Orins) in
-  SGLang 0.5.20.
-- **RET (the retention controller):** {RET_LINE}
+- **CAP. Capacity:** the largest measured edge effects. Live, an FP8 KV cache doubles granite's pool and cuts
+  energy per completed session 62% at 8 agents (2.6x the sessions per hour); a 5x larger pool cuts it 2.4x at 4
+  agents. But FP8 KV for Gemma-4 does not run on Ampere (the Orins) in SGLang 0.5.20, and FP8 quality on these
+  agents is unmeasured.
+- **RET (the retention controller):** the simulator behind "no policy beats SGLang's default" holds live: on P1's
+  Orin 32 granite traffic at P1's pool it is within 14% of the live engine at 1-8 agents (2% except at 4 agents)
+  and predicted the FP8 pool's effect within 6%. At 8 agents the default keeps no state at all (0 of 102 calls
+  reuse a cached prefix), so dropping state costs the same: capacity binds, not retention.
 
 Source tags: **[P1-meas]** measured on P1's Jetsons (board energy); **[WS-meas]** measured on our workstation
 (NVML GPU energy); **[sim]** our simulator; **[proj]** projected with a cost model; **[lit]** a paper (depth as
@@ -36,7 +40,7 @@ stated in the literature notes `lit_*.md`; re-check against the PDF before citin
 P5 asked how an edge serving system should manage the state an agent holds while it waits for a tool, to
 minimise energy per successful task on Jetson Orin and Thor. On P1's agents, that question is answered mostly
 "no": kept state is worth 1–4% of LLM time, and no memory policy beats SGLang's default by more than 2.4%
-(traffic) or 9.9% (drones) in simulation (RET, §7). So the professor chooses what P5 studies instead, or whether
+(traffic) or 9.9% (drones) in simulation, a simulator that held live this week (RET, §8). So the professor chooses what P5 studies instead, or whether
 it stays with retained state in another form:
 
 | Option | In one line |
@@ -56,8 +60,8 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on, 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Live: a 5x pool cuts energy per session 2.4x at 4 agents; doubling: −31–46% at 8 agents [sim]; batching cuts J/token 13x [WS-meas]; overflows end 11–21% of Orin runs [P1-meas] |
-| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured live (2.4x at 4 agents); FP8 doubles the pool (granite); FP8 quality unmeasured (Gemma-4 FP8 KV cannot run on Ampere) [WS-meas] |
+| **K1 Prize** | Capped decodes: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–27 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19×) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on, 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, burst-aware policies stop the eviction but cost 3-14% more energy per session [WS-meas] | Live: FP8 KV (2x pool) cuts energy per session 62% at 8 agents; a 5x pool cuts it 2.4x at 4 agents; batching cuts J/token 13x [WS-meas]; doubling the pool: −31–46% at 8 agents on Jetsons [sim]; overflows end 11–21% of Orin runs [P1-meas] |
+| **K2 Evidence** | Energy measured; P1's 26B (4-bit) on the WS loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling [WS-meas] | Step sizes measured with P1's E4B (24 missions) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured live (D-E2, RET-E1, CAP-E1); the simulator holds live within 14%; FP8 quality unmeasured (Gemma-4 FP8 KV cannot run on Ampere) [WS-meas] |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons; board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; loops depend on model and stack (E4B on the WS never loops) [WS-meas] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
@@ -233,6 +237,8 @@ D1–D3 texts and delivery world, thinking on, 33 missions).
   results. The gateway converts such calls (`jsw/gateway/pythonic.py`), but 9 of 33 missions (1 greedy, 8
   sampled) still ended at the first call because of a conversion bug, since fixed and not yet re-run. These
   missions are left out of the numbers above.
+
+  ![B-E1 and B-E2: output after a tool result, and energy per success](figures/b_e1_e2.png)
 - Caveats: the projection applies the 26B's per-token costs to E4B's token counts (as the 2 Oct projection
   applied them to Qwen's); the kinematic sim has no buildings; one run per configuration.
 
@@ -290,6 +296,8 @@ user simulator, one conversation at a time, 20 tasks per domain) [WS-meas]:
   price (33% on the WS, r = 101; 44-49% at Thor's): C-E1's rule says **opportunity**. Whether kept state matters
   is decided by whether the agent thinks at each step, the same split as between P1's agents and the step-wise
   agent (B).
+
+  ![C-E1: the most kept state could save on tau2-bench, at each Jetson's price ratio](figures/c_e1.png)
 - But the opportunity is the one SGLang's radix cache already takes when memory is plentiful: tau2's tools return
   in milliseconds, so state is lost only to memory pressure from other sessions, where the drone simulator found
   the default within 9.9% of every policy for step-wise agents.
@@ -360,6 +368,8 @@ with the bursts sent as real concurrent requests; one run per cell) [WS-meas]:
   12.4K (2.4x less) and completes 46 sessions against 19 in the same time; 4-5 sessions per run at 12.4K could not
   run at all (prompts larger than the pool, as P1's Orin 64 overflows). That is CAP's lever, measured live.
 
+  ![D-E2: energy per session and eviction by the burst, per policy](figures/d_e2.png)
+
 > **WS version (G2).** Built: the gateway with tool-tagged routes and tool events, and the trace replayer
 > (`jsw/workloads/replay.py`) with burst injection, and the burst-aware memory policy (`jsw/policies/burst_memory.py`:
 > pin by request priority, burst admission k), evaluated live in D-E2.
@@ -375,8 +385,11 @@ serving; a measured design space of KV precision, prompt size and output caps sh
 capacity per quality point, and a run-time controller recovers X% beyond the best static setting."
 
 **Evidence for.**
+- Live, P1's Orin 32 granite traffic at 8 agents: an FP8 KV cache (twice the pool) cuts energy per completed
+  session 62% and raises sessions per hour 2.6x; at P1's bf16 pool the engine keeps no state at all (CAP-E1,
+  RET-E1) [WS-meas].
 - Traffic, 8 agents per device: doubling the pool cuts energy per completed task by 31–46% on the Orins; no
-  retention policy comes close (≤ 2.4%) [sim].
+  retention policy comes close (≤ 2.4%) [sim, a simulator that held live within 14%].
 - Drones: an FP8 KV cache recovers 10–34% at 1–4 GiB of state [sim].
 - Window overflows end 11–21% of Orin traffic runs; the fixed prompt (system text and 7 tool definitions,
   3.9–5.1K tokens) is 38% of Orin 64 gemma's window [P1-meas].
@@ -409,13 +422,19 @@ run-time part has nothing to recover.
   against 26,467 in bf16 (2.01x).
 - **Live with 8 agents** (P1's Orin 32 granite traffic, 45 min): 34 sessions completed, 14.7 kJ per completed
   session, 1.87 J per generated token; still capacity-bound (a median 4 requests running and 4 queued, the pool 88%
-  full, 8% of prompt tokens from the cache). The bf16 run at 8 agents (RET-E1) gives the comparison: **[filled with
-  RET-E1]**.
+  full, 8% of prompt tokens from the cache). The bf16 run at 8 agents (RET-E1, same traffic, same GPU, same 45
+  minutes) completed 13 sessions at 38.4 kJ each and reused nothing (0 of 102 calls). **FP8 KV cuts energy per
+  completed session 62% and raises sessions per hour 2.6x** (45 against 17; energy per generated token 1.87 J
+  against 3.95 J). Quality under FP8 is not measured by this replay (synthetic tokens).
 - **D-E2 measured the capacity lever directly:** with 4 E4B agents, the 63.5K pool needs 3.25 kJ per completed
   session against 7.92 kJ at 12.4K (2.4x less), and completes 46 sessions against 19 (§6).
 - **Gemma-4 with FP8 KV does not start on our GPUs** (see Evidence against), so its quality pairs were not run.
+- **CAP-E1's rule is undecided:** the capacity side is measured and large; the quality side (does FP8 KV cost
+  task success on these agents?) could not run. Closing it needs a quality pair on a model whose FP8 KV runs here
+  (granite in a real agent loop) or on an sm89+ GPU or a Jetson with another engine.
 
-> **WS version (G2).** CAP-P1 (capacity-aware admission) only if CAP-E1 finds a trade-off.
+> **WS version (G2).** CAP-P1 (capacity-aware admission) only if CAP-E1 finds a trade-off; the replayer,
+> calibration and simulator it needs are built and validated (RET-E1).
 
 ## 8. Cross-cutting
 
@@ -424,8 +443,31 @@ run-time part has nothing to recover.
   could save is 0.9–7.2% (Devstral 23%, Qwen2.5-VL 26%) [P1-meas].
 - With several agents per device, the best of 12 policies beats SGLang's default by at most 2.4% (traffic, 48
   cells) and 9.9% (drones, 455 cells) [sim].
-- This rests on simulation; **[pending: RET-E1]** replays P1's granite traffic runs live at P1's pool sizes and
-  compares with the simulator.
+- **RET-E1, the simulator against a live engine** (`ret_e1.json`; P1's Orin 32 granite traffic sessions replayed
+  on granite-4.2-8b at P1's pool, 26.5K tokens, 45 minutes per point; the simulator given the same session order,
+  the same span and the run's own power, from NVML's energy counter) [WS-meas, sim]:
+
+  | Agents | Sessions completed (cut at the end) | Prompt tokens from the cache | Energy per completed session, live | Simulator |
+  | --- | --- | --- | --- | --- |
+  | 1 | 8 (0) | 78% | 57.2 kJ | −1.8% |
+  | 4 | 18 (4) | 20% | 27.8 kJ | −14.2% |
+  | 8, SGLang's default | 13 (6) | 0% (0 of 102 calls) | 38.4 kJ | +0.0% |
+  | 8, state dropped at every wait | 13 (6) | 0% | 38.4 kJ | +0.1% |
+  | 8, FP8 KV (twice the pool; out of sample) | 34 (7) | 8% | 14.7 kJ | +6.4% |
+
+  - **The anchor holds** (D15 rule: within 15% at every point, the same policy ranking). The simulator is within 2%
+    except at 4 agents, where it is optimistic (14%); it predicted the FP8 pool's effect, which it was not fitted
+    on, within 6%.
+  - **The ranking test is degenerate, and that is the finding:** at 8 agents P1's pool is so oversubscribed that
+    SGLang's default keeps no state between calls, so it does exactly what dropping state does. Live and simulated,
+    the two policies tie. No retention policy has anything to manage there.
+  - **The capacity knee is live:** energy per session falls 2.1x from 1 to 4 agents, then rises 38% from 4 to 8 as
+    the pool thrashes; twice the pool (FP8) at 8 agents is the cheapest point measured (2.6x below bf16 at 8, 1.9x
+    below the best bf16 point).
+  - Caveats: one run per point; WS GPU energy, not Jetson board energy; the replay has P1's token counts, waits
+    and prefix structure but synthetic text, so it says nothing about answer quality.
+
+  ![RET-E1: live vs simulated energy per session](figures/ret_e1.png)
 
 **Overlap with P1's paper.** Loops (A: P1 owns the observation), capacity remedies (CAP: proposed, not run),
 the KV-pool sweep and warm-cache arm (deferred; RET/D/CAP territory), agent paradigm (B).
@@ -447,9 +489,10 @@ Stated once, here; the professor makes the call.
 **Lean: CAP with A's safety net, studied as multi-agent consolidation on one edge box** (the first combination
 in §8). Why:
 - **It is where the large numbers are.** Every big effect measured this week is a capacity or concurrency
-  effect: a 5x pool cuts energy per session 2.4x at 4 agents (live), doubling the pool cuts it 31-46% at 8 agents
-  (simulated), FP8 KV doubles the pool, batching cuts energy per token 13x. Every policy that manages kept state
-  instead gains at most 2.4% (RET) or costs more than recomputing (D). {RET_ANCHOR}
+  effect: twice the pool (FP8 KV) cuts energy per session 62% at 8 agents and a 5x pool 2.4x at 4 agents (both
+  live), batching cuts energy per token 13x. Every policy that manages kept state instead gains at most 2.4% (RET)
+  or costs more than recomputing (D); at 8 agents on P1's Orin 32 granite pool the engine keeps no state at all
+  (RET-E1), so there is nothing for such a policy to manage.
 - **It stays in the serving layer**, which is P5's part of the lab's plan, and reuses what is built: the gateway,
   the replayer, the calibration, the decode guard.
 - **The gap in the literature is specific:** each lever is studied alone; energy per successful agent task across
@@ -464,9 +507,9 @@ adopt.
 **What speaks against the lean:**
 - A good static setting may capture the whole gain; CAP would then be a measured design space (close to P1's
   deferred E4), not a controller.
-- FP8 KV, the strongest single lever, does not run for Gemma-4 on Ampere-class GPUs (the Orins) in SGLang 0.5.20.
-  The study would need another engine or version there, or rest on the other levers (prompt size, output caps,
-  admission).
+- FP8 KV, the strongest single lever, does not run for Gemma-4 on Ampere-class GPUs (the Orins) in SGLang 0.5.20,
+  and its cost in task success on these agents is unmeasured (CAP-E1 undecided). The study would need another
+  engine or version there, or rest on the other levers (prompt size, output caps, admission).
 - Every capacity number here is from the WS or the simulator. It needs Jetson time after 10 Oct to stand.
 
 **What would change it:**
