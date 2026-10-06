@@ -315,7 +315,7 @@ def standalone_s(m, wl, dev):
 
 
 def simulate(wl, dev, lay, budget_gib, n, policy, horizon=8 * 3600.0, warm=1800.0, seed=0,
-             plan=None, stagger=20.0, standalone=None):
+             plan=None, stagger=20.0, standalone=None, plan_horizon=None):
     P = POLICIES[policy]
     rng = random.Random(seed)
     B = math.inf if P.get("inf") or budget_gib is None else budget_gib * GiB
@@ -326,7 +326,7 @@ def simulate(wl, dev, lay, budget_gib, n, policy, horizon=8 * 3600.0, warm=1800.
     if standalone is None:
         standalone = {}
     if plan is not None:            # a fixed mission sequence, taken by whichever drone frees first
-        horizon, warm = math.inf, 0.0
+        horizon, warm = (plan_horizon or math.inf), 0.0     # plan_horizon: cut there, as a live run is
         plan = deque(plan)
 
     sess = [Sess(k) for k in range(n)]
@@ -576,7 +576,7 @@ def simulate(wl, dev, lay, budget_gib, n, policy, horizon=8 * 3600.0, warm=1800.
                 continue
             break
         t_next = min(t + dt_int, t_ext)
-        if plan is None and t_next > horizon:
+        if t_next > horizon:
             t_next = horizon
         dt = t_next - t
         if running and dt > 0:
@@ -596,7 +596,7 @@ def simulate(wl, dev, lay, budget_gib, n, policy, horizon=8 * 3600.0, warm=1800.
                 r.decoded += k
                 r.res += k
         t = t_next
-        if plan is None and t >= horizon:
+        if t >= horizon:
             break
         # internal transitions
         if pf_head is not None and pf_head.pf <= 1e-6:
@@ -620,7 +620,7 @@ def simulate(wl, dev, lay, budget_gib, n, policy, horizon=8 * 3600.0, warm=1800.
 
     win = (horizon - warm) if plan is None else t
     lo = warm if plan is None else 0.0
-    done = [r for r in rec if lo <= r["t1"] <= (horizon if plan is None else math.inf)]
+    done = [r for r in rec if lo <= r["t1"] <= horizon]
     ok = sum(r["ok"] for r in done)
     energy = dev.p_active * stats["win_busy"] + dev.p_idle * (win - stats["win_busy"]) if plan is None \
         else dev.p_active * stats["busy"] + dev.p_idle * (t - stats["busy"])

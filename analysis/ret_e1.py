@@ -8,8 +8,9 @@ Simulated: analysis/admission_sim.simulate on the same session sequence each liv
 sessions in their live start order, taken by whichever agent frees first), the same N and pool, with
 - timing from today's calibration (jsw/costs/calibrate2.py): cold prefill rate; decode step = t1 * f(batch) +
   c * (total context), t1 and c fitted at batch 1 over context length, f(b) measured at 1K context;
-- power measured in the live run itself (GPU power while a call runs, and while none runs), so the comparison
-  tests the scheduling and memory model, not the power calibration (as admission_sim.validate does).
+- power measured in the live run itself (GPU power while a call runs, and while none runs, from NVML's energy
+  counter like the live energy), so the comparison tests the scheduling and memory model, not the power calibration
+  (as admission_sim.validate does).
 Compared: energy per completed session, energy per generated token, sessions per hour, and the ranking of
 default vs no reuse. Decision rule (D15): the anchor holds if live and simulated energy per completed session
 agree within 15% at every point and the two policies rank the same.
@@ -90,8 +91,14 @@ def live(run_dir):
             else:
                 hi = mid
         return any(a <= t <= b for a, b in wins[max(0, lo - 64):lo])
-    pb = [r["power_w"] for r in rows if busy(r["t_mono"])]
-    pi = [r["power_w"] for r in rows if not busy(r["t_mono"])]
+    # power from NVML's energy counter (the source of every energy here), per sample interval: on the A5000s the
+    # power reading runs above the counter's average (24% under load in CAP-E1), which would bias the simulator
+    pb, pi = [], []
+    for x, y in zip(rows, rows[1:]):
+        dt = y["t_mono"] - x["t_mono"]
+        if dt > 0:
+            (pb if busy((x["t_mono"] + y["t_mono"]) / 2) else pi).append((y["energy_mj"] - x["energy_mj"]) / 1e3 / dt)
+    pr = [r["power_w"] for r in rows]
     out_tok = sum(c.get("completion_tokens") or 0 for c in calls)
     prompt_tok = sum(c.get("prompt_tokens") or 0 for c in calls)
     cached = sum(c.get("cached_tokens") or 0 for c in calls)
@@ -104,10 +111,12 @@ def live(run_dir):
                 sessions_per_hour=len(done) / (t1 - t0) * 3600, cache_share=cached / prompt_tok if prompt_tok else None,
                 session_s_median=st.median(e["s"] for e in done) if done else None,
                 p_call_w=st.mean(pb) if pb else None, p_idle_w=st.mean(pi) if pi else None,
+                busy_share=len(pb) / max(1, len(pb) + len(pi)), p_reading_mean_w=st.mean(pr) if pr else None,
+                p_counter_mean_w=E / (t1 - t0) if E else None,
                 plan=[e["session"] for e in sorted(starts, key=lambda e: e["t_mono"])], out_tokens=out_tok)
 
 
-def sim_for(lv, dev, sessions):
+def sim_for(lv, dev, sessions, cut=False):
     by_id = {s["id"]: s for s in sessions}
     ms = []
     for sid in lv["plan"]:
@@ -117,10 +126,13 @@ def sim_for(lv, dev, sessions):
                           [x.get("tool") for x in steps[:-1]], bool(s.get("ok"))))
     wl = Workload("o32 granite (live plan)", ms, 0, 8000)
     r = simulate(wl, dev, TOKENS, lv["pool"] / GiB, lv["n"], "drop" if lv["no_reuse"] else "default",
-                 plan=list(wl.missions), stagger=2.0)
-    out_tok = sum(x["out"] for sid in lv["plan"] for x in by_id[sid]["steps"])
+                 plan=list(wl.missions), stagger=2.0, plan_horizon=lv["span_s"] if cut else None)
+    # cut: stop at the live run's span and count what finished by then (the live run cuts its last sessions);
+    # else every started session runs to its end
+    out_tok = sum(x["out"] for sid in lv["plan"] for x in by_id[sid]["steps"]) if not cut else None
     return dict(energy_j=r["energy_j"], energy_per_session_j=r["energy_per_mission_j"],
-                energy_per_out_token_j=r["energy_j"] / out_tok, sessions_per_hour=r["missions_per_hour"],
+                energy_per_out_token_j=r["energy_j"] / out_tok if out_tok else None,
+                completed=r["missions"], sessions_per_hour=r["missions_per_hour"],
                 span_s=r["span_s"], reprefill_tok=r["reprefill_tok"], retract_tok=r["retract_tok"])
 
 
@@ -135,6 +147,9 @@ def main():
         sm = sim_for(lv, dev, sessions)
         row = {k: v for k, v in lv.items() if k != "plan"}
         row["sim"] = sm
+        row["sim_cut"] = sim_for(lv, dev, sessions, cut=True)      # same span as live: the rule's basis
+        row["sim_cut_vs_live_energy_per_session"] = (row["sim_cut"]["energy_per_session_j"] /
+                                                     lv["energy_per_completed_j"] - 1) if lv["energy_per_completed_j"] else None
         row["sim_vs_live_energy_per_session"] = (sm["energy_per_session_j"] / lv["energy_per_completed_j"] - 1) \
             if lv["energy_per_completed_j"] else None
         row["sim_vs_live_energy_per_token"] = (sm["energy_per_out_token_j"] / lv["energy_per_out_token_j"] - 1) \
@@ -143,7 +158,23 @@ def main():
         print(f"{lv['name']:34s} n={lv['n']} sessions {lv['completed']:3d} (+{lv['cut']} cut) "
               f"E/session live {lv['energy_per_completed_j'] or 0:8.0f} sim {sm['energy_per_session_j']:8.0f} J "
               f"| J/token live {lv['energy_per_out_token_j'] or 0:.3f} sim {sm['energy_per_out_token_j']:.3f} "
-              f"| cache {lv['cache_share'] or 0:.0%} | P call/idle {lv['p_call_w'] or 0:.0f}/{lv['p_idle_w'] or 0:.0f} W")
+              f"| cache {lv['cache_share'] or 0:.0%} | P call/idle {lv['p_call_w'] or 0:.0f}/{lv['p_idle_w'] or 0:.0f} W "
+              f"| same span: sim {row['sim_cut']['energy_per_session_j']:8.0f} J, {row['sim_cut']['completed']} sessions")
+    # D15 rule: within 15% at every point (same span as live), and default vs no reuse rank the same at N = 8
+    rows = res["live"]
+    gaps = [r["sim_cut_vs_live_energy_per_session"] for r in rows if r["sim_cut_vs_live_energy_per_session"] is not None]
+    rank = None
+    d8 = next((r for r in rows if r["n"] == 8 and not r["no_reuse"]), None)
+    r8 = next((r for r in rows if r["n"] == 8 and r["no_reuse"]), None)
+    if d8 and r8 and d8["energy_per_completed_j"] and r8["energy_per_completed_j"]:
+        live_order = d8["energy_per_completed_j"] < r8["energy_per_completed_j"]
+        sim_order = d8["sim_cut"]["energy_per_session_j"] < r8["sim_cut"]["energy_per_session_j"]
+        rank = dict(live_default_cheaper=live_order, sim_default_cheaper=sim_order, same=live_order == sim_order,
+                    live_noreuse_vs_default=r8["energy_per_completed_j"] / d8["energy_per_completed_j"] - 1,
+                    sim_noreuse_vs_default=r8["sim_cut"]["energy_per_session_j"] / d8["sim_cut"]["energy_per_session_j"] - 1)
+    res["rule"] = dict(points=len(gaps), max_abs_gap=max(map(abs, gaps)) if gaps else None, ranking=rank,
+                       met=(bool(gaps) and max(map(abs, gaps)) <= 0.15 and bool(rank and rank["same"])))
+    print(json.dumps(res["rule"], indent=1))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, indent=1, default=str))
 
