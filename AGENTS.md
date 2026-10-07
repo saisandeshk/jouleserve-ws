@@ -236,8 +236,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
   45-minute loaded run). Take energy, and any power used to model energy, from the counter (`gpu_energy_j`).
 - **Venvs:** `~/work/venv-analysis` (numpy, scipy, matplotlib, aiohttp; run the analyses here),
   `~/work/venv-tau2` (Python 3.12, tau2-bench + websockets), `~/work/venv-aerogen` (aerogen driver, calibration).
-- **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub,
-  pinned to `3c47ebc`) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
+- **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub;
+  on `main` at `f6aabe4` since 2026-10-07) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
   it has ECC memory, while the laptop's RAM flipped bits in cached files on 2026-10-05.
 - **Long jobs run as WS-side queues** (`env/queue_*.sh` in tmux), so they continue if the laptop drops; each run
   writes `~/work/runs/<name>/` (manifest, calls, events, NVML, metrics) through `jsw/runner/run.py`.

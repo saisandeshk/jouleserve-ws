@@ -5,3 +5,6 @@ __pycache__/
 
 # P1 (EdgeAgentBench) deck figures: unpublished, kept out of this public repo
 reports/*/p1_figures/
+
+# Audit of P1's paper and logs (double-blind until 2026-10-10): local only, never pushed
+reports/2026-10-07-p1-audit/

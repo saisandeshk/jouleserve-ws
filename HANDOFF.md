@@ -1,11 +1,17 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-07 (IST), a consistency pass over the docs (no new results). Latest work (5-6 Oct): **G1 of
-the options plan is done**; reported to Sandesh, who is reviewing it. Meanwhile, at Sandesh's request, every doc was
-brought up to date: the options plan (v1.1), the master plan and Track A notes, the review index, the dated reports,
-the evidence doc and its repo copy, the teaching guide, the deck (v2.1) and this file (artifact revisions in §2).
-- **P1 has pushed since our clone** (checked 7 Oct with `git ls-remote`, nothing fetched): P1's GitHub `main` is at
-  `d084f08`; our clones (local and WS) stay at `3c47ebc` until Sandesh agrees to a pull (§6 item 3).
+**Last updated:** 2026-10-07 (IST), afternoon: a **P1 audit for P1** (not P5 work), below. Before it, the same morning,
+a consistency pass over the docs. Latest P5 work (5-6 Oct): **G1 of the options plan is done**; reported to Sandesh, who
+is reviewing it. At Sandesh's request every doc was brought up to date (artifact revisions in §2).
+- **P1 audit (7 Oct, for Sandesh's P1-drone mentor and the professor's review of P1's paper):** private Claude Doc
+  "P1 drone audit and review check (EdgeAgentBench @ f6aabe4)",
+  https://claude.ai/code/artifact/813c66c9-0521-4430-91e6-60be5a3e0c4d, with a git-ignored local copy in
+  `reports/2026-10-07-p1-audit/` (never pushed: P1's paper is double-blind until 10 Oct). Scripts and tables on the WS
+  in `~/work/p1audit/`. It checks every item of the professor's review (traffic items too) and all 1,296 drone runs,
+  with a prioritised re-run/fix list. Its findings stay in the private doc, not in this public repo.
+- **P1 pulled (7 Oct, Sandesh's request):** both clones (local and WS `~/work/p1/edge-agent-bench`, now on `main`, no
+  longer pinned) are at `f6aabe4`. That commit moved the drone sweeps to `drones/edge_devices/final_sweep_*` (plus
+  `rtx_6000_pro/` and `baseline_models/`), so our `analysis/p1_repo.py` drone paths need updating before reuse.
 - **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
   CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
   week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
@@ -33,8 +39,8 @@ the evidence doc and its repo copy, the teaching guide, the deck (v2.1) and this
   (`jsw/costs/calibrate2.py`), launchers for P1's models (`env/launch_model.sh`, `env/launch_llamacpp.sh`).
 - **WS:** all runs in `~/work/runs/` (copies of the analyses' JSONs and figures are in the repo); servers torn down
   after RET-E1. Analyses run on the WS in `~/work/venv-analysis` (`python -m analysis.<name>`).
-- **P1's data is on the WS** (Sandesh's permission, 6 Oct): `~/work/p1/` (GitHub clone at `3c47ebc`; tool-calling copy
-  with matching SHA-256).
+- **P1's data is on the WS** (Sandesh's permission, 6 Oct): `~/work/p1/` (GitHub clone, at `f6aabe4` since 7 Oct; tool-calling
+  copy with matching SHA-256).
 - **Laptop RAM is unreliable** (5 Oct): three P1 files read back with bit flips from the page cache (disk copies
   intact), plus power cuts and restarts. Process data on the WS (ECC); commit often. The 5 Oct analyses were
   re-run on the WS: byte-identical outputs.
@@ -79,7 +85,7 @@ which git already keeps.
 ## 2. Situation as of 2026-10-06
 
 - **P1's repository** (`dream-lab/edge-agent-bench`): read-only clone in `data/edge-agent-bench`
-  (git-ignored; HEAD `3c47ebc`, Sun 4 Oct 19:02; P1's GitHub is at `d084f08` since, not pulled). Its remote is
+  (git-ignored; HEAD `f6aabe4`, pulled 7 Oct at Sandesh's request; our analyses of 5-6 Oct used `3c47ebc`). Its remote is
   P1's GitHub: never push, never write in it, never run its `make` targets in place (`AGENTS.md` §4).
   - **Data:** 2,055 runs, 434 h, 21.3 kWh. 3 graded drone cells (Thor gemma-26B Reflexion, 144 runs; Orin 64
     Devstral-24B tool calling, 144; Orin 32 gemma-E4B tool calling, 108) and 8 traffic cells (1,659 runs,
@@ -286,8 +292,9 @@ and F4; H4 has a live but small case (the vision tool).
 3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
    in `data/edge-agent-bench` only if Sandesh agrees (it is P1's clone), then rerun `analysis.p1_repo`
    (`load(key, refresh=True)`), `p1_opportunity`, `p1_caps`, `traffic_sim`, `p1_repo_figures`, and update
-   the report, the docs and the deck. **P1 has pushed** (`d084f08` on 7 Oct, content unknown): ask Sandesh about the
-   pull, for the local clone and for the WS copy (`~/work/p1/edge-agent-bench`).
+   the report, the docs and the deck. **Pulled 7 Oct** (`f6aabe4`): new data includes the Thor drone tool-calling
+   sweep, an Orin 32 Qwen2.5-VL and an RTX PRO 6000 gemma drone sweep, cloud baselines and graded traffic. Update
+   `analysis/p1_repo.py` for the new drone layout (`drones/edge_devices/...`) before rerunning our analyses.
 4. **If A (decode-side energy):** sampling vs greedy is answered on a 4-bit stand-in on the WS (A-E1: sampling
    removes the loops); repeat it on P1's bf16 26B on a Jetson after 10 Oct. Still open: a retry policy for traffic's
    dropped tool calls (A-E4), the decode guard inside a live agent loop, and the split with P1, whose paper claims
