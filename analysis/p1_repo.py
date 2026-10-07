@@ -1,10 +1,12 @@
-"""P1's EdgeAgentBench repository (read-only clone in data/edge-agent-bench, HEAD 3c47ebc, 4 Oct 2026)
-in one call-level model, for both domains.
+"""P1's EdgeAgentBench repository (read-only clone in data/edge-agent-bench) in one call-level model, for both
+domains. The 5-6 Oct analyses ran on HEAD 3c47ebc; since f6aabe4 (7 Oct) P1 keeps its drone sweeps under
+drones/edge_devices/ (plus rtx_6000_pro/ and baseline_models/, not loaded here).
 
 Configurations (one device, model and agent each):
-- drone: the repo's three cells (Thor gemma-4-26B-A4B Reflexion, Orin 64 Devstral-24B FP8 tool calling,
-  Orin 32 gemma-4-E4B tool calling) plus our own read-only copy of P1's Thor gemma tool-calling sweep
-  (data/p1_thor_toolcalling, 104 runs to 2026-10-03 16:16), which the repo does not hold;
+- drone: four cells of the repo (Thor gemma-4-26B-A4B Reflexion and tool calling, Orin 64 Devstral-24B FP8
+  tool calling, Orin 32 gemma-4-E4B tool calling). Until 3c47ebc the repo lacked the Thor tool-calling sweep and
+  we read our own copy (data/p1_thor_toolcalling, 104 runs to 2026-10-03 16:16); the repo now holds all 144, so
+  a refreshed cache differs from the 5-6 Oct numbers for that cell;
 - traffic: the eight tool-calling cells (main run directories only; P1 also drops `*_topup` and
   `*_ceilretry`). Traffic is ungraded: a run is "ok" when it completed without a harness failure.
 
@@ -55,13 +57,13 @@ class Cfg:
 
 CONFIGS = [
     Cfg("d_thor_gemma_rfx", "drone", "Thor", "gemma-26B", "Reflexion",
-        "drones/final_sweep_thor/reflexion/gemma-4-26B-A4B-it"),
+        "drones/edge_devices/final_sweep_thor/reflexion/gemma-4-26B-A4B-it"),
     Cfg("d_thor_gemma_tc", "drone", "Thor", "gemma-26B", "tool calling",
-        str(REPO / "data/p1_thor_toolcalling/gemma-4-26B-A4B-it-toolcalling")),
+        "drones/edge_devices/final_sweep_thor/tool_calling/gemma-4-26B-A4B-it"),
     Cfg("d_o64_devstral_tc", "drone", "Orin 64", "Devstral-24B", "tool calling",
-        "drones/final_sweep_orin64/tool_calling/devstral"),
+        "drones/edge_devices/final_sweep_orin64/tool_calling/devstral"),
     Cfg("d_o32_e4b_tc", "drone", "Orin 32", "gemma-E4B", "tool calling",
-        "drones/final_sweep_orin32/tool_calling/gemma-4-E4B-it"),
+        "drones/edge_devices/final_sweep_orin32/tool_calling/gemma-4-E4B-it"),
     Cfg("t_thor_gemma", "traffic", "Thor", "gemma-26B", "tool calling",
         "traffic/final_sweep_thor/tool_calling/gemma-4-26B-A4B-it"),
     Cfg("t_thor_granite", "traffic", "Thor", "granite-8B", "tool calling",

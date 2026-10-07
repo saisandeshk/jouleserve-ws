@@ -34,6 +34,21 @@ doc, the teaching guide and the deck on 6 Oct. Our own lean is stated once, at t
   agents; the rule allows 15%) and predicted the FP8 pool's effect within 6.4%. At 8 agents the default keeps no
   state at all (0 of 102 calls reuse a cached prefix), so dropping state costs the same.
 
+**Caveat added 7 Oct: P1's Orin traffic tool failures.** On both Orins the Python sandbox's container image was missing,
+or the detection store's disk full, for much of P1's traffic campaign. 36-70% of the runs of each Orin traffic
+configuration we use hit a failed tool (P1's `traffic/grading/overrides.csv`, repository at `f6aabe4`). The agents keep
+retrying the broken tool, so a faulted run of a task uses a median 1.7-4.2× the energy of a clean run of the same task
+(Orin 64 gemma 1.7×, Orin 64 granite 2.5×, Orin 32 granite 2.7×, Orin 32 E4B 4.2×) [P1-meas]. Our Orin traffic results
+replay these runs as recorded:
+- 59-88% of the sessions RET-E1 replayed were faulted, and 61% of CAP-E1's (both Orin 32 granite);
+- the traffic simulator uses every run;
+- D-E2 is barely exposed (4-9% of its sessions).
+
+The simulator-against-live comparison stands, since both sides replay the same sessions. The absolute Orin numbers do
+not stand until P1's re-runs land: the CAP figures (FP8 KV −62% per session at 8 agents, the capacity knee, −31-46% from
+doubling the pool) come from sessions longer than healthy ones and likely overstate memory pressure. They will be redone
+on the re-run data.
+
 Source tags: **[P1-meas]** measured on P1's Jetsons (board energy); **[WS-meas]** measured on our workstation
 (NVML GPU energy); **[sim]** our simulator; **[proj]** projected with a cost model; **[lit]** a paper (depth as
 stated in the literature notes `lit_*.md`; re-check against the PDF before citing).
@@ -527,6 +542,9 @@ adopt.
   and its cost in task success on these agents is unmeasured (CAP-E1 undecided). The study would need another
   engine or version there, or rest on the other levers (prompt size, output caps, admission).
 - Every capacity number here is from the WS or the simulator. It needs Jetson time after 10 Oct to stand.
+- Most of the capacity evidence replays tool-faulted Orin sessions (caveat at the top, added 7 Oct): 59-88% of RET-E1's
+  and CAP-E1's Orin 32 granite sessions, which use 2.7× the energy of clean runs of the same task. The −62% has to be
+  re-measured on P1's re-run data before it can carry the lean.
 
 **What would change it:**
 - If the professor wants the original retained-state question kept, C with non-thinking agents is the version

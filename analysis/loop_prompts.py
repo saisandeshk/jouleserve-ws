@@ -25,9 +25,10 @@ from analysis.p1_repo import P1, REPO
 from jsw.policies.loop_detector import detect_offline
 
 SOURCES = {
-    "thor_rfx": P1 / "drones/final_sweep_thor/reflexion/gemma-4-26B-A4B-it",
+    "thor_rfx": P1 / "drones/edge_devices/final_sweep_thor/reflexion/gemma-4-26B-A4B-it",
+    # A-E1 (6 Oct) drew its tool-calling prompts from our 104-run copy; P1's repo holds all 144 since f6aabe4
     "thor_tc": REPO / "data/p1_thor_toolcalling/gemma-4-26B-A4B-it-toolcalling",
-    "o32_e4b": None,  # resolved below (directory name differs)
+    "o32_e4b": P1 / "drones/edge_devices/final_sweep_orin32/tool_calling/gemma-4-E4B-it",
 }
 OUT = REPO / "data/a_e1/prompts.jsonl"
 
@@ -54,7 +55,6 @@ def _runs(root):
 
 def build():
     roots = dict(SOURCES)
-    roots["o32_e4b"] = next(iter(glob.glob(str(P1 / "drones/final_sweep_orin32/*/*"))), None)
     rows, counts = [], Counter()
     for src, root in roots.items():
         if not root:

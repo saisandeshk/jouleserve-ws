@@ -9,9 +9,16 @@ is reviewing it. At Sandesh's request every doc was brought up to date (artifact
   `reports/2026-10-07-p1-audit/` (never pushed: P1's paper is double-blind until 10 Oct). Scripts and tables on the WS
   in `~/work/p1audit/`. It checks every item of the professor's review (traffic items too) and all 1,296 drone runs,
   with a prioritised re-run/fix list. Its findings stay in the private doc, not in this public repo.
+- **Caveat on P5's Orin traffic results (7 Oct; Sandesh agreed to flag now, refresh after P1 freezes):** 36-70% of P1's
+  Orin traffic runs hit a broken tool (missing sandbox image, full disk) and use 1.7-4.2x the energy of clean runs of
+  the same task. RET-E1 and CAP-E1 replayed 59-88% faulted Orin 32 granite sessions; `traffic_sim` uses every run;
+  D-E2 is barely exposed (4-9%). The sim-vs-live anchor stands; the absolute Orin capacity numbers (CAP's -62%, the
+  knee, -31-46% from doubling the pool) are redone once P1's re-runs land. Flagged in CMP-2 (top and §9), the evidence
+  doc (rev 139 + repo copy) and the deck (v2.2). The full refresh of every P5 doc waits until P1's data freezes.
 - **P1 pulled (7 Oct, Sandesh's request):** both clones (local and WS `~/work/p1/edge-agent-bench`, now on `main`, no
   longer pinned) are at `f6aabe4`. That commit moved the drone sweeps to `drones/edge_devices/final_sweep_*` (plus
-  `rtx_6000_pro/` and `baseline_models/`), so our `analysis/p1_repo.py` drone paths need updating before reuse.
+  `rtx_6000_pro/` and `baseline_models/`); `analysis/p1_repo.py` and `loop_prompts.py` follow the new layout (7 Oct;
+  Thor drone tool calling now read from P1's repository, all 144 runs, so a refreshed cache differs from 5-6 Oct).
 - **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
   CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
   week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
@@ -123,11 +130,12 @@ which git already keeps.
   dated reports. Revisions and slide counts: see "Artifacts" below.
 - **Artifacts** (all private until Sandesh shares them from their Share menu):
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 138; repo copy
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 139; repo copy
     `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
     figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure. **6 Oct (rev 127-138):** the section
     "Tested on the workstation, 5-6 Oct" (results table, A-E1 and RET-E1 figures), the options table with CAP, our
-    lean (CAP with A's safety net; it was A until 5 Oct), decisions, next steps and caveats updated.
+    lean (CAP with A's safety net; it was A until 5 Oct), decisions, next steps and caveats updated. **7 Oct (rev 139):**
+    a caveat after that section: P1's Orin traffic tool failures inflate the sessions our Orin results replay.
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
     https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 165; no repo copy). Chapter 18
     (the traffic workload), §11 memory on a Jetson, §16 P1's repository, §19.5–19.7 traffic evidence. **6 Oct:** new
@@ -135,8 +143,8 @@ which git already keeps.
     simulator check, FP8 KV, thinking and tau2, the vision burst, NVML energy), chapter 20 rewritten (five options,
     the new lean), §12 and §15 status refreshed, 8 self-test questions and 10 glossary terms added; self-test and
     glossary are now 22 and 23. One open comment in it (ours) asks how many drones per device to plan for.
-  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.1 (artifact
-    version 11, 137 slides). v2.1 (6 Oct): 5 new slides (`find-ws-tests`, `find-ws-sampling`, `find-ws-anchor`,
+  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.2 (artifact
+    version 13, 137 slides). v2.2 (7 Oct): the Orin traffic tool-fault caveat on `opt-cap`, and the changelog. v2.1 (6 Oct): 5 new slides (`find-ws-tests`, `find-ws-sampling`, `find-ws-anchor`,
     `find-ws-tau2-burst`, `opt-cap`), options, decision tree, lean, status, plan, log and related work
     (`rw-reasoning` filled) updated.
     - The single main reference, updated weekly: a new log slide (section 13, newest first), the
@@ -293,8 +301,8 @@ and F4; H4 has a live but small case (the vision tool).
    in `data/edge-agent-bench` only if Sandesh agrees (it is P1's clone), then rerun `analysis.p1_repo`
    (`load(key, refresh=True)`), `p1_opportunity`, `p1_caps`, `traffic_sim`, `p1_repo_figures`, and update
    the report, the docs and the deck. **Pulled 7 Oct** (`f6aabe4`): new data includes the Thor drone tool-calling
-   sweep, an Orin 32 Qwen2.5-VL and an RTX PRO 6000 gemma drone sweep, cloud baselines and graded traffic. Update
-   `analysis/p1_repo.py` for the new drone layout (`drones/edge_devices/...`) before rerunning our analyses.
+   sweep, an Orin 32 Qwen2.5-VL and an RTX PRO 6000 gemma drone sweep, cloud baselines and graded traffic. The loader
+   already follows the new layout. Rerun after P1's Orin traffic re-runs land (the 7 Oct caveat), then refresh every doc.
 4. **If A (decode-side energy):** sampling vs greedy is answered on a 4-bit stand-in on the WS (A-E1: sampling
    removes the loops); repeat it on P1's bf16 26B on a Jetson after 10 Oct. Still open: a retry policy for traffic's
    dropped tool calls (A-E4), the decode guard inside a live agent loop, and the split with P1, whose paper claims

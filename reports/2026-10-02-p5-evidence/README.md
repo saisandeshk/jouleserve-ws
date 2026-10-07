@@ -895,6 +895,21 @@ the simulator was not fitted on.
 - **D:** on these GPUs, recomputing the paused context is cheaper than protecting it.
 - **Caveats:** one run per cell; the 26B is a 4-bit stand-in on another engine; nothing ran on a Jetson yet.
 
+**Caveat added 7 Oct: P1's Orin traffic tool failures.** On both Orins the Python sandbox's container image was missing,
+or the detection store's disk full, for much of P1's traffic campaign. 36–70% of the runs of each Orin traffic
+configuration we use hit a failed tool (P1's `traffic/grading/overrides.csv`, repository at `f6aabe4`). The agents keep
+retrying the broken tool, so a faulted run of a task uses a median 1.7–4.2× the energy of a clean run of the same task
+(Orin 64 gemma 1.7×, Orin 64 granite 2.5×, Orin 32 granite 2.7×, Orin 32 E4B 4.2×). Our Orin traffic results replay
+these runs as recorded:
+- 59–88% of the sessions RET-E1 replayed were faulted, and 61% of CAP-E1's (both Orin 32 granite);
+- the traffic simulator ("Many agents on one box", traffic) uses every run;
+- D-E2 is barely exposed (4–9% of its sessions).
+
+The simulator-against-live comparison stands, since both sides replay the same sessions. The absolute Orin numbers do
+not stand until P1's re-runs land: FP8 KV's −62% per session at 8 agents, the capacity knee and the −31–46% from
+doubling the pool come from sessions longer than healthy ones and likely overstate memory pressure. They will be
+redone on the re-run data.
+
 ## Options left for P5
 
 Both simulations answer the memory-controller question for P1's workloads: SGLang's default is within 2.4%

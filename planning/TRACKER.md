@@ -78,6 +78,11 @@ How to use it:
 
 ## Log (newest first)
 
+- **2026-10-07 (afternoon):** P1 pulled to `f6aabe4` (local + WS); a P1 audit for P1 (private, git-ignored
+  `reports/2026-10-07-p1-audit/`). For P5: caveat added to CMP-2, the evidence doc and the deck: 36-70% of P1's Orin
+  traffic runs are tool-faulted (1.7-4.2x energy), and RET-E1/CAP-E1 replayed 59-88% of them; Orin numbers to redo after
+  P1's re-runs. `analysis/p1_repo.py` and `loop_prompts.py` follow P1's new drone layout (Thor tool calling now from the
+  repo, 144 runs). Full doc refresh deferred until P1 freezes (Sandesh, 7 Oct).
 - **2026-10-07:** consistency pass over the docs (no new results): plan version cited as v1.1, merge status stated as
   done, granite's bf16 pool labelled by GPU (26,467 GPU0, 26,648 GPU1), RET-E1's run scope, the Thor ban in AGENTS.md,
   stale next steps in HANDOFF. P1's GitHub `main` is at `d084f08` (ours: `3c47ebc`); not pulled, waiting for Sandesh.
