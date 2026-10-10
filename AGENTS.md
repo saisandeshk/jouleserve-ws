@@ -38,8 +38,8 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
    findings F1–F10, prioritized baselines and hypotheses H1–H5.
 6. `review/*.csv` and `review/paper_cards.md`: evidence carried over from the legacy repo. Its
    "N1→N5 ladder" framing is historical.
-7. The newest report named in `HANDOFF.md` (as of 2026-10-06, `reports/2026-10-06-options/`, the options
-   comparison with this week's WS experiments; before it `reports/2026-10-05-p1-repo/`, P1's repository, drone and
+7. The newest report named in `HANDOFF.md` (as of 2026-10-11, `reports/2026-10-06-options/`, the options
+   comparison with the WS experiments of 5-6 Oct and, in its §12, P1's submitted paper and final data; before it `reports/2026-10-05-p1-repo/`, P1's repository, drone and
    traffic). The shared summary of all reports is `reports/2026-10-02-p5-evidence/README.md` (repo copy of the
    evidence Claude Doc).
 
@@ -112,8 +112,10 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
   derived numbers and our own figures. P1's own figures (from the repository or P1's decks) go only into
   `reports/*/p1_figures/` (git-ignored) and P5's private artifacts.
 - **Who is who:** P1's analysis and paper are written by Mayank Arya (`mayankarya`, also the author of
-  aerogen); drone runs by Aayushi, traffic runs by Priyanshu. The paper is double-blind until Sat
-  2026-10-10.
+  aerogen); drone runs by Aayushi, traffic runs by Priyanshu. The paper was submitted on Sat
+  2026-10-10 (SIGMETRICS 2027) and is under double-blind review: keep its title and P1's figures out of git, and write
+  "P1's submitted paper" in this repo. The local clone is at P1's submitted state `0cc2311a` (one corrupt pack object,
+  a Qwen3.8 `device_samples` file; the worktree is fine).
 
 ### WS
 
@@ -237,7 +239,7 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Venvs:** `~/work/venv-analysis` (numpy, scipy, matplotlib, aiohttp; run the analyses here),
   `~/work/venv-tau2` (Python 3.12, tau2-bench + websockets), `~/work/venv-aerogen` (aerogen driver, calibration).
 - **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub;
-  on `main` at `f6aabe4` since 2026-10-07) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
+  on `main` at `f6aabe4` since 2026-10-07; pull it to `0cc2311a`, P1's submitted state, when the WS is back) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
   it has ECC memory, while the laptop's RAM flipped bits in cached files on 2026-10-05.
 - **Long jobs run as WS-side queues** (`env/queue_*.sh` in tmux), so they continue if the laptop drops; each run
   writes `~/work/runs/<name>/` (manifest, calls, events, NVML, metrics) through `jsw/runner/run.py`.
@@ -264,7 +266,7 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Results.** Negative results count. If an opportunity is absent, report it with numbers
   and hand the choice to the professor.
 - **This repository is public.**
-  - Keep P1's unpublished material, such as deck figures and slides, out of git:
-    `reports/*/p1_figures/` is git-ignored.
+  - Keep P1's unpublished material, such as deck figures and slides, and the title of P1's submitted paper out of
+    git: `reports/*/p1_figures/` is git-ignored.
   - Check the visibility before pushing:
     `gh repo view saisandeshk/jouleserve-ws --json visibility`.

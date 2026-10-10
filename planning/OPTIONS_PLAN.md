@@ -1,11 +1,16 @@
 # P5 options: the even-handed case and the WS versions — plan
 
-Status: **v1.1** (2026-10-06). v1.0 was approved by Sandesh on 2026-10-05 (decisions D13–D17 as proposed; capacity
+Status: **v1.2** (2026-10-11). v1.0 was approved by Sandesh on 2026-10-05 (decisions D13–D17 as proposed; capacity
 is in; our lean is stated once, separately, at the end of the comparison). Work started the same evening.
 - **G1 is done (2026-10-06):** the comparison, [`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)
   (CMP-2), is with Sandesh for review. Each evidence task's outcome against its decision rule is in §2.5.
 - **v1.1 changes:** §2.5 (outcomes), §3.1/§3.3 as built, D13's outcome, D18 (RET-E1's comparison method), outcomes
   in §7. G2 continues after Sandesh's review.
+- **v1.2 (2026-10-11), after P1's submission (10 Oct):** no change to the plan's structure. P1's submitted paper and final
+  data are in CMP-2 §12. Two consequences here: (1) CAP-E1's "Gemma-4 FP8 KV cannot start on Ampere" is narrowed to our
+  A5000s with SGLang 0.5.20, since P1 ran it on an Orin 64 with 0.5.16 (§2.5); (2) the Orin replays (RET-E1, CAP-E1)
+  are redone on P1's re-run sessions, tracked as P1F-1 to P1F-6 in [`TRACKER.md`](TRACKER.md). P1's post-submission
+  MB4 and MB5 overlap A-E1/A-E2 and CAP-E1; the split is a question for the professor meeting on Mon 12 Oct (D12).
 - **Tracker:** [`TRACKER.md`](TRACKER.md). This plan changes rarely; the tracker changes every working session.
 - **Relation to the master plan:** [`JOULESERVE_WS_PLAN.md`](JOULESERVE_WS_PLAN.md) milestones M3–M5 assume a
   retention/admission gateway and are on hold. Until the professor's direction decision (D12), this plan
@@ -46,7 +51,7 @@ on two goals at once.
 | **B. Agent design** | A step-wise agent with flight-level tools on P1's tasks | 5–13× less energy per success than P1's Reflexion (0.9–9.6× under the strict check) [proj from WS-meas]; 4–16 drones per Thor instead of 2 [sim] | Measured with Qwen3.5/K2, not P1's Gemma; sim has no buildings; it is P1's territory | Drones per device; the agent's step size against the price of a generated token |
 | **C. Standard benchmarks with injected waits** | The original retained-state question on τ²-bench/BFCL | Easy comparison with prior work (Continuum and Adaptive KV Retention use these) [lit] | **No measurement at all.** Is there an opportunity, or does it collapse like traffic? | Only through injected waits and the device's prices; otherwise not edge-specific |
 | **D. Memory that changes over time** | Admission/retention when model-backed tools or co-located models take and release memory | The vision burst evicts the paused context on Orin 64 (62 of 62 calls) [P1-meas]; gap to unlimited memory 33–64% at 8 agents [sim] | Worth only 0.6% of LLM time at one agent; unmeasured with several agents; P1 may say `ask_vlm` is a separate server | Unified memory, small pools, tools that run models on the same board |
-| **CAP. Capacity** (candidate, see §8) | KV precision, fixed-prompt size and tool-output caps as levers, at run time or as configuration | Doubling the pool cuts energy per completed task 31–46% at 8 agents [sim]; window overflows end 11–21% of Orin runs [P1-meas] | Does FP8 KV cost quality on these agents? Is it more than configuration? | Small pools on 32–64 GB boards shared by weights, KV and tools |
+| **CAP. Capacity** (candidate, see §8) | KV precision, fixed-prompt size and tool-output caps as levers, at run time or as configuration | Doubling the pool cuts energy per completed task 31–46% at 8 agents [sim]; window overflows end 11–21% of Orin runs [P1-meas] (up to 28% in P1's final data of 10 Oct) | Does FP8 KV cost quality on these agents? Is it more than configuration? | Small pools on 32–64 GB boards shared by weights, KV and tools |
 
 **Not an option, but behind all of them: RET**, the retention/admission controller on P1's workloads. Its
 negative result (SGLang's default within 2.4% of every policy for traffic, 9.9% for drones) [sim] is the reason
@@ -249,7 +254,7 @@ Details, numbers and caveats: the comparison doc, §3–§8. [WS-meas] unless ma
 | C-E1 | Opportunity if the ceiling is ≥ 20% of LLM time at a Jetson r; collapses if < 10% at every r | Thinking on: 7.5% / 9.9% at E4B's r, 16–24% at Thor's drone r (retail ≥ 20%). Thinking off (airline): 25% at E4B's r | Thinking on: **borderline** (the rule fires for retail only at Thor's drone prices); thinking off: **opportunity** |
 | D-E2 | D is worth more than the burst's 0.6% if the best policy beats the default by > 5% at 4 agents | Mechanism reproduced (88–100% of the paused prefix recomputed at 12.4K). Best at 4 agents: pin, −3.8%; pin + cap 2 cuts recompute to 37% at one agent but costs +11% | **Not met**: within 5% |
 | RET-E1 | Anchor holds if live and simulated energy per completed task agree within ±15% at every point and the policies rank the same | Run narrower than specified (GPU time): Orin 32 granite only, P1's pool only (no half pools, no Orin 64), N = 1, 4, 8, two policies (default, no reuse; keep not run), 45 min per point. Within 14.2% at every point (2% except N = 4); FP8 run out of sample within 6.4%. Ranking: a tie in both, because at N = 8 the default keeps nothing (0/102 calls hit) | **Met** on the points run (ranking degenerate) |
-| CAP-E1 | No measurable FP8 degradation means capacity is free configuration; degradation means a trade-off | FP8 KV doubles granite's pool (53,296 vs 26,648) and cuts energy per session 62% at 8 agents. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20, so the quality pairs did not run | **Undecided** (quality side not measured) |
+| CAP-E1 | No measurable FP8 degradation means capacity is free configuration; degradation means a trade-off | FP8 KV doubles granite's pool (53,296 vs 26,648) and cuts energy per session 62% at 8 agents. Gemma-4 FP8 KV cannot start on our A5000s in SGLang 0.5.20, so the quality pairs did not run (P1 ran it on an Orin 64 with SGLang 0.5.16: not an Ampere-wide limit, corrected 11 Oct) | **Undecided** (quality side not measured) |
 
 ## 3. Goal G2: the WS versions
 

@@ -2,6 +2,15 @@
 
 **2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-11** ([`2026-10-06-options` §12](../2026-10-06-options/README.md)). P1 submitted its paper on Sat
+> 10 Oct (SIGMETRICS 2027, under double-blind review) and froze its data at `0cc2311a`: 4,757 runs, 25 configurations
+> (8 drone, 17 traffic), 1,468 h, graded, with the Thor drone tool-calling sweep included. It confirms this report's
+> direction: generation is 77.9-99.6% of LLM energy and prefill 0.7-3.9% of LLM time in 18 of 22 configurations. P1
+> replaced 776 tool-faulted Orin traffic runs with re-runs, so the Orin traffic numbers below (from the faulted runs)
+> are to be redone; window overflows rose to up to 28%. The paper reports the loop finding offline and leaves an online
+> policy to "separate evaluation"; of our five corrections it adopted (3) and (5), took up (1) and (4) in part (the
+> vision tool is "the agent's own model"), and not (2). The numbers below are as of 5 Oct.
+>
 > **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md)). Run on the WS with P1's models and data: Gemma's default sampling removes the
 > drone loops on a 4-bit stand-in for P1's 26B (A-E1); the vision burst's eviction reproduces live (D-E2), and
 > burst-aware policies do not pay for themselves; the traffic simulator held against a live engine within 14.2%
@@ -141,7 +150,8 @@ their token limit. Every configuration sits far from the top right.
 - No concurrency, batching, retention or early-abort code exists, and the server KV time series is never
   used. The microbenchmarks MB1–MB7 are scripted but not run.
 
-**Paper** ("Measuring the Task, Not the Trajectory", SIGMETRICS 2027, due Sat 10 Oct 17:30 IST).
+**Paper** (SIGMETRICS 2027; the draft of 4 Oct, as read on 5 Oct; submitted Sat 10 Oct, title withheld while under
+double-blind review).
 - The thesis is that per-token or per-turn costs and replayed runs cannot price an agent's task. Cost splits
   into a device-dependent per-call model and a device-independent behaviour model, so D devices × M models
   need D + M campaigns.
@@ -187,7 +197,7 @@ flowchart LR
         P1b["Layer 1 per-call cost model"]
         P1c["Layer 2 skeleton bootstrap<br/>validation · selection"]
     end
-    subgraph Paper["P1's paper (due Sat 10 Oct)"]
+    subgraph Paper["P1's paper (submitted Sat 10 Oct)"]
         R["Findings incl. loops (offline)<br/>capacity · vision tool"]
     end
     D1 --> P1a --> P1b --> P1c --> R
@@ -483,7 +493,7 @@ flowchart TB
     S["Where does an edge agent's energy go?<br/>(P1's runs, 12 configurations)"] --> K{"Kept state worth<br/>managing?"}
     K -- "No: 1–4% measured, ≤ 7% ceiling;<br/>default within 2.4% with N agents" --> R["Retention controller:<br/>not a contribution here"]
     S --> C{"Capped decodes?"}
-    C -- "Yes: 38–69% of energy on Thor gemma" --> A["Option A: decode-side energy<br/>online loop stop · retry policy for dropped calls ·<br/>sampling (P1 claims the loop finding)"]
+    C -- "Yes: 38–69% of energy on Thor gemma" --> A["Option A: decode-side energy<br/>online loop stop · retry policy for dropped calls ·<br/>sampling (P1 reports the loop finding offline)"]
     S --> M{"Memory binds?"}
     M -- "Orins: window overflows;<br/>pool caps consolidation" --> Cap["Capacity: FP8 KV, smaller fixed prompt<br/>(configuration, unless it changes at run time)"]
     M -- "Vision-tool bursts evict<br/>the paused context" --> D["Option D: memory that changes over time<br/>(live case, 0.6% here)"]
@@ -496,7 +506,8 @@ flowchart TB
   gaps are capacity: FP8 KV, smaller fixed prompts, capped tool outputs.
 - **Option A (decode-side energy)** still holds the large numbers: 37–50% of energy in capped calls on Thor
   gemma in both domains. But:
-  - P1 now claims the loop finding;
+  - P1 now claims the loop finding (as submitted on 10 Oct: offline, with an online policy left to "separate
+    evaluation");
   - the traffic waste is repeated caps, whose text P1's harness drops;
   - an online, run-preserving stop and a retry policy for dropped tool calls are what remain.
 - **Option D (memory that changes over time)** has a live case in P1's data: the vision tool's bursts evict

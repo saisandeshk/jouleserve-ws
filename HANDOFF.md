@@ -1,31 +1,54 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-07 (IST), afternoon: a **P1 audit for P1** (not P5 work), below. Before it, the same morning,
-a consistency pass over the docs. Latest P5 work (5-6 Oct): **G1 of the options plan is done**; reported to Sandesh, who
-is reviewing it. At Sandesh's request every doc was brought up to date (artifact revisions in §2).
-- **P1 audit (7 Oct, for Sandesh's P1-drone mentor and the professor's review of P1's paper):** private Claude Doc
-  "P1 drone audit and review check (EdgeAgentBench @ f6aabe4)",
-  https://claude.ai/code/artifact/813c66c9-0521-4430-91e6-60be5a3e0c4d, with a git-ignored local copy in
-  `reports/2026-10-07-p1-audit/` (never pushed: P1's paper is double-blind until 10 Oct). Scripts and tables on the WS
-  in `~/work/p1audit/`. It checks every item of the professor's review (traffic items too) and all 1,296 drone runs,
-  with a prioritised re-run/fix list. Its findings stay in the private doc, not in this public repo.
-- **Caveat on P5's Orin traffic results (7 Oct; Sandesh agreed to flag now, refresh after P1 freezes):** 36-70% of P1's
-  Orin traffic runs hit a broken tool (missing sandbox image, full disk) and use 1.7-4.2x the energy of clean runs of
-  the same task. RET-E1 and CAP-E1 replayed 59-88% faulted Orin 32 granite sessions; `traffic_sim` uses every run;
-  D-E2 is barely exposed (4-9%). The sim-vs-live anchor stands; the absolute Orin capacity numbers (CAP's -62%, the
-  knee, -31-46% from doubling the pool) are redone once P1's re-runs land. Flagged in CMP-2 (top and §9), the evidence
-  doc (rev 139 + repo copy) and the deck (v2.2). The full refresh of every P5 doc waits until P1's data freezes.
-- **P1 pulled (7 Oct, Sandesh's request):** both clones (local and WS `~/work/p1/edge-agent-bench`, now on `main`, no
-  longer pinned) are at `f6aabe4`. That commit moved the drone sweeps to `drones/edge_devices/final_sweep_*` (plus
-  `rtx_6000_pro/` and `baseline_models/`); `analysis/p1_repo.py` and `loop_prompts.py` follow the new layout (7 Oct;
-  Thor drone tool calling now read from P1's repository, all 144 runs, so a refreshed cache differs from 5-6 Oct).
+**Last updated:** 2026-10-11 (IST). **P1 submitted its paper on Sat 10 Oct** (SIGMETRICS 2027, under double-blind review;
+data frozen at 10:30 IST) and pushed its final data. We pulled it into the local clone (`0cc2311a`, at Sandesh's request),
+read it, and on 10-11 Oct brought every P5 doc, the artifacts and the deck up to it. **The professor meeting is Mon
+12 Oct:** the direction decision (D12) is taken there, with the deck and CMP-2. The WS was down and the Thor is
+off-limits, so the numbers from P1's final data are P1's own summaries, not our re-analysis.
+
+- **What P1's submitted paper and final data mean for P5** (CMP-2 §12, and the evidence doc's new section):
+  - **RET's premise holds on P1's whole corpus** (4,757 runs, 25 configurations, 8 models, 3 Jetsons, 1,468 h,
+    68.9 kWh): generation is 77.9-99.6% of LLM energy; prefill is 0.7-3.9% of LLM time in 18 of the 22 configurations
+    with a prefill/decode split (exceptions: Qwen2.5-VL 15.1-15.9%, Devstral drone 22.4% with its prefix cache off).
+  - **KV evictions at one agent:** 21-68% of drone runs in 6 of 8 configurations; on Thor Reflexion they come with the
+    loops (46 of 48 evicting runs contain a capped call). Why granite and E4B evict on the Orins is not checked yet.
+  - **The 7 Oct tool-fault caveat is resolved in P1's data:** P1 replaced 776 faulted Orin traffic runs with re-runs
+    (142 remain, only in the Orin 64 gemma-26B and Devstral Reflexion arms, which we do not use). Pass rates rose (Orin 32
+    granite 16.4% → 51.3%, Orin 32 E4B 33.7% → 73.0%, Orin 64 granite 22.2% → 58.7%) and window overflows roughly
+    doubled (up to 28.1%). Granite's faulted runs used 1.4-1.6× the energy of their own re-runs (the 7 Oct "1.7-4.2×"
+    was partly task mix). Our Orin replays (RET-E1, CAP-E1, `traffic_sim`) are redone on the clean sessions once the WS
+    is back; the sim-vs-live anchor stands, and the direction holds: more capacity pressure, not less.
+  - **Overlap with P1:** the paper reports the loop finding offline (stopping at the first capped call saves 50.2% and
+    loses 22 runs on Thor Reflexion drone) and leaves an online policy to "separate evaluation"; greedy decoding is not
+    discussed. It lists FP8 KV, shorter tool schemas and bounded outputs as untested levers, says "batch size is one"
+    (no multi-agent result), and describes the vision tool as the agent's own model. P1's post-submission plan has MB4
+    (capped-call replays; overlaps A-E1/A-E2), MB5 (BF16 vs FP8 window probe; overlaps CAP-E1) and MB6 (the vision tool;
+    D). Who runs what needs agreeing with P1 (CMP-2 §10 Q5). P5 is not cited.
+  - **Our five corrections** (`NOTES_FOR_P1.md`, sent 5 Oct): (3) and (5) adopted, (1) and (4) in part, (2) not.
+  - **A correction of ours:** "Gemma-4's FP8 KV cannot run on Ampere (the Orins)" was wrong as stated. P1 ran it on an
+    Orin 64 (SGLang 0.5.16, triton backend, pool 60,000 at a 65,536 context); it failed on our A5000s with SGLang 0.5.20.
+  - **Our lean does not change** (CMP-2 §9): CAP with A's safety net, as multi-agent consolidation on one edge box.
+- **Updated 10-11 Oct:** figures `analysis/p1_final_figures.py` (three `p1final_*` PNGs in
+  `reports/2026-10-06-options/figures/`, from P1's committed summaries); CMP-2 (update at the top, §7 FP8, new §12); the
+  evidence doc and its repo copy; the teaching guide; the deck (v2.3); a note in the P1 audit doc; this file, TRACKER,
+  AGENTS, the plans and the dated reports. Revisions in §2 "Artifacts".
+- **Public repo, still:** P1's paper is under double-blind review, so its title and P1's figures stay out of git; write
+  "P1's submitted paper (SIGMETRICS 2027)". The private artifacts may name it.
+- **P1's clones:** local `data/edge-agent-bench` at `0cc2311a` (one corrupt pack object, a Qwen3.8 `device_samples`
+  file; the worktree is fine); the WS clone `~/work/p1/edge-agent-bench` is still at `f6aabe4` (pull it when the WS is
+  back). Since 7 Oct the drone sweeps live in `drones/edge_devices/final_sweep_*` (plus `rtx_6000_pro/`,
+  `baseline_models/`); `analysis/p1_repo.py` follows that layout but **does not yet apply P1's supersede rule** (per
+  task the latest re-run replaces the original, but an overflowed original is kept), so a refreshed traffic load would
+  mix re-runs with faulted originals. Fix it before rerunning any analysis on the final data.
+- **P1 audit (7 Oct, for P1, not P5 work):** private Claude Doc "P1 drone audit and review check (EdgeAgentBench @
+  f6aabe4)", https://claude.ai/code/artifact/813c66c9-0521-4430-91e6-60be5a3e0c4d (rev 25 adds a note that it was not
+  re-run against `0cc2311a`), with a git-ignored local copy in `reports/2026-10-07-p1-audit/` (never pushed). Scripts
+  and tables on the WS in `~/work/p1audit/`. Its findings stay out of this public repo.
 - **The comparison doc** (G1's output): [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md),
-  CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, this
-  week's evidence, figures, our lean stated once (§9) and questions for the professor (§10). Task status in
-  [`planning/TRACKER.md`](planning/TRACKER.md) (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md) v1.1).
-  Its results were merged into the evidence doc, the teaching guide and the deck on 6 Oct; the comparison itself
-  stays a separate doc.
-- **What this week found** (details in the doc):
+  CMP-2. Every option A, B, C, D, CAP (and RET, the negative result) with the same template, criteria K1-K8, the
+  evidence of 5-6 Oct, figures, our lean stated once (§9), questions for the professor (§10) and P1's submission (§12).
+  Task status in [`planning/TRACKER.md`](planning/TRACKER.md) (plan [`planning/OPTIONS_PLAN.md`](planning/OPTIONS_PLAN.md)).
+- **What the WS tests of 5-6 Oct found** (details in CMP-2):
   - A: P1's drone runaways are a decoding setting: on P1's 26B (4-bit, llama.cpp) greedy decoding loops on 23/30 of
     P1's loop prompts, Gemma's default sampling on 0/30. An online stop + one resample recovers 17/17 looping calls
     at 60% of the capped cost; nudging fails. Traffic's repeated capped tool calls hold 31-33% of gemma traffic LLM
@@ -35,34 +58,23 @@ is reviewing it. At Sandesh's request every doc was brought up to date (artifact
   - C: tau2-bench with thinking on: kept state worth 7.5-9.9% of LLM time at E4B's Jetson price; thinking off: 25%.
   - D: the vision-burst eviction reproduces live; pinning + a burst cap stop it but cost 11% more energy.
   - CAP: FP8 KV doubles granite's pool and cuts energy per session 62% at 8 agents (live; quality unmeasured); a 5x
-    pool cuts it 2.4x at 4 agents; Gemma-4 FP8 KV cannot run on Ampere (the Orins) in SGLang 0.5.20.
+    pool cuts it 2.4x at 4 agents; Gemma-4's FP8 KV failed on our A5000s in SGLang 0.5.20 (P1 ran it on an Orin 64).
   - RET: the simulator behind "no policy beats the default" holds live within 14% (RET-E1, granite traffic at P1's
     Orin 32 pool, 1-8 agents); at 8 agents the default keeps no state at all (0 of 102 calls hit the cache).
-  - Our lean (doc §9): CAP with A's safety net, as multi-agent consolidation on one edge box; hand the sampling fix
-    and the step-wise result to P1.
 - **Built for G2** (shared base and two option prototypes): gateway (`jsw/gateway/`, policy hooks, tool-tagged routes,
   pythonic tool-call fallback), streaming loop detector, decode guard (A-P1), burst-aware memory policy (D-P1), trace
   replayer (`jsw/workloads/replay.py`), P1-prompt replayer (`loop_replay.py`), runner/manifests, calibration
   (`jsw/costs/calibrate2.py`), launchers for P1's models (`env/launch_model.sh`, `env/launch_llamacpp.sh`).
-- **WS:** all runs in `~/work/runs/` (copies of the analyses' JSONs and figures are in the repo); servers torn down
-  after RET-E1. Analyses run on the WS in `~/work/venv-analysis` (`python -m analysis.<name>`).
-- **P1's data is on the WS** (Sandesh's permission, 6 Oct): `~/work/p1/` (GitHub clone, at `f6aabe4` since 7 Oct; tool-calling
-  copy with matching SHA-256).
+- **WS:** temporarily unreachable on 10-11 Oct. Last known state (6-7 Oct): idle, all runs in `~/work/runs/` (copies of
+  the analyses' JSONs and figures are in the repo), P1's data in `~/work/p1/`. Analyses run there in
+  `~/work/venv-analysis` (`python -m analysis.<name>`).
 - **Laptop RAM is unreliable** (5 Oct): three P1 files read back with bit flips from the page cache (disk copies
-  intact), plus power cuts and restarts. Process data on the WS (ECC); commit often. The 5 Oct analyses were
-  re-run on the WS: byte-identical outputs.
-- **The WS is back** (since 5 Oct 10:52; P5's own machine with full control).
-- **`NOTES_FOR_P1.md` was sent** to P1 by Sandesh (5 Oct). P1's reply will come through Sandesh.
+  intact), plus power cuts and restarts. Process data on the WS (ECC) when it is up; commit often.
 - **The Thor is off-limits** until Sandesh says otherwise (5 Oct): no access at all, not even read-only.
-- **P1's repository arrived (Mon 5 Oct).** Sandesh cloned it to `data/edge-agent-bench`. We mapped it,
-  reran our analyses on its drone and traffic data
-  ([`reports/2026-10-05-p1-repo/README.md`](reports/2026-10-05-p1-repo/README.md)), and wrote five corrections
-  for P1 ([`NOTES_FOR_P1.md`](reports/2026-10-05-p1-repo/NOTES_FOR_P1.md)).
-- **Every doc was updated with it** (Sandesh asked: local docs, HANDOFF, both Claude Docs and the deck; traffic
-  included; P1's figures allowed in the private artifacts; more plots and diagrams). See §2 for the state of
-  each.
-- **The professor meeting planned for Mon 5 Oct is postponed** (P1's deadline is Sat 10 Oct, and other lab
-  projects are due too). No new date is set, so the direction decision (D12) stays open.
+- **History:** P1's repository arrived Mon 5 Oct ([`reports/2026-10-05-p1-repo/README.md`](reports/2026-10-05-p1-repo/README.md),
+  five corrections in [`NOTES_FOR_P1.md`](reports/2026-10-05-p1-repo/NOTES_FOR_P1.md)); the options were tested on the
+  WS on 5-6 Oct (CMP-2); P1 was pulled to `f6aabe4` and audited for P1 on 7 Oct; P1 submitted on 10 Oct. The professor
+  meeting planned for 5 Oct moved to 12 Oct; nothing has been shown to the professor yet.
 
 Rules, machines, recipes and WS gotchas are in [`AGENTS.md`](AGENTS.md). This file holds the state at the time
 of writing. **Update it at the end of every working session.** Replace stale facts rather than appending history,
@@ -81,101 +93,93 @@ which git already keeps.
 - **Where the contribution must come from:** generic "keep KV across tool pauses" is taken (INFERCEPT,
   Continuum, TokenCake, Adaptive KV Retention, CacheScout; KAIROS for energy). It must come from what the
   edge changes: unified memory, small KV pools, model-backed tools on the same server, hybrid models, and
-  physical tool waits. P1 measured no thermal throttling at room temperature (434 h), so thermal state is out
+  physical tool waits. P1 measured no thermal throttling at room temperature (434 h by 5 Oct), so thermal state is out
   unless hot-enclosure runs show otherwise.
 - **What the evidence now says** (§4): on P1's workloads, drone and traffic, a retention or admission
   controller is not a contribution; the energy is in runaway decodes, and the edge effect with large numbers
   is capacity. The direction is open (§6).
-- **Resources:** the edge devices are with P1 until their deadline (Sat 2026-10-10). P5 has the 2×A5000
-  workstation, under its full control (back since 5 Oct, see below).
+- **Resources:** the edge devices were with P1 until its submission (Sat 2026-10-10); when they come back to P5 is
+  open. P5 has the 2×A5000 workstation, under its full control (temporarily unreachable on 10-11 Oct).
 
-## 2. Situation as of 2026-10-06
+## 2. Situation as of 2026-10-11
 
-- **P1's repository** (`dream-lab/edge-agent-bench`): read-only clone in `data/edge-agent-bench`
-  (git-ignored; HEAD `f6aabe4`, pulled 7 Oct at Sandesh's request; our analyses of 5-6 Oct used `3c47ebc`). Its remote is
-  P1's GitHub: never push, never write in it, never run its `make` targets in place (`AGENTS.md` §4).
-  - **Data:** 2,055 runs, 434 h, 21.3 kWh. 3 graded drone cells (Thor gemma-26B Reflexion, 144 runs; Orin 64
-    Devstral-24B tool calling, 144; Orin 32 gemma-E4B tool calling, 108) and 8 traffic cells (1,659 runs,
-    ungraded). Thor drone tool calling is **not** in the repository: we keep using our copy
-    `data/p1_thor_toolcalling/` (104 runs).
-  - **Our loader** `analysis/p1_repo.py` reads all 12 configurations (cache in `data/p1_cache/`); the
-    analyses are `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py`.
+- **P1's repository** (`dream-lab/edge-agent-bench`): read-only clone in `data/edge-agent-bench` (git-ignored; HEAD
+  `0cc2311a`, P1's submitted state, pulled 10 Oct at Sandesh's request; our analyses of 5-6 Oct used `3c47ebc`, the
+  7 Oct audit `f6aabe4`). Its remote is P1's GitHub: never push, never write in it, never run its `make` targets in
+  place (`AGENTS.md` §4).
+  - **Final data** (P1's summaries at `0cc2311a`): 4,757 runs, 25 configurations (8 drone, 17 traffic), 8 open models,
+    3 Jetsons, 1,468 h, 68.9 kWh, plus cloud models and an RTX PRO 6000 as references; drone and traffic graded; Thor
+    drone tool calling is now in the repository (all 144 runs). P1's supersede rule (latest re-run per task, an
+    overflowed original kept) decides which traffic runs count.
+  - **Our loader** `analysis/p1_repo.py` (cache in `data/p1_cache/`) follows the 7 Oct layout but not yet the supersede
+    rule; the analyses are `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py`, and
+    `p1_final_figures.py` (10 Oct; plots P1's committed summaries, no loader).
   - **People:** P1's analysis and paper are written by Mayank Arya (`mayankarya`, also aerogen's author);
     drone runs by Aayushi, traffic runs by Priyanshu.
-  - **P1's paper** ("Measuring the Task, Not the Trajectory", SIGMETRICS 2027, due Sat 10 Oct 17:30 IST):
-    claims the loop finding (offline detector; "stop or retry at the first capped call", a 50.2% bound that
-    loses 22 runs), the capacity finding (window overflows on the Orins) and the vision-tool energy finding.
-    It assumes one request in flight, **dropped its early-abort plan** ("out of scope"), and deferred its
-    KV-pool sweep (E4) and warm-cache arm (E5), which overlap P5.
-  - **Corrections for P1** (`NOTES_FOR_P1.md`, **sent by Sandesh on 5 Oct**; P1 is reviewing): (1) `ask_vlm` is a
-    burst of requests to the agent's own server, not a second model; (2) their loop threshold misses
-    long-period loops (94 vs our 121 of 122); (3) the drone Orin 32 caps are 1,024-token evaluator calls;
-    (4) Orin 64's context guard truncates calls their 8,000-token rule does not count; (5) Devstral's prefix
-    cache is off (about 9% of its LLM time).
-    - **Caveat on (1):** P1's microbenchmark (`analysis/microbench/mb6_vlm_tool.py` in P1's repository, not ours)
-      calls "the vision-language model behind `ask_vlm`" at its own endpoint, run "with the agent model's server
-      running and once without", so P1 thinks of it as a separate server. Our evidence is only the agent server's
-      running-request counter. Both may hold where the agent model reads images (gemma, Qwen3.6; granite has no
-      image tasks). Wait for P1's answer before building on (1).
-- **The professor meeting is postponed** (no new date). Nothing has been shown to the professor yet.
-- **Pushed to the public repo** (2026-10-05, Sandesh's choice after being asked about visibility).
-  - `saisandeshk/jouleserve-ws` is public and now holds P1's unpublished numbers in `reports/`; all local
-    commits up to the task-3 work are on `origin/main`.
-  - `gh` is not logged in on this machine (HTTP 401); the public API (`curl
-    https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
-  - P1's own figures (deck and repository) are kept out of git: `reports/*/p1_figures/` is git-ignored.
-- **Docs updated 2026-10-05** (task 3): the evidence Claude Doc and its repo copy
-  [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md), the teaching guide
-  Claude Doc, the deck (v2.0), this file, `AGENTS.md`, both plans, the review index and update notes in the
-  dated reports. Revisions and slide counts: see "Artifacts" below.
+  - **P1's submitted paper** (SIGMETRICS 2027, submitted Sat 10 Oct, under double-blind review; title kept out of this
+    public repo): a benchmark, a measurement study, a two-layer cost model (a per-call cost per device plus a
+    device-independent path model), policies (energy per success, an attempt budget, choosing a configuration) and the
+    corpus. One request in flight, temperature 0, the cache flushed per run, SGLang 0.5.16. What it says on each P5
+    option, and P1's post-submission plan (MB4, MB5, MB6): CMP-2 §12 and the summary at the top of this file.
+  - **Corrections for P1** (`NOTES_FOR_P1.md`, sent by Sandesh on 5 Oct; no direct reply, the paper answers them):
+    (1) `ask_vlm` is a burst of requests to the agent's own server: in part (the paper now calls the vision tool "the
+    agent's own model reading images", but does not mention the burst or its evictions); (2) the loop threshold misses
+    long-period loops: not adopted; (3) the drone Orin 32 caps are 1,024-token evaluator calls: adopted; (4) Orin 64's
+    context guard truncates calls the 8,000-token rule does not count: in part; (5) Devstral's prefix cache is off:
+    adopted.
+- **The professor meeting is Mon 12 Oct.** Nothing has been shown to the professor yet; the deck (v2.3) and CMP-2 are
+  ready for it.
+- **Public repo:** `saisandeshk/jouleserve-ws` is public and holds P1's unpublished numbers in `reports/` (Sandesh's
+  choice, 5 Oct). P1's own figures (deck and repository) are kept out of git (`reports/*/p1_figures/` is git-ignored), and
+  since 10 Oct so is the title of P1's submitted paper. `gh` is not logged in on this machine (HTTP 401); the public API
+  (`curl https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
 - **Artifacts** (all private until Sandesh shares them from their Share menu):
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
-    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 139; repo copy
+    https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 171; repo copy
     `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
-    figures and P1's s394/s396/s398/s400/s401/s405 and window-budget figure. **6 Oct (rev 127-138):** the section
-    "Tested on the workstation, 5-6 Oct" (results table, A-E1 and RET-E1 figures), the options table with CAP, our
-    lean (CAP with A's safety net; it was A until 5 Oct), decisions, next steps and caveats updated. **7 Oct (rev 139):**
-    a caveat after that section: P1's Orin traffic tool failures inflate the sessions our Orin results replay.
+    figures and P1's deck figures. **6 Oct (rev 127-138):** "Tested on the workstation, 5-6 Oct", the options table with
+    CAP, our lean. **11 Oct (rev 140-171):** an update that replaces the 7 Oct tool-fault caveat, the FP8 Gemma
+    correction, the meeting date, and a new section "P1's submitted paper and final data (10 Oct)" with the three
+    `p1final_*` figures.
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
-    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 165; no repo copy). Chapter 18
-    (the traffic workload), §11 memory on a Jetson, §16 P1's repository, §19.5–19.7 traffic evidence. **6 Oct:** new
-    chapter 21 (testing the options on the workstation: greedy vs sampling, stop and retry, the replayer, the
-    simulator check, FP8 KV, thinking and tau2, the vision burst, NVML energy), chapter 20 rewritten (five options,
-    the new lean), §12 and §15 status refreshed, 8 self-test questions and 10 glossary terms added; self-test and
-    glossary are now 22 and 23. One open comment in it (ours) asks how many drones per device to plan for.
-  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.2 (artifact
-    version 13, 137 slides). v2.2 (7 Oct): the Orin traffic tool-fault caveat on `opt-cap`, and the changelog. v2.1 (6 Oct): 5 new slides (`find-ws-tests`, `find-ws-sampling`, `find-ws-anchor`,
-    `find-ws-tau2-burst`, `opt-cap`), options, decision tree, lean, status, plan, log and related work
-    (`rw-reasoning` filled) updated.
+    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 184; no repo copy). Chapter 18
+    (the traffic workload), §16 P1, §19.5–19.7 traffic evidence, chapter 20 (five options, the lean), chapter 21
+    (testing the options on the workstation), self-test 22 and glossary 23. **11 Oct:** the FP8 correction everywhere,
+    the meeting on 12 Oct, P1's submission, the outcome of our corrections, two log lines, and a subsection at the end
+    of chapter 16, "The submitted paper and final data (10 October)", with the three figures. One open comment in it
+    (ours) asks how many drones per device to plan for.
+  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.3 (artifact
+    version 15, 140 slides). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),
+    `p1-final-data` (re-run figure) and `find-p1-final` (prefill and eviction figures); `p1-paper` rewritten for the
+    submitted paper; cover, glance, changelog, P1, findings, options, status and plan slides updated. v2.2 (7 Oct): the
+    tool-fault caveat. v2.1 (6 Oct): the WS test slides and `opt-cap`.
     - The single main reference, updated weekly: a new log slide (section 13, newest first), the
       at-a-glance slide and the changelog; matured results move into Findings.
     - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt),
       small text 24 px (12 pt).
-    - **Slide sources:** a working copy lives in `data/p5deck/` (git-ignored; restored from the artifact
-      on 2026-10-05 after a reboot wiped `/tmp`). Before editing in a new session, re-read the changed
-      files from the artifact if someone may have edited it in the browser.
-    - **Figures:** uploaded as artifact assets; the blob-id → local-file map is
-      `data/p5deck/blobs_2026-10-05.json`, `blobs_2026-10-06.json` and `env/render_slides.py`'s `BLOBS`.
+    - **Slide sources:** a working copy lives in `data/p5deck/` (git-ignored; synced with v2.3 on 11 Oct). Before
+      editing in a new session, re-read the changed files from the artifact if someone may have edited it in the
+      browser.
+    - **Figures:** uploaded as artifact assets; the blob-id → local-file map is `data/p5deck/blobs_2026-10-05.json`,
+      `blobs_2026-10-06.json`, `blobs_2026-10-10.json` and `env/render_slides.py`'s `BLOBS`.
     - **Visual check** (Sandesh approved it): `python3 env/render_slides.py data/p5deck <out> [ids]`. It
       uses the Playwright headless shell if present, else Brave (`/opt/brave.com/brave/brave`) headless; it
       is approximate and flags overflow and overlaps.
-- **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes): back since a
-  reboot on 5 Oct 10:52.
-  - **6 Oct 08:40: idle** (GPUs at 47/15 MiB, no tmux server, no stale lock files). 68 run directories in
-    `~/work/runs/`, backed up to local `data/ws_runs/` (SHA-256 checked, 2,343 files).
-  - Clone `~/jouleserve-ws` pulled to the latest `main`; `~/jsw-dev` is the synced dev copy (`env/sync_ws.sh`,
-    stamp in `~/jsw-dev/REVISION`).
+  - **P1 audit doc** (for P1, private): https://claude.ai/code/artifact/813c66c9-0521-4430-91e6-60be5a3e0c4d (revision
+    25: a note that it predates P1's submission).
+- **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes): temporarily unreachable on
+  10-11 Oct. Last known state (6-7 Oct):
+  - Idle (GPUs at 47/15 MiB, no tmux server). 68 run directories in `~/work/runs/`, backed up to local
+    `data/ws_runs/` (SHA-256 checked, 2,343 files).
+  - Clone `~/jouleserve-ws` on `main` (pull the 10-11 Oct commits when it is back); `~/jsw-dev` is the synced dev copy
+    (`env/sync_ws.sh`, stamp in `~/jsw-dev/REVISION`).
   - Models on disk (pinned, offline): gemma-4-E4B, granite-4.2-8b, the 4-bit 26B checkpoints that do not run in
     SGLang (derived text-only copies in `~/work/models/`), and the 26B GGUF (Hugging Face cache, unsloth) served by
-    `~/work/llama.cpp`; K2 and Qwen3.5 from before. Recipes:
-    `AGENTS.md` §6c.
+    `~/work/llama.cpp`; K2 and Qwen3.5 from before. Recipes: `AGENTS.md` §6c.
 - **Thor: off-limits** (Sandesh, 5 Oct): no ssh at all, not even read-only, until Sandesh says otherwise.
   Use P1's repository and our local copies.
-- **P1's schedule** (P1's docs, 3 Oct): thor-1 runs gemma tool calling (99/144 on 3 Oct), then granite, then
-  Devstral, to about Thu 8 Oct; P1's last runs end Thu 8 Oct ~16:40; some Orins are free from Tue 6 Oct "for
-  re-runs". After the deadline nothing is written down.
-- **Sandesh's** earlier idea for the next step (1 Oct) is superseded by events; they choose among the WS
-  options in §6 instead.
+- **P1's devices:** P1's runs ended with the data freeze on 10 Oct. When the Jetsons come back to P5 is not written down
+  (§7 Q6).
 
 ## 3. What is built (JouleServe-WS pieces)
 
@@ -189,6 +193,7 @@ which git already keeps.
 | Admission/retention simulator | `analysis/admission_sim.py`, `admission_figures.py` | N drones per box, per-model state layouts, 12 policies + unlimited memory; Thor and WS device models |
 | P1 runaway analysis | `analysis/p1_runaway.py`, `analysis/p1_loops.py` | Two-agent comparison; online loop detector replay, stop-rule savings, cross-check of P1's drone numbers |
 | **P1 repository analyses** (2026-10-05) | `analysis/p1_repo.py` (loader), `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py` | All 12 configurations: value of kept state, idle gaps, vision-tool bursts, prefix reuse; capped calls, loops and four stop rules; N traffic agents per device at real KV pools; energy by phase |
+| P1 final-data figures (2026-10-10) | `analysis/p1_final_figures.py` | Plots P1's committed summaries at `0cc2311a` (prefill share, drone evictions) and a sourced table of 7 vs 10 Oct values (tool faults, pass rates, overflows); writes `reports/2026-10-06-options/figures/p1final_*.png` |
 | Slide renderer | `env/render_slides.py` | Visual check of the deck's slide files |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/launch_qwen35_tp1.sh`, `env/queue*.sh` | K2 pinned to revision `f846b1e` |
 | **Options work (5-6 Oct)** | `jsw/gateway/`, `jsw/policies/` (loop detector, decode guard, burst memory), `jsw/workloads/replay.py`, `loop_replay.py`, `jsw/runner/run.py`, `jsw/costs/calibrate2.py`, `env/launch_model.sh`, `env/launch_llamacpp.sh`, `analysis/{a_e1,a_e2,a_e4,b_e1,b_e2,c_e1,d_e2,ret_e1,cap_e1,options_figures}.py` | The shared base and option prototypes of `planning/OPTIONS_PLAN.md`; tests in `tests/` (run with the legacy venv: `python -m tests.<name>`) |
@@ -198,8 +203,10 @@ not be built as planned: rewrite them after the direction decision.
 
 ## 4. What we know (details, figures and caveats in the reports)
 
-**This week's results (5-6 Oct) are in `reports/2026-10-06-options/README.md`** (summary at the top of this file);
-what follows is the evidence from before them, still valid.
+**The WS tests of 5-6 Oct are in `reports/2026-10-06-options/README.md`, and P1's submitted paper and final data in its
+§12** (summaries at the top of this file). What follows is the evidence from before them, on P1's data as of 5 Oct;
+P1's final data confirms its direction (decode-bound everywhere, more capacity pressure after the re-runs), and the
+absolute numbers below are not yet redone on it.
 
 **Kept state is worth little on P1's agents, drone or traffic** (P1's measured runs, one agent per device;
 `reports/2026-10-05-p1-repo` §2).
@@ -262,7 +269,7 @@ what follows is the evidence from before them, still valid.
   used 2.2× less energy per passed mission than 1.
 - **WS costs** (K2, one A5000): prefill 4,106 tokens/s at ~0.05 J/token; decode 5.36 J/token at batch 1,
   0.38 J at 16; idle 10–20 W.
-- **P1's measurements quoted from its paper/deck:** no thermal throttling in 434 h (peak 81.3 °C);
+- **P1's measurements quoted from its paper/deck:** no thermal throttling in 434 h (peak 81.3 °C; as of 5 Oct);
   repeat divergence at temperature 0 traced to inputs (timestamp, simulator noise), except gemma-E4B on
   the Orin 32 (inference).
 
@@ -290,66 +297,52 @@ and F4; H4 has a live but small case (the vision tool).
 
 ## 6. Next steps
 
-1. **G1 is done; wait for Sandesh's review of the comparison doc** (`reports/2026-10-06-options/README.md`). Its
-   results are already merged into the evidence doc, the teaching guide and the deck (6 Oct); fold in any review
-   changes there too. Then, as Sandesh decides: start G2's WS versions of the options (`planning/TRACKER.md`, G2
-   table); optional re-run of B-E1's sampled arm with the fixed gateway (removes the format-failure caveat); pass on
-   P1's reply to `NOTES_FOR_P1.md` when it comes.
-2. **When the professor meeting is rescheduled:** take the direction decision (D12) with the deck (section
-   11) and the evidence doc. Then rewrite master-plan M3–M5 for it.
-3. **When P1 pushes more data** (Thor drone tool calling, granite/Devstral drone, traffic grades): `git pull`
-   in `data/edge-agent-bench` only if Sandesh agrees (it is P1's clone), then rerun `analysis.p1_repo`
-   (`load(key, refresh=True)`), `p1_opportunity`, `p1_caps`, `traffic_sim`, `p1_repo_figures`, and update
-   the report, the docs and the deck. **Pulled 7 Oct** (`f6aabe4`): new data includes the Thor drone tool-calling
-   sweep, an Orin 32 Qwen2.5-VL and an RTX PRO 6000 gemma drone sweep, cloud baselines and graded traffic. The loader
-   already follows the new layout. Rerun after P1's Orin traffic re-runs land (the 7 Oct caveat), then refresh every doc.
+1. **Mon 12 Oct, the professor meeting:** take the direction decision (D12) with the deck (v2.3; sections 8 and 11)
+   and CMP-2 (§9 lean, §10 questions, §12 P1's submission). Record the outcome as a decision (next free ID: D19), then
+   rewrite master-plan M3–M5 and `planning/OPTIONS_PLAN.md`'s G2 for it.
+2. **Agree the split with P1** (through Sandesh and P1's mentor): who runs MB4 (overlaps A-E1/A-E2) and MB5 (overlaps
+   CAP-E1), and whether P1 gets the sampling result (A-E1) and the step-wise result (B) now that its paper is in.
+3. **When the WS is back:** pull `~/jouleserve-ws` and `~/work/p1/edge-agent-bench` (to `0cc2311a`); make
+   `analysis/p1_repo.py` apply P1's supersede rule (latest re-run per task, an overflowed original kept); then redo
+   RET-E1, CAP-E1 and `traffic_sim` on the clean Orin traffic sessions (with the re-runs' smaller pools: Orin 32 granite
+   25,358, E4B 66,376 tokens), rerun `p1_opportunity`, `p1_caps`, `p1_repo_figures` on the final data, and refresh
+   CMP-2, the evidence doc, the deck and this file. Also check why granite and E4B evict KV on the Orins at one agent
+   (52-68% of drone runs).
 4. **If A (decode-side energy):** sampling vs greedy is answered on a 4-bit stand-in on the WS (A-E1: sampling
-   removes the loops); repeat it on P1's bf16 26B on a Jetson after 10 Oct. Still open: a retry policy for traffic's
-   dropped tool calls (A-E4), the decode guard inside a live agent loop, and the split with P1, whose paper claims
-   the loop finding.
-5. **If D (memory that changes over time):** the vision-burst replay is done (D-E2: the eviction reproduces; pinning
+   removes the loops); repeat it on P1's bf16 26B on a Jetson when the devices come back. Still open: a retry policy for
+   traffic's dropped tool calls (A-E4), the decode guard inside a live agent loop, and the split with P1, whose paper
+   reports the loop finding offline and leaves an online policy to "separate evaluation".
+5. **If CAP:** the levers P1 lists as untested (FP8 KV, shorter tool schemas, bounded outputs) measured by energy per
+   success with several agents per device; FP8 quality; Gemma-4 FP8 KV on an Orin (P1 ran it with SGLang 0.5.16).
+6. **If D (memory that changes over time):** the vision-burst replay is done (D-E2: the eviction reproduces; pinning
    plus a burst cap costs 11% more energy than recomputing at one agent, and at 4 agents the best policy, pinning
-   alone, is 3.8% below the default, inside the 5% rule). What is left: P1's answer on which server `ask_vlm` calls,
-   and real unified-memory contention on a device.
-6. **WS experiments.** Superseded by `planning/OPTIONS_PLAN.md`; its §10 maps these labels to the plan's task
-   IDs. The options as first offered on 5 Oct, with their usefulness as rated then:
-   - **W1 (A, highest):** do Gemma-4's loops survive sampling? Replay the 265 capped Thor prompts plus finished
-     long calls as controls, under P1's greedy settings and the model card's sampling. Needs a quantized
-     gemma-4-26B-A4B (smoke test first); the greedy arm must loop on the WS for the comparison to count.
-   - **W2 (A, high):** stop and retry. Abort where the online detector fires, retry, and check whether the
-     retry finishes with a usable program, and at what cost. An increment on W1.
-   - **W3 (both, high):** a live trace replayer. It plays P1's recorded runs (token counts, prefix
-     structure, tool gaps) as N agents on a capped pool, to anchor the simulators' "default within 2.4%" and
-     the capacity knee. It needs no agent code, so it also runs on a Jetson after 10 Oct.
-   - **W4 (D, medium):** a vision burst on a 12.4K pool, built on W3. Compare the default, pinning the paused
-     context and admitting the burst at lower concurrency, then N agents.
-   - **W5 (calibration, medium-low):** decode batching on Gemma-4 (MoE) vs dense models; Qwen3.5 energy
-     calibration folded in.
-   - **W6 (capacity, medium):** FP8 vs bf16 KV, comparing pool size against loop and finish rates.
-   - **W7 (A, after D12):** P1's CLGSCE agent live on the WS. Needs the 2 files from P1 and Sandesh's OK.
-   - **W8 (low now):** thinking budget against energy per success. **W9 (B/C):** long step-wise missions,
-     τ²-bench.
-   - Suggested order: W1+W2 on GPU0 and W3 on GPU1 in parallel, then W4. One Gemma set-up serves W1, W2, W4
-     and W5.
+   alone, is 3.8% below the default, inside the 5% rule). P1 now takes the vision tool as the agent's own model
+   (correction 1, in part). What is left: real unified-memory contention on a device.
+7. **WS experiments as first offered on 5 Oct (W1-W9).** Superseded by `planning/OPTIONS_PLAN.md`; its §10 maps the
+   labels to the plan's task IDs. W1 (sampling vs greedy), W2 (stop and retry), W3 (live trace replayer), W4 (vision
+   burst), W6 (FP8 vs bf16 KV) and part of W9 (τ²-bench) ran as A-E1, A-E2, RET-E1, D-E2, CAP-E1 and C-E1. Not run:
+   W5 (decode batching on Gemma-4 vs dense models), W7 (P1's CLGSCE agent live on the WS; needs 2 files from P1 and
+   Sandesh's OK), W8 (thinking budget against energy per success).
 
 ## 7. Open questions for Sandesh
 
-1. Review of the G1 comparison doc (CMP-2): is it even-handed, is anything missing before the professor sees it,
-   and may P1 get the sampling result (A-E1) and the step-wise result (B) before their deadline (doc §10 Q5)?
-2. P1's reply to `NOTES_FOR_P1.md` (sent 5 Oct), especially on `ask_vlm`'s server. And: offer the online
-   loop stop to P1's paper, or keep it for P5?
-3. When will the professor meeting be rescheduled?
+1. The outcome of the professor meeting (12 Oct): direction and scope (A, B, C, D, CAP), the go/no-go thresholds
+   (D4), and `N_edge`.
+2. The split with P1 (MB4, MB5) and whether to hand P1 the sampling and step-wise results (CMP-2 §10 Q5); whether to
+   offer the online loop stop to P1 or keep it for P5.
+3. Review of CMP-2: anything to change after the meeting?
 4. The P1 mentor's answers to the task overview's §9: which 8 AeroEval tasks; whether a step-wise paradigm
    is in P1's scope; whether P5 may run P1's AeroEval tasks with a step-wise agent; drones per edge box.
-5. Direction and scope (A–D), the go/no-go thresholds (D4), and `N_edge`.
-6. Timeline: when the devices return to P5 after 2026-10-10, and the ISP milestones.
+5. Timeline: when the Jetsons return to P5 now that P1 has submitted, and the ISP milestones.
+6. When the Thor ban lifts (since 5 Oct).
 
 ## 8. Resume checklist for a new session
 
 1. Read `AGENTS.md`, then this file.
 2. `git status`, `git log --oneline -5`. Before any `git push`, check the visibility:
    `gh repo view saisandeshk/jouleserve-ws --json visibility` (if `gh` is logged out: `curl -s https://api.github.com/repos/saisandeshk/jouleserve-ws`).
-3. P1's data: `git -C data/edge-agent-bench log --oneline -3` (read-only; do not pull without Sandesh).
+3. P1's data: `git -C data/edge-agent-bench log --oneline -3` (read-only; do not pull without Sandesh; `0cc2311a` is
+   P1's submitted state).
 4. WS, if reachable: `nvidia-smi; tmux ls; ls ~/work/runs`; copy runs with
    `rsync -a saisandeshk@10.24.32.174:~/work/runs/ data/ws_runs/`.
 5. Thor: **off-limits** until Sandesh says otherwise (5 Oct). Use the repository and the local copies.

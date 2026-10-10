@@ -2,6 +2,12 @@
 
 **2026-10-04 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-11** ([`2026-10-06-options` §12](../2026-10-06-options/README.md)). P1's paper as submitted on
+> 10 Oct reports the loops offline (a compression test flags 52.9% of 690 capped reasoning calls, 0.68% of 1,171 long
+> finished calls) with the "stop at the first capped call" bound (50.2%, 22 passing runs lost, on Thor Reflexion), and
+> leaves an online policy to "separate evaluation". Greedy decoding is not discussed as a cause. P1's post-submission
+> plan replays capped calls at other budgets and with reasoning off (MB4), which overlaps A-E1/A-E2.
+>
 > **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md), A-E1/A-E2). Gemma under sampling is now measured, on a 4-bit GGUF of P1's
 > gemma-4-26B-A4B through llama.cpp: on 30 of P1's Thor Reflexion prompts that looped, greedy decoding loops on 23
 > (77%) and Gemma's default sampling (temperature 1.0, top_k 64, top_p 0.95; one seed) on none, with 28 of 28 valid
@@ -104,7 +110,8 @@ sit in `p1_figures/`, which git ignores.
   - If greedy decoding causes the loops, the fix may be configuration (sampling, or a
     repetition guard), not research. That is the same verdict the FP8 KV cache got.
   - P1's own plan includes an early-abort policy as its systems contribution, so A needs
-    coordinating with P1. One option is to offer this result to P1's paper.
+    coordinating with P1. One option is to offer this result to P1's paper. (P1 dropped the
+    early-abort plan on 5 Oct; its submitted paper leaves an online policy to "separate evaluation".)
 - **B** keeps its finding, with a wider range (above).
 - **C and D** are unchanged by the drone results.
 

@@ -64,7 +64,7 @@
     "tokens_median": 3631
    }
   },
-  "fp8": "not run: the server did not start (Gemma-4 FP8 KV on Ampere, SGLang 0.5.20)"
+  "fp8": "not run: the server did not start (Gemma-4 FP8 KV on our A5000s, SGLang 0.5.20)"
  },
  "quality_e4b_d1": {
   "bf16": {

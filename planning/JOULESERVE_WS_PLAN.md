@@ -9,8 +9,8 @@ master plan for the workstation build.
 - **2026-10-05:** P1's repository arrived; drone and traffic analysed ([`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md)).
   - Traffic (P1's accumulating-context agent): kept state is worth 1–4% of LLM time; with 1–8 agents per device at real KV pools no policy beats SGLang's default by more than 2.4% (simulated); capacity binds on the Orins.
   - The vision tool's request bursts evict the paused agent's context on Orin 64 (a live, small case of H4 / option D).
-  - P1's paper claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4.
-  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct is postponed, with no new date; current state in [`../HANDOFF.md`](../HANDOFF.md).
+  - P1's paper (then a draft) claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4. In the paper as submitted (10 Oct) the loop finding is offline and an online policy is left to "separate evaluation"; E4/E5 are replaced by post-submission MB1 (warm vs cold cache), MB4 (capped-call replays) and MB5 (BF16 vs FP8 window probe).
+  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct moved to Mon 12 Oct; current state in [`../HANDOFF.md`](../HANDOFF.md).
 - **2026-10-05 (evening):** until D12, the work follows [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (tracker: [`TRACKER.md`](TRACKER.md)). It builds an even-handed case for options A–D and their WS versions, on a shared base (models, gateway, trace replayer) that reuses this plan's §3 design.
 - **2026-10-06:** G1 of the options plan is done: the options comparison
   ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)), with WS experiments on P1's
@@ -18,6 +18,10 @@ master plan for the workstation build.
   policy hooks), a trace replayer (`jsw/workloads/replay.py`), the runner (`jsw/runner/run.py`) and two gateway
   policies (decode guard, burst-aware memory). The simulator (`analysis/admission_sim.py`) held against a live
   engine within 14% (RET-E1). M3–M5 stay on hold until D12.
+- **2026-10-10/11:** P1 submitted its paper (SIGMETRICS 2027) and froze its data (`0cc2311a`; 4,757 runs, 25
+  configurations, 1,468 h). It confirms the decode-bound picture (prefill 0.7–3.9% of LLM time in 18 of 22
+  configurations) and resolves the 7 Oct tool-fault caveat with re-runs; its paper has no multi-agent result ("batch
+  size is one"). Details in CMP-2 §12. D12 is taken at the professor meeting on Mon 12 Oct.
 - Track A working notes and measurements: [`PLAN.md`](PLAN.md).
 - Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
 

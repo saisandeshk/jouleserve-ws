@@ -36,7 +36,7 @@
 - Already on Orin; Ollama not SGLang. Porting is the retrieval front end only.
 
 ## 10. Relevance to our current findings
-- Direct support that prompt size on an Orin costs time and power and can change correctness. Does not address window overflow (11-21% of Orin runs).
+- Direct support that prompt size on an Orin costs time and power and can change correctness. Does not address window overflow (11-21% of Orin runs before P1's re-runs; up to 28% in P1's final data of 10 Oct).
 
 ## 11. Open questions / uncertainty
 - Table II is one query; the numbers are normalized; no confidence intervals; unclear tool-accuracy definition. Verify the Recommender overhead accounting.

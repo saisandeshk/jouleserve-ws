@@ -9,7 +9,7 @@ Where to start:
 - [`HANDOFF.md`](HANDOFF.md): the current state, results and open questions.
 - [`AGENTS.md`](AGENTS.md): how the project works, the machines, the rules and the recipes.
 - [`reports/2026-10-06-options/README.md`](reports/2026-10-06-options/README.md): the newest report, the options
-  compared side by side; the shared summary of all reports is
+  compared side by side, with P1's submitted paper and final data in its §12; the shared summary of all reports is
   [`reports/2026-10-02-p5-evidence/README.md`](reports/2026-10-02-p5-evidence/README.md).
 - [`planning/`](planning/): the plans and the tracker.
 

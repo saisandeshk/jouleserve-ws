@@ -33,7 +33,7 @@
 - Pure software; small models may lose more when observations are masked (unknown). Real-time drone/traffic tool outputs are structured, not code dumps; the masking gain may be smaller.
 
 ## 10. Relevance to our current findings
-- P1 window overflows (11-21% of Orin runs) are the failure this lever addresses; whether P1's tool outputs are large enough to matter must be measured.
+- P1 window overflows (11-21% of Orin runs before P1's re-runs; up to 28% in P1's final data of 10 Oct) are the failure this lever addresses; whether P1's tool outputs are large enough to matter must be measured.
 
 ## 11. Open questions / uncertainty
 - Coding-agent specific; fixed windows; no energy; no small-model results.

@@ -11,6 +11,15 @@
 > - **F5/H4: a live case.** `ask_vlm` sends 8–45 concurrent requests to the agent's own server; on a 12.4K-token pool (Orin 64) it evicts the paused agent context every time. The cost is small (0.6% of LLM time) because prefill is cheap, but it is the one memory-pressure mechanism at one agent per device.
 > - **P1's paper is now the closest internal work** to option A: it reports the loops (offline detector) and a "stop at the first capped call" bound. Not cited by P1: INFERCEPT, Continuum, TokenCake, CacheScout, Adaptive KV Retention, or reasoning-length control.
 
+> **Notes from P1's submitted paper (2026-10-11;** [`../../reports/2026-10-06-options/README.md`](../../reports/2026-10-06-options/README.md) §12**).**
+> - **F4 holds on P1's whole corpus** (4,757 runs, 25 configurations): generation is 77.9-99.6% of LLM energy; prefill
+>   0.7-3.9% of LLM time in 18 of 22 configurations (Qwen2.5-VL 15-16%, Devstral drone 22% with its prefix cache off).
+> - **A:** the paper reports the loops offline and leaves an online policy to "separate evaluation"; greedy decoding is
+>   not discussed. **CAP:** FP8 KV, shorter tool schemas and bounded outputs are listed as untested levers; window
+>   overflows reach 28% of Orin runs. **D/H4:** the vision tool is "the agent's own model reading images" (54.6% of tool
+>   energy); the burst is not mentioned. **RET:** "batch size is one", so no multi-agent result. P5 is still not cited,
+>   nor are the systems above.
+
 > **Notes from the options work (2026-10-06;** [`../../reports/2026-10-06-options/README.md`](../../reports/2026-10-06-options/README.md)**).**
 > Four literature reviews, one per option, by parallel reviewers (Sonnet), with 20 new system docs (§1b). The
 > per-option notes are `lit_A.md`, `lit_B.md`, `lit_D.md`, `lit_CAP.md` in the options report.
@@ -29,7 +38,7 @@
 > - **F1 holds on a standard benchmark too** (C-E1): tau2-bench reuses 92-96% of prompt tokens, yet with thinking
 >   on kept state is worth 7.5-9.9% of LLM time at E4B's Jetson price; without thinking 25%.
 
-Status: 2026-09-30 (§1b and the options notes added 2026-10-06). There is one doc per system in this folder, all following `_TEMPLATE.md`:
+Status: 2026-09-30 (§1b and the options notes added 2026-10-06; notes on P1's submitted paper 2026-10-11). There is one doc per system in this folder, all following `_TEMPLATE.md`:
 workloads, assumptions, controller, results, what JouleServe-WS can take, what JouleServe must
 add, and workstation → edge. The docs were written by parallel reviewers from primary sources.
 

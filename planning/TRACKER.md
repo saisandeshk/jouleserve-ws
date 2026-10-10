@@ -1,6 +1,6 @@
 # Tracker — P5 options (G1 the even-handed case, G2 the WS versions)
 
-**Updated:** 2026-10-07 (IST), consistency pass after G1. Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.1; v1.0 approved
+**Updated:** 2026-10-11 (IST), after P1's submission. Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (v1.2; v1.0 approved
 2026-10-05).
 **Stop point:** report to Sandesh when G1 (CMP-2) is done; otherwise keep working.
 
@@ -13,10 +13,11 @@ How to use it:
 
 ## Now
 
-- **2026-10-06 08:40: G1 is done** (CMP-2, `reports/2026-10-06-options/README.md`). Stopped here to report to Sandesh, as
-  agreed; nothing runs on the WS (servers torn down, GPUs idle). Its results were merged into the evidence doc, the
-  teaching guide and the deck the same day. Next, after Sandesh's review: fold any review changes into those; G2's WS
-  versions; optional B-E1 sampled re-run with the fixed gateway.
+- **2026-10-11: waiting for the professor meeting (Mon 12 Oct, D12).** G1 is done (CMP-2,
+  `reports/2026-10-06-options/README.md`; 6 Oct). P1 submitted on 10 Oct; CMP-2 §12, the evidence doc, the teaching
+  guide, the deck (v2.3) and every local doc now reflect P1's submitted paper and final data (`0cc2311a`). Nothing runs:
+  the WS was unreachable on 10-11 Oct. Next: the meeting; then the P1F tasks below once the WS is back, and G2's WS
+  version of the chosen option.
 
 ## G2 shared base
 
@@ -25,7 +26,7 @@ How to use it:
 | S1a | Serve gemma-4-26B-A4B 4-bit on one GPU; smoke (chat, thinking, `gemma4` tools, pool, `/metrics`) | 0 | — | done (llama.cpp) | `env/derive_gemma26b_fp8.py`, `env/launch_model.sh` | No 26B stand-in runs on Ampere in SGLang 0.5.20: the 4-bit MoE kernel is SiLU-only (Gemma uses GELU); the FP8 MoE kernel needs fp8e4nv (sm89+). bf16 (52 GB) exceeds both GPUs. On the way: CUDA-12 NCCL preload makes TP=2 work; text-only and Marlin-safe derived checkpoints. D13 outcome: the 26B runs through llama.cpp v0.6.0 as a 4-bit GGUF (unsloth UD-Q4_K_XL, `env/launch_llamacpp.sh`), used for A-E1/A-E2 |
 | S1b | Serve gemma-4-E4B; smoke incl. images | 0 | — | done | `env/launch_model.sh gemma-e4b`, `~/work/logs/smoke_gemma_e4b.json` | Pools: 63,509 full + 50,807 SWA tokens at 0.88; thinking on/off, `gemma4` tool calls, images, /generate exact lengths, abort on disconnect all work |
 | S1c | Serve granite-4.2-8b; smoke; pool size | 0 | — | done | `env/launch_model.sh granite8b`, `~/work/logs/smoke_granite.json` | Pool 26,467 tokens at 0.88 on GPU0, 26,648 on GPU1 (P1's Orin 32 granite pool: 26-27K; Orin 64's 32,768 needs a higher mem fraction) |
-| S1d | Record the recipes and gotchas; check FP8 `--kv-cache-dtype` on Ampere | 0 | S1a–c | done | `env/launch_model.sh`, AGENTS.md §6c | Recipes and gotchas in AGENTS.md §6c; FP8 KV: granite works (pool 2.0x on the same GPU), Gemma-4 cannot start on Ampere (CAP-E1) |
+| S1d | Record the recipes and gotchas; check FP8 `--kv-cache-dtype` on Ampere | 0 | S1a–c | done | `env/launch_model.sh`, AGENTS.md §6c | Recipes and gotchas in AGENTS.md §6c; FP8 KV: granite works (pool 2.0x on the same GPU), Gemma-4 cannot start on our A5000s in SGLang 0.5.20 (CAP-E1; P1 ran it on an Orin 64 with 0.5.16) |
 | S2 | Gateway v0 (routes, streaming, call log, hooks, abort) | 1 | — | done | `jsw/gateway/server.py`, `tests/test_gateway.py` | v0: routes, streaming, aggregation, call log, hooks, abort, tool-tagged routes, pythonic tool-call fallback (`jsw/gateway/pythonic.py`); ~0.3 ms per call |
 | S3 | Trace replayer (`/generate`, exact lengths, real prefix reuse, tool gaps, burst injection) | 1 | S2, S5 | done | `jsw/workloads/replay.py`, `analysis/replay_sets.py` | Tested live on granite: exact lengths; prompt = previous prompt + fresh IDs (P1's thinking agents drop reasoning: cached = previous prompt, as P1's data shows); bursts from vitals; --no-reuse; horizon cut |
 | S4 | Streaming loop detector, parity with offline flags | 0 | — | done | `jsw/policies/loop_detector.py`, `tests/test_loop_detector.py` | Fires at the offline position on all recorded Thor calls; reproduces 121 + 127 |
@@ -49,7 +50,7 @@ How to use it:
 | RET-E1 | RET | Live anchor: granite traffic replay at P1's pools, N = 1–8, 3 policies, vs simulator | 2 | S1c, S2, S3, S5 | done | `ret_e1.json`, `figures/ret_e1.png` | Ran narrower than planned (GPU time): Orin 32 granite at P1's pool only, N = 1, 4, 8, default and no-reuse (keep not run), 45 min per point. Anchor holds: simulator within 14% at every point (2% except N=4), FP8 run out of sample within 6%. Ranking degenerate: at N=8 the default keeps nothing (0/102 calls hit), so it ties with dropping state. Knee live: 57.2 -> 27.8 -> 38.4 kJ/session at N=1/4/8 |
 | D-E2 | D | Vision burst with N agents (E4B, 12.4K and 71K pools) | 3 | S3, D-P1 | done | `d_e2.json` | Mechanism reproduced live (88-100% of the paused prefix recomputed at 12.4K). Pin + burst cap 2 cuts it to 37% at one agent but costs +11% energy per session; at 4 agents capacity dominates (+3..14%). Capacity: 63.5K vs 12.4K pool at N=4: 2.4x less energy per session |
 | D-E3 | D | Literature: unified memory, co-located models | 0 | — | done | `reports/2026-10-06-options/lit_D.md`, 5 review docs | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning exist; tool foreknowledge on unified memory not found; effect may be small |
-| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | done | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,648, both GPU1); 8 agents live: 14.7 vs 38.4 kJ/session bf16 (-62%), 2.6x sessions/hour. Rule undecided: quality side could not run. Gemma-4 FP8 KV cannot start on Ampere in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run; the Orins are Ampere-class |
+| CAP-E1 | CAP | FP8 vs bf16 KV: pool size and quality | 3 | S1d, A-E1, B-E1 | done | `env/queue_cap_e1.sh`, `queue_cap_e1b.sh` | FP8 KV doubles granite's pool (53,296 vs 26,648, both GPU1); 8 agents live: 14.7 vs 38.4 kJ/session bf16 (-62%), 2.6x sessions/hour. Rule undecided: quality side could not run. Gemma-4 FP8 KV cannot start on our A5000s in SGLang 0.5.20 (triton fp8e5; Gemma4 allows only triton/trtllm): quality pairs not run. Corrected 11 Oct: P1 ran Gemma-4 FP8 KV on an Orin 64 with SGLang 0.5.16 (triton, pool 60,000), so this is not an Ampere-wide limit |
 | CAP-E2 | CAP | Literature: KV quantization, prompt and tool-loading | 0 | — | done | `reports/2026-10-06-options/lit_CAP.md`, 5 review docs | Each lever studied; energy per task and a run-time controller across levers not found |
 | CMP-2 | all | Full comparison, Sandesh's review | 4 | all | done (review pending) | comparison doc | Merged on 6 Oct into the evidence doc (rev 138, repo copy), the teaching guide (chapter 21) and the deck (v2.1) |
 
@@ -65,23 +66,45 @@ How to use it:
 | B-P1 | B | Step-wise agent with a building-aware sim | 4+ | B-E1 | blocked | — | Needs mayankarya's OK to extend aerogen |
 | CAP-P1 | CAP | Capacity-aware admission | 4+ | CAP-E1 | todo | — | Only if CAP-E1 finds a trade-off |
 
+## Refresh on P1's final data (after 10 Oct)
+
+| ID | Task | Depends | Status | Output | Notes |
+| --- | --- | --- | --- | --- | --- |
+| P1F-0 | Read P1's submitted paper and final data; figures; update every doc and artifact | — | done | `analysis/p1_final_figures.py`, CMP-2 §12 | From P1's committed summaries at `0cc2311a` (WS down); 10-11 Oct |
+| P1F-1 | Pull the WS clone of P1 to `0cc2311a` | WS back | todo | `~/work/p1/edge-agent-bench` | Local clone is at `0cc2311a`; WS at `f6aabe4` |
+| P1F-2 | Loader applies P1's supersede rule (latest re-run per task, an overflowed original kept) | — | todo | `analysis/p1_repo.py` | Today a refreshed traffic load would mix `_topup2`/`_ceilretry` re-runs with faulted originals |
+| P1F-3 | Redo RET-E1, CAP-E1 and `traffic_sim` on the clean Orin traffic sessions | P1F-1, P1F-2 | todo | `analysis/{ret_e1,cap_e1,traffic_sim}.py` | Re-run pools are smaller (Orin 32 granite 25,358, E4B 66,376 tokens); the 7 Oct caveat |
+| P1F-4 | Rerun `p1_opportunity`, `p1_caps`, `p1_repo_figures` on the final data | P1F-2 | todo | `analysis/` | 25 configurations instead of 12 |
+| P1F-5 | Why granite and E4B evict KV on the Orins at one agent (52-68% of drone runs) | P1F-1 | todo | — | On Thor Reflexion the evictions come with the loops (46 of 48) |
+| P1F-6 | Gemma-4 FP8 KV: what P1 ran on the Orin 64 (SGLang 0.5.16, triton, pool 60,000) and whether 0.5.16 runs it on our A5000s | — | todo | — | Corrects CAP-E1's "not on Ampere" (11 Oct) |
+
 ## Waiting on others
 
 | What | From | Blocks | Since |
 | --- | --- | --- | --- |
-| Reply to `NOTES_FOR_P1.md`, especially which server `ask_vlm` calls | P1, via Sandesh | D-E2's design | 2026-10-05 |
+| ~~Reply to `NOTES_FOR_P1.md`~~ answered by P1's submitted paper (10 Oct): (1) in part (the vision tool is the agent's own model), (2) no, (3) yes, (4) in part, (5) yes | — | — | closed 2026-10-10 |
 | The two CLGSCE files changed on the Thor on 23 Sep | P1, via Sandesh (Thor off-limits) | A-P2 | — |
 | Permission to extend aerogen | mayankarya | B-P1 | 2026-10-01 |
-| Agreement on the A/P1 split (online stop) | P1, after 10 Oct | the A section's novelty claim | — |
-| Traffic grades; Thor drone tool calling in the repository | P1 | traffic success in A, D, RET | — |
-| Professor meeting date; direction D12 | Professor | the final choice | 2026-10-05 |
+| Agreement on the split with P1: online stop (A), MB4 (overlaps A-E1/A-E2), MB5 (overlaps CAP-E1) | P1, via Sandesh | the A and CAP novelty claims | 2026-10-10 |
+| ~~Traffic grades; Thor drone tool calling in the repository~~ in P1's final data (`0cc2311a`) | — | P1F-2 to P1F-4 | closed 2026-10-10 |
+| Direction D12 | Professor, meeting Mon 12 Oct | the final choice | 2026-10-05 |
+| The WS back up | — | P1F-1, P1F-3 to P1F-5, any WS run | 2026-10-10 |
 
 ## Log (newest first)
+
+- **2026-10-10/11:** P1 submitted (SIGMETRICS 2027, data frozen 10 Oct 10:30 IST); local P1 clone pulled to `0cc2311a`
+  (WS down, so the WS clone stays at `f6aabe4`). Read the paper and the final data: decode-bound everywhere (prefill
+  0.7-3.9% of LLM time in 18 of 22 configurations); 776 tool-faulted Orin traffic runs replaced by re-runs (the 7 Oct
+  caveat resolved in P1's data; overflow up to 28.1%); online stop left to "separate evaluation"; MB4/MB5/MB6 planned,
+  overlapping A and CAP; our corrections 3 and 5 adopted, 1 and 4 in part, 2 not. Our FP8 claim corrected: P1 ran
+  Gemma-4 FP8 KV on an Orin 64 (SGLang 0.5.16). `analysis/p1_final_figures.py` (3 figures); CMP-2 §12; evidence doc
+  (rev 171) and repo copy; teaching guide (rev 184); deck v2.3; audit doc note; HANDOFF, AGENTS, plans, dated reports,
+  review notes. New tasks P1F-1 to P1F-6.
 
 - **2026-10-07 (afternoon):** P1 pulled to `f6aabe4` (local + WS); a P1 audit for P1 (private, git-ignored
   `reports/2026-10-07-p1-audit/`). For P5: caveat added to CMP-2, the evidence doc and the deck: 36-70% of P1's Orin
   traffic runs are tool-faulted (1.7-4.2x energy), and RET-E1/CAP-E1 replayed 59-88% of them; Orin numbers to redo after
-  P1's re-runs. `analysis/p1_repo.py` and `loop_prompts.py` follow P1's new drone layout (Thor tool calling now from the
+  P1's re-runs (resolved in P1's data on 10 Oct: see above). `analysis/p1_repo.py` and `loop_prompts.py` follow P1's new drone layout (Thor tool calling now from the
   repo, 144 runs). Full doc refresh deferred until P1 freezes (Sandesh, 7 Oct).
 - **2026-10-07:** consistency pass over the docs (no new results): plan version cited as v1.1, merge status stated as
   done, granite's bf16 pool labelled by GPU (26,467 GPU0, 26,648 GPU1), RET-E1's run scope, the Thor ban in AGENTS.md,
@@ -100,7 +123,7 @@ How to use it:
   run's span (live runs cut their last sessions), and takes its powers from NVML's energy counter like the live energy
   (the power reading runs 24% above the counter under load). Smoke test on CAP-E1's run: simulator within 6%.
 - **2026-10-06 06:50:** A-E1 done (sampling removes the 26B's loops), A-E2 done, A-E5 done, C-E1 done (thinking decides),
-  D-E2 done (policies cost more than recompute), CAP-E1 partly (FP8 doubles granite's pool; Gemma FP8 KV not on Ampere).
+  D-E2 done (policies cost more than recompute), CAP-E1 partly (FP8 doubles granite's pool; Gemma FP8 KV not on our A5000s).
   RET-E1 running on both GPUs. Then CMP-2.
 - **2026-10-06 04:25:** A-E1 on E4B done (no loops anywhere: inconclusive); 26B on llama.cpp reproduces the loops under greedy;
   D-E2 first pass done (mechanism reproduced, policies did not engage; re-test queued); C-E1 airline done. All remaining
