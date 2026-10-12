@@ -61,7 +61,17 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 - **Aliases:** the `ssh` aliases work from the laptop and from the WS, with passwordless keys. `ssh WS` reaches the WS
   from the laptop.
 - **Inventory:** the per-unit details of 12 Oct (models and revisions, disks, what P1 left running) are in
-  `planning/OPTIONS_PLAN.md` §1.2.
+  `planning/OPTIONS_PLAN.md` §1.2; locked clocks, docker-root floors and images in `configs/jetsons.json`.
+- **Images and versions (DEV-2, 12 Oct; read in a read-only container):**
+  - Orins: `jouleserve/sglang:0.5.16-orin-cu126-sm87`, digest `05119cc6` (Orin-64-1, Orin-32-1/2) and `d4967327`
+    (Orin-32-3, a different build of the same tag with the same versions): SGLang 0.5.16, sgl-kernel 0.4.5, torch 2.11.0,
+    CUDA 12.6, flashinfer 0.6.14, triton 3.7.0, transformers 5.12.1, Python 3.10.12;
+  - Thor-1: `lmsysorg/sglang:latest-cu130-runtime` (`ba76b5c1`; SGLang build `fdebc938`, tag v0.5.16-runtime): SGLang
+    0.5.16, torch 2.11.0+cu130, CUDA 13.0, flashinfer 0.6.14, triton 3.6.0, Python 3.12.3.
+- **Device tooling (12 Oct):** `env/launch_jetson.py` (P1's image and flags per unit and model), `env/jetson_preflight.py`
+  (DEV-5), `jsw/telemetry/jetson.py` (board power in P1's schema), `env/jetson_replay_point.sh` and
+  `env/jetson_loop_point.sh` (one run, driven from the WS). P1's Orin containers mount P1's
+  `_patches/nccl_gloo_patch` (a `sitecustomize.py` that switches torch.distributed from NCCL to gloo); ours do too.
 
 - **Code flow:** edit locally, push to `git@github.com:saisandeshk/jouleserve-ws.git`, then
   run `git pull` in `~/jouleserve-ws` on the WS.

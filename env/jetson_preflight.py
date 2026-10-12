@@ -121,6 +121,7 @@ def main():
     ap.add_argument("--idle", type=float, default=0, help="seconds of idle board power to record")
     ap.add_argument("--out", help="directory for the idle samples and the result")
     ap.add_argument("--wait-cool", type=float, default=0)
+    ap.add_argument("--no-temp", action="store_true", help="after a run: the temperature check is reported, not required")
     ap.add_argument("--json")
     a = ap.parse_args()
     u, res = UNITS[a.unit], {"unit": a.unit, "t_wall": time.time(), "checks": {}}
@@ -142,7 +143,7 @@ def main():
                      "docker_root_floor": u["docker_root_free_dev2"] - 10_000_000}
     off = clock_offset(a.unit)
     chk["4_time"] = {"ok": p["ntp"] == "yes", "ntp": p["ntp"], **off}
-    chk["5_temp"] = {"ok": p["gpu_temp"] is not None and p["gpu_temp"] < 50, "gpu_temp_C": p["gpu_temp"]}
+    chk["5_temp"] = {"ok": a.no_temp or (p["gpu_temp"] is not None and p["gpu_temp"] < 50), "gpu_temp_C": p["gpu_temp"]}
     if a.server:
         s = a.server.rstrip("/")
         info = json.loads(http(s + "/get_server_info")[1])
