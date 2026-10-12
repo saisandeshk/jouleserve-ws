@@ -126,7 +126,7 @@ def window(run_dir) -> dict:
         overflowed=sum(e.get("status") == "overflow" for e in ends), cut=sum(e.get("status") == "cut" for e in ends),
         errors=sum(e.get("status") == "error" for e in ends), started=sum(e["kind"] == "session_start" for e in ev))
     met = _jl(d / "sglang_metrics.jsonl")
-    retr = [r["m"].get("sglang:num_retracted_reqs") for r in met if t0 <= r["t_mono"] <= t1]
+    retr = [r["m"].get("sglang:num_retracted_reqs") for r in met if "m" in r and t0 <= r["t_mono"] <= t1]  # scrape timeouts carry no "m"
     retr = [x for x in retr if x is not None]
     res["retracted_reqs_max"] = max(retr) if retr else None
     return res
