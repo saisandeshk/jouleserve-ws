@@ -2,11 +2,13 @@
 
     python -m analysis.replay_sets            # writes data/replay/<config>.jsonl and data/replay/summary.json
 
-For each traffic configuration used on the WS (RET-E1: the granite cells, served by granite-4.2-8b; D-E2: the
-Orin 32 gemma-E4B cell, served by gemma-4-E4B) every recorded run becomes one session: per call its prompt and
-output tokens, the gap to the next call (tool time) and the tool. For D-E2 the vision-tool gaps also carry a
-burst: the number of concurrent requests and their size, read from the run's vitals stream (1 s KV samples)
-during the tool's window (median running requests; peak KV in use split evenly over them; a short output).
+For each traffic configuration used on the WS and the Orin 32s (RET-E1, P1F-3, CAP-J1: the granite cells, served by
+granite-4.2-8b; D-E2: the Orin 32 gemma-E4B cell, served by gemma-4-E4B) every run P1's main analysis keeps (P1's
+selection rule, P1F-2; until 12 Oct the sets held only the original run<N> folders, faulted runs included) becomes
+one session: per call its prompt and output tokens, the gap to the next call (tool time) and the tool. For D-E2 the
+vision-tool gaps also carry a burst: the number of concurrent requests and their size, read from the run's vitals
+stream (1 s KV samples) during the tool's window (median running requests; peak KV in use split evenly over them; a
+short output).
 """
 from __future__ import annotations
 
@@ -14,6 +16,8 @@ import gzip
 import json
 import os
 import statistics as st
+import subprocess
+from collections import Counter
 from pathlib import Path
 
 from analysis import p1_repo
@@ -57,16 +61,22 @@ def burst_fn(cfg_key):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    summary = {}
+    head = subprocess.run(["git", "-C", str(p1_repo.P1), "rev-parse", "--short=8", "HEAD"], capture_output=True,
+                          text=True).stdout.strip()
+    summary = {"_p1_commit": head, "_selection": "P1's rule (analysis/p1_selection.py), 12 Oct"}
     for key in CONFIGS:
-        runs = p1_repo.load(key)
-        runs = [r for r in runs if r["calls"]]
+        clean = p1_repo.load(key, refresh=True)
+        runs = [r for r in clean if r["calls"]]
         sess = to_sessions(runs, key, burst=burst_fn(key) if key == "t_o32_e4b" else None)
         with open(OUT / f"{key}.jsonl", "w") as f:
             for s in sess:
                 f.write(json.dumps(s) + "\n")
         steps = [st_ for s in sess for st_ in s["steps"]]
         summary[key] = dict(
+            clean_runs=len(clean), untraced=sum(not r["traced"] for r in clean),
+            passed=sum(r["passed"] for r in clean), overflow=sum(r["status"] == "input_ceiling" for r in clean),
+            run_dirs=dict(Counter(r["run_dir"].split("_", 1)[1] if "_" in r["run_dir"] else "original" for r in clean)),
+            pools=dict(Counter(r["pool"] for r in clean).most_common(4)),
             sessions=len(sess), completed=sum(s["status"] == "completed" for s in sess),
             calls=len(steps), prompt_median=st.median(x["prompt"] for x in steps),
             out_median=st.median(x["out"] for x in steps),

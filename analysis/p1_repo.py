@@ -7,11 +7,17 @@ Configurations (one device, model and agent each):
   tool calling, Orin 32 gemma-4-E4B tool calling). Until 3c47ebc the repo lacked the Thor tool-calling sweep and
   we read our own copy (data/p1_thor_toolcalling, 104 runs to 2026-10-03 16:16); the repo now holds all 144, so
   a refreshed cache differs from the 5-6 Oct numbers for that cell;
-- traffic: the eight tool-calling cells (main run directories only; P1 also drops `*_topup` and
-  `*_ceilretry`). Traffic is ungraded: a run is "ok" when it completed without a harness failure.
+- traffic: all 17 cells of P1's main analysis (12 tool calling, 5 Reflexion). Every run folder of a cell is read and
+  P1's selection rule (analysis/p1_selection.py, ported from P1's selection.py; P1F-2) keeps one row per task and
+  repeat: the latest re-run replaces a faulted original, an overflowed original is kept, `_ceilretry` and extra
+  repeats are dropped, and text-only models (granite, Devstral) drop the 7 camera-image tasks. Until 12 Oct this
+  loader read only the original run<N> folders and kept the camera-image tasks. A run is "ok" when it completed
+  without a harness failure; "passed" is P1's grade (grades.csv with overrides.csv applied: an infrastructure-faulted
+  run is a fail, marked grade_override). Rows without a trace file (P1 counts them) have no calls (traced False).
 
 Each run is a dict: cfg, task, instance, rep, ok, status, energy_J, time_s, pool (KV-pool tokens),
-ctx (context window), evicted (drone: tokens evicted during the run), calls, tools. A call is a dict:
+ctx (context window), evicted (drone: tokens evicted during the run), calls, tools; traffic runs also carry passed,
+grade_override, run_dir (folder name, e.g. run1_topup2) and traced. A call is a dict:
 t0, t1, prompt, cached, out, reasoning, ttft, decode, energy, capped, cap, role, text (None when not
 recorded), text_complete. A tool is: t0, t1, tool, energy.
 
@@ -30,9 +36,9 @@ import gzip
 import json
 import os
 import pickle
-import re
 from dataclasses import dataclass
 
+from analysis.p1_selection import select
 from analysis.sessions import REPO
 
 P1 = REPO / "data/edge-agent-bench"
@@ -52,7 +58,7 @@ class Cfg:
     @property
     def label(self):
         return f"{self.domain.capitalize()} · {self.device} · {self.model}" + (
-            f" · {self.agent}" if self.domain == "drone" else "")
+            f" · {self.agent}" if self.domain == "drone" or self.agent != "tool calling" else "")
 
 
 CONFIGS = [
@@ -80,6 +86,25 @@ CONFIGS = [
         "traffic/final_sweep_orin_32/tool_calling/gemma-4-E4B-it"),
     Cfg("t_o32_qwenvl", "traffic", "Orin 32", "Qwen2.5-VL-7B", "tool calling",
         "traffic/final_sweep_orin_32/tool_calling/Qwen2.5-VL-7B-Instruct"),
+    # the other nine traffic cells of P1's final data (added 12 Oct, P1F-2)
+    Cfg("t_thor_devstral", "traffic", "Thor", "Devstral-24B", "tool calling",
+        "traffic/final_sweep_thor/tool_calling/Devstral-Small-2-24B-Instruct-2512"),
+    Cfg("t_thor_gemma_rfx", "traffic", "Thor", "gemma-26B", "Reflexion",
+        "traffic/final_sweep_thor/reflexion/gemma-4-26B-A4B-it"),
+    Cfg("t_o64_devstral", "traffic", "Orin 64", "Devstral-24B", "tool calling",
+        "traffic/final_sweep_orin_64/tool_calling/Devstral-Small-2-24B-Instruct-2512"),
+    Cfg("t_o64_qwenvl", "traffic", "Orin 64", "Qwen2.5-VL-7B", "tool calling",
+        "traffic/final_sweep_orin_64/tool_calling/Qwen2.5-VL-7B-Instruct"),
+    Cfg("t_o64_gemma_rfx", "traffic", "Orin 64", "gemma-26B", "Reflexion",
+        "traffic/final_sweep_orin_64/reflexion/gemma-4-26B-A4B-it"),
+    Cfg("t_o64_devstral_rfx", "traffic", "Orin 64", "Devstral-24B", "Reflexion",
+        "traffic/final_sweep_orin_64/reflexion/Devstral-Small-2-24B-Instruct-2512"),
+    Cfg("t_o32_ministral", "traffic", "Orin 32", "Ministral-8B", "tool calling",
+        "traffic/final_sweep_orin_32/tool_calling/Ministral-3-8B-Instruct-2512"),
+    Cfg("t_o32_granite_rfx", "traffic", "Orin 32", "granite-8B", "Reflexion",
+        "traffic/final_sweep_orin_32/reflexion/granite-4.2-8b"),
+    Cfg("t_o32_qwenvl_rfx", "traffic", "Orin 32", "Qwen2.5-VL-7B", "Reflexion",
+        "traffic/final_sweep_orin_32/reflexion/Qwen2.5-VL-7B-Instruct"),
 ]
 BY_KEY = {c.key: c for c in CONFIGS}
 
@@ -185,24 +210,36 @@ def _traffic_dir(rd):
 
 
 def _traffic_runs(cfg):
-    runs = []
+    """P1's clean rows of one traffic cell: every run folder's runs.jsonl rows, filtered by P1's selection rule."""
+    sweep, paradigm, model = os.path.relpath(_root(cfg), P1 / "traffic").split(os.sep)
+    device = sweep[len("final_sweep_"):]                     # orin_32, orin_64, thor: P1's device keys
+    rows, dirs = [], []
     for rd in sorted(glob.glob(os.path.join(_root(cfg), "*", "run*"))):
-        m = re.match(r"run(\d+)(_.+)?$", os.path.basename(rd))
-        if not m or m.group(2):
+        if os.path.isdir(rd):
+            for r in jsonl(os.path.join(rd, "runs.jsonl")):
+                rows.append(r)
+                dirs.append(rd)
+    sel = select([dict(device=device, paradigm=paradigm, model=model, instance=os.path.basename(os.path.dirname(rd)),
+                       run=os.path.basename(rd), task_id=r.get("task_id"), failure_class=r.get("failure_class"))
+                  for r, rd in zip(rows, dirs)])
+    runs, traces = [], {}
+    for r, rd, s in zip(rows, dirs, sel):
+        if s["excluded"]:
             continue
-        calls_by_run, tools_by_run = _traffic_dir(rd)
-        for r in jsonl(os.path.join(rd, "runs.jsonl")):
-            rid = r.get("run_id")
-            if rid not in calls_by_run:
-                continue  # 32 rows have no trace (P1 counts them; they carry no calls)
-            en = r.get("workflow_energy_j")
-            en = en if en is not None else r.get("workflow_energy_j_reconstructed")
-            runs.append(dict(task=r.get("task_id"), instance=os.path.basename(os.path.dirname(rd)), rep=int(m.group(1)),
-                             ok=r.get("failure_class") is None, status=r.get("failure_class") or "completed",
-                             energy_J=float(en or 0), time_s=float(r.get("workflow_time_s") or 0),
-                             pool=r.get("max_total_num_tokens"), ctx=r.get("context_length"), evicted=None,
-                             flushed=r.get("cache_flushed_before_run"), calls=calls_by_run[rid],
-                             tools=tools_by_run[rid], vitals_dir=rd))
+        if rd not in traces:
+            traces[rd] = _traffic_dir(rd)
+        calls_by_run, tools_by_run = traces[rd]
+        rid = r.get("run_id")
+        en = r.get("workflow_energy_j")
+        en = en if en is not None else r.get("workflow_energy_j_reconstructed")
+        runs.append(dict(task=r.get("task_id"), instance=os.path.basename(os.path.dirname(rd)), rep=s["repeat"],
+                         run_dir=os.path.basename(rd), ok=r.get("failure_class") is None,
+                         status=r.get("failure_class") or "completed", passed=r.get("final_result") == "pass",
+                         grade_override=r.get("grade_override"), energy_J=float(en or 0),
+                         time_s=float(r.get("workflow_time_s") or 0), pool=r.get("max_total_num_tokens"),
+                         ctx=r.get("context_length"), evicted=None, flushed=r.get("cache_flushed_before_run"),
+                         traced=rid in calls_by_run, calls=calls_by_run.get(rid, []), tools=tools_by_run.get(rid, []),
+                         vitals_dir=rd))
     return runs
 
 
