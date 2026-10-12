@@ -1,29 +1,28 @@
-# JouleServe-WS — build plan and reference
+# JouleServe (P5) — master plan
 
-Status: **v1.0** (2026-09-30), with the update notes below to 2026-10-06; M3–M5 are on hold until D12. This is the
-master plan for the workstation build.
-- **2026-10-01:** first evidence pack (Track A + aerogen, M2-style): [`../reports/2026-10-01-workload-opportunity/README.md`](../reports/2026-10-01-workload-opportunity/README.md). Direction decision pending; see its §6–7.
-- **2026-10-02 to 10-04:** the merged evidence doc ([`../reports/2026-10-02-p5-evidence/README.md`](../reports/2026-10-02-p5-evidence/README.md)), with the results below.
-  - A memory controller beats SGLang's default by at most ~10% in simulation (2026-10-03).
-  - P1's runaway calls are repetition loops (2026-10-04).
-- **2026-10-05:** P1's repository arrived; drone and traffic analysed ([`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md)).
-  - Traffic (P1's accumulating-context agent): kept state is worth 1–4% of LLM time; with 1–8 agents per device at real KV pools no policy beats SGLang's default by more than 2.4% (simulated); capacity binds on the Orins.
-  - The vision tool's request bursts evict the paused agent's context on Orin 64 (a live, small case of H4 / option D).
-  - P1's paper (then a draft) claims the loop finding and has dropped early abort; it deferred the KV-pool sweep (E4) and the warm-cache arm (E5), which overlap this plan's M2–M4. In the paper as submitted (10 Oct) the loop finding is offline and an online policy is left to "separate evaluation"; E4/E5 are replaced by post-submission MB1 (warm vs cold cache), MB4 (capped-call replays) and MB5 (BF16 vs FP8 window probe).
-  - **M3–M5 below assume a gateway with retention/admission policies.** On this evidence they are not worth building as planned. Rewrite them after the professor's direction decision (record it as D12). The meeting planned for 5 Oct moved to Mon 12 Oct; current state in [`../HANDOFF.md`](../HANDOFF.md).
-- **2026-10-05 (evening):** until D12, the work follows [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) (tracker: [`TRACKER.md`](TRACKER.md)). It builds an even-handed case for options A–D and their WS versions, on a shared base (models, gateway, trace replayer) that reuses this plan's §3 design.
-- **2026-10-06:** G1 of the options plan is done: the options comparison
-  ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)), with WS experiments on P1's
-  models and recorded prompts. Built on the way, from this plan's §3 design: the gateway (`jsw/gateway/`, with
-  policy hooks), a trace replayer (`jsw/workloads/replay.py`), the runner (`jsw/runner/run.py`) and two gateway
-  policies (decode guard, burst-aware memory). The simulator (`analysis/admission_sim.py`) held against a live
-  engine within 14% (RET-E1). M3–M5 stay on hold until D12.
-- **2026-10-10/11:** P1 submitted its paper (SIGMETRICS 2027) and froze its data (`0cc2311a`; 4,757 runs, 25
-  configurations, 1,468 h). It confirms the decode-bound picture (prefill 0.7–3.9% of LLM time in 18 of 22
-  configurations) and resolves the 7 Oct tool-fault caveat with re-runs; its paper has no multi-agent result ("batch
-  size is one"). Details in CMP-2 §12. D12 is taken at the professor meeting on Mon 12 Oct.
-- Track A working notes and measurements: [`PLAN.md`](PLAN.md).
-- Prior-work review (Track B): [`../review/systems/README.md`](../review/systems/README.md), with one doc per system.
+Status: **v2.0** (2026-10-12). This is the stable frame of P5: the question, the platform (the WS and the Jetsons), the
+milestones and the decisions. It changes rarely.
+- **Current work:** [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) v2.0 holds the schedule, the device protocol and the
+  experiment rules; [`TRACKER.md`](TRACKER.md) holds task status; [`../HANDOFF.md`](../HANDOFF.md) holds the state of
+  the day.
+- **v2.0 (12 Oct):** P5 has five Jetsons.
+  - Old M3–M5 (baselines, policy and WS evaluation for a retention controller) are replaced.
+  - M6 (edge readiness) is active as the device platform.
+  - M7–M9 are new (§5).
+  - §6 now describes the devices in hand.
+- **How we got here** (details in the dated reports and HANDOFF):
+  - **30 Sep:** v1.0, a WS build plan for a retention and admission controller.
+  - **1–4 Oct:** first evidence packs. P1's agents as built have no retained-state opportunity. A memory controller
+    beats SGLang's default by at most ~10% (sim). P1's runaway calls are repetition loops.
+  - **5 Oct:** P1's repository; traffic analysed. Kept state is worth 1–4% of LLM time, and capacity binds on the
+    Orins. M3–M5 put on hold until the professor's direction decision (D12).
+  - **5–6 Oct:** the options comparison (CMP-2), with WS experiments on P1's models. The gateway, the replayer, the
+    runner and two policies were built from §3's design.
+  - **10–11 Oct:** P1 submitted its paper (SIGMETRICS 2027; data at `0cc2311a`). It is decode-bound everywhere and has
+    no multi-agent result.
+  - **12 Oct:** the five Jetsons arrived; the meeting moved to Wed 14 Oct.
+- **Other planning docs:** Track A working notes in [`PLAN.md`](PLAN.md) (historical). Prior work (Track B) in
+  [`../review/systems/README.md`](../review/systems/README.md).
 
 ---
 
@@ -33,7 +32,12 @@ master plan for the workstation build.
 sessions (KV cache and hybrid-model state) while those agents wait for tools, to minimize
 **energy per successful task**?
 
-**JouleServe-WS** is a complete, reusable research platform on the 2×A5000 workstation. It
+**Where it stands (12 Oct):**
+- On P1's workloads the retained-state question is answered "little to gain" (RET).
+- Which direction P5 takes (A, B, C, D or CAP) is the professor's call (D12, Wed 14 Oct). CMP-2 makes the case for
+  each.
+
+**JouleServe** is a reusable research platform on the 2×A5000 workstation and, since 12 Oct, on P5's five Jetsons. It
 runs real agent workloads as concurrent sessions against SGLang, puts a session-aware
 **gateway** in front of the engine where retention, admission and preemption policies act, and
 measures everything (energy, memory, cache, per-session phases) in one trace format. Policies,
@@ -50,12 +54,19 @@ not a rewrite.
 6. Analysis scripts that produce the standard figures.
 7. Edge adapters stubbed and dry-run tested.
 
+Status (12 Oct):
+- **Built:** items 1–3 and 6, for recorded and replayed workloads. P1's own agents run on the Jetsons, not on the WS.
+- **Waiting for D12:** items 4–5. They assumed the retention controller.
+- **Active:** item 7, now the device platform (M6).
+
 **Not in scope on the WS:**
 - DVFS/power-limit control: needs root. It's a Jetson axis.
 - Thermal policy: the A5000's thermals are not the edge's. On the edge too, P1 measured no thermal throttling in 392 h at room temperature (2026-10-03); only hot enclosures are open.
 - Claims about unified-memory contention: only measurable on Jetson.
 
 ## 1. What we know (inputs to the design)
+
+*As of 30 Sep: the inputs to the original design. The current evidence is in `HANDOFF.md` §4 and CMP-2.*
 
 **From Track A** (P1 Thor traces; our WS measurements; details in `PLAN.md`):
 - P1's drone agent (Reflexion, thinking on, 32K max tokens) spends most of its time in **decode**: prefill is only 1–8% of LLM time. It rebuilds a role-specific prompt on every call, so only 10–31% of a CLGSCE prompt is reusable.
@@ -99,6 +110,9 @@ not a rewrite.
    - `DeviceTelemetry`: NVML ↔ tegrastats/INA3221
    - `EngineAdapter`: SGLang 0.5.20 on the WS ↔ the 0.5.16 container on Jetson
    - `MemoryModel`: discrete + host tier ↔ unified, no host tier
+
+   The Jetson side is being built in M6 (§5): tegrastats telemetry with P1's power fields, P1's SGLang 0.5.16
+   containers, and no host tier.
 4. **One trace schema, a superset of P1's** (`run_meta.json`, `iterations.jsonl`, `server_kv.jsonl`, `device_samples.jsonl`), so WS runs line up with P1's Thor runs.
 5. **Reproducible runs.** YAML config → run directory with a manifest (git SHA, package versions, server flags, GPU state, seeds), with clean start and teardown.
 6. **The KV budget is an experimental knob,** set with `--max-total-tokens`. The physical pool only needs to be at least the largest budget we study.
@@ -120,9 +134,9 @@ not a rewrite.
           └───────┬───────────────┘
                   │ HTTP + control: priority, sessions, abort/pause, caps
           ┌───────▼───────────────┐      ┌──────────────────────────────┐
-          │ SGLang 0.5.20         │─────▶│ Telemetry: NVML 10 Hz,       │
-          │ K2-Horizon-7B (bf16)  │      │ /metrics 2–10 Hz, process    │
-          │ EngineAdapter         │      │ sampler, gateway + tool logs │
+          │ SGLang 0.5.20 (WS),   │─────▶│ Telemetry: NVML 10 Hz (WS),  │
+          │ 0.5.16 (Jetson)       │      │ tegrastats 5 Hz (Jetson),    │
+          │ EngineAdapter         │      │ /metrics, gateway + tool logs│
           └───────────────────────┘      └──────────────┬───────────────┘
                                                         ▼
                                   Run store (P1-compatible) → analysis → figures
@@ -137,6 +151,9 @@ not a rewrite.
   - Every profile runs with `--enable-metrics --enable-cache-report`, the `k2_horizon` reasoning and tool-call parsers, and an optional `--max-total-tokens` cap.
 - **`EngineAdapter` interface:** `launch/teardown`, `health`, `metrics()`, `set_priority`, `open/close_session`, `abort`, and later `pin/evict` once patched.
 - Record every retraction via `num_retracted_*_tokens_total`.
+- **Jetsons (since 12 Oct):** P1's images are used as they are: `jouleserve/sglang:0.5.16-orin-cu126-sm87` on the
+  Orins, `lmsysorg/sglang:latest-cu130-runtime` on Thor-1. `env/launch_jetson.sh` starts them with P1's flags
+  (OPTIONS_PLAN §4.1).
 
 ### 3.2 JouleServe gateway (`jsw/gateway/`)
 - An async OpenAI-compatible reverse proxy (FastAPI or aiohttp), with streaming passthrough.
@@ -178,6 +195,10 @@ not a rewrite.
   - used memory, utilization
   - All of these work without root.
 - **Server sampler:** `/metrics` at 2–10 Hz, covering full/SWA/mamba usage, queue, running, cache hit rate, evictions and retractions.
+- **`DeviceTelemetry` (Jetson, M6):** tegrastats at 200 ms with P1's field names.
+  - Board total: `power_VIN_mW` on Thor; VDD_GPU_SOC + VDD_CPU_CV + VIN_SYS_5V0 on the Orins (P1's
+    `platform_total_power_mW`).
+  - NVML (GPU-only) and board energies are compared only as ratios, never in absolute terms.
 - All streams share one monotonic clock, anchored to wall time.
 - **Energy attribution:**
   - Split active and idle energy at the device level.
@@ -233,85 +254,92 @@ jouleserve-ws/
 
 ## 5. Milestones
 
-Durations are rough and assume one person. P1 members may join after P1's submission.
+Durations assume one person. Old M3–M5 assumed a retention controller and are replaced (12 Oct).
 
-| # | Milestone | Deliverables | Exit criterion | Est. |
+| # | Milestone | Deliverables | Exit criterion | Status |
 |---|---|---|---|---|
-| **M0** | Foundations | repo skeleton, env freeze, engine profiles (tp1/tp2), NVML + `/metrics` samplers, run manifest, smoke test | one request produces a complete run dir with energy numbers; tp2 pool size measured | ~1 wk |
-| **M1** | Workloads + gateway v0 | pass-through gateway with a session FSM and call log; MCP proxy; P1 CLGSCE port (x86 sim, per-session ports, harness); session driver; `aerogen` adapter (if approved) with pacing | CLGSCE B5 passes end to end in one session with a full trace; N=4 concurrent CLGSCE sessions run; one aerogen mission runs through the `k2_horizon` tool parser | 1.5–2 wk |
-| **M2** | Characterization + **decision gate** | E1: single session (12 CLGSCE tasks × 3 instances × 1 run; aerogen 5 tasks). E2: N ∈ {1,2,4,8,16} × budget multiples, for both paradigms. Offline headroom estimate. **Evidence pack** | the professor picks the direction (drone as-is / modify / adopt) and the hypothesis (H1–H5) | 1–1.5 wk |
-| **M3** | Baselines | "must" baselines in the gateway, each checked for its qualitative behaviour; any minimal SGLang patch (pin / evict-now / per-session metrics) | every baseline runs on every workload in the standard sweep | ~2 wk |
-| **M4** | JouleServe policy v1 | calibrated cost model; controller for the chosen hypothesis; ablations | beats the best baseline on energy per successful task at an equal or better success rate and p95, in the target regime | 2–3 wk |
-| **M5** | WS evaluation | full sweeps, figures, draft write-up | reproducible from configs | 1–2 wk |
-| **M6** | Edge readiness (in parallel, small) | Jetson `DeviceTelemetry` (from P1's `samplers.py`), Jetson engine profile (our `jouleserve/sglang:0.5.16-orin-cu126-sm87` image from hostov), `MemoryModel=unified` mode, checklist | dry run with recorded tegrastats; ready to go on first device access | ongoing |
+| **M0** | Foundations | repo skeleton, env freeze, engine profiles, NVML + `/metrics` samplers, run manifest, smoke test | one request produces a complete run dir with energy numbers | done (30 Sep–1 Oct) |
+| **M1** | Workloads + gateway v0 | gateway with policy hooks and call log; trace replayer; aerogen driver; runner | P1's sessions replay as N concurrent agents | done (5–6 Oct). The CLGSCE port to the WS is superseded: P1's drone stack runs on the units |
+| **M2** | Characterization + decision gate | evidence packs (1–5 Oct); the options comparison CMP-2 (6 Oct) | the professor picks the direction (D12) | done; the gate is D12, Wed 14 Oct |
+| M3 | Baselines in the gateway (retention) | — | — | **replaced** 12 Oct. RET's negative result removed the controller this served; the baseline policies exist in the simulator and the replayer |
+| M4 | JouleServe policy v1 (retention) | — | — | **replaced** by M8 |
+| M5 | WS evaluation | — | — | **replaced** by M7–M8: evaluation moves to the devices, and the WS is the link |
+| **M6** | **Device platform** (was "edge readiness") | P1's stack snapshotted and stopped; P5 folders and container convention; Jetson telemetry with P1's power fields; our stack on P1's SGLang 0.5.16 images; preflight protocol; unit equivalence; calibration | a replayed P1 session on an Orin 32 costs what P1 measured on that board (±15%), and every run passes preflight | **active**: the minimum by Mon 12 Oct 23:00 (C1); calibration of every model by ~16 Oct |
+| **M7** | **Meeting-ready evidence** | corrected CMP-2 and deck; P1's clean sessions (loader, WS reruns); first device results (CAP-J1 with its anchor, the A-J1 pilot) | the professor decides D12 on correct numbers | due Wed 14 Oct (freeze 09:00) |
+| **M8** | **The chosen direction on the devices** | the branch in OPTIONS_PLAN §7, each experiment's rule written before it runs | the branch's question answered on P1's devices, with repeats | after D12; 2–4 weeks |
+| **M9** | Write-up | figures, a draft, and what goes to P1 | — | after M8 |
 
-**What we run first** (this week):
-1. M0.
-2. The CLGSCE port.
-3. Ask the aerogen author, and the P1 team, before vendoring their code.
-4. Resume the Track A plan in `PLAN.md` on the new infrastructure.
+What runs now: OPTIONS_PLAN.md §3 (schedule) and TRACKER.md (status).
 
-## 6. Edge plan (for later, when the devices are back)
+## 6. The devices (since 12 Oct)
 
-1. **Environment.**
-   - Our Orin SGLang image `jouleserve/sglang:0.5.16-orin-cu126-sm87` (from hostov), plus the P1 Thor container.
-   - Same gateway, driver and workloads.
-   - Reuse P1's `run_one.py` conventions and check for P1's busy markers, so we never collide with their runs.
-2. **Telemetry adapter:**
-   - INA3221 rails through tegrastats or sysfs, faster than jtop's 2 s
-   - thermal zones, cooling state
-   - GPU/EMC clocks, throttle ratio
-   - Board energy covers CPU, DRAM and simulator energy.
-3. **Recalibrate the cost models** per device and power mode. Orin has ~4× less memory bandwidth than an A5000, so prefill share rises and decode slows.
-4. **Unified memory.**
-   - Run `MemoryModel=unified` (no host tier). Offload becomes an accounting-only or compress option.
-   - Measure how co-located simulators and tools contend for memory and bandwidth. This is H4, the edge-only hypothesis.
-5. **Models.**
-   - P1's hybrid models (Gemma-4-26B-A4B, Qwen3.8-27B), with SWA/mamba state pools and checkpoint-granular reuse (H3).
-   - Keep K2 Horizon for continuity with the WS results.
-6. **Power and thermal.**
-   - Treat nvpmodel modes and ambient temperature as fixed experimental conditions (mode switches are slow).
-   - Feed thermal state into the policy.
-   - Optionally add root-gated DVFS as an orthogonal axis.
-7. **P1 predictor.** If P1 delivers its predictor (remaining iterations and energy after iterations 1–2), plug it in as a gateway input for admission and retention.
-8. **Validate.** Rerun the key WS experiments on Orin 32/64 and Thor, and report which WS conclusions carry over.
+P5 has five of P1's Jetsons (Sandesh, 12 Oct).
+- **The units:** Thor-1 (`dream-thor-1`), Orin-64-1 (orin45) and Orin-32-1/2/3 (orin56/57/58). They hold P1's images,
+  models and drone stack, and are reachable from the laptop and the WS as `ssh Thor-1`, `ssh Orin-64-1`,
+  `ssh Orin-32-1/2/3`.
+- **Their roles** (D19): capacity on the Orin 32s, A on Thor-1, calibration and then D on Orin-64-1. The WS drives,
+  analyses and links.
+- **References:** the inventory is in OPTIONS_PLAN.md §1.2; the rules are in `AGENTS.md` §4.
+
+The edge plan of v1.0, item by item:
+1. **Environment.** P1's images and models are used as they are. Our gateway and replayer run on the WS and drive the
+   units over the LAN (OPTIONS_PLAN DEV-4). P1's busy markers no longer matter on P5's units, except when we run P1's
+   own harness ourselves.
+2. **Telemetry adapter.** tegrastats at 200 ms with P1's field names, plus sysfs clocks and thermal zones (DEV-3).
+   Board energy includes CPU, DRAM and simulator energy.
+3. **Recalibrated cost models**, per device and model (DEV-7). Orin has about 4× less memory bandwidth than an A5000,
+   so prefill's share rises and decode slows.
+4. **Unified memory.** `MemoryModel=unified` (no host tier). Co-located tools and models contending for memory is H4,
+   the edge-only hypothesis, in the D branch (D-J1, D-J2).
+5. **Models.** P1's hybrid models (Gemma-4-26B-A4B with sliding-window layers, Qwen3.8-27B with linear attention) are
+   on the units; H3 only if a branch needs it. K2 Horizon is dropped: P1's models replaced it on the WS on 5–6 Oct.
+6. **Power and thermal.** nvpmodel MAXN with the clocks locked, as found and as P1 ran. Mode, clocks and ambient
+   temperature are fixed conditions. Root-gated DVFS stays out of scope unless a branch needs it.
+7. **P1 predictor.** Not delivered; not planned.
+8. **Validate.** Every device result carries its anchors: N = 1 against P1's measured runs on the same board, the WS
+   on the same sessions, and the simulator where it applies.
 
 ## 7. Risks and mitigations
 
 | Risk | Mitigation |
 |---|---|
-| No retained-state opportunity in any workload | The platform still yields H1 (admission/preemption for reasoning agents) and H5 (energy attribution). Present the negative result with numbers. |
+| No retained-state opportunity in any workload | **Happened** (RET, 3–6 Oct). The options comparison (CMP-2) offers five directions; the negative result is reported with numbers |
 | K2 Horizon's tool calling is poor | Try its `json`/`xml` tool formats. Fall back to Ling 3.0 Tiny (hybrid) or another small AA model; the model is only a config value. |
 | The AirLib x86 build fails with gcc | Use user-space clang (as P1 did on Thor), or reimplement the small SimpleFlight kinematics, flagged as lower fidelity. |
 | SGLang levers are insufficient | Minimal patch behind `EngineAdapter`, documented and version-pinned. |
 | GPU time (~30 GPU-h per full CLGSCE sweep) | Two independent tp1 replicas; one run per instance first; open-loop concurrency sweeps are shorter per data point. |
-| Version drift from P1 (0.5.16 vs 0.5.20) | Record versions in every manifest, and cross-check one config on Thor later. |
+| Version drift from P1 (0.5.16 vs 0.5.20) | Record versions in every manifest. On the devices it is resolved: P1's own images are used |
+| Device numbers disagree with P1's | DEV-3's side-by-side check with P1's sampler, and the N = 1 anchor (OPTIONS_PLAN §5.2); report relative numbers only if the anchor fails |
+| The Orin 32 docker disks are full | Read-only containers that write only to the USB drives; no image pulls or loads there; move (never delete) files only with the owners' OK |
+| The units are needed by others again | Agree a schedule through Sandesh; every device point can be restarted on its own |
 | Code ownership (P1, aerogen author) | Ask before vendoring; keep attribution in `vendor/*/README`. |
 
-## 8. Open decisions
+## 8. Decisions
 
-| ID | Decision | Default / status |
+| ID | Decision | Status (12 Oct) |
 |---|---|---|
-| D6 | Use `aerogen_mcp` as the native tool-calling drone workload | pending the author's OK (ask) |
-| D7 | Second native tool-calling workload | τ²-bench (MIT) |
-| D8 | KV budget labels | multiples of one session's peak, mapped to devices afterwards |
-| D9 | tp2 vs quantization vs FP8 KV for the concurrency sweeps | tp2 bf16 first (after tp1 characterization) |
-| D10 | JouleServe policy focus | decided at the M2 gate (H1/H2/H3) |
-| D11 | Minimal SGLang patch (pin / evict-now / per-session metrics) | only if M3 needs it |
+| D6 | Use `aerogen_mcp` as the native tool-calling drone workload | used on the WS from a private copy (not vendored); extending it waits for mayankarya's OK (B-J1) |
+| D7 | Second native tool-calling workload | τ²-bench (used in C-E1) |
+| D8 | KV budget labels | superseded: P1's real pools are used, set with `--max-total-tokens` |
+| D9 | tp2 vs quantization vs FP8 KV for the concurrency sweeps | FP8 KV became a research lever (CAP); tp2 only where a model needs it |
+| D10 | JouleServe policy focus | replaced by D12 |
+| D11 | Minimal SGLang patch (pin / evict-now / per-session metrics) | not needed so far |
+
+Other decisions:
+- D1–D5: `PLAN.md` §6.
+- D12: the professor's direction decision (Wed 14 Oct). Its outcome will be D23.
+- D13–D18: OPTIONS_PLAN.md Appendix R.
+- D19–D22: OPTIONS_PLAN.md §9.
 
 ## 9. Quick reference
 
-- **WS:** `ssh saisandeshk@10.24.32.174`, repo at `~/jouleserve-ws`.
+- **WS:** `ssh WS` (`saisandeshk@10.24.32.174`).
+  - Repo `~/jouleserve-ws`, dev copy `~/jsw-dev`, runs `~/work/runs/`.
   - GPU0 ↔ cores 0–9, 20–29; GPU1 ↔ cores 10–19, 30–39.
   - No NVLink, no root.
-- **Serve K2 Horizon on one GPU:**
-  ```bash
-  L=~/legacy/jouleserve-ws; export LD_LIBRARY_PATH=$L/.venv/lib/python3.11/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH
-  CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_server --model-path IFM/K2-Horizon-7B \
-    --tp-size 1 --context-length 65536 --mem-fraction-static 0.88 --cuda-graph-max-bs-decode 16 --disable-prefill-cuda-graph \
-    --reasoning-parser k2_horizon --tool-call-parser k2_horizon --enable-metrics --enable-cache-report --port 30000
-  ```
-- **P1 device (Thor):** `ssh yash@10.24.24.79`. Look only. Never run anything whose command line contains P1's busy strings (see `PLAN.md` Appendix A).
-  - Drone code map: `PLAN.md` Appendix A.
-  - `aerogen_mcp`: `/media/ssd/drone/aeroeval/aerogen_mcp/`.
-- **P1 trace copy:** `data/p1_thor_drone/` (125 Gemma runs, lightweight files).
+  - Serving recipes: `AGENTS.md` §5 (K2) and §6c (P1's models).
+- **Jetsons (P5's since 12 Oct):** `ssh Thor-1`, `ssh Orin-64-1`, `ssh Orin-32-1`/`-2`/`-3`, from the laptop or the WS.
+  Inventory: OPTIONS_PLAN.md §1.2. Rules: `AGENTS.md` §4.
+- **Thor-2** (`mayankarya@10.24.24.80`): P1's machine. Look-and-copy only.
+- **P1's data:** local `data/edge-agent-bench` and WS `~/work/p1/edge-agent-bench`, both at `0cc2311a` (read-only).
+  Drone code map: `PLAN.md` Appendix A. Trace copy: `data/p1_thor_drone/`.

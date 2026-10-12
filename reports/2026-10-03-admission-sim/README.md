@@ -1,5 +1,22 @@
 # Can a memory controller beat SGLang's default? N drones sharing one edge box
 
+> **Update 2026-10-12** (corrections from a doc sweep and a check of our result files; list in
+> [`../../planning/TRACKER.md`](../../planning/TRACKER.md), "COR checklist"). Superseded below:
+> - **The 6 Oct update (RET-E1):** per completed session the simulator is within 14.2% (−1.8%, −14.2%, 0.0% at 1, 4, 8
+>   agents; the 4-agent gap is mostly which sessions finished in the window, 21 simulated against 18 live) and within
+>   6% per token at every point (−1.4%, −4.6%, +5.8%). It holds narrowly at 4 agents, the ranking test is degenerate
+>   (at 8 agents the default keeps no state, so it ties with dropping state), and the test is narrower than planned
+>   (one pool, P1's Orin 32 granite; no half pools, Orin 64, N = 2 or keep policy). One run per point.
+> - **The same update, "FP8 KV cuts energy per session 62%":** per completed session, biased by sessions cut at the
+>   window's end. Per generated token it is −53% at 8 agents (3.95 → 1.87 J) and −45% against the best bf16 point (4
+>   agents, 3.43 J/token); one run per setting.
+> - **Task sets (the 4 Oct update; "What this means for Monday", item 1):** 31% (Reflexion) and 36% (tool calling) for
+>   the loop stop, and 57% and 70% of LLM time in capped calls, are for the 12 CLGSCE tasks; on all 16 Reflexion tasks
+>   they are 43.5% and 71%.
+> - **Answer item 5, "219–499 kJ" (and the 5–13× and 0.9–9.6× that follow from it):** P1's Reflexion costs 284–499 kJ
+>   per success. 219 kJ was D2 on our 143-run copy (8 runs); P1's 144th run (a loop) makes it 284 kJ (9 runs;
+>   `../2026-10-06-options/b_e2.json`). The ratios become 5.9–13.5× (4.6–13.5× before) and 1.2–9.6× strict (0.9–9.6×).
+>
 > **Update 2026-10-06** ([`2026-10-06-options`](../2026-10-06-options/README.md), RET-E1). The simulator held against a live engine: P1's Orin 32 granite traffic
 > replayed on granite-4.2-8b at P1's pool, 1-8 agents, energy per completed session within 14.2% (2% except at 4
 > agents), and an FP8-KV run with twice the pool predicted within 6.4%. At 8 agents SGLang's default keeps no state

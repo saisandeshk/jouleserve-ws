@@ -2,6 +2,20 @@
 
 **2026-10-04 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-12** (corrections from a doc sweep and a check of our result files; list in
+> [`../../planning/TRACKER.md`](../../planning/TRACKER.md), "COR checklist"). Read the tables below with these labels
+> and corrections:
+> - **Task sets (the stop-rule table, Answer item 3):** 44% is the online loop stop on all 16 Reflexion tasks, 31% on
+>   Reflexion's 12 CLGSCE tasks, 36% (35.7%) on tool calling's 12 tasks (our 104-run copy; P1's repository now holds all
+>   144 runs). Other docs quote 43.5% and 35.7% without the task sets. The same holds for the 71% of LLM time in capped
+>   calls (Reflexion, 16 tasks): on the 12 tasks it is 57% (Reflexion) and 70% (tool calling).
+> - **Answer item 4, "the likely cause is greedy decoding":** measured 6 Oct (the update below), on a 4-bit stand-in, one
+>   seed, Reflexion prompts only, pass rate unmeasured; not shown on P1's bf16 model or a Jetson.
+> - **Agent-design ratios (Answer item 9 and the table "The agent-design comparison under both success checks";
+>   4.6–13.5× and 0.9–9.6× strict):** they use D2 = 219 kJ per success from our 143-run copy (8 runs). With P1's 144th
+>   run (a loop) D2 is 284 kJ (`../2026-10-06-options/b_e2.json`), so the D2 + D3 rows rise by 29%: 5.9–13.5× and
+>   1.2–9.6× strict.
+>
 > **Update 2026-10-11** ([`2026-10-06-options` §12](../2026-10-06-options/README.md)). P1's paper as submitted on
 > 10 Oct reports the loops offline (a compression test flags 52.9% of 690 capped reasoning calls, 0.68% of 1,171 long
 > finished calls) with the "stop at the first capped call" bound (50.2%, 22 passing runs lost, on Thor Reflexion), and

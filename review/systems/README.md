@@ -2,12 +2,12 @@
 
 > **Notes from P1's measurements (2026-10-03/04).**
 > - **Thermal.** P1 saw no thermal throttling in 392 h of agent runs at room temperature. Thermal-aware systems (TAWS, EnerInfer) matter here only for hot enclosures.
-> - **Runaways.** P1's 32K-capped thinking calls are repetition loops under greedy decoding. So the prior work that bears on option A is reasoning-length control and early exit, which is not yet reviewed. See [`../../reports/2026-10-04-drone-runaways/README.md`](../../reports/2026-10-04-drone-runaways/README.md).
+> - **Runaways.** P1's 32K-capped thinking calls are repetition loops, and P1 decodes greedily (temperature 0). Whether sampling removes them was open on 4 Oct; on 6 Oct A-E1 (below) found that on a 4-bit stand-in it does (one seed, Reflexion prompts only, pass rate unmeasured). So the prior work that bears on option A is reasoning-length control and early exit, reviewed on 6 Oct (below). See [`../../reports/2026-10-04-drone-runaways/README.md`](../../reports/2026-10-04-drone-runaways/README.md).
 >
 > **Notes from P1's repository (2026-10-05;** [`../../reports/2026-10-05-p1-repo/README.md`](../../reports/2026-10-05-p1-repo/README.md)**).**
 > - **F1 extends to traffic.** P1's traffic agent grows one context (56–82% of prompt tokens from cache), yet kept state saves 1–4% of LLM time: outputs are long (a median 424–999 tokens per call) and a generated token costs 117–312 prefilled ones in time on these Jetsons.
 > - **F3 is narrower than we thought.** Traffic tools mostly return in 0.5–3 s; only the vision tool (median 53–158 s) and some data queries wait long. Physical drone flights remain the 10 s–10 min case.
-> - **F4 holds.** Decode dominates (84–99% of LLM time); capped decodes take 38–69% of board energy on Thor gemma (33% on Orin 32 gemma-E4B traffic, 0–19% elsewhere).
+> - **F4 holds.** Decode dominates: 96–99% of LLM time, except Qwen2.5-VL (prefill 15–16%) and Devstral drone (prefill 20–22%, its prefix cache off); capped decodes take 38–69% of board energy on Thor gemma (33% on Orin 32 gemma-E4B traffic, 0–19% elsewhere).
 > - **F5/H4: a live case.** `ask_vlm` sends 8–45 concurrent requests to the agent's own server; on a 12.4K-token pool (Orin 64) it evicts the paused agent context every time. The cost is small (0.6% of LLM time) because prefill is cheap, but it is the one memory-pressure mechanism at one agent per device.
 > - **P1's paper is now the closest internal work** to option A: it reports the loops (offline detector) and a "stop at the first capped call" bound. Not cited by P1: INFERCEPT, Continuum, TokenCake, CacheScout, Adaptive KV Retention, or reasoning-length control.
 
@@ -15,10 +15,10 @@
 > - **F4 holds on P1's whole corpus** (4,757 runs, 25 configurations): generation is 77.9-99.6% of LLM energy; prefill
 >   0.7-3.9% of LLM time in 18 of 22 configurations (Qwen2.5-VL 15-16%, Devstral drone 22% with its prefix cache off).
 > - **A:** the paper reports the loops offline and leaves an online policy to "separate evaluation"; greedy decoding is
->   not discussed. **CAP:** FP8 KV, shorter tool schemas and bounded outputs are listed as untested levers; window
->   overflows reach 28% of Orin runs. **D/H4:** the vision tool is "the agent's own model reading images" (54.6% of tool
->   energy); the burst is not mentioned. **RET:** "batch size is one", so no multi-agent result. P5 is still not cited,
->   nor are the systems above.
+>   not discussed. **CAP:** FP8 KV, shorter tool schemas and bounded outputs are listed as untested levers (untested as a
+>   lever, though P1 ran FP8 KV in its held-out Orin 64 drone sweep); window overflows reach 28% of Orin runs. **D/H4:**
+>   the vision tool is "the agent's own model reading images" (54.6% of tool energy); the burst is not mentioned.
+>   **RET:** "batch size is one", so no multi-agent result. P5 is still not cited, nor are the systems above.
 
 > **Notes from the options work (2026-10-06;** [`../../reports/2026-10-06-options/README.md`](../../reports/2026-10-06-options/README.md)**).**
 > Four literature reviews, one per option, by parallel reviewers (Sonnet), with 20 new system docs (§1b). The
@@ -26,8 +26,9 @@
 > - **A (decode-side energy): partly covered.** Repetition-loop stop and recovery (Word Salad Chopper, Circular
 >   Reasoning), energy-motivated agent stop (AgentStop), stop and restart (Fail-Fast Restart-Smart), early exit in
 >   SGLang (Dynasor), thinking budgets on Jetson Orin (EdgeReasoning). Not found: an engine-side text detector for
->   thinking agents with a retry policy and energy per successful task on Jetsons. This week's A-E1 adds that the
->   drone loops are a greedy-decoding effect on a 4-bit stand-in of P1's 26B.
+>   thinking agents with a retry policy and energy per successful task on Jetsons. This week's A-E1 adds that, on a
+>   4-bit stand-in of P1's 26B (one seed; P1's Thor Reflexion prompts only; pass rate unmeasured), greedy decoding loops
+>   on 23 of 30 of P1's loop prompts (77%) and Gemma's default sampling on none.
 > - **B (agent design): the direction is known with energy numbers** (Cost of Dynamic Reasoning, Engineering
 >   Sustainable Agents, EpG/A-LEMS, CodeAct, AeroGen); the exact step-wise vs whole-program comparison on embodied
 >   edge tasks was not found.
@@ -38,7 +39,7 @@
 > - **F1 holds on a standard benchmark too** (C-E1): tau2-bench reuses 92-96% of prompt tokens, yet with thinking
 >   on kept state is worth 7.5-9.9% of LLM time at E4B's Jetson price; without thinking 25%.
 
-Status: 2026-09-30 (§1b and the options notes added 2026-10-06; notes on P1's submitted paper 2026-10-11). There is one doc per system in this folder, all following `_TEMPLATE.md`:
+Status: 2026-09-30 (§1b and the options notes added 2026-10-06; notes on P1's submitted paper 2026-10-11; the notes above corrected 2026-10-12 per the COR checklist in `../../planning/TRACKER.md`). There is one doc per system in this folder, all following `_TEMPLATE.md`:
 workloads, assumptions, controller, results, what JouleServe-WS can take, what JouleServe must
 add, and workstation → edge. The docs were written by parallel reviewers from primary sources.
 

@@ -13,13 +13,15 @@
 >   accumulates context, but kept state is still worth 1–4% of its LLM time; drone and traffic results in
 >   [`../reports/2026-10-05-p1-repo/README.md`](../reports/2026-10-05-p1-repo/README.md). The repository has
 >   no Thor drone tool-calling cell, so `data/p1_thor_toolcalling/` stays in use (P1's final data of 10 Oct has
->   it). The direction decision moved with the professor meeting to Mon 12 Oct (D12 open).
+>   it). The direction decision moved with the professor meeting to Wed 14 Oct (D12 open).
 > - **2026-10-06:** the options comparison ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md);
 >   plan [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md)). P1's models now run on the WS (gemma-4-E4B and granite-4.2-8b in
 >   SGLang; gemma-4-26B only as a 4-bit GGUF in llama.cpp; recipes in `AGENTS.md` §6c). On the 26B, greedy decoding
 >   loops on 77% of P1's loop prompts and Gemma's default sampling on none.
 > - **2026-10-10/11:** P1 submitted its paper and froze its data (`0cc2311a`); what it means for P5 is in CMP-2 §12
 >   ([`../reports/2026-10-06-options/README.md`](../reports/2026-10-06-options/README.md)) and `HANDOFF.md`.
+> - **2026-10-12:** P5 has five of P1's Jetsons, and the meeting moved to Wed 14 Oct. The current work plan is
+>   [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) v2.0. This file is a historical record of Track A (30 Sep–5 Oct).
 
 Status: **draft v0.4** (2026-09-30), with the update notes above to 2026-10-11. This is a living document. Sections marked
 `TBD` are deliberately thin until we reach them. Decisions are tracked in §6.
@@ -40,8 +42,8 @@ A JouleServe contribution has to come from **edge-specific factors changing the 
 action**: unified memory, shared bandwidth, thermal state, and what the running tool
 itself needs from the device. It is judged by energy per successful task.
 
-**Constraint right now.** The edge devices are with P1 until their deadline; the P1
-drone sweep is currently running on a **Jetson AGX Thor**. P5 has a **2×A5000
+**Constraint as of 30 Sep** (since 12 Oct P5 has five of P1's Jetsons). The edge devices are with P1 until their
+deadline; the P1 drone sweep is currently running on a **Jetson AGX Thor**. P5 has a **2×A5000
 workstation**. WS work must be useful once the edge devices come back. P1
 (EdgeAgentBench) supplies the devices, the workloads (drone, traffic) and possibly a
 trajectory predictor.
@@ -413,7 +415,7 @@ runs/       raw run outputs (git-ignored; summaries committed)
 
 ---
 
-## Appendix A — P1 drone code map (P1 device `yash@10.24.24.79`, Jetson AGX Thor; look only)
+## Appendix A — P1 drone code map (`yash@10.24.24.79`, Jetson AGX Thor; P1's device until 10 Oct, P5's Thor-1 since 12 Oct)
 
 **Sweep harness:** `/home/yash/final_sweep/_harness/`
 - `sweep.py`, `run_one.py`, `instances.py`, `samplers.py`, `p1_trace.py`, `verdicts.py`

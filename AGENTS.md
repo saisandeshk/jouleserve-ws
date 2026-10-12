@@ -20,18 +20,21 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
   - P1's plan is in the deck at `~/Study/ISP/JouleServe/EdgeAgentBench_paper_plan.pptx`. The
     P1 team's current plan differs somewhat, but the idea is the same.
 - **This repo is a fresh restart.** It builds **JouleServe-WS**, a reusable research platform
-  on the 2×A5000 workstation, and the Track A/B evidence. The goal is to be ready when the
-  edge devices come back from P1.
+  on the 2×A5000 workstation, and the Track A/B evidence.
+- **Since 2026-10-12 P5 has five of P1's Jetsons** (Thor-1, Orin-64-1, Orin-32-1/2/3; §3), assigned by Sandesh after
+  P1's submission. Rules for them are in §4.
 
 ## 2. Read order
 
 1. `HANDOFF.md`: state as of the last session, audit findings, open questions, next steps.
-2. `planning/OPTIONS_PLAN.md` and `planning/TRACKER.md` (since 2026-10-05): **the current work plan**,
-   which puts master-plan M3–M5 on hold until the direction decision (D12). G1 built an even-handed case for
-   options A–D and CAP (done 2026-10-06); G2 builds their WS versions. Decisions D13–D18. The tracker holds task
-   status.
-3. `planning/JOULESERVE_WS_PLAN.md`: **master plan**. It covers architecture, milestones M0–M6,
-   edge plan, risks and decisions D6–D11.
+2. `planning/OPTIONS_PLAN.md` (v2.0, 2026-10-12) and `planning/TRACKER.md`: **the current work plan**.
+   - The plan covers the schedule to the professor meeting (Wed 14 Oct, D12), the device platform, the experiment
+     rules, and one branch per option after D12.
+   - It holds decisions D19–D22. Its Appendix R keeps the G1/G2 record (5–11 Oct: criteria, rules, outcomes,
+     S1–S6, D13–D18).
+   - The tracker holds task status and the correction checklist.
+3. `planning/JOULESERVE_WS_PLAN.md`: **master plan** (v2.0). It covers architecture, milestones M0–M9 (old M3–M5
+   replaced; M6 = the device platform), the devices, risks and decisions D6–D11.
 4. `planning/PLAN.md`: Track A working notes and measurements. It holds P1 trace analysis, WS
    environment facts, decisions D1–D5, and the P1 code map (Appendix A).
 5. `review/systems/README.md`: Track B, with one doc per system in `review/systems/`. It has
@@ -48,10 +51,17 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 | Machine | How to reach it | Role |
 |---|---|---|
 | Local checkout | `~/Study/ISP/jouleserve-ws` | docs, analysis, git |
-| WS `resiliente-2053` | `ssh saisandeshk@10.24.32.174` | all P5 compute. 2× RTX A5000 24 GB, no NVLink, no root. Clone at `~/jouleserve-ws` |
-| P1 Thor `dream-thor-1` | `ssh yash@10.24.24.79` | P1's live sweep device; source of the drone code and traces. **Off-limits since 2026-10-05** (no access at all until Sandesh lifts it); read-only when allowed |
+| WS `resiliente-2053` | `ssh WS` (`saisandeshk@10.24.32.174`) | P5's development, GPU experiments and analysis (ECC memory), and the host that drives the Jetsons. 2× RTX A5000 24 GB, no NVLink, no root. Clone at `~/jouleserve-ws` |
+| **Thor-1** `dream-thor-1` | `ssh Thor-1` (`yash@10.24.24.79`) | **P5's since 2026-10-12** (Sandesh lifted the 5 Oct ban for it). AGX Thor, 126 GB. P1's image `lmsysorg/sglang:latest-cu130-runtime`; P1's 26B, granite and other models in yash's HF cache; P1's drone stack. P5 folder `~/p5` (`/` has 72 GB free). Role (D19): option A |
+| **Orin-64-1** (orin45) | `ssh Orin-64-1` (`mayankarya@10.24.24.45`) | **P5's since 2026-10-12.** AGX Orin 64 GB. Image `jouleserve/sglang:0.5.16-orin-cu126-sm87`; P1's 26B on the HDD. P5 folder `/media/hdd/p5`. Role: calibration, then D and the Gemma FP8 drone pair |
+| **Orin-32-1/2/3** (orin56/57/58) | `ssh Orin-32-1` / `-2` / `-3` (`mayankarya@10.24.24.56/.57/.58`) | **P5's since 2026-10-12.** AGX Orin 32 GB. Image as above (Orin-32-3's build differs: check before pairing). granite on all three, E4B on Orin-32-1. The docker SSDs are full. P5 folders `/media/hdd/p5` (Orin-32-1, -3), `/media/hdd2/p5` (Orin-32-2). Role: capacity (CAP) |
+| Thor-2 `dream-thor-2` | `ssh mayankarya@10.24.24.80` | **P1's.** It holds P1's traffic agent. **Look-and-copy only**; never run experiments there. The P1 Thor rules below apply |
 | P1's repository clone | `data/edge-agent-bench` (local, git-ignored) | P1's raw drone and traffic runs, pipeline and paper (`dream-lab/edge-agent-bench`, cloned by Sandesh 2026-10-05). **Read-only**; rules in §4 |
-| Orin 32/64, other Thors | — | allocated to P1 until their deadline |
+
+- **Aliases:** the `ssh` aliases work from the laptop and from the WS, with passwordless keys. `ssh WS` reaches the WS
+  from the laptop.
+- **Inventory:** the per-unit details of 12 Oct (models and revisions, disks, what P1 left running) are in
+  `planning/OPTIONS_PLAN.md` §1.2.
 
 - **Code flow:** edit locally, push to `git@github.com:saisandeshk/jouleserve-ws.git`, then
   run `git pull` in `~/jouleserve-ws` on the WS.
@@ -60,10 +70,48 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 
 ## 4. Hard rules
 
-### P1 Thor: someone else's live experiment
+### P5's Jetsons (Thor-1, Orin-64-1, Orin-32-1/2/3; since 2026-10-12)
 
-- **Off-limits since 2026-10-05** (Sandesh): no ssh at all, not even read-only, until Sandesh says otherwise. Use
-  P1's repository and our local copies. The rules below apply when access returns.
+They are shared lab machines, and we work inside P1 members' accounts (`yash`, `mayankarya`).
+- **Delete nothing** (P1's mentor, 12 Oct):
+  - no `docker rm`, `rmi` or `prune`;
+  - no file deletions outside P5's own folders.
+- **Stopping P1's things is allowed:** containers, servers, MCP, AirSim. Snapshot first (`docker ps -a`,
+  `docker inspect`, `ps`) into `<p5>/state/`, so P1's stack can be restarted exactly.
+- **Leave alone:**
+  - other people's tmux sessions and files;
+  - k3s on Orin-64-1;
+  - Thor-1's legacy P5 root helper `/usr/local/sbin/jouleserve-thor`.
+
+  ollama on Orin-64-1 may be stopped during measurements (Sandesh).
+- **P5's folders only:** `~/p5` on Thor-1, `/media/hdd/p5` on Orin-64-1, Orin-32-1 and Orin-32-3, `/media/hdd2/p5`
+  on Orin-32-2. Orin-32-2's `/media/hdd` holds someone's backup on the internal disk: don't use it.
+- **Credentials:** never use the keys, tokens or credential helpers stored in these accounts to reach GitHub or
+  anything else.
+- **Containers.** The Orin 32 docker roots (`/media/ssd/docker`) are full, so:
+  - existing images only: no `pull`, `build` or `load` on the Orins;
+  - `docker run --rm --read-only --tmpfs /tmp --log-driver none`;
+  - models mounted read-only from where P1 keeps them, with `HF_HUB_OFFLINE=1`;
+  - every write goes to the P5 folder through a bind mount;
+  - container names `p5-<task>`.
+- **Measurement conditions** (plan §4, D20):
+  - MAXN with the clocks locked, as found on 12 Oct and as P1 ran. Don't change them.
+  - P1's server flags.
+  - A quiet unit, checked by `env/jetson_preflight.py` before and after every run.
+  - Board energy from P1's power fields.
+- **Sudo:** some rules are password-free (root tegrastats, nvpmodel and jetson_clocks on the Orin 32s, cache
+  clearing). Everything else goes through Sandesh.
+- **Commands over ssh:** `pkill -f <pattern>` kills the ssh shell itself (§6b). Select PIDs with
+  `ps | grep '[x]yz'`.
+- **Data:** copy every run to the WS within the hour (SHA-256) and analyse it there.
+- **Ownership:** P1's code and environments may be used (P1's mentor, 12 Oct). Ask Sandesh before vendoring any of it
+  into this repo, and keep attribution.
+- **P1's busy check** (below) matters on these units only if we run P1's harness ourselves.
+
+### Thor-2, and any machine where P1 still runs: someone else's live experiment
+
+- Thor-2 (`mayankarya@10.24.24.80`) is look-and-copy only (Sandesh, 12 Oct). The rules below apply to it, and to any
+  unit P1 takes back. (They were written for Thor-1, P1's sweep device until 10 Oct.)
 - **Look only.** Use `ls`, `cat`, `tail`, `ps` and copies *out*.
   - Never write, install, launch, kill or restart anything there.
   - Never send requests to P1's SGLang server (port 30000), MCP server (8001) or Docker.
@@ -80,8 +128,8 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
   `sha256sum` or `scp` you run there.
 - **How to work within the busy check:**
   - Never put those strings in a remote command.
-  - Filter `ps` locally: `ssh yash@10.24.24.79 'ps -eo pid,etime,args' | grep ...`.
-  - Copy **directories**, never named files. For example:
+  - Filter `ps` locally: `ssh mayankarya@10.24.24.80 'ps -eo pid,etime,args' | grep ...`.
+  - Copy **directories**, never named files. For example, as done on Thor-1 before 12 Oct:
     `ssh yash@10.24.24.79 'tar -C /home/yash/final_sweep -cf - _harness' | tar -xf -`.
   - To read or hash specific files, glob inside Python (`glob.glob("*.py")`) so no filename
     appears in argv.
@@ -89,10 +137,9 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
     `ls agent/*` in `aeroeval_gazebo_subagents` puts `gazebo_aeroeval_subagents.py` in argv.
     The check runs only when a run starts, so a stray millisecond `ls` is unlikely to hit it,
     but don't rely on that.
-- **Where P1's code is on the Thor** (AeroEval agent, task sets, harness, aerogen): see
+- **Where P1's drone code is on Thor-1** (AeroEval agent, task sets, harness, aerogen): see
   `reports/2026-10-01-p1-task-overview/README.md` §2.
-- **Timing.** Make big copies only while no sweep is running (check
-  `tail /home/yash/final_sweep/<model>/sweep.log`).
+- **Timing.** Make big copies only while no P1 sweep is running: check `ps`, filtered locally.
 - **Ownership.** Ask Sandesh before vendoring P1 code, or the `aerogen_mcp` agent by
   mayankarya (Mayank Arya, P1's analysis lead), into this repo. Keep attribution in `vendor/*/README`.
 - **Credentials.** Never use credentials stored on the Thor (SSH keys, `gh` tokens, git
@@ -239,7 +286,7 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Venvs:** `~/work/venv-analysis` (numpy, scipy, matplotlib, aiohttp; run the analyses here),
   `~/work/venv-tau2` (Python 3.12, tau2-bench + websockets), `~/work/venv-aerogen` (aerogen driver, calibration).
 - **P1's data on the WS** (Sandesh's permission, 2026-10-06): `~/work/p1/edge-agent-bench` (cloned from GitHub;
-  on `main` at `f6aabe4` since 2026-10-07; pull it to `0cc2311a`, P1's submitted state, when the WS is back) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
+  at `0cc2311a`, P1's submitted state, since 2026-10-12) and `~/work/p1/p1_thor_toolcalling`, linked into `~/jsw-dev/data/`. Process data on the WS:
   it has ECC memory, while the laptop's RAM flipped bits in cached files on 2026-10-05.
 - **Long jobs run as WS-side queues** (`env/queue_*.sh` in tmux), so they continue if the laptop drops; each run
   writes `~/work/runs/<name>/` (manifest, calls, events, NVML, metrics) through `jsw/runner/run.py`.
@@ -251,8 +298,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Keep docs consolidated.** Update `HANDOFF.md`, the two plans and the review index instead
   of adding new dated notes. Update `HANDOFF.md` at the end of every working session.
 - **Decisions** go into the tables: D1–D5 in `PLAN.md` §6, D6–D11 in
-  `JOULESERVE_WS_PLAN.md` §8, D13–D18 in `OPTIONS_PLAN.md` §6. D12 is the professor's direction
-  decision (open). The next free ID is **D19**.
+  `JOULESERVE_WS_PLAN.md` §8, D13–D18 in `OPTIONS_PLAN.md` Appendix R, D19–D22 in `OPTIONS_PLAN.md` §9. D12 is the
+  professor's direction decision (open; meeting Wed 14 Oct); its outcome will take the next free ID, **D23**.
 - **Dates and numbers.**
   - Use absolute dates.
   - Label every number with its source: a Thor trace, a WS measurement or a paper.

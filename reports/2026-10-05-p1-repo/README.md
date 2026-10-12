@@ -2,6 +2,27 @@
 
 **2026-10-05 · Sai Sandesh (P5)**, prepared with Claude Code.
 
+> **Update 2026-10-12** (corrections from a doc sweep and a check of our result files; list in
+> [`../../planning/TRACKER.md`](../../planning/TRACKER.md), "COR checklist"). Superseded below:
+> - **The 6 Oct update:** correction 1 is answered in part by P1's paper ("the agent's own model reading images"; no
+>   word on the burst). FP8 KV's "62%" is per completed session and biased by sessions cut at the window's end: per
+>   generated token it is −53% at 8 agents (3.95 → 1.87 J), −45% against the best bf16 point (4 agents, 3.43 J/token).
+>   RET-E1 is within 14.2% per session (−14.2% at 4 agents, mostly which sessions finished in the window) and within 6%
+>   per token, with a degenerate ranking test. The sampling result is a 4-bit stand-in, one seed, Reflexion prompts
+>   only, pass rate unmeasured. One run per setting.
+> - **Summary item 4, "on Thor, never":** holds for Thor gemma (0 of 82). Thor Qwen3.6 misses on 17 of 81 calls (the
+>   table in §3) with 1% of its pool used; it also misses after other tools (51 of 274), because its hybrid state is
+>   reused only at checkpoints.
+> - **Decode share (summary item 3, §2):** 96-99% of LLM time, except Qwen2.5-VL (prefill 15-16%) and Devstral drone
+>   (22% in P1's final summaries; 19.8% in §2's table, our 5 Oct figure; its prefix cache is off). The "84-99%" of item
+>   3 is the traffic range. The median output per call in §2's table (536, 3,406, 112) stands.
+> - **Task sets (summary item 6, §5's table, §6):** the Reflexion figures (71% of LLM time in capped calls, loop stop 43.5%) are for all
+>   16 tasks; on the 12 CLGSCE tasks they are 57% and 31%. The tool-calling row is the 12 tasks of our 104-run copy: its
+>   first-cap stop (63.1% saved, 16 runs lost) is 66.6% and 17 in P1's paper, on all 144 runs.
+> - **§8, "Capacity":** "21% of Orin 64 gemma runs" is the 5 Oct value; P1's final data has 17.5% in the faulted
+>   originals and 24.2% after the re-runs. FP8 KV is untested as a lever in P1's paper, though P1 ran it in its
+>   held-out Orin 64 drone sweep.
+>
 > **Update 2026-10-11** ([`2026-10-06-options` §12](../2026-10-06-options/README.md)). P1 submitted its paper on Sat
 > 10 Oct (SIGMETRICS 2027, under double-blind review) and froze its data at `0cc2311a`: 4,757 runs, 25 configurations
 > (8 drone, 17 traffic), 1,468 h, graded, with the Thor drone tool-calling sweep included. It confirms this report's
