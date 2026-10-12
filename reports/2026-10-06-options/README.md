@@ -40,14 +40,29 @@ doc, the teaching guide and the deck on 6 Oct. Our own lean is stated once, at t
   ran it on Orin 64 with SGLang 0.5.16), so FP8 quality is unmeasured on our side. P1's own data holds a natural pair
   that shows no loss (82.1% of runs passed with BF16 KV on Thor, 81.7% with FP8 KV on Orin 64) [P1-meas]. By
   CAP-E1's own rule that points to capacity being a free configuration choice, which is the main risk to the lean
-  (§7, §9).
+  (§7, §9). **Redone on P1's clean sessions** (P1F-3, 12 Oct; 60-minute windows, one run per point): FP8 cuts energy
+  per generated token 53% at 4 agents and 46% at 8, and 45.7% best against best (3.44 → 1.87 J), with about twice the
+  sessions per hour [WS-meas] (§8).
 - **RET (the retention controller):** the simulator behind "no policy beats SGLang's default" held live, narrowly
   and on a run narrower than planned (Orin 32 granite traffic at P1's pool only; one run per point). It is within
   14.2% of the live engine per completed session at 1-8 agents (2% except at 4 agents; the rule allows 15%), within
-  6% per generated token at every bf16 point, and it predicted the FP8 pool's effect within 6.4% per session. The
-  4-agent gap is mostly which sessions finished in the window (21 simulated, 18 live). The ranking test was
-  degenerate: at 8 agents the default keeps no state at all (0 of 102 calls reuse a cached prefix), so it ties with
-  dropping state [WS-meas, sim].
+  6% per generated token at every bf16 point, and it predicted the FP8 pool's effect within 6.4% per session (on the
+  sessions before P1's re-runs). The 4-agent gap is mostly which sessions finished in the window (21 simulated, 18
+  live). The ranking test was degenerate: at 8 agents the default keeps no state at all (0 of 102 calls reuse a cached
+  prefix), so it ties with dropping state [WS-meas, sim]. **On P1's clean sessions** (P1F-3, 12 Oct) the simulator is
+  within 7% at all three bf16 points, per session and per token, but over-predicts both FP8 points by 13-25%, so the
+  anchor rule (±15% per session, ±10% per token, every point) fails out of sample on FP8: the simulator's FP8 and
+  pool-doubling gains are on the conservative side (§8).
+
+**Update 12 Oct (evening): P1's clean sessions rerun on the WS (P1F-3, §8).** RET-E1 and CAP-E1 were redone on
+P1's clean Orin 32 granite sessions (P1F-2 applies P1's selection rule; 165 sessions), at P1's re-run pool (25,358
+tokens bf16, 50,716 FP8), with 60-minute windows and one run per point [WS-meas, sim]:
+- **FP8's cut holds:** −53% energy per generated token at 4 agents, −46% at 8, −45.7% best against best (6 Oct: −53%
+  at 8 agents, −45%).
+- **No knee per token:** bf16 falls from 1 to 4 to 8 agents (5.64 → 3.98 → 3.44 J); the 6 Oct rise from 4 to 8 does
+  not reappear. At 8 agents the bf16 pool still keeps no state (0 of 169 calls hit the cache).
+- **The simulator holds on bf16 (within 7%) and fails on FP8** (over-predicts by 13-25%; cause not checked). The
+  first device results (P5's Jetsons, from 12 Oct) follow in a box before the meeting.
 
 **Update 12 Oct: five Jetsons, the meeting on Wed 14 Oct, and corrections.**
 - **Devices and dates:** P5 now has five of P1's Jetsons (Thor-1, Orin-64-1, Orin-32-1/2/3), since 12 Oct. The WS is
@@ -79,7 +94,7 @@ replaces every faulted run of those configurations with a re-run. For this doc:
 - The simulator-against-live comparison stands, since both sides replay the same sessions.
 - The absolute Orin numbers (FP8 KV −53% per generated token at 8 agents, −62% per completed session, the capacity
   knee, −31-46% from doubling the pool) are redone on the re-run sessions (the WS is back since 12 Oct; plan v2.0,
-  P1F-2 and P1F-3). Two effects pull in opposite directions. Against its own re-run, a faulted run used 1.6× the
+  P1F-2 and P1F-3; the live points were redone on 12 Oct, §8, and the simulated −31-46% waits for P1F-4). Two effects pull in opposite directions. Against its own re-run, a faulted run used 1.6× the
   energy on Orin 32 granite and 1.4× on Orin 64 granite (0.6-0.8× in the other configurations; the 7 Oct figure of
   1.7-4.2× against other runs of the same task was partly task mix), so granite sessions get shorter. But window
   overflows rose in the re-runs (Orin 32 granite 10.6% → 21.2% of runs, a doubling; Orin 64 gemma-26B 17.5% →
@@ -495,8 +510,14 @@ capacity per quality point, and a run-time controller recovers X% beyond the bes
   [WS-meas, one run per setting].
   Per completed session the cut is 62%, but that figure is biased: sessions cut at the window's end are charged to
   the finished ones (bf16: 13 finished, 6 cut; FP8: 34 finished, 7 cut).
+  **Redone on P1's clean sessions** (P1F-3, 12 Oct; 60-minute windows; one run per point; §8): bf16 5.64, 3.98 and
+  3.44 J per generated token at 1, 4 and 8 agents, FP8 1.87 J at both 4 and 8; FP8 is 53% below bf16 at 4 agents, 46%
+  at 8 and 45.7% below bf16's best point (8 agents), and completes 47-51 sessions in the hour against 19-25
+  [WS-meas].
 - Traffic, 8 agents per device: doubling the pool cuts energy per completed task by 31–46% on the Orins; no
-  retention policy comes close (≤ 2.4%) [sim, a simulator that held live within 14.2% per session and 6% per token].
+  retention policy comes close (≤ 2.4%) [sim, on the sessions before P1's re-runs; the simulator held live within
+  14.2% per session and 6% per token on bf16, and on P1's clean sessions it over-predicts FP8's energy by 13-25%, so
+  its FP8 and pool-doubling gains are on the conservative side (§8); the rerun is P1F-4].
 - Drones: an FP8 KV cache recovers 10–34% at 1–4 GiB of state [sim].
 - Window overflows end 19–24% of Orin tool-calling traffic runs in P1's final data, up to 28% with Reflexion
   (10.6–17.5% on 7 Oct; 21% for Orin 64 gemma in our 5 Oct read); the fixed prompt (system text and 7 tool
@@ -603,6 +624,33 @@ reads as no loss on one agent.
 
   The figure shows energy per completed session; the per-token gaps are in the table.
 
+- **P1F-3 (12 Oct): the same test on P1's clean sessions** (`p1f3.json`, `analysis/p1f3.py`, committed before the
+  runs). P1F-2's clean Orin 32 granite sessions (165); granite-4.2-8b at P1's re-run pool, 25,358 tokens bf16 (GPU0)
+  and FP8 KV at the same bytes, 50,716 tokens (GPU1); the agent's window held at 25,358; 10 minutes of warm-up, then
+  a 60-minute window; seed 11; one run per point; plan §6's metrics (J per generated token first) [WS-meas, sim]:
+
+  | Agents, KV | Sessions completed in the hour (cut at the end) | Prompt tokens from the cache | J per generated token, live | Simulator | Energy per completed session (prorated), live | Simulator, per completed session |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | 1, bf16 | 19 (0) | 67% | 5.64 J | +2.0% | 33.9 kJ | +4.6% |
+  | 4, bf16 | 23 (3) | 7% | 3.98 J | −1.5% | 27.1 kJ | −6.9% |
+  | 8, bf16 | 25 (6) | 0% (0 of 169 calls) | 3.44 J | +6.8% | 24.4 kJ | −3.0% |
+  | 4, FP8 | 51 (1) | 66% | 1.87 J | +22.1% | 13.1 kJ | +24.6% |
+  | 8, FP8 | 47 (2) | 1% | 1.87 J | +17.4% | 14.2 kJ | +13.0% |
+
+  The simulator's per-session gap is RET-E1's measure (same span as live, raw per completed session).
+  - **FP8's cut holds on the clean sessions:** −53% per generated token at 4 agents, −46% at 8, and −45.7% best
+    against best (bf16's best is now 8 agents, 3.44 J); 6 Oct: −53% at 8, −45%. The two FP8 points tie: at 8 agents
+    the 50,716 pool runs about 4 requests at a time with about 4 queued, so 8 agents behave like 4.
+  - **No knee per token on the clean sessions:** bf16 falls 1.4x from 1 to 4 agents and another 13% from 4 to 8; the 6
+    Oct rise from 4 to 8 (3.43 → 3.95 J, faulted sessions, 45-minute windows) does not reappear. At 8 agents the
+    bf16 pool still keeps no state (0 of 169 calls hit the cache), as in RET-E1.
+  - **The simulator anchor fails, on FP8 only** (rule: ±15% per completed session and ±10% per generated token at
+    every point). It is within 7% at all three bf16 points, closer than on 6 Oct, but over-predicts both FP8 points
+    by 13-25%: live FP8 is cheaper than the simulator says. The cause is not checked; the simulator's decode timing
+    comes from the 6 Oct bf16 calibration on GPU0, and the FP8 points ran with FP8 KV on GPU1. So: RET's "no policy
+    beats the default" rests on bf16 pools, where the simulator holds; its FP8 and pool-doubling gains are on the
+    conservative side.
+
 **Overlap with P1's submitted paper** (10 Oct; §12). Loops (A: reported offline, an online policy left to "separate
 evaluation", capped-call replays planned as MB4), capacity levers (CAP: listed as untested, though P1 ran FP8 KV in
 its held-out Orin 64 drone sweep; an FP8 window probe planned as MB5), the vision tool (D: now "the agent's own
@@ -624,7 +672,10 @@ flight, so it has no multi-agent result (RET, CAP).
 Stated once, here; the professor makes the call.
 
 **Lean: CAP with A's safety net, studied as multi-agent consolidation on one edge box** (the first combination
-in §8). Why:
+in §8): **a measured design space first, a run-time controller only if a gap remains.** First measure what each lever
+(KV precision, fixed-prompt and tool-schema size, output caps, agents admitted) buys in energy per successful task on
+P1's Jetsons, against the best static setting; build a controller (CAP-J4) only if the best static setting leaves a
+gap. Its main risk is P1's own FP8 pair (below), which CAP-J2's drone pair tests first, on one device (§13). Why:
 - **It is where the large serving-layer numbers are.** Apart from A-E1's sampling result (a possible configuration
   fix that belongs to P1, still to be tested on its setup) and B's projected agent-design gain, the large effects
   measured this week are capacity and concurrency effects: twice the pool (FP8 KV) cuts energy per generated token
@@ -663,8 +714,8 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
   12 Oct, and CAP-J1 (plan v2.0) measures FP8 against bf16 with several agents on P1's Orin 32s.
 - Most of the capacity evidence replays tool-faulted Orin sessions (Update 11 Oct): 59-88% of RET-E1's and 61% of
   CAP-E1's Orin 32 granite sessions. P1 has re-run them (a faulted granite run used 1.4-1.6× the energy of its
-  re-run), so the −53% per token has to be re-measured on the re-run sessions (plan v2.0: P1F-3 on the WS, CAP-J1 on
-  the Orin 32s) before it can carry the lean; overflows rose in the re-runs (Orin 32 granite 10.6% → 21.2%, Orin 64
+  re-run), so the −53% per token had to be re-measured on the re-run sessions. On the WS it holds (P1F-3, 12 Oct: −53%
+  at 4 agents, −46% at 8, −45.7% best against best; §8); CAP-J1 measures it on the Orin 32s; overflows rose in the re-runs (Orin 32 granite 10.6% → 21.2%, Orin 64
   gemma-26B 17.5% → 24.2%, Orin 64 granite 14.3% → 19.0%), so the pressure itself stays.
 
 **What would change it:**
@@ -694,7 +745,8 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
 - P1's data: the repository at `3c47ebc` (drone 3 cells, traffic 8 cells) and our copy of P1's Thor drone
   tool-calling sweep (104 runs). This doc's experiments (5-6 Oct) used that state. P1's final data (`0cc2311a`, 10
   Oct: 4,757 runs, 25 configurations) is summarised in §12 from P1's own summaries; we have not re-analysed it yet
-  (the WS has been back since 12 Oct; the loader fix and the reruns are plan v2.0's P1F-2 and P1F-3).
+  (the WS has been back since 12 Oct). P1F-2 (12 Oct) makes our loader apply P1's selection rule, and P1F-3 (12 Oct)
+  reran RET-E1 and CAP-E1 on the clean sessions (§8); the other analyses are rerun after the meeting (P1F-4).
 - **Local data integrity (2026-10-05).** The laptop's RAM corrupts files held in its page cache: three files of
   P1's clone read back with single-bit flips, while the disk copies match P1's commits. All data processing
   moved to the WS (ECC memory): P1's repository cloned there from GitHub at `3c47ebc`, our tool-calling copy moved
@@ -709,7 +761,7 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
   energy includes a large idle share; per-session energies compare runs on the same GPU, not devices.
 - **NVML's power reading runs above its energy counter** on the A5000s (229 W against 185 W averaged over CAP-E1's
   45-minute run). Every energy here comes from the counter; RET-E1's simulator also takes its powers from it.
-- **Statistics:** one run per cell for D-E2, RET-E1 and CAP-E1, with no repeat, so run-to-run noise is not measured
+- **Statistics:** one run per cell for D-E2, RET-E1, CAP-E1 and P1F-3, with no repeat, so run-to-run noise is not measured
   and differences of a few percent (such as D-E2's −3.8% and −4.05%) are not read; Wilson intervals for A-E1/A-E2
   rates; A-E1's sampled arm uses one seed on the 26B.
 - Literature depth varies per work (`lit_*.md`); most 2026 preprints were read through summaries or abstracts.

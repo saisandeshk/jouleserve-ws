@@ -409,9 +409,9 @@ In short:
 2. **Artifacts:**
    - the deck v2.4 before the meeting;
    - the evidence doc after D12, unless wanted earlier (the teaching guide was rewritten on 12 Oct).
-3. **The lean's wording, given P1's FP8 pair.** Keep the lean and present the pair as its main risk, or "a
-   design-space study first, a controller only if a gap remains"?
-4. The meeting's time on Wednesday, which sets the freeze.
+3. ~~The lean's wording~~ (Sandesh, 12 Oct: as recommended. A measured design space first, a controller only if a gap
+   remains, P1's FP8 pair as the main risk, tested first by CAP-J2's drone pair; CMP-2 §9).
+4. ~~The meeting's time~~ (Wed 14 Oct, 09:00-10:00; freeze F Tue 23:00).
 5. Thor-1's legacy P5 root helper (`/usr/local/sbin/jouleserve-thor`): leave it alone?
 6. The outcome of the meeting (Wed 14 Oct):
    - direction and scope (A, B, C, D, CAP);
