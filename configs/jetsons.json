@@ -1,7 +1,7 @@
 {
  "_doc": "P5's Jetsons (AGENTS.md §3; planning/OPTIONS_PLAN.md §1.2, §4.1). Facts read on 12 Oct: GPU clocks locked as found (DEV-1 snapshot devfreq.txt), docker-root free bytes after DEV-2 (the preflight's floor, -10 MB), the image P1 ran on each unit and its versions (DEV-2 versions.json).",
  "Thor-1": {"ip": "10.24.24.79", "user": "yash", "p5": "/home/yash/p5", "docker_root": "/var/lib/docker",
-            "docker_root_free_dev2": 77220438016, "docker_root_tolerance": 5000000000, "gpu_devfreq": "gpu-gpc-0", "gpu_locked_hz": 1575000000,
+            "docker_root_free_dev2": 77220438016, "docker_root_tolerance": 5000000000, "tegrastats_interval_ms": 180, "gpu_devfreq": "gpu-gpc-0", "gpu_locked_hz": 1575000000,
             "image": "lmsysorg/sglang:latest-cu130-runtime", "image_id": "ba76b5c16979",
             "versions": "SGLang 0.5.16 (build fdebc938), torch 2.11.0+cu130, CUDA 13.0, flashinfer 0.6.14, triton 3.6.0, Python 3.12.3",
             "power_total_source": "VIN"},

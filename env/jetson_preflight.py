@@ -25,7 +25,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from jsw.telemetry.jetson import board_energy, clock_offset, load, ssh  # noqa: E402
+from jsw.telemetry.jetson import board_energy, clock_offset, interval_ms, load, ssh  # noqa: E402
 
 UNITS = json.loads((Path(__file__).resolve().parents[1] / "configs/jetsons.json").read_text())
 
@@ -168,7 +168,7 @@ def main():
         name = f"idle-{int(time.time())}"
         rdir = f"{u['p5']}/runs/{name}"
         ssh(a.unit, f"mkdir -p {rdir} && python3 {u['p5']}/bin/jetson.py sample --out {rdir}/device_samples.jsonl "
-                    f"--duration {a.idle}", timeout=a.idle + 120)
+                    f"--interval {interval_ms(a.unit)} --duration {a.idle}", timeout=a.idle + 120)
         out = Path(a.out or ".")
         out.mkdir(parents=True, exist_ok=True)
         local = out / "idle_device_samples.jsonl"

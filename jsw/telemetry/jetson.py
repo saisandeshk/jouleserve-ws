@@ -199,6 +199,16 @@ def clock_offset(unit: str, n: int = 9) -> dict:
     return {"offset_s": best[0], "rtt_s": best[1], "t_ws": time.time()}
 
 
+def interval_ms(unit: str) -> int:
+    """tegrastats interval to request on a unit (WS side): configs/jetsons.json "tegrastats_interval_ms", else 200.
+    Root tegrastats on Thor-1 adds ~35 ms per sample (237 ms at 200; 202 ms at 180; 20 s tests, 12 Oct)."""
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../configs/jetsons.json")) as f:
+            return int(json.load(f).get(unit, {}).get("tegrastats_interval_ms", 200))
+    except OSError:
+        return 200
+
+
 class Telemetry:
     """Start/stop the unit's sampler for one run: samples land in <p5>/runs/<run>/device_samples.jsonl on the unit
     and are copied to <run_dir>/device_samples.jsonl on the WS by stop()."""
@@ -214,7 +224,8 @@ class Telemetry:
         # ssh session open until the sampler ends
         subprocess.run(["ssh", "-n", "-f", "-o", "BatchMode=yes", self.unit,
                         f"mkdir -p {self.remote} && cd {self.remote} && exec setsid python3 {self.p5}/bin/jetson.py "
-                        f"sample --out device_samples.jsonl --pidfile sampler.pid > sampler.log 2>&1 < /dev/null"],
+                        f"sample --out device_samples.jsonl --interval {interval_ms(self.unit)} --pidfile sampler.pid "
+                        f"> sampler.log 2>&1 < /dev/null"],
                        timeout=60, check=True)
         for _ in range(50):
             if ssh(self.unit, f"test -s {self.remote}/device_samples.jsonl && echo ok") == "ok":
