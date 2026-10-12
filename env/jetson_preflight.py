@@ -183,6 +183,7 @@ def main():
         Path(a.json).parent.mkdir(parents=True, exist_ok=True)
         Path(a.json).write_text(txt)
     if a.out:
+        Path(a.out).mkdir(parents=True, exist_ok=True)
         (Path(a.out) / "preflight.json").write_text(txt)
     print(json.dumps({"unit": a.unit, "ok": res["ok"],
                       "failed": [k for k, c in chk.items() if not c["ok"]],
