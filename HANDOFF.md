@@ -12,15 +12,19 @@
 - **WS:** P1's clone there is pulled to `0cc2311a`.
 - **Errors found:** a doc sweep and a check of our result files found summaries that claim too much. The numbers below
   were corrected on 12 Oct per the COR checklist in `planning/TRACKER.md`.
-- **New plan:** `planning/OPTIONS_PLAN.md` v2.0, waiting for Sandesh's approval, with the rewritten
-  `planning/TRACKER.md` and the master plan v2.0. Before the meeting it covers:
+- **New plan:** `planning/OPTIONS_PLAN.md` v2.0, **approved by Sandesh on 12 Oct** (RET-J1 added the same day), with
+  the rewritten `planning/TRACKER.md` and the master plan v2.0. Before the meeting it covers:
   - the corrections;
   - P1's clean sessions (loader fix, WS reruns);
   - the device platform;
   - first device results: CAP-J1 (FP8 vs bf16 with several agents on the three Orin 32s, anchored to P1's measured
-    runs) and an A-J1 pilot (sampling vs greedy on P1's own bf16 26B on Thor-1).
+    runs), RET-J1 (kept state against dropped state at one agent, on Orin-32-3) and an A-J1 pilot (sampling vs greedy
+    on P1's own bf16 26B on Thor-1).
 
   After D12 it has one branch per option.
+- **Done on 12 Oct after the approval:** the corrected docs committed and pushed (`42f9437`); SYNC-1 (the WS clone and
+  `~/jsw-dev` at `42f9437`); the teaching guide rewritten from first principles at Sandesh's request (§2 Artifacts).
+  Nothing runs on the WS or the units yet. **Next:** P1F-2 and DEV-1 to DEV-5, toward checkpoint C1 (Mon 23:00).
 
 **10–11 Oct:** P1 submitted its paper on Sat 10 Oct (SIGMETRICS 2027, under double-blind review; data frozen at
 10:30 IST) and pushed its final data. We read it from the local clone (`0cc2311a`) and brought every P5 doc, the
@@ -196,12 +200,17 @@ which git already keeps.
     correction, the meeting date, and a new section "P1's submitted paper and final data (10 Oct)" with the three
     `p1final_*` figures.
   - **Teaching guide**, "JouleServe (P5): a teaching guide":
-    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (revision 184; no repo copy). Chapter 18
-    (the traffic workload), §16 P1, §19.5–19.7 traffic evidence, chapter 20 (five options, the lean), chapter 21
-    (testing the options on the workstation), self-test 22 and glossary 23. **11 Oct:** the FP8 correction everywhere,
-    the meeting date (then 12 Oct), P1's submission, the outcome of our corrections, two log lines, and a subsection at
-    the end of chapter 16, "The submitted paper and final data (10 October)", with the three figures. One open comment
-    in it (ours) asks how many drones per device to plan for.
+    https://claude.ai/code/artifact/36c2319c-b866-44f2-8dcf-42c02cdfd18c (no repo copy). **Rewritten 12 Oct** at
+    Sandesh's request as a first-principles learning guide, in a new first tab "Teaching guide (12 Oct)" (rev 32): 19
+    chapters and an appendix. First principles (prefill and decode with a Thor worked example, the KV cache with
+    granite's 160 KiB per token, agents and tool waits with the ceiling formula and the published retention systems,
+    the Jetsons, measuring energy); P1's benchmark; the evidence (why kept state is worth little, where the energy goes,
+    the vision burst); the five options, a comparison table, the lean and its main risk (P1's FP8 pair); the device
+    platform and the software built; this week's runs with their outcome rules and stated expectations; lessons,
+    self-test, glossary, and a map from plain names to repo labels. Two new drawings (where each option acts; the
+    week's timeline) and nine reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
+    guide (rev 184) is kept as the second tab, "Archive: the guide as of 11 Oct", with our open comment on drones per
+    device. Refresh it after the runs and D12.
   - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.3 (artifact
     version 15, 140 slides). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),
     `p1-final-data` (re-run figure) and `find-p1-final` (prefill and eviction figures); `p1-paper` rewritten for the
@@ -396,10 +405,10 @@ In short:
 
 ## 7. Open questions for Sandesh
 
-1. **Approve plan v2.0** (`planning/OPTIONS_PLAN.md`), including D19–D22.
+1. ~~Approve plan v2.0~~ (approved 12 Oct, with RET-J1 added).
 2. **Artifacts:**
    - the deck v2.4 before the meeting;
-   - the evidence doc and the teaching guide after D12, unless wanted earlier.
+   - the evidence doc after D12, unless wanted earlier (the teaching guide was rewritten on 12 Oct).
 3. **The lean's wording, given P1's FP8 pair.** Keep the lean and present the pair as its main risk, or "a
    design-space study first, a controller only if a gap remains"?
 4. The meeting's time on Wednesday, which sets the freeze.

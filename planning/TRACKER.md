@@ -25,7 +25,7 @@ How to use it:
   repo copy, HANDOFF, the review index and update notes in the dated reports. The device-results box (COR-1) and the
   artifacts (COR-3) follow the runs.
 - **Running:** nothing yet, on the WS or the units.
-- **Next:** SYNC-1, P1F-2, DEV-1 to DEV-5, aiming at C1 (Mon 23:00).
+- **Next:** P1F-2, DEV-1 to DEV-5, aiming at C1 (Mon 23:00). SYNC-1 is done (WS clone and `~/jsw-dev` at `42f9437`).
 
 ## Checkpoints (plan §3)
 
@@ -40,7 +40,7 @@ How to use it:
 | ID | Task | Where | Depends | Status | Done when | Notes, output |
 | --- | --- | --- | --- | --- | --- | --- |
 | GATE | Sandesh approves plan v2.0, including D19–D22 | — | — | **done** 12 Oct | approved | Plan, tracker and the corrected docs committed and pushed the same day |
-| SYNC-1 | Pull `~/jouleserve-ws`; `env/sync_ws.sh` to `~/jsw-dev` | WS | GATE | todo | both at the pushed commit; `~/jsw-dev/REVISION` matches | On 12 Oct the clone was at `001dbd2`, `~/jsw-dev` at `09a4d5c` |
+| SYNC-1 | Pull `~/jouleserve-ws`; `env/sync_ws.sh` to `~/jsw-dev` | WS | GATE | **done** 12 Oct | both at the pushed commit; `~/jsw-dev/REVISION` matches | Both at `42f9437` (17:15 IST); the clone was at `001dbd2`, `~/jsw-dev` at `09a4d5c`. Re-sync before each WS run |
 | P1F-1 | Pull the WS clone of P1 to `0cc2311a` | WS | — | **done** 12 Oct | HEAD `0cc2311a`, worktree clean | Fast-forward from `f6aabe40` (a fetch that outlived its ssh timeout raced the pull; no damage). Logs: `~/work/logs/p1pull_2026-10-12.log`, `p1ff_2026-10-12.log` |
 | P1F-2 | Loader applies P1's selection rule; replay sets rebuilt (plan §5.1) | code local, run on WS | SYNC-1 | todo | our counts and pass rates equal P1's summaries for all 17 traffic configurations; a test pins it; clean Orin 32 granite and E4B replay sets with session counts | `analysis/p1_repo.py:191` skips every re-run folder; docstring lines 10–11 are stale. Copy `selection.py`'s logic with attribution; never import it in place. Check against P1's `traffic/grading/grades.csv` and `analysis/outputs/paper_tables/` |
 | P1F-3 | RET-E1 and CAP-E1 on the clean sessions, plus `traffic_sim` (plan §5.1) | WS GPU0, GPU1 | P1F-2 | todo | 5 points run (bf16 at 25,358 tokens, N = 1, 4, 8; FP8 at 50,716, N = 4, 8); JSON and figure; rule outcome | 60-minute windows after 10 minutes of warm-up; J/token first (plan §6) |
@@ -70,7 +70,7 @@ How to use it:
 | P1F-5 | Why do granite and E4B evict KV on the Orins at one agent (52–68% of drone runs)? | P1F-2 | todo | Can now be checked on the units |
 | TRF-2 | Copy P1's traffic agent, its sandbox image (`camera-agent-sandbox:1`, also on Thor-1) and data to the WS and the units | TRF-1 | todo | Look-and-copy only on Thor-2. Loading an image needs docker-root space, which the Orin 32s lack: Thor-1 or Orin-64-1 first |
 | TRF-3 | Validate the agent at N = 1 against P1's recorded runs (pass rate, tokens) | TRF-2 | todo | |
-| COR-3b | Evidence doc and teaching guide | MTG-2 | todo | Unless Sandesh wants them before the meeting |
+| COR-3b | Evidence doc and teaching guide | MTG-2 | doing | Teaching guide **done** 12 Oct, at Sandesh's request: rewritten from first principles in a new first tab (the 11 Oct guide kept as an archive tab); refresh after the runs and D12. Evidence doc after MTG-2 |
 | COR-4 | Notes for P1 (private, never in git) | — | todo | Kept in the git-ignored `reports/2026-10-07-p1-audit/notes_for_p1_2026-10-12.md`; passed to P1 through Sandesh |
 | DEV-7b | Calibration of the other models (Thor-1 26B and granite; Orin 32 granite bf16 and FP8, E4B) | DEV-5 | todo | |
 
@@ -194,6 +194,10 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 | P1F-6 | Gemma-4 FP8 KV: what P1 ran, and whether 0.5.16 runs it on the A5000s | closed 12 Oct: P1's server on Orin-64-1 used `fp8_e5m2` on SGLang 0.5.16. Gemma's FP8 runs on the device (DEV-7a, CAP-J2), so the A5000 question is dropped | — |
 
 ## Log (newest first)
+
+- **2026-10-12, evening:** docs committed and pushed (`42f9437`); SYNC-1 done (WS clone and `~/jsw-dev` at `42f9437`);
+  the teaching guide rewritten from first principles (new first tab, 19 chapters, two drawings; the old guide kept as an
+  archive tab), at Sandesh's request.
 
 - **2026-10-12:** the WS is back (idle; runs, models and venvs intact). P5 got five Jetsons (Thor-1, Orin-64-1,
   Orin-32-1/2/3), and the professor meeting moved to Wed 14 Oct.
