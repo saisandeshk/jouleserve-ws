@@ -51,6 +51,53 @@
   ],
   "Orin-32-2": [
    {
+    "name": "capj1-o32b-bf16n4-20261012T2133",
+    "n": 4,
+    "pool": 25358,
+    "kv": "auto",
+    "no_reuse": false,
+    "platform": "jetson",
+    "unit": "Orin-32-2",
+    "window_s": 7200.0,
+    "reached_window_end": true,
+    "energy_J": 311751.09941991535,
+    "mean_W": 43.298763808321574,
+    "telemetry_gaps": [],
+    "sample_interval_s": 0.21266937255859375,
+    "clock_offset_s": -0.009291410446166992,
+    "clock_offset_drift_s": 0.015529632568359375,
+    "idle_W": 13.722256144173185,
+    "active_energy_J": 212950.85518186842,
+    "preflight_before": {
+     "ok": true,
+     "idle_W": 13.602887438842608,
+     "failed": []
+    },
+    "preflight_after": {
+     "ok": true,
+     "idle_W": 13.841624849503763,
+     "failed": []
+    },
+    "sha256": true,
+    "complete": true,
+    "out_tokens_in_window": 95520.1,
+    "j_per_token": 3.263723358692248,
+    "active_j_per_token": 2.2293832535114877,
+    "completed_in_window": 11,
+    "mean_gen_tokens_completed": 7897.909090909091,
+    "energy_per_completed_prorated_J": 25776.590384827858,
+    "energy_per_completed_raw_J": 28341.00903817412,
+    "sessions_per_hour": 5.5,
+    "prompt_tokens_in_window": 482247,
+    "cached_tokens_in_window": 76745,
+    "computed_prompt_tokens_in_window": 405502,
+    "overflowed": 0,
+    "cut": 2,
+    "errors": 0,
+    "started": 16,
+    "retracted_reqs_max": null
+   },
+   {
     "name": "capj1-o32b-fp8n4-20261012T1905",
     "n": 4,
     "pool": 50716,
@@ -101,7 +148,24 @@
  },
  "capj1": {
   "Orin-32-1": {},
-  "Orin-32-2": {}
+  "Orin-32-2": {
+   "fp8_over_bf16_n4": 0.5485295209094029,
+   "best_bf16": [
+    "capj1-o32b-bf16n4-20261012T2133",
+    3.263723358692248
+   ],
+   "best_fp8": [
+    "capj1-o32b-fp8n4-20261012T1905",
+    1.790248610324286
+   ],
+   "best_vs_best_reduction": 0.4514704790905971
+  },
+  "_rule": {
+   "reductions": [
+    0.4514704790905971
+   ],
+   "verdict": "holds on the board (single replicate)"
+  }
  },
  "anchor_window": {
   "name": "capj1-o32c-anchor-20261012T1920",
