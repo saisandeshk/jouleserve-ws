@@ -16,7 +16,7 @@ R=~/work/runs/$NAME
 mkdir -p $R
 log() { echo "=== $(date +%T) $*"; }
 log "$NAME preflight before"
-$PY env/jetson_preflight.py $UNIT --server $URL --pool $POOL --warmup --wait-cool 900 --idle $IDLE \
+$PY env/jetson_preflight.py $UNIT --server $URL --pool $POOL --warmup --wait-cool 1800 --idle $IDLE \
   --out $R/preflight_before > $R/preflight_before.log 2>&1 || { log "$NAME PREFLIGHT_BEFORE_FAILED $(tail -1 $R/preflight_before.log)"; exit 2; }
 $PY env/jetson_preflight.py $UNIT --server $URL --flush --wait-cool 600 > $R/preflight_flush.log 2>&1 \
   || { log "$NAME PREFLIGHT_BEFORE_FAILED (flush) $(tail -1 $R/preflight_flush.log)"; exit 2; }
