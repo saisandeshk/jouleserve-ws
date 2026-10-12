@@ -65,8 +65,10 @@ def main():
     sock.sendall(b"POST /generate HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nContent-Length: "
                  + str(len(body)).encode() + b"\r\n\r\n" + body)
     sock.recv(4096)
-    time.sleep(3)
-    running_before = metrics(s).get("num_running_reqs")
+    t0, running_before = time.monotonic(), 0      # the gauge refreshes every 40 decode steps (5 s at 8 tokens/s)
+    while time.monotonic() - t0 < 30 and running_before != 1:
+        time.sleep(1)
+        running_before = metrics(s).get("num_running_reqs")
     sock.close()
     t0, running_after = time.monotonic(), None
     while time.monotonic() - t0 < 30:

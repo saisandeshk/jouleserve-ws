@@ -37,7 +37,7 @@ def _read(path):
     try:
         with open(path) as f:
             return f.read().strip()
-    except OSError:
+    except Exception:          # some Orin thermal zones fail inside the decoder (TypeError), not with OSError
         return None
 
 
@@ -121,7 +121,10 @@ def sample(out: str, interval_ms: int = 200, duration: float | None = None, pidf
         for line in proc.stdout:
             rec = {"t_mono": time.monotonic(), "t_wall": time.time(), "tegrastats_root": rooted}
             rec.update(parse(line))
-            rec.update(sysfs.read())
+            try:
+                rec.update(sysfs.read())
+            except Exception as e:     # sysfs extras must never stop the power samples
+                rec["sysfs_error"] = repr(e)[:120]
             f.write(json.dumps(rec) + "\n")
             if stop["now"] or (t_end and rec["t_mono"] >= t_end):
                 break
@@ -207,8 +210,12 @@ class Telemetry:
 
     def start(self):
         self.offsets["start"] = clock_offset(self.unit)
-        ssh(self.unit, f"mkdir -p {self.remote} && cd {self.remote} && setsid nohup python3 {self.p5}/bin/jetson.py "
-                       f"sample --out device_samples.jsonl --pidfile sampler.pid > sampler.log 2>&1 < /dev/null &")
+        # ssh -n -f with an exec'd, fully redirected command: a background job inside the remote shell would hold the
+        # ssh session open until the sampler ends
+        subprocess.run(["ssh", "-n", "-f", "-o", "BatchMode=yes", self.unit,
+                        f"mkdir -p {self.remote} && cd {self.remote} && exec setsid python3 {self.p5}/bin/jetson.py "
+                        f"sample --out device_samples.jsonl --pidfile sampler.pid > sampler.log 2>&1 < /dev/null"],
+                       timeout=60, check=True)
         for _ in range(50):
             if ssh(self.unit, f"test -s {self.remote}/device_samples.jsonl && echo ok") == "ok":
                 return self
