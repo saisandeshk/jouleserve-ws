@@ -216,6 +216,12 @@ def retj1(default_run: dict, noreuse_run: dict) -> dict:
                                        "no_reuse": noreuse_run["computed_prompt_tokens_in_window"]}}
 
 
+def _finished(d) -> bool:
+    """The run's replay ended (its manifest has t_end_mono); a point still running has no board samples yet."""
+    m = Path(d) / "manifest.json"
+    return m.exists() and "t_end_mono" in json.loads(m.read_text())
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("runs", nargs="*")
@@ -229,19 +235,19 @@ def main():
     res = {}
     cap = defaultdict(list)
     for d in sorted(glob.glob(str(RUNS / "capj1-*"))):
-        if (Path(d) / "manifest.json").exists() and "anchor" not in d and "retj1" not in d:
+        if _finished(d) and "anchor" not in d and "retj1" not in d:
             w = window(d)
             cap[w["unit"]].append(w)
     res["capj1_points"] = {u: rows for u, rows in cap.items()}
     res["capj1"] = capj1(cap)
-    anc = sorted(glob.glob(str(RUNS / "capj1-*anchor*")))
+    anc = [d for d in sorted(glob.glob(str(RUNS / "capj1-*anchor*"))) if _finished(d)]
     if anc:
         res["anchor_window"] = window(anc[-1])
         res["anchor"] = anchor(anc[-1])
-    ret = sorted(glob.glob(str(RUNS / "retj1-*")))
+    ret = [d for d in sorted(glob.glob(str(RUNS / "retj1-*"))) if _finished(d)]
     if anc and ret:
         res["retj1"] = retj1(res["anchor_window"], window(ret[-1]))
-    p1f3 = [window(d) for d in sorted(glob.glob(str(RUNS / "p1f3-ws-*"))) if (Path(d) / "manifest.json").exists()]
+    p1f3 = [window(d) for d in sorted(glob.glob(str(RUNS / "p1f3-ws-*"))) if _finished(d)]
     res["p1f3_points"] = p1f3
     res["p1f3_capacity"] = capj1({"ws": p1f3}).get("ws")
     txt = json.dumps(res, indent=1, default=str)
