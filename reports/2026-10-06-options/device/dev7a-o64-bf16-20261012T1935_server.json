@@ -1,0 +1,19 @@
+{
+ "unit": "Orin-64-1",
+ "container": "p5-dev7",
+ "url": "http://10.24.24.45:30000",
+ "image": "jouleserve/sglang:0.5.16-orin-cu126-sm87",
+ "image_id": "05119cc6b868",
+ "model": "/media/hdd/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52",
+ "kv": "bf16",
+ "pool_requested": 60000,
+ "load_s": 598.0,
+ "server_args": "python3 -m sglang.launch_server --model-path /media/hdd/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52 --served-model-name google/gemma-4-26B-A4B-it --host 0.0.0.0 --port 30000 --enable-metrics --enable-cache-report --context-length 65536 --mem-fraction-static 0.95 --reasoning-parser gemma4 --tool-call-parser gemma4 --swa-full-tokens-ratio 0.2 --cuda-graph-max-bs 1 --max-total-tokens 60000 --max-running-requests 8",
+ "docker": "mkdir -p /media/hdd/p5/cache /media/hdd/p5/logs && docker run -d --rm --read-only --tmpfs /tmp --log-driver none --name p5-dev7 --runtime nvidia --network host --shm-size 8g -v /media/hdd/huggingface/hub/models--google--gemma-4-26B-A4B-it:/media/hdd/huggingface/hub/models--google--gemma-4-26B-A4B-it:ro -v /media/hdd/p5/cache:/p5cache -v /media/hdd/p5/logs:/p5logs -v /media/ssd/final_sweep/orin45_10.24.24.45/_patches/nccl_gloo_patch:/patches:ro -e HOME=/p5cache -e XDG_CACHE_HOME=/p5cache/xdg -e TRITON_CACHE_DIR=/p5cache/triton -e TORCHINDUCTOR_CACHE_DIR=/p5cache/inductor -e FLASHINFER_WORKSPACE_BASE=/p5cache -e HF_HUB_OFFLINE=1 -e SGLANG_WARMUP_TIMEOUT=1800 -e NCCL_SHM_DISABLE=1 -e NCCL_P2P_DISABLE=1 -e NCCL_IB_DISABLE=1 -e NCCL_IGNORE_DISABLED_P2P=1 -e PYTHONPATH=/patches jouleserve/sglang:0.5.16-orin-cu126-sm87 sh -c 'exec python3 -m sglang.launch_server --model-path /media/hdd/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52 --served-model-name google/gemma-4-26B-A4B-it --host 0.0.0.0 --port 30000 --enable-metrics --enable-cache-report --context-length 65536 --mem-fraction-static 0.95 --reasoning-parser gemma4 --tool-call-parser gemma4 --swa-full-tokens-ratio 0.2 --cuda-graph-max-bs 1 --max-total-tokens 60000 --max-running-requests 8 >> /p5logs/dev7.log 2>&1'",
+ "pool": 55417,
+ "version": "0.5.16",
+ "kv_cache_dtype": "auto",
+ "context_length": 65536,
+ "max_running_requests": 8,
+ "mem_fraction_static": 0.95
+}
