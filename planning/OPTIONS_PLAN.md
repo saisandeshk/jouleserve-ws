@@ -160,9 +160,10 @@ Times are IST.
 | Tue 13 Oct, morning | P1F-3 analysis | A-J1 controls (beyond the pilot) | DEV-7 (26B calibration) | replicate 1 ends about 10:00 | replicate 2 ends about 10:00 | spare: rerun any point that failed |
 | **C2: Tue 12:00** | checkpoint (below) | | | | | |
 | Tue afternoon | COR-1, COR-2 | A-J1 continues until F | DEV-7 done | DEV-6 | DEV-6 | free |
-| Tue evening | CAP-J1 and anchor analysis (§6 rules); MTG-1: CMP-2 box, deck v2.4 | | | | | |
-| **F: Wed 14 Oct 09:00** | results freeze | | | | | |
-| Wed | MTG-2 (the meeting), MTG-3 | | | | | |
+| Tue evening | CAP-J1 and anchor analysis (§6 rules); MTG-1: CMP-2 box | | | | | |
+| **F: Tue 13 Oct 23:00** | results freeze | | | | | |
+| Tue night to Wed 08:00 | MTG-1 final: deck v2.4 (after all runs, Sandesh 12 Oct), CMP-2, device plan | | | | | |
+| **Wed 09:00-10:00** | MTG-2 (the meeting), then MTG-3 | | | | | |
 
 **C1, Mon 23:00.** Three checks:
 - (a) P1F-2's clean run counts equal P1's summaries, and the Orin 32 granite replay set is built.
@@ -180,14 +181,14 @@ Times are IST.
 meeting labelled "single replicate". If neither has, the meeting gets the WS reruns and the line "device platform ready,
 first device runs under way", and no device number is shown.
 
-**F, Wed 09:00: results freeze.**
+**F, Tue 23:00: results freeze** (the meeting is Wed 14 Oct, 09:00-10:00; Sandesh, 12 Oct).
 - A device point counts only if:
   - its run finished;
   - it passed preflight;
   - its data is on the WS;
   - it was analysed with the §6 rules.
 - Anything else is labelled preliminary or left out.
-- The meeting's time on Wednesday is not known; F assumes a daytime meeting.
+- The materials (MTG-1) are final by Wed 08:00.
 
 ## 4. The device platform (DEV; master plan M6)
 

@@ -395,8 +395,8 @@ In short:
 
    C2 at Tue 12:00 decides whether device numbers reach the meeting.
 4. **Tue:** COR-1 and COR-2 (the correction checklist), then MTG-1 (CMP-2 box, deck v2.4, one-page device plan per
-   option). Results freeze Wed 09:00.
-5. **Wed 14 Oct:** the meeting. Record D12 as D23, turn the chosen branch (plan §7) into tasks with rules, and rewrite
+   option). Results freeze Tue 23:00; materials final by Wed 08:00.
+5. **Wed 14 Oct, 09:00-10:00:** the meeting. Record D12 as D23, turn the chosen branch (plan §7) into tasks with rules, and rewrite
    master-plan M8.
 6. **Ask P1 (through Sandesh and the mentor):**
    - where the final traffic agent is (TRF-1);

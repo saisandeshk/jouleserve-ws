@@ -38,7 +38,7 @@ How to use it:
 | --- | --- | --- | --- |
 | C1 | Mon 12 Oct 23:00 | (a) P1F-2's counts equal P1's summaries and the replay set is built; (b) one replayed session (any set) on Orin-32-1 done (DEV-4); (c) one loop prompt on Thor-1 done (DEV-4) | (a) only: P1F-3 overnight; CAP-J1 starts once (b) passes, in its late-start form (plan §5.2). (a) fails: fix first; P1F-3 moves to Tue |
 | C2 | Tue 13 Oct 12:00 | Both CAP-J1 replicates have finished their N = 8 arms | One replicate: its numbers go to the meeting labelled "single replicate". None: no device number at the meeting; WS reruns plus "device platform ready" |
-| F | Wed 14 Oct 09:00 | Results freeze; only complete, preflighted, WS-copied points analysed with plan §6's rules count | Incomplete points are labelled preliminary or left out |
+| F | Tue 13 Oct 23:00 (meeting Wed 09:00-10:00) | Results freeze; materials (MTG-1) final by Wed 08:00; only complete, preflighted, WS-copied points analysed with plan §6's rules count | Incomplete points are labelled preliminary or left out |
 
 ## Before the meeting
 
@@ -69,7 +69,7 @@ How to use it:
 
 | ID | Task | Depends | Status | Notes |
 | --- | --- | --- | --- | --- |
-| MTG-2 | The meeting: D12, agents per box, thresholds (D4), the split with P1 | MTG-1 | todo | Wed 14 Oct |
+| MTG-2 | The meeting: D12, agents per box, thresholds (D4), the split with P1 | MTG-1 | todo | Wed 14 Oct, 09:00-10:00 |
 | MTG-3 | Record D12 as D23; turn the chosen branch (plan §7) into tasks with rules; master plan M8; HANDOFF | MTG-2 | todo | Same day |
 | P1F-4 | Rerun `p1_opportunity`, `p1_caps` and `p1_repo_figures` on the final data | P1F-2 | todo | 25 configurations instead of 12 |
 | P1F-5 | Why do granite and E4B evict KV on the Orins at one agent (52–68% of drone runs)? | P1F-2 | todo | Can now be checked on the units |
@@ -200,10 +200,11 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-12, 21:30:** Sandesh: the meeting is **Wed 14 Oct, 09:00-10:00**. F moves to Tue 23:00; MTG-1 final by Wed
+  08:00 (plan §3 updated).
 - **2026-10-12, 21:20:** DEV-1 done: Sandesh stopped the two `yash` MCP servers (port 8001 free on Orin-64-1 and Orin-32-3).
 - **2026-10-12, 21:10:** Sandesh: deck after all runs; the lean's wording as recommended (design-space study first, a
-  controller only if a gap remains, P1's FP8 pair as the main risk); meeting time "Monday 9-10 AM" (to confirm: Mon 19
-  Oct, or Wed 14 Oct?). Sandesh stops the two `yash` MCP servers with sudo.
+  controller only if a gap remains, P1's FP8 pair as the main risk); meeting time (Wed 14 Oct 09:00-10:00, confirmed 21:30). Sandesh stops the two `yash` MCP servers with sudo.
 - **2026-10-12, 20:05:** DEV-7a done: the 26B's pools at P1's flags are 60,000 (FP8, capped by P1's flag) and 55,417 (bf16);
   decode 2.0 J/token at batch 1 for both.
 - **2026-10-12, 19:40:** DEV-6 on Orin-32-3 and DEV-7a's FP8 point done (pool 60,000); the after-checks of both were lost to a
