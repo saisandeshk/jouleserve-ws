@@ -1,0 +1,211 @@
+{
+ "summary": {
+  "greedy_calls": 11,
+  "greedy_identical_to_p1": 1,
+  "greedy_common_with_p1_median": 188,
+  "greedy_repeats": [
+   {
+    "run": "aj1p-thor-20261012T1905",
+    "id": "thor_rfx/A16/instance_2/run_3/9",
+    "arm": "greedy",
+    "outcome": "loop",
+    "ours_chars": 32000,
+    "p1_chars": 80377,
+    "common_with_p1": 188,
+    "common_with_our_earlier": 188
+   }
+  ]
+ },
+ "rows": [
+  {
+   "run": "dev4-thor-loop-20261012T1850",
+   "id": "thor_rfx/A16/instance_2/run_3/9",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 31000,
+   "p1_chars": 80377,
+   "common_with_p1": 473
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A16/instance_2/run_3/9",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 32000,
+   "p1_chars": 80377,
+   "common_with_p1": 188,
+   "common_with_our_earlier": 188
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A16/instance_3/run_1/1",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 37005,
+   "p1_chars": 70087,
+   "common_with_p1": 612
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A5/instance_2/run_2/1",
+   "arm": "greedy",
+   "outcome": "stop",
+   "ours_chars": 9067,
+   "p1_chars": 78060,
+   "common_with_p1": 6
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A7/instance_3/run_1/8",
+   "arm": "greedy",
+   "outcome": "stop",
+   "ours_chars": 57276,
+   "p1_chars": 107102,
+   "common_with_p1": 435
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A8/instance_3/run_1/1",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 42000,
+   "p1_chars": 90801,
+   "common_with_p1": 6
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A9/instance_3/run_2/1",
+   "arm": "greedy",
+   "outcome": "stop",
+   "ours_chars": 13382,
+   "p1_chars": 120497,
+   "common_with_p1": 124
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D1_ORDERED/instance_3/run_3/16",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 35000,
+   "p1_chars": 75118,
+   "common_with_p1": 64
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D2_CHECKPOINT/instance_3/run_2/8",
+   "arm": "greedy",
+   "outcome": "stop",
+   "ours_chars": 17512,
+   "p1_chars": 99580,
+   "common_with_p1": 217
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D3_OUTBACK/instance_1/run_1/17",
+   "arm": "greedy",
+   "outcome": "stop",
+   "ours_chars": 5874,
+   "p1_chars": 7284,
+   "common_with_p1": 23
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/F1_FARM_SURVEY/instance_2/run_3/2",
+   "arm": "greedy",
+   "outcome": "loop",
+   "ours_chars": 33000,
+   "p1_chars": 82854,
+   "common_with_p1": 33000
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A16/instance_2/run_3/9",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 16187,
+   "p1_chars": 80377,
+   "common_with_p1": 4
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A16/instance_3/run_1/1",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 15677,
+   "p1_chars": 70087,
+   "common_with_p1": 154
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A5/instance_2/run_2/1",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 11704,
+   "p1_chars": 78060,
+   "common_with_p1": 42
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A7/instance_3/run_1/8",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 41725,
+   "p1_chars": 107102,
+   "common_with_p1": 4
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A8/instance_3/run_1/1",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 27600,
+   "p1_chars": 90801,
+   "common_with_p1": 9
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/A9/instance_3/run_2/1",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 12792,
+   "p1_chars": 120497,
+   "common_with_p1": 4
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D1_ORDERED/instance_3/run_3/16",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 22485,
+   "p1_chars": 75118,
+   "common_with_p1": 9
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D2_CHECKPOINT/instance_3/run_2/8",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 16434,
+   "p1_chars": 99580,
+   "common_with_p1": 22
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/D3_OUTBACK/instance_1/run_1/17",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 4286,
+   "p1_chars": 7284,
+   "common_with_p1": 23
+  },
+  {
+   "run": "aj1p-thor-20261012T1905",
+   "id": "thor_rfx/F1_FARM_SURVEY/instance_2/run_3/2",
+   "arm": "sampled:0",
+   "outcome": "stop",
+   "ours_chars": 17948,
+   "p1_chars": 82854,
+   "common_with_p1": 44
+  }
+ ]
+}
