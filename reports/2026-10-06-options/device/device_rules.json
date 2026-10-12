@@ -47,6 +47,53 @@
     "errors": 0,
     "started": 23,
     "retracted_reqs_max": null
+   },
+   {
+    "name": "capj1-o32a-fp8n8-20261012T2144",
+    "n": 8,
+    "pool": 50716,
+    "kv": "fp8_e5m2",
+    "no_reuse": false,
+    "platform": "jetson",
+    "unit": "Orin-32-1",
+    "window_s": 7200.0,
+    "reached_window_end": true,
+    "energy_J": 320745.72645162645,
+    "mean_W": 44.548017562725896,
+    "telemetry_gaps": [],
+    "sample_interval_s": 0.21262669563293457,
+    "clock_offset_s": -0.004342436790466309,
+    "clock_offset_drift_s": 0.038088083267211914,
+    "idle_W": 13.71958432250393,
+    "active_energy_J": 221964.71932959816,
+    "preflight_before": {
+     "ok": true,
+     "idle_W": 13.591162846152088,
+     "failed": []
+    },
+    "preflight_after": {
+     "ok": true,
+     "idle_W": 13.848005798855775,
+     "failed": []
+    },
+    "sha256": true,
+    "complete": true,
+    "out_tokens_in_window": 178882.5,
+    "j_per_token": 1.7930523972065584,
+    "active_j_per_token": 1.2408407634676335,
+    "completed_in_window": 26,
+    "mean_gen_tokens_completed": 7260.846153846154,
+    "energy_per_completed_prorated_J": 13019.077601901867,
+    "energy_per_completed_raw_J": 12336.374094293325,
+    "sessions_per_hour": 13.0,
+    "prompt_tokens_in_window": 854226,
+    "cached_tokens_in_window": 9633,
+    "computed_prompt_tokens_in_window": 844593,
+    "overflowed": 2,
+    "cut": 5,
+    "errors": 0,
+    "started": 36,
+    "retracted_reqs_max": null
    }
   ],
   "Orin-32-2": [
@@ -147,7 +194,18 @@
   ]
  },
  "capj1": {
-  "Orin-32-1": {},
+  "Orin-32-1": {
+   "fp8_over_bf16_n8": 0.5555344693533515,
+   "best_bf16": [
+    "capj1-o32a-bf16n8-20261012T1913",
+    3.2276168196974204
+   ],
+   "best_fp8": [
+    "capj1-o32a-fp8n8-20261012T2144",
+    1.7930523972065584
+   ],
+   "best_vs_best_reduction": 0.4444655306466485
+  },
   "Orin-32-2": {
    "fp8_over_bf16_n4": 0.5485295209094029,
    "best_bf16": [
@@ -162,9 +220,12 @@
   },
   "_rule": {
    "reductions": [
+    0.4444655306466485,
     0.4514704790905971
    ],
-   "verdict": "holds on the board (single replicate)"
+   "replicate_spread_pp": 0.7004948443948611,
+   "verdict": "holds on the board",
+   "noise_note": ""
   }
  },
  "anchor_window": {
@@ -223,6 +284,14 @@
   "decode_rate_gap": 0.01199279530271724,
   "energy_gap": 0.026466730599085775,
   "passes": true
+ },
+ "retj1": {
+  "value_of_kept_state": 0.0320103505964735,
+  "verdict": "'retention gains little on P1's workloads' holds on the board",
+  "computed_prompt_tokens": {
+   "default": 93178,
+   "no_reuse": 273175
+  }
  },
  "p1f3_points": [
   {
