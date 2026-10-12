@@ -20,7 +20,7 @@ How to use it:
 
 ## Now
 
-- **2026-10-12, 22:40 IST.** C1 passed at 19:10 (reported to Sandesh).
+- **2026-10-12, 22:35 IST.** C1 passed at 19:10 (reported to Sandesh).
 - **Done:** P1F-1, P1F-2, P1F-3, DEV-1, DEV-2, DEV-3, DEV-4, DEV-5, DEV-7a, A-J1p; CAP-J1's anchor passes.
 - **Running** (WS tmux; background waiters report the first failure or the end):
   - Orin-32-1: CAP-J1 replicate o32a, arm 2 of 4 (fp8n8 since 21:44; then bf16n4, fp8n4; ends ~05:30) (`q-o32a`).
@@ -29,7 +29,8 @@ How to use it:
   - Thor-1: A-J1's full set, 30 loop prompts and 20 controls, greedy and sampled (`aj1-thor-20261012T2229`, `q-thor`,
     ~8-9 h; it repeats the pilot's 10 loop prompts).
   - WS and Orin-64-1: idle.
-- **Next:** RET-J1's verdict (~00:30); DEV-6 on Orin-32-1/2 after their replicates; C2 at Tue 12:00; COR-1 with
+- **Queued:** DEV-6 on Orin-32-1 and Orin-32-2, each starting when its replicate's queue ends (`q-dev6a`, `q-dev6b`).
+- **Next:** RET-J1's verdict (~00:30); C2 at Tue 12:00; COR-1 with
   P1F-3's numbers; MTG-1.
 
 ## Checkpoints (plan §3)
@@ -60,7 +61,7 @@ How to use it:
 | RET-J1 | Is kept state worth anything on the board? One agent, state dropped at every wait (`--no-reuse`), against the anchor on the same unit (plan §5.4) | Orin-32-3 | CAP-J1's anchor | doing | the run done and compared with the anchor by plan §6; verdict by the rule (< 5% holds) | About 2.5 h, right after the anchor **12 Oct 19:05:** queued on Orin-32-3 after the anchor **Started 21:50** (`retj1-o32c-noreuse-20261012T2150`; replay from 21:58) |
 | A-J1p | A-J1 pilot: 10 loop prompts, greedy and sampled (plan §5.3) | Thor-1 | DEV-4, DEV-5 | **done** 12 Oct | 20 calls with loop flags and energy; result labelled indicative | Then the controls, until F **12 Oct 19:05:** started on Thor-1 (`aj1p-thor-20261012T1905`) **Done 21:14** (preflights before and after passed, idle 28.5/29.6 W; 34,460 board samples at 204 ms, no gaps; `analysis/a_j1.py`, committed before the data was read → `reports/2026-10-06-options/a_j1.json`). **Indicative only.** On P1's bf16 26B, P1's image and flags, Thor-1: **greedy (P1's protocol) loops on 5 of 10** of P1's Thor Reflexion loop prompts (Wilson 24-76%); the other 5 finish on their own (3,739-22,487 tokens) with valid programs. **Sampling (Gemma's defaults, seed 0) loops on 0 of 10** (0-28%); all 10 finish, 9 with valid programs. Rule 1 (reproduction at ≥ 80%) is not met even at the upper bound: "not reproduced: the 4-bit result stands alone" (the 4-bit stand-in looped on 77%). So P1's capped calls are not reproducible call for call at temperature 0 on P1's own setup; the full set repeats these 10 to see whether our own greedy runs repeat. Board energy: greedy arm 305.8 kJ in 4,260 s (loops stopped by the detector), sampled 204.5 kJ in 2,820 s; per call median 34.4 and 18.0 kJ; decode 27.3 and 27.5 tok/s (P1's record 26.6). Caveat: a sampler left from the aborted first DEV-4 attempt (`dev4-thor-loop-20261012T1849`, one more root tegrastats) ran on Thor-1 from 18:47 until stopped at 22:30 (its file kept); a sensor reader, so its power is small, but the pilot ran beside it |
 | A-J1f | A-J1, the rest before F: 30 loop prompts and 20 controls (`--select rfx`), greedy and sampled (seed 0) (plan §5.3; §3: "A-J1 continues until F") | Thor-1 | A-J1p | doing | 100 calls with loop flags and energy; rules by `analysis/a_j1.py` on this run alone | §5.3 put the rest after the meeting; started early on the idle Thor-1, same server. The pilot's 10 loop prompts run again inside it: a repeat of our own greedy and sampled calls **12 Oct 22:29:** started (`aj1-thor-20261012T2229`, `q-thor`; ~8-9 h) |
-| COR-1 | CMP-2 corrections (checklist below) and the device box | local | P1F-3; CAP-J1 for the box | doing | every checklist item fixed, or kept with a stated reason | 12 Oct: the corrections that need no new data are applied to CMP-2 (header, 12 Oct block, K1-K8, §3-§12). Kept, with reasons: A2's "71%" has no CMP occurrence; D-E2 has no per-token numbers (its 2.4x stays per session); RET's FP8 per-token gap is not computed; `ret_e1.png` still plots per session (note under it). Left: the numbers P1F-3 redoes, and the device box **12 Oct 22:55:** P1F-3's numbers applied (an update block at the top, §7, §8's new P1F-3 table, §9, §11); the RET-E1 "FP8 within 6.4%" now says it was on the pre-re-run sessions; §9's lean wording per Sandesh (design space first, a controller only if a gap remains, P1's FP8 pair tested first by CAP-J2's drone pair); HANDOFF §7 Q3 and Q4 answered. Left: the device box (after C2) |
+| COR-1 | CMP-2 corrections (checklist below) and the device box | local | P1F-3; CAP-J1 for the box | doing | every checklist item fixed, or kept with a stated reason | 12 Oct: the corrections that need no new data are applied to CMP-2 (header, 12 Oct block, K1-K8, §3-§12). Kept, with reasons: A2's "71%" has no CMP occurrence; D-E2 has no per-token numbers (its 2.4x stays per session); RET's FP8 per-token gap is not computed; `ret_e1.png` still plots per session (note under it). Left: the numbers P1F-3 redoes, and the device box **12 Oct 22:35:** P1F-3's numbers applied (an update block at the top, §7, §8's new P1F-3 table, §9, §11); the RET-E1 "FP8 within 6.4%" now says it was on the pre-re-run sessions; §9's lean wording per Sandesh (design space first, a controller only if a gap remains, P1's FP8 pair tested first by CAP-J2's drone pair); HANDOFF §7 Q3 and Q4 answered. Left: the device box (after C2) |
 | COR-2 | Repo docs: HANDOFF, AGENTS, the evidence-doc copy, `review/systems/README.md`, dated reports, `planning/PLAN.md` | local | COR-1 | **done** 12 Oct | the stale items (checklist B) are gone; numbers match CMP-2 | AGENTS (machines, device rules), HANDOFF, master plan, plan pointers, the evidence doc's repo copy (now ahead of the Claude Doc, rev 171), the review index and update notes in the three dated reports. Redo after P1F-3 and the device runs |
 | COR-3a | Deck v2.4: corrections, one device slide, one plan slide | artifact | COR-1, CAP-J1 | todo | published; renderer check clean | Scope to confirm with Sandesh (plan §11 item 2) **Sandesh, 12 Oct 21:10:** the deck is updated after all the runs are complete |
 | TRF-1 | Where is P1's final traffic agent? | Sandesh, with Priyanshu or Mayank | — | todo | host, folder and dependencies known | Thor-1 has an Aug–Sep version (`/media/ssd/Deepstream-Yolo-upstream/`); P1's code names the orchestration host .59. Not in mayankarya's home or on Thor-2's data disks |
@@ -201,7 +202,7 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
-- **2026-10-12, 22:40:** P1F-3 done: FP8 −53%/−46% J per token at N = 4/8 (best against best −45.7%); the simulator
+- **2026-10-12, 22:30:** P1F-3 done: FP8 −53%/−46% J per token at N = 4/8 (best against best −45.7%); the simulator
   holds on bf16 (within 7%) and fails on FP8 (over-predicts by 13-25%). A-J1 pilot done (indicative): greedy loops on
   5 of 10, sampling on 0 of 10; reproduction (≥ 80%) not met. CAP-J1's anchor passes (+1.2% decode, +2.6% energy).
   A-J1's full set started on Thor-1. A leftover DEV-4 sampler on Thor-1 stopped (file kept). `device_runs` skips
