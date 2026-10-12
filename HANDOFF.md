@@ -189,9 +189,9 @@ which git already keeps.
   choice, 5 Oct). P1's own figures (deck and repository) are kept out of git (`reports/*/p1_figures/` is git-ignored), and
   since 10 Oct so is the title of P1's submitted paper. `gh` is not logged in on this machine (HTTP 401); the public API
   (`curl https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
-- **Artifacts** (all private until Sandesh shares them from their Share menu). All three still carry the 12 Oct meeting
-  date and the numbers as they were before the 12 Oct corrections, until COR-3a (deck) and COR-3b (evidence doc, teaching
-  guide):
+- **Artifacts** (all private until Sandesh shares them from their Share menu). The deck and the evidence doc still carry
+  the 12 Oct meeting date and the numbers as they were before the 12 Oct corrections, until COR-3a (deck) and COR-3b
+  (evidence doc); the teaching guide was rewritten on 12 Oct:
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
     https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 171; repo copy
     `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
@@ -233,8 +233,8 @@ which git already keeps.
 - **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes), checked on 12 Oct:
   - Idle (GPUs at 47/15 MiB, no tmux server). 68 run directories in `~/work/runs/`, backed up to local
     `data/ws_runs/` (SHA-256 checked, 2,343 files). 131 GB free.
-  - **Stale:** clone `~/jouleserve-ws` at `001dbd2`, and `~/jsw-dev` at `09a4d5c`. SYNC-1 pulls the repo and runs
-    `env/sync_ws.sh` (stamp in `~/jsw-dev/REVISION`).
+  - Synced on 12 Oct (SYNC-1): the clone at the latest push, `~/jsw-dev` at `42f9437` (no code change since). Before
+    each WS run: `git pull` in `~/jouleserve-ws`, then `env/sync_ws.sh` from the laptop (stamp in `~/jsw-dev/REVISION`).
   - Models on disk (pinned, offline): gemma-4-E4B, granite-4.2-8b, the 4-bit 26B checkpoints that do not run in
     SGLang (derived text-only copies in `~/work/models/`), and the 26B GGUF (Hugging Face cache, unsloth) served by
     `~/work/llama.cpp`; K2 and Qwen3.5 from before. Recipes: `AGENTS.md` §6c.
@@ -381,7 +381,7 @@ and F4; H4 has a live but small case (the vision tool).
 
 The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; status is in `planning/TRACKER.md`.
 In short:
-1. **Sandesh approves plan v2.0** (D19–D22). Then commit, push, and SYNC-1.
+1. Done 12 Oct: plan v2.0 approved (D19–D22), committed and pushed; SYNC-1.
 2. **Mon 12 Oct, by C1 at 23:00:**
    - P1F-2 (the loader applies P1's selection rule; replay sets rebuilt);
    - DEV-1 to DEV-5 (stop P1's stack after a snapshot; P5 folders and containers; Jetson telemetry; our stack on SGLang
