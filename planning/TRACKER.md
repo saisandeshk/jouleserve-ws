@@ -64,7 +64,7 @@ How to use it:
 | COR-2 | Repo docs: HANDOFF, AGENTS, the evidence-doc copy, `review/systems/README.md`, dated reports, `planning/PLAN.md` | local | COR-1 | **done** 12 Oct | the stale items (checklist B) are gone; numbers match CMP-2 | AGENTS (machines, device rules), HANDOFF, master plan, plan pointers, the evidence doc's repo copy (now ahead of the Claude Doc, rev 171), the review index and update notes in the three dated reports. Redo after P1F-3 and the device runs |
 | COR-3a | Deck v2.4: corrections, one device slide, one plan slide | artifact | COR-1, CAP-J1 | todo | published; renderer check clean | Scope to confirm with Sandesh (plan §11 item 2) |
 | TRF-1 | Where is P1's final traffic agent? | Sandesh, with Priyanshu or Mayank | — | todo | host, folder and dependencies known | Thor-1 has an Aug–Sep version (`/media/ssd/Deepstream-Yolo-upstream/`); P1's code names the orchestration host .59. Not in mayankarya's home or on Thor-2's data disks |
-| MTG-1 | Meeting materials (plan §8) | local | COR-1, CAP-J1, A-J1p | todo | CMP-2 box; deck v2.4; one-page device plan per option | Tue evening |
+| MTG-1 | Meeting materials (plan §8) | local | COR-1, CAP-J1, A-J1p | todo | CMP-2 box; deck v2.4; one-page device plan per option | Tue evening **12 Oct 19:50:** the device plan per option drafted as CMP-2 §13 (§10 Q6 points to it); its result column fills after C2 |
 
 ## At and after the meeting
 

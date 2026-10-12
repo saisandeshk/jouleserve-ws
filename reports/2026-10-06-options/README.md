@@ -687,10 +687,7 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
    capped-call replays with A-E1/A-E2; MB5 FP8 window probe with CAP-E1)? What may P5 claim on loops (A) and capacity
    (CAP)?
 6. **Devices (answered 12 Oct):** P5 has five of P1's Jetsons since 12 Oct (Thor-1, Orin-64-1, Orin-32-1/2/3). The
-   26B results here are a 4-bit model on llama.cpp; the FP8 KV path for Gemma-4 failed on our A5000s but ran on P1's
-   Orin 64. The question now is which option gets device time first after the meeting. Before it, plan v2.0 runs CAP-J1
-   (FP8 against bf16 with several agents) on the Orin 32s and an A-J1 pilot (greedy against sampling on P1's bf16 26B)
-   on Thor-1.
+   question now is which option gets device time first; §13 gives each option's device plan and the units they share.
 
 ## 11. Method, data and caveats
 
@@ -791,3 +788,32 @@ long-period misses was not adopted.
 6 Oct claim that Gemma-4's FP8 KV cannot run on the Orins is corrected (§7). The Orin numbers are redone on the re-runs
 (Update 11 Oct; plan v2.0, P1F-3). The lean (§9) does not change: P1's final data shows more capacity pressure, not
 less, and P1's paper has no multi-agent result. P1's own FP8 pair (§7) is its main risk.
+
+## 13. Device plan per option (for the meeting, 14 Oct)
+
+This is plan v2.0 §7, condensed, with the unit each option needs. It replaces §10 Q6. The sizes are the plan's first
+estimates. Each branch's experiments get full specs and rules, which Sandesh approves before they run.
+
+**The platform (ready 12 Oct).** It runs P1's images and P1's server flags per unit and model. Board energy is read in
+P1's schema and agrees with P1's own sampler within 0.01% over 319 s on Orin-32-1. Every run has a preflight before and
+after it, and the replay and loop drivers run on the units from the WS. Pools at P1's flags: granite bf16, 25,358
+tokens (Orin 32); the 26B, 80,000 (Thor-1, bf16 KV) and 60,000 (Orin-64-1, FP8 KV; bf16 KV: pending, DEV-7a).
+
+| Option | First device experiments | Units, time | Needs | Overlap with P1 | Before the meeting |
+| --- | --- | --- | --- | --- | --- |
+| **CAP** | CAP-J2: FP8 against bf16 KV on real tasks: (1) traffic with P1's agent, N = 1, 4, 8, energy per successful task and overflow failures; (2) the drone pair on one device (gemma-26B Reflexion, P1's harness, matched tasks), which removes the device difference from P1's 82.1% vs 81.7%. CAP-J3: the other levers (tool schemas, output caps, window). CAP-J4: an admission controller, only if a gap remains after the best static setting | Orin-32-1/2/3 for traffic; Orin-64-1 for the drone pair. 1-2 weeks | TRF-1 (P1's final traffic agent) for (1); P1's drone harness (on the units) for (2) | MB5 | CAP-J1 (replay, J per token at N = 4, 8, two replicates) and its N = 1 anchor |
+| **A** | A-J1 in full (30 loop prompts and 20 controls; about 14 h, then 2 more sampling seeds). A-J2: pass rates under sampling with P1's drone harness (12 tasks x 3 instances x 2 arms, about 30 h). A-J3: the decode guard inside P1's agent loop. A-J4: traffic's repeated capped tool calls and a retry policy | Thor-1. About 3 days for A-J1 and A-J2 | TRF-1 for A-J4 | MB4 | A-J1 pilot (10 loop prompts, greedy and sampled) |
+| **D** | D-J1: the vision-tool burst at Orin-64-1's real pool, with real unified-memory contention. D-J2: two models on one board | Orin-64-1 | TRF-1 for real bursts (else the replayer's image bursts) | MB6 | DEV-7a (the 26B's pools and costs on Orin-64-1) |
+| **B** | B-J1: P1's E4B as a step-wise agent on P1's board, tasks D1-D3 | Orin-32-1 (holds E4B) | mayankarya's agreement to extend aerogen (D6) | P1's agent design | none |
+| **C** | C-J1: tau2-bench with E4B, thinking off, the user simulator on the WS; then N sessions with injected waits | one Orin 32 | none | none | none |
+| **RET** | RET-J1: kept state against state dropped at every wait, one agent, on the board | Orin-32-3 | none | none | RET-J1 (runs before the meeting) |
+
+**Which options compete for a unit.**
+- **CAP and A** use different units (the Orins and Thor-1), so they run in parallel. This is the lean (§9).
+- **D** needs Orin-64-1, as CAP's drone pair does. Running both puts D after the pair.
+- **B and C** each need one Orin 32. CAP's traffic arm uses all three. B or C can use Orin-32-1 while TRF-1 is
+  open, since CAP's traffic arm cannot start without P1's final traffic agent.
+
+**Common to every branch:** P1F-4, P1F-5, TRF-2/3, COR-3b/COR-4, DEV-7 for the other models, and at least two runs of
+any device point a paper will cite. If the professor wants more evidence first, CAP-J2's drone pair and A-J1 in full
+run for one more week, and we report again.
