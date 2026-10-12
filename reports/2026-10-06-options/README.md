@@ -797,7 +797,8 @@ estimates. Each branch's experiments get full specs and rules, which Sandesh app
 **The platform (ready 12 Oct).** It runs P1's images and P1's server flags per unit and model. Board energy is read in
 P1's schema and agrees with P1's own sampler within 0.01% over 319 s on Orin-32-1. Every run has a preflight before and
 after it, and the replay and loop drivers run on the units from the WS. Pools at P1's flags: granite bf16, 25,358
-tokens (Orin 32); the 26B, 80,000 (Thor-1, bf16 KV) and 60,000 (Orin-64-1, FP8 KV; bf16 KV: pending, DEV-7a).
+tokens (Orin 32); the 26B, 80,000 (Thor-1, bf16 KV) and 60,000 (Orin-64-1, FP8 KV, the cap P1's flags set) and 55,417 (Orin-64-1, bf16 KV) [DEV-7a, 12 Oct]. At P1's flags, FP8
+buys only ~8% more pool on Orin-64-1, so CAP-J2's drone pair has to lift that cap to test capacity.
 
 | Option | First device experiments | Units, time | Needs | Overlap with P1 | Before the meeting |
 | --- | --- | --- | --- | --- | --- |
