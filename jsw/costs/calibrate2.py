@@ -8,7 +8,10 @@ Model-agnostic (SGLang's native /generate, synthetic token IDs, ignore_eos), mea
 - decode time and energy per token against batch size AND context length: the b prompts of length L are first
   prefilled (1 output token), then decoded with G tokens each while fully cached, so the window is decode only.
   Points that would not fit the KV pool (b * (L + G) > 90% of max_total_num_tokens) are skipped.
-GPU energy is NVML's cumulative counter, summed over --gpu (a list for TP=2).
+GPU energy is NVML's cumulative counter, summed over --gpu (a list for TP=2). With --device <unit>:<p5> (a Jetson,
+DEV-6/DEV-7) the board's power is sampled on the unit for the whole calibration (jsw/telemetry/jetson.py) and each
+measured interval's energy is integrated from those samples afterwards (P1's total power, the unit-WS clock offset
+applied).
 """
 from __future__ import annotations
 
@@ -19,7 +22,6 @@ import random
 import time
 import urllib.request
 
-import pynvml
 
 
 def post(url, body, timeout=1800):
@@ -37,16 +39,32 @@ def main():
     ap.add_argument("--prefill-lens", default="1000,2000,4000,8000,16000")
     ap.add_argument("--ctx-lens", default="1000,4000,16000")
     ap.add_argument("--batches", default="1,2,4,8,16")
+    ap.add_argument("--device", default="", help="<unit>:<p5 dir>: a Jetson; board power from the unit's samples")
     a = ap.parse_args()
-    pynvml.nvmlInit()
-    hs = [pynvml.nvmlDeviceGetHandleByIndex(int(g)) for g in str(a.gpu).split(",")]
     S = a.server.rstrip("/")
+    tele = None
+    if a.device:
+        from jsw.telemetry.jetson import Telemetry
+        unit, p5 = a.device.split(":", 1)
+        import os
+        tele = Telemetry(unit, p5, "calib-" + os.path.basename(a.out).rsplit(".", 1)[0],
+                         os.path.dirname(os.path.abspath(a.out))).start()
 
-    def energy():
-        return sum(pynvml.nvmlDeviceGetTotalEnergyConsumption(h) for h in hs) / 1000.0
+        def energy():                                     # WS wall time: intervals are integrated afterwards
+            return time.time()
 
-    def power():
-        return sum(pynvml.nvmlDeviceGetPowerUsage(h) for h in hs) / 1000.0
+        def power():
+            return None
+    else:
+        import pynvml
+        pynvml.nvmlInit()
+        hs = [pynvml.nvmlDeviceGetHandleByIndex(int(g)) for g in str(a.gpu).split(",")]
+
+        def energy():
+            return sum(pynvml.nvmlDeviceGetTotalEnergyConsumption(h) for h in hs) / 1000.0
+
+        def power():
+            return sum(pynvml.nvmlDeviceGetPowerUsage(h) for h in hs) / 1000.0
 
     def flush():
         post(S + "/flush_cache", {}, timeout=60) if False else urllib.request.urlopen(
@@ -67,12 +85,13 @@ def main():
     res = {"server": S, "gpu": a.gpu, "model_path": info.get("model_path"), "pool_tokens": pool,
            "t_wall": time.time(), "gen": a.gen}
     time.sleep(5)
-    p = []
+    p, idle_t0 = [], energy()
     for _ in range(100):
         p.append(power())
         time.sleep(0.1)
-    res["idle_w"] = sum(p) / len(p)
-    print("idle_w", round(res["idle_w"], 1), "pool", pool, flush=True)
+    idle_t1 = energy()
+    res["idle_w"] = sum(p) / len(p) if not tele else None
+    print("idle_w", res["idle_w"] and round(res["idle_w"], 1), "pool", pool, flush=True)
     gen(ids(500, 1), 8)                                   # warm up
 
     res["prefill"] = []
@@ -84,7 +103,7 @@ def main():
             t0, e0 = time.monotonic(), energy()
             mi = gen(ids(L, 10 * L + rep), 1)
             t1, e1 = time.monotonic(), energy()
-            row = {"L": L, "rep": rep, "s": t1 - t0, "j": e1 - e0, "prompt_tokens": mi.get("prompt_tokens"),
+            row = {"L": L, "rep": rep, "s": t1 - t0, "j": e1 - e0, "e0": e0, "e1": e1, "prompt_tokens": mi.get("prompt_tokens"),
                    "cached": mi.get("cached_tokens"), "tok_s": L / (t1 - t0)}
             res["prefill"].append(row)
             print("prefill", L, round(row["s"], 3), "s", round(row["j"], 1), "J", round(row["tok_s"]), "tok/s", flush=True)
@@ -103,13 +122,25 @@ def main():
                 outs = list(ex.map(lambda q: gen(q, a.gen), prompts))
             t1, e1 = time.monotonic(), energy()
             toks = sum(o.get("completion_tokens") or 0 for o in outs)
-            row = {"L": L, "batch": b, "wall_s": t1 - t0, "energy_j": e1 - e0, "tokens": toks,
+            row = {"L": L, "batch": b, "wall_s": t1 - t0, "energy_j": e1 - e0, "e0": e0, "e1": e1, "tokens": toks,
                    "tok_s": toks / (t1 - t0), "step_s": (t1 - t0) / a.gen, "j_per_tok": (e1 - e0) / toks,
                    "avg_power_w": (e1 - e0) / (t1 - t0),
                    "cached_min": min((o.get("cached_tokens") or 0) for o in outs)}
             res["decode"].append(row)
             print("decode L", L, "b", b, "step", round(row["step_s"] * 1000, 1), "ms", round(row["j_per_tok"], 3),
                   "J/tok", round(row["avg_power_w"]), "W", flush=True)
+    if tele:                     # board energy of each interval from the unit's samples (WS wall -> unit wall)
+        from jsw.telemetry.jetson import board_energy, load
+        samples = load(tele.stop())
+        off = sum(tele.offsets[k]["offset_s"] for k in ("start", "end")) / 2
+        res["device"] = {"unit": tele.unit, "offsets": tele.offsets}
+        res["idle_w"] = board_energy(samples, idle_t0 + off, idle_t1 + off)["mean_W"]
+        for row in res["prefill"]:
+            row["j"] = board_energy(samples, row["e0"] + off, row["e1"] + off)["energy_J"]
+        for row in res["decode"]:
+            e = board_energy(samples, row["e0"] + off, row["e1"] + off)
+            row.update(energy_j=e["energy_J"], j_per_tok=e["energy_J"] / row["tokens"], avg_power_w=e["mean_W"],
+                       gaps=e["gaps"])
     with open(a.out, "w") as f:
         json.dump(res, f, indent=1)
     print("wrote", a.out)
