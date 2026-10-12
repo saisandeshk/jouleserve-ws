@@ -20,16 +20,15 @@ How to use it:
 
 ## Now
 
-- **2026-10-12, 22:35 IST.** C1 passed at 19:10 (reported to Sandesh).
-- **Done:** P1F-1, P1F-2, P1F-3, DEV-1, DEV-2, DEV-3, DEV-4, DEV-5, DEV-7a, A-J1p; CAP-J1's anchor passes.
+- **2026-10-13, 05:25 IST.** C1 passed (12 Oct 19:10); **C2 passed at 05:17** (both CAP-J1 replicates complete).
+- **Done:** P1F-1, P1F-2, P1F-3, DEV-1, DEV-2, DEV-3, DEV-4, DEV-5, DEV-7a, A-J1p, CAP-J1 (with its anchor), RET-J1.
 - **Running** (WS tmux; background waiters report the first failure or the end):
   - Orin-32-1, Orin-32-2: DEV-6 (`q-dev6a` since 05:17, `q-dev6b` since 05:06; ~45 min each). CAP-J1 done 05:17.
   - Orin-32-3: idle (RET-J1 done 00:14); spare for reruns.
   - Thor-1: A-J1's full set, 30 loop prompts and 20 controls, greedy and sampled (`aj1-thor-20261012T2229`, `q-thor`,
     ~8-9 h; it repeats the pilot's 10 loop prompts).
   - WS and Orin-64-1: idle.
-- **Next:** RET-J1's verdict (~00:30); C2 at Tue 12:00; COR-1 with
-  P1F-3's numbers; MTG-1.
+- **Next:** DEV-6's verdict (~06:05); A-J1's rules (~07:00-08:00); the CMP-2 device box (COR-1); MTG-1; F at Tue 23:00.
 
 ## Checkpoints (plan §3)
 
