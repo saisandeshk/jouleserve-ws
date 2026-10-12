@@ -208,7 +208,7 @@ which git already keeps.
     the vision burst); the five options, a comparison table, the lean and its main risk (P1's FP8 pair); the device
     platform and the software built; this week's runs with their outcome rules and stated expectations; lessons,
     self-test, glossary, and a map from plain names to repo labels. Two new drawings (where each option acts; the
-    week's timeline) and nine reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
+    week's timeline) and eight reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
     guide (rev 184) is kept as the second tab, "Archive: the guide as of 11 Oct", with our open comment on drones per
     device. Refresh it after the runs and D12.
   - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.3 (artifact
