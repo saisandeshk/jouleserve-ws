@@ -5,6 +5,10 @@
         ...  # write per-call records with run.call(...)
     # manifest.json, events.jsonl, calls.jsonl, nvml.jsonl, sglang_metrics.jsonl in ~/work/runs/<name>/
 
+A run on a Jetson (device=(unit, p5_dir)) samples board power on the unit (jsw/telemetry/jetson.py) for the run's
+span; the samples are copied to <run>/device/ at the end, and the unit-minus-WS clock offset, measured at the start and
+the end, goes into the manifest (device samples carry the unit's clock).
+
 Every record carries t_mono and t_wall (the samplers' clock), so calls, server metrics and GPU energy line up.
 GPU energy over any window comes from NVML's cumulative counter: `gpu_energy_j(run.dir, t0, t1)`.
 """
@@ -63,7 +67,8 @@ def package_versions(*names) -> dict:
 
 class Run:
     def __init__(self, name: str, args: dict | None = None, gpu: int | str | list | None = None, server: str | None = None,
-                 root: Path | None = None, metrics_hz: float = 2.0, nvml_hz: float = 10.0, extra: dict | None = None):
+                 root: Path | None = None, metrics_hz: float = 2.0, nvml_hz: float = 10.0, extra: dict | None = None,
+                 device: tuple[str, str] | None = None):
         self.name, self.server = name, server.rstrip("/") if server else None
         if isinstance(gpu, str):
             gpu = [int(x) for x in gpu.split(",") if x != ""]
@@ -76,6 +81,7 @@ class Run:
         self._lock = threading.Lock()
         self._events = self._calls = None
         self.samplers = []
+        self.device, self.telemetry = device, None
 
     # ------------------------------------------------------------------ lifecycle
     def __enter__(self):
@@ -105,6 +111,12 @@ class Run:
                                                       hz=self.metrics_hz))
         for s in self.samplers:
             s.start()
+        if self.device:
+            from jsw.telemetry.jetson import Telemetry
+            self.telemetry = Telemetry(self.device[0], self.device[1], self.name, str(self.dir)).start()
+            self.manifest["device"] = {"unit": self.device[0], "p5": self.device[1],
+                                       "clock_offset_start": self.telemetry.offsets["start"]}
+            self._write_manifest()
         self.event("run_start")
         return self
 
@@ -112,6 +124,14 @@ class Run:
         self.event("run_end", error=repr(exc) if exc else None)
         for s in self.samplers:
             s.stop()
+        if self.telemetry:
+            try:
+                path = Path(self.telemetry.stop())
+                self.manifest["device"].update(
+                    clock_offset_end=self.telemetry.offsets["end"],
+                    samples_sha256=hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None)
+            except Exception as e:      # the run's own records stay valid; the device copy is redone by hand
+                self.manifest["device"]["stop_error"] = repr(e)
         self.manifest.update(t_end_wall=time.time(), t_end_mono=time.monotonic(),
                              status="error" if exc else "done", error=repr(exc) if exc else None)
         self._write_manifest()

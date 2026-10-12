@@ -155,9 +155,11 @@ def main():
     ap.add_argument("--from-run", default="", help="replay only the prompts that looped in this run's --from-arm")
     ap.add_argument("--from-arm", default="greedy")
     ap.add_argument("--name", required=True)
+    ap.add_argument("--device", default="", help="<unit>:<p5 dir>: sample the Jetson's board power (use --gpu '')")
     a = ap.parse_args()
     from jsw.runner.run import Run
-    with Run(a.name, args=vars(a), gpu=a.gpu, server=a.server) as run:
+    dev = tuple(a.device.split(":", 1)) if a.device else None
+    with Run(a.name, args=vars(a), gpu=a.gpu or None, server=a.server, device=dev) as run:
         asyncio.run(drive(a, run))
 
 

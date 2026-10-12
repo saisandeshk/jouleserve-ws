@@ -4,6 +4,6 @@
 set -e
 WS=saisandeshk@10.24.32.174
 REV="$(git describe --always --dirty) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-rsync -a --exclude __pycache__ jsw env analysis tests "$WS":~/jsw-dev/
+rsync -a --exclude __pycache__ jsw env analysis tests configs "$WS":~/jsw-dev/
 ssh "$WS" "echo '$REV' > ~/jsw-dev/REVISION"
 echo "synced: $REV"

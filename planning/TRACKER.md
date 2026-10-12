@@ -20,12 +20,11 @@ How to use it:
 
 ## Now
 
-- **2026-10-12, evening.** Sandesh approved plan v2.0 (GATE done; RET-J1 added).
-- **Docs:** the corrections that need no new data are applied (COR checklist) and pushed: CMP-2, the evidence doc's
-  repo copy, HANDOFF, the review index and update notes in the dated reports. The device-results box (COR-1) and the
-  artifacts (COR-3) follow the runs.
-- **Running:** nothing yet, on the WS or the units.
-- **Next:** P1F-2, DEV-1 to DEV-5, aiming at C1 (Mon 23:00). SYNC-1 is done (WS clone and `~/jsw-dev` at `42f9437`).
+- **2026-10-12, 18:30 IST.** Working toward C1 (Mon 23:00).
+- **Done:** P1F-2 (C1 check (a) passes).
+- **Doing:** DEV-1. P1's stack is stopped on all five units, after snapshots copied to the WS; the 10-minute idle readings
+  are running. Then DEV-2, DEV-3, DEV-5 and DEV-4.
+- **Running:** the idle readings (tegrastats, all five units, until about 18:35). Nothing else of ours.
 
 ## Checkpoints (plan §3)
 
@@ -42,9 +41,9 @@ How to use it:
 | GATE | Sandesh approves plan v2.0, including D19–D22 | — | — | **done** 12 Oct | approved | Plan, tracker and the corrected docs committed and pushed the same day |
 | SYNC-1 | Pull `~/jouleserve-ws`; `env/sync_ws.sh` to `~/jsw-dev` | WS | GATE | **done** 12 Oct | both at the pushed commit; `~/jsw-dev/REVISION` matches | Both at `42f9437` (17:15 IST); the clone was at `001dbd2`, `~/jsw-dev` at `09a4d5c`. Re-sync before each WS run |
 | P1F-1 | Pull the WS clone of P1 to `0cc2311a` | WS | — | **done** 12 Oct | HEAD `0cc2311a`, worktree clean | Fast-forward from `f6aabe40` (a fetch that outlived its ssh timeout raced the pull; no damage). Logs: `~/work/logs/p1pull_2026-10-12.log`, `p1ff_2026-10-12.log` |
-| P1F-2 | Loader applies P1's selection rule; replay sets rebuilt (plan §5.1) | code local, run on WS | SYNC-1 | todo | our counts and pass rates equal P1's summaries for all 17 traffic configurations; a test pins it; clean Orin 32 granite and E4B replay sets with session counts | `analysis/p1_repo.py:191` skips every re-run folder; docstring lines 10–11 are stale. Copy `selection.py`'s logic with attribution; never import it in place. Check against P1's `traffic/grading/grades.csv` and `analysis/outputs/paper_tables/` |
+| P1F-2 | Loader applies P1's selection rule; replay sets rebuilt (plan §5.1) | code local, run on WS | SYNC-1 | **done** 12 Oct | our counts and pass rates equal P1's summaries for all 17 traffic configurations; a test pins it; clean Orin 32 granite and E4B replay sets with session counts | `analysis/p1_selection.py` ports P1's `selection.py` (Mayank Arya, `577ef7a6`) and applies P1's `overrides.csv` (a faulted run is a fail, as P1's `apply_grades.py` writes it). All 17 cells equal P1's committed G2 (non-passing share), B5 (overflow share) and `suite_stats` (3,605 runs); 142 overridden runs, all in the Orin 64 gemma-26B and Devstral Reflexion arms, as P1's paper says. `tests/test_p1_selection.py` passes on the WS (`46cbcba`). `analysis/p1_repo.py` reads every run folder through the rule (9 more traffic cells). Clean replay sets in `~/jsw-dev/data/replay/` (6 Oct sets kept in `data/replay_2026-10-06/`): **Orin 32 granite** 189 clean runs (133 re-runs, all at pool 25,358; 11 without a trace), 165 sessions, 125 completed, 800 calls; **Orin 32 E4B** 252 runs, 248 sessions, 243 completed, 940 calls. P1's `suite_stats` per-class counts are over all 4,737 rows (before selection) |
 | P1F-3 | RET-E1 and CAP-E1 on the clean sessions, plus `traffic_sim` (plan §5.1) | WS GPU0, GPU1 | P1F-2 | todo | 5 points run (bf16 at 25,358 tokens, N = 1, 4, 8; FP8 at 50,716, N = 4, 8); JSON and figure; rule outcome | 60-minute windows after 10 minutes of warm-up; J/token first (plan §6) |
-| DEV-1 | Snapshot and stop P1's stack (plan §4.1) | all five units | GATE | todo | no GPU work; ports 30000, 8001, 41451 free; 10-min idle power saved; snapshot copied to the WS | Delete nothing. Leave P1 members' tmux sessions, k3s and Thor-1's legacy helper alone. ollama on Orin-64-1 through Sandesh if it is a system service. Checked 12 Oct, 18:00 IST: all idle (no SGLang request in 30 min, no harness, AirSim hovering); no container has a restart policy; Thor-1's `ensure_infra.sh` (P1's harness) is a one-shot check, not a watchdog (its leftover shell parents the MCP server: stop both by PID). Last starts: Orin-64-1 AirSim 12 Oct 01:46 IST, Orin-32-1/2 servers 10 Oct ~10:40/12:00 IST |
+| DEV-1 | Snapshot and stop P1's stack (plan §4.1) | all five units | GATE | doing | no GPU work; ports 30000, 8001, 41451 free; 10-min idle power saved; snapshot copied to the WS | Delete nothing. Leave P1 members' tmux sessions, k3s and Thor-1's legacy helper alone. ollama on Orin-64-1 through Sandesh if it is a system service. Checked 12 Oct, 18:00 IST: all idle (no SGLang request in 30 min, no harness, AirSim hovering); no container has a restart policy; Thor-1's `ensure_infra.sh` (P1's harness) is a one-shot check, not a watchdog (its leftover shell parents the MCP server: stop both by PID). Last starts: Orin-64-1 AirSim 12 Oct 01:46 IST, Orin-32-1/2 servers 10 Oct ~10:40/12:00 IST. **12 Oct 18:15-18:21:** snapshots (`env/jetson_snapshot.sh`) on all five units in `<p5>/state/2026-10-12/`, copied to the WS `~/work/device_state/<unit>/2026-10-12/` (SHA-256 checked). Stopped: Thor-1 `p1-final-granite`, its MCP server, the `ensure_infra.sh` shell and `thor_headless`; the Orins' `sglang-benchmark` (and Orin-32-3's idle `sglang-orin`), the AirSim containers, and the MCP servers on Orin-32-1/2. **Not stopped:** the MCP servers on Orin-64-1 and Orin-32-3 run as `yash`, not our `mayankarya` login (idle, 0.1-0.4% CPU, port 8001 only; needs Sandesh); ollama (Sandesh: leave it). P1's live Orin 32 servers (started 7-10 Oct) ran FP8 KV at a 60,000 pool: not P1's traffic-sweep flags, which come from the runs' own records |
 | DEV-2 | P5 folders, container convention, image versions | all five | DEV-1 | todo | a read-only container prints its versions and exits on each unit; docker root unchanged (±10 MB); versions in AGENTS.md §3 | Orin-32-2 first (264 MB free). Orin-32-3's image `d4967327` differs from `05119cc6`. Caches (Triton, FlashInfer, torch, HF, `HOME`) go to `<p5>/cache` |
 | DEV-3 | Jetson telemetry `jsw/telemetry/jetson.py` (plan §4.1) | code local; all five | DEV-2 | todo | within 1% of P1's own sampler over 5 min; median interval 200 ms ± 10%; samples merge with the WS call log | Thor `power_VIN_mW`; Orin `platform_total_power_mW` = VDD_GPU_SOC + VDD_CPU_CV + VIN_SYS_5V0 |
 | DEV-4 | Our stack against SGLang 0.5.16; `env/launch_jetson.sh` | Orin-32-1, Thor-1 | DEV-2, DEV-3 | todo | one replayed granite session (Orin-32-1) and one loop prompt (Thor-1), end to end, run directories on the WS | Checks in plan §4.1 |
@@ -194,6 +193,10 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 | P1F-6 | Gemma-4 FP8 KV: what P1 ran, and whether 0.5.16 runs it on the A5000s | closed 12 Oct: P1's server on Orin-64-1 used `fp8_e5m2` on SGLang 0.5.16. Gemma's FP8 runs on the device (DEV-7a, CAP-J2), so the A5000 question is dropped | — |
 
 ## Log (newest first)
+
+- **2026-10-12, 18:30:** P1F-2 done (17 cells equal P1's outputs; 3,605 runs; clean replay sets built on the WS).
+  DEV-1: snapshots on the WS, P1's stack stopped on the five units except two `yash`-owned MCP servers; idle readings
+  running. Sandesh: P1's members know; ollama stays up.
 
 - **2026-10-12, evening:** docs committed and pushed (`42f9437`); SYNC-1 done (WS clone and `~/jsw-dev` at `42f9437`);
   the teaching guide rewritten from first principles (new first tab, 19 chapters, two drawings; the old guide kept as an
