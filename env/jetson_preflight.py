@@ -4,10 +4,11 @@
         [--idle 300 --out <run_dir>/preflight_before] [--wait-cool 900] [--json <file>]
 
 Checks (a failed check exits 1 and stops the run):
-1. quiet: no container but ours (p5-*), no foreign process above 5% CPU (our containers' processes, our sampler and
-   this probe excluded); on Thor also no GPU process outside our containers (nvidia-smi);
+1. quiet: no container but ours (p5-*), no foreign process above 5% CPU (our containers' processes, our sampler,
+   this probe and kernel threads excluded); on Thor also no GPU process outside our containers (nvidia-smi);
 2. clocks: GPU devfreq min = max = cur = the locked frequency found on 12 Oct (configs/jetsons.json); nvpmodel MAXN;
-3. disk: >= 5 GB free in <p5>, docker root free >= its DEV-2 value - 10 MB;
+3. disk: >= 5 GB free in <p5>, docker root free >= its DEV-2 value - 10 MB (Thor-1: - 5 GB, since its docker root
+   shares `/` with <p5>, whose caches and logs grow);
 4. time: NTP synchronised; the unit-WS clock offset recorded;
 5. temperature: GPU below 50 C (--wait-cool S waits up to S seconds for it);
 6. server (with --server): model and pool as specified; with --warmup one discarded short request; with --flush P1's
@@ -45,7 +46,9 @@ for l in top.splitlines():
     if len(p) < 12:
         continue
     pid, cpu, cmd = p[0], float(p[8].replace(",", ".")), p[11]
-    if cpu > 5 and pid not in ours and pid != me and not any(x in cmd for x in ("tegrastats", "jetson.py", "top", "python3 -")):
+    kernel = cmd.startswith(("kworker", "ksoftirqd", "irq/", "rcu_", "migration/", "kswapd"))   # kernel threads
+    if cpu > 5 and pid not in ours and pid != me and not kernel and \
+            not any(x in cmd for x in ("tegrastats", "jetson.py", "top", "python3 -")):
         busy.append((pid, cpu, cmd[:80]))
 out["busy"] = busy
 if shutil.which("nvidia-smi"):
@@ -138,9 +141,10 @@ def main():
                       "foreign_containers": foreign, "busy": p["busy"], "gpu_foreign": p.get("gpu_foreign")}
     chk["2_clocks"] = {"ok": all(f == u["gpu_locked_hz"] for f in p["gpu_hz"]) and "MAXN" in p["nvpmodel"],
                        "gpu_hz": p["gpu_hz"], "nvpmodel": p["nvpmodel"]}
-    chk["3_disk"] = {"ok": p["p5_free"] >= 5e9 and p["droot_free"] >= u["docker_root_free_dev2"] - 10e6,
+    floor = u["docker_root_free_dev2"] - u.get("docker_root_tolerance", 10_000_000)
+    chk["3_disk"] = {"ok": p["p5_free"] >= 5e9 and p["droot_free"] >= floor,
                      "p5_free_gb": round(p["p5_free"] / 1e9, 1), "docker_root_free": p["droot_free"],
-                     "docker_root_floor": u["docker_root_free_dev2"] - 10_000_000}
+                     "docker_root_floor": floor}
     off = clock_offset(a.unit)
     chk["4_time"] = {"ok": p["ntp"] == "yes", "ntp": p["ntp"], **off}
     chk["5_temp"] = {"ok": a.no_temp or (p["gpu_temp"] is not None and p["gpu_temp"] < 50), "gpu_temp_C": p["gpu_temp"]}

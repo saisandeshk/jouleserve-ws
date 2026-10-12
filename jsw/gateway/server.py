@@ -99,8 +99,11 @@ def _parse_metrics(text: str) -> dict:
 
 class Gateway:
     def __init__(self, upstream: str, log_dir: Path, policy: Policy, tick_s: float = 0.5,
-                 pythonic_fallback: str = "off"):
+                 pythonic_fallback: str = "off", generate_stream: bool = False):
         self.upstream, self.policy, self.tick_s = upstream.rstrip("/"), policy, tick_s
+        # stream /generate from the engine to time its first token (t_first: prefill vs decode, as P1's agent recorded
+        # ttft); the client still gets one JSON response, the last streamed chunk
+        self.generate_stream = generate_stream
         self.pythonic_fallback = pythonic_fallback     # off | all | first (see jsw/gateway/pythonic.py)
         self.log_dir = Path(log_dir).expanduser()
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -326,10 +329,22 @@ class Gateway:
             body = dict(call.body)
             body.setdefault("rid", call.rid)
             call.rid = body["rid"]
+            stream = self.generate_stream and not body.get("stream")
+            if stream:
+                body["stream"] = True
             call.t_sent = time.monotonic()
             async with self.http.post(self.upstream + "/generate", json=body) as r:
                 call.status = r.status
-                out = await r.read()
+                if stream and r.status == 200:
+                    last = None
+                    async for line in r.content:
+                        if line.startswith(b"data:") and line[5:].strip() != b"[DONE]":
+                            if call.t_first is None:
+                                call.t_first = time.monotonic()
+                            last = line[5:].strip()
+                    out = last or b"{}"
+                else:
+                    out = await r.read()
             call.t_last = time.monotonic()
             try:
                 j = json.loads(out)
@@ -419,12 +434,13 @@ def main():
     ap.add_argument("--log-dir", required=True)
     ap.add_argument("--policy", default=None, help="module:Class (default: no policy)")
     ap.add_argument("--policy-args", default="{}")
+    ap.add_argument("--generate-stream", action="store_true", help="stream /generate upstream to record t_first")
     ap.add_argument("--pythonic-fallback", default="off", choices=("off", "all", "first"),
                     help="turn content that is only Python-style calls to the request's tools into tool calls; "
                          "'first' also stops a reply when it opens a new thought after its calls")
     a = ap.parse_args()
     gw = Gateway(a.upstream, Path(a.log_dir), load_policy(a.policy, json.loads(a.policy_args)),
-                 pythonic_fallback=a.pythonic_fallback)
+                 pythonic_fallback=a.pythonic_fallback, generate_stream=a.generate_stream)
     web.run_app(make_app(gw), host=a.host, port=a.port, access_log=None, print=None)
 
 

@@ -22,7 +22,7 @@ $PY env/jetson_preflight.py $UNIT --server $URL --flush --wait-cool 600 > $R/pre
   || { log "$NAME PREFLIGHT_BEFORE_FAILED (flush) $(tail -1 $R/preflight_flush.log)"; exit 2; }
 tmux kill-session -t gw-$UNIT 2>/dev/null
 tmux new-session -d -s gw-$UNIT "cd ~/jsw-dev && $PY -m jsw.gateway.server --upstream $URL --port $GW --log-dir $R/gw \
-  > ~/work/logs/gw_$NAME.log 2>&1"
+  --generate-stream > ~/work/logs/gw_$NAME.log 2>&1"
 sleep 3
 log "$NAME replay n=$N warm=$WARM horizon=$H ctx=$CTX"
 $PY -m jsw.workloads.replay --sessions $SESS --gateway http://127.0.0.1:$GW --server $URL --n $N --warm $WARM \
