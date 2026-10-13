@@ -15,8 +15,10 @@ doc, the teaching guide and the deck on 6 Oct. Our own lean is stated once, at t
 - **A. Decode-side energy:** on a 4-bit stand-in for P1's 26B (llama.cpp; one sampling seed at Gemma's default
   temperature of 1.0; Reflexion prompts only; pass rate under sampling unmeasured), greedy decoding loops on 77% of
   P1's loop prompts and sampling on none, so P1's drone runaways may be a decoding setting (A-J1 in plan v2.0 tests
-  it on P1's bf16 26B on Thor-1; its pilot, box below: greedy loops on 5 of 10 and sampling on 0 of 10, and greedy is
-  not repeatable call for call on P1's setup). An online stop plus one resample recovers all 17 calls that looped again, at a
+  it on P1's bf16 26B on Thor-1). **On P1's own setup** (A-J1, 13 Oct, box below): greedy loops on 16 of 30 of P1's
+  loop prompts (53%; the rule asked ≥ 80% to call it reproduced) and on 5 of 20 calls P1 recorded as finishing;
+  sampling loops on 0 of 50. Greedy is not repeatable call for call there, so a loop is a per-call chance, not a
+  property of the prompt. An online stop plus one resample recovers all 17 calls that looped again, at a
   median 60% of the capped cost (the pre-registered cost rule was not met: 10 of 29 at half the cost or less). Also
   measured: traffic's repeated capped tool calls (31-33% of gemma traffic LLM energy) and batching (13x less energy
   per token at batch 16).
@@ -68,7 +70,7 @@ preflight bug fixed on 12 Oct: DEV-6 on Orin-32-3 and DEV-7a's FP8 point) [P1-de
 | **CAP-J1**: FP8 against bf16 KV with several agents | Orin-32-1, Orin-32-2 (one replicate each) | P1's clean Orin 32 granite traffic sessions replayed by token counts, N = 4 and 8, 2-hour windows; J per generated token first (plan §6) | bf16 3.20-3.30 J, FP8 1.77-1.81 J. FP8 is **44.4% and 44.5% below bf16, best against best**; −45.0/−45.1% at N = 4, −44.4/−44.5% at N = 8. It completes 25-26 sessions in 2 h against 11-14, and needs 46.5% less energy per completed session (prorated). bf16 at 8 agents keeps no state (0 prompt tokens from the cache) | **Holds on the board** (≥ 25% in both replicates; they differ by 0.04 points). WS rerun (P1F-3): −45.7%; board/WS ratio 1.02 |
 | **CAP-J1 anchor**: is our replay P1-comparable? | Orin-32-3 | N = 1, the same sessions as P1's measured runs (10 matched) | decode 8.50 against P1's 8.40 tok/s; LLM-call energy per session 20.05 against 19.53 kJ | **Passes** (+1.2%, +2.6%; limits ±10%, ±15%): CAP-J1's numbers are P1-comparable |
 | **RET-J1**: is kept state worth anything on the board? | Orin-32-3 | one agent, state dropped at every tool wait (`--no-reuse`), against the anchor | 5.66 → 5.84 J per generated token; dropping state recomputes 2.9x the prompt tokens (273K against 93K), which costs little because prefill is cheap | **+3.2%: "retention gains little on P1's workloads" holds on the board** (< 5%) |
-| **A-J1 pilot**: do P1's loops survive sampling on P1's own setup? | Thor-1 | P1's bf16 26B, P1's image and flags; 10 of P1's Thor Reflexion loop prompts; greedy (P1's protocol) and Gemma's default sampling (one seed) | greedy loops on 5 of 10 (Wilson 24-76%), sampling on 0 of 10 (0-28%; 9 of 10 programs valid); per call a median 34.4 kJ greedy (loops cut by the detector) against 18.0 kJ sampled. Greedy is not repeatable on P1's setup: our greedy text leaves P1's recorded text after a median 188 characters, at near-tie wordings, and two of our own greedy runs of one prompt part after 188 characters | Indicative (pilot). Reproduction (≥ 80% loop under greedy) **not met**; a loop is a per-call probability, not a property of the prompt. The full set (30 loop prompts, 20 controls) runs before the meeting |
+| **A-J1**: do P1's loops survive sampling on P1's own setup? | Thor-1 | P1's bf16 26B, P1's image and flags; 30 of P1's Thor Reflexion loop prompts and 20 long calls that finished (controls); greedy (P1's protocol; a call stops where the loop detector fires) and Gemma's default sampling (one seed, run to the end) | Greedy loops on **16 of 30 loop prompts** (53%, Wilson 36-70%) and on **5 of 20 controls** (25%, 11-47%); sampling on **0 of 30** (0-11%) and **0 of 20** (0-16%), and every sampled call finishes. Valid programs: loop prompts 27 of 28 sampled against 8 of 12 greedy; controls 12 of 16 against 9 of 11. Per call (median board energy): loop prompts 29.3 kJ greedy (cut by the detector, so below P1's full caps) against 21.2 kJ sampled. Greedy is not repeatable on P1's setup: our greedy text shares a median 222 characters with P1's recorded text (4 of 50 match in full), and the pilot's 10 prompts, run twice, changed outcome (loop or not) in 4 of 10 | Reproduction (≥ 80% loop under greedy) **not met**: by the rule, "the 4-bit result stands alone". Sampling's loop rate meets ≤ 10%, but the controls check **is not met** on program validity (75% against 82%, beyond the 5-point margin; the intervals overlap widely, 51-90% against 52-95%); the finish rate improves (100% against 75%). One sampling seed; pass rates under sampling unmeasured (A-J2). The pilot (10 loop prompts, 12 Oct): greedy 5 of 10, sampled 0 of 10 |
 | **DEV-6**: are the Orin 32s interchangeable? | Orin-32-1/2/3 | 10-minute idle with granite loaded; decode J/token at batch 1 and 8 | idle 13.40-13.59 W; decode within 2.2% (Orin-32-3 about 3% above the other two) | **Interchangeable** (±3%): cross-unit comparisons allowed |
 | **DEV-7a**: P1's 26B on Orin-64-1 | Orin-64-1 | pools at P1's flags; idle, prefill and decode costs | pools FP8 60,000 (P1's `--max-total-tokens` cap) and bf16 55,417; decode 2.0 J per token at batch 1 (19-20 tok/s), 0.51-0.57 at batch 8 | Report only. At P1's flags FP8 buys ~8% more pool here, so CAP-J2's drone pair must lift the cap |
 
@@ -192,7 +194,11 @@ per successful task, losing Y runs, where sampling alone recovers Z%."
 - The cause may be greedy decoding: on the WS, a 4-bit stand-in for P1's 26B loops on 77% of P1's Reflexion loop
   prompts under greedy and on none under Gemma-4's own default sampling (A-E1, below; one seed, temperature 1.0,
   pass rate unmeasured); Qwen3.5 ran away only under greedy too (0 of 21 sampled missions) [WS-meas]. If P1's bf16
-  26B behaves the same on its Thor (A-J1), the drone fix is configuration.
+  26B behaves the same on its Thor (A-J1), the drone fix is configuration. **A-J1 (13 Oct, P1's bf16 26B on Thor-1):**
+  greedy loops on 16 of 30 loop prompts and 5 of 20 controls, sampling on 0 of 50; greedy is not repeatable call for
+  call there. Neither of A-J1's rules is met as written (reproduction ≥ 80%; controls no worse in program validity,
+  12/16 against 9/11), so the configuration fix stays a lead until pass rates are measured (A-J2) [P1-dev; box at the
+  top].
 - P1's submitted paper reports the loop finding itself (offline compression test, stop-at-first-cap bound); it
   leaves an online policy to "separate evaluation" and plans capped-call replays after submission (MB4).
 - Our traffic analyses predate P1's traffic grades (7 Oct), so "runs lost" there counts completions, not correct
@@ -261,7 +267,9 @@ more than sampling from the start), budgets and batching.
     on Thor gemma) may be a decoding configuration problem: P1 runs temperature 0, the model's own generation
     config samples (temperature 1.0, top_k 64, top_p 0.95). On the 4-bit stand-in sampling removes the loops (one
     seed; Reflexion prompts only; pass rate unmeasured). That is a lead for P1, not yet a fix: it needs a test on
-    P1's bf16 26B and drone harness, with pass rates (A-J1, A-J2). What remains for P5 under A is the safety net
+    P1's bf16 26B and drone harness, with pass rates (A-J1, A-J2). A-J1 (13 Oct) ran the first half on P1's bf16 26B:
+    sampling looped on none of 50 calls, greedy on 21 of 50 (box at the top); pass rates are A-J2's. What remains for
+    P5 under A is the safety net
     (an online stop for residual loops, A-E2's retries), the traffic agent's repeated capped tool calls (A-E4),
     budgets and batching of long decodes.
 - **A-E2, stop and retry** (`a_e2.json`; the 29 prompts that looped under greedy in A-E1, 23 of the 30 loop prompts
@@ -887,7 +895,7 @@ buys only ~8% more pool on Orin-64-1, so CAP-J2's drone pair has to lift that ca
 | Option | First device experiments | Units, time | Needs | Overlap with P1 | Before the meeting |
 | --- | --- | --- | --- | --- | --- |
 | **CAP** | CAP-J2: FP8 against bf16 KV on real tasks: (1) traffic with P1's agent, N = 1, 4, 8, energy per successful task and overflow failures; (2) the drone pair on one device (gemma-26B Reflexion, P1's harness, matched tasks), which removes the device difference from P1's 82.1% vs 81.7%. CAP-J3: the other levers (tool schemas, output caps, window). CAP-J4: an admission controller, only if a gap remains after the best static setting | Orin-32-1/2/3 for traffic; Orin-64-1 for the drone pair. 1-2 weeks | TRF-1 (P1's final traffic agent) for (1); P1's drone harness (on the units) for (2) | MB5 | CAP-J1 done: FP8 −44.4% / −44.5% J per token, best against best, two replicates ("holds on the board"); the anchor passes |
-| **A** | A-J1 in full (30 loop prompts and 20 controls; about 14 h, then 2 more sampling seeds). A-J2: pass rates under sampling with P1's drone harness (12 tasks x 3 instances x 2 arms, about 30 h). A-J3: the decode guard inside P1's agent loop. A-J4: traffic's repeated capped tool calls and a retry policy | Thor-1. About 3 days for A-J1 and A-J2 | TRF-1 for A-J4 | MB4 | A-J1 pilot done (greedy loops 5 of 10, sampled 0 of 10; indicative); the full set runs before the meeting |
+| **A** | A-J1's two more sampling seeds (about 8 h). A-J2: pass rates under sampling with P1's drone harness (12 tasks x 3 instances x 2 arms, about 30 h). A-J3: the decode guard inside P1's agent loop. A-J4: traffic's repeated capped tool calls and a retry policy | Thor-1. About 3 days for A-J1 and A-J2 | TRF-1 for A-J4 | MB4 | A-J1 done (30 loop prompts, 20 controls): greedy loops on 16 of 30 and 5 of 20, sampling on 0 of 50; neither rule met as written (reproduction; control validity 12/16 against 9/11) |
 | **D** | D-J1: the vision-tool burst at Orin-64-1's real pool, with real unified-memory contention. D-J2: two models on one board | Orin-64-1 | TRF-1 for real bursts (else the replayer's image bursts) | MB6 | DEV-7a (the 26B's pools and costs on Orin-64-1) |
 | **B** | B-J1: P1's E4B as a step-wise agent on P1's board, tasks D1-D3 | Orin-32-1 (holds E4B) | mayankarya's agreement to extend aerogen (D6) | P1's agent design | none |
 | **C** | C-J1: tau2-bench with E4B, thinking off, the user simulator on the WS; then N sessions with injected waits | one Orin 32 | none | none | none |
@@ -900,5 +908,5 @@ buys only ~8% more pool on Orin-64-1, so CAP-J2's drone pair has to lift that ca
   open, since CAP's traffic arm cannot start without P1's final traffic agent.
 
 **Common to every branch:** P1F-4, P1F-5, TRF-2/3, COR-3b/COR-4, DEV-7 for the other models, and at least two runs of
-any device point a paper will cite. If the professor wants more evidence first, CAP-J2's drone pair and A-J1 in full
-run for one more week, and we report again.
+any device point a paper will cite. If the professor wants more evidence first, CAP-J2's drone pair and A-J1's further
+sampling seeds run for one more week, and we report again.
