@@ -1,0 +1,19 @@
+{
+ "unit": "Orin-32-1",
+ "container": "p5-dev6",
+ "url": "http://10.24.24.56:30000",
+ "image": "jouleserve/sglang:0.5.16-orin-cu126-sm87",
+ "image_id": "05119cc6b868",
+ "model": "/media/hdd/huggingface/hub/models--ibm-granite--granite-4.2-8b/snapshots/f8de16cdcdbc6c779ca517604e050d82cc119e44",
+ "kv": "bf16",
+ "pool_requested": 25358,
+ "load_s": 317.6,
+ "server_args": "python3 -m sglang.launch_server --model-path /media/hdd/huggingface/hub/models--ibm-granite--granite-4.2-8b/snapshots/f8de16cdcdbc6c779ca517604e050d82cc119e44 --served-model-name ibm-granite/granite-4.2-8b --host 0.0.0.0 --port 30000 --enable-metrics --enable-cache-report --attention-backend triton --chunked-prefill-size 2048 --disable-cuda-graph --dtype bfloat16 --context-length 26624 --mem-fraction-static 0.8 --tool-call-parser qwen3_coder --reasoning-parser deepseek-r1 --max-total-tokens 25358 --max-running-requests 8",
+ "docker": "mkdir -p /media/hdd/p5/cache /media/hdd/p5/logs && docker run -d --rm --read-only --tmpfs /tmp --log-driver none --name p5-dev6 --runtime nvidia --network host --shm-size 8g -v /media/hdd/huggingface/hub/models--ibm-granite--granite-4.2-8b:/media/hdd/huggingface/hub/models--ibm-granite--granite-4.2-8b:ro -v /media/hdd/p5/cache:/p5cache -v /media/hdd/p5/logs:/p5logs -v /media/ssd/final_sweep/orin56_10.24.24.56/_patches/nccl_gloo_patch:/patches:ro -e HOME=/p5cache -e XDG_CACHE_HOME=/p5cache/xdg -e TRITON_CACHE_DIR=/p5cache/triton -e TORCHINDUCTOR_CACHE_DIR=/p5cache/inductor -e FLASHINFER_WORKSPACE_BASE=/p5cache -e HF_HUB_OFFLINE=1 -e SGLANG_WARMUP_TIMEOUT=1800 -e NCCL_SHM_DISABLE=1 -e NCCL_P2P_DISABLE=1 -e NCCL_IB_DISABLE=1 -e NCCL_IGNORE_DISABLED_P2P=1 -e PYTHONPATH=/patches jouleserve/sglang:0.5.16-orin-cu126-sm87 sh -c 'exec python3 -m sglang.launch_server --model-path /media/hdd/huggingface/hub/models--ibm-granite--granite-4.2-8b/snapshots/f8de16cdcdbc6c779ca517604e050d82cc119e44 --served-model-name ibm-granite/granite-4.2-8b --host 0.0.0.0 --port 30000 --enable-metrics --enable-cache-report --attention-backend triton --chunked-prefill-size 2048 --disable-cuda-graph --dtype bfloat16 --context-length 26624 --mem-fraction-static 0.8 --tool-call-parser qwen3_coder --reasoning-parser deepseek-r1 --max-total-tokens 25358 --max-running-requests 8 >> /p5logs/dev6.log 2>&1'",
+ "pool": 25358,
+ "version": "0.5.16",
+ "kv_cache_dtype": "auto",
+ "context_length": 26624,
+ "max_running_requests": 8,
+ "mem_fraction_static": 0.8
+}
