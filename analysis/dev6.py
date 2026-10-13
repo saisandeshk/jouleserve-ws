@@ -61,6 +61,7 @@ def main():
         res["interchangeable"] = all(v["within"] for v in res["checks"].values())
         res["verdict"] = ("interchangeable (within ±3%)" if res["interchangeable"]
                           else "not interchangeable: comparisons stay within one unit")
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, indent=1, default=str))
     for u in units:
         print(u["unit"], u["run"], "idle", round(u["idle_W"] or 0, 2),
