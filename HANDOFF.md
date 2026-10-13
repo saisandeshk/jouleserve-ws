@@ -1,6 +1,6 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-13, 10:25 (IST).
+**Last updated:** 2026-10-13, 10:40 (IST).
 
 **13 Oct: every run before the meeting is done, and deck v2.4 is published.** The meeting is **Wed 14 Oct, 09:00-10:00**
 (D12); results freeze **Tue 13 Oct 23:00**; materials final by **Wed 08:00**. C1 passed (Mon 19:10) and C2 passed (Tue
@@ -18,16 +18,22 @@
   - **DEV-6:** the three Orin 32s are interchangeable (±3%). **DEV-7a:** the 26B's pools on Orin-64-1 at P1's flags,
     FP8 60,000 (P1's cap) and bf16 55,417.
 - **Docs:** CMP-2 has the results box, P1F-3's numbers and Sandesh's lean wording (§9: a measured design space first,
-  a controller only if a gap remains; P1's FP8 pair the main risk, tested first by CAP-J2's drone pair). COR-1 is done
-  except the evidence doc, which waits for D12. The teaching guide's 12 Oct tab was updated in place on 13 Oct with the
-  device results and deck v2.4's state (rev 83; Sandesh asked for targeted edits, no rewrite and no new archive tab).
+  a controller only if a gap remains; P1's FP8 pair the main risk, tested first by CAP-J2's drone pair). COR-1 (CMP-2) is
+  done; the evidence doc (COR-3b) waits for D12. The teaching guide's 12 Oct tab was updated in place on 13 Oct with the
+  device results and deck v2.4's state (rev 83, review fixes rev 93; Sandesh asked for targeted edits, no rewrite and no
+  new archive tab).
 - **Deck v2.4 published** (13 Oct, artifact version 17, 143 slides; COR-3a and MTG-1 done), from the account that owns
   the artifacts, following `data/p5deck/V2.4_BRIEF.md` checked against CMP-2. Three new slides: `find-devices` (the
   device results, after `find-ws-anchor`), `plan-devices` (CMP-2 §13 per option, first in section 12) and
   `log-2026-10-12`; 41 slides corrected (the meeting date, device status, CAP per generated token with P1's FP8 pair as
   its main risk, A as a 4-bit result plus A-J1, RET's caveats, B's base and P1's Reflexion 284-499 kJ, D19-D22,
   `plan-next` rewritten as the work every branch needs, plan and status slides). Renderer check clean on all 44 changed
-  files. Left before F (Tue 23:00): nothing, unless Sandesh asks for changes.
+  files. **Final review (13 Oct, 10:20-10:40):** our own pass plus an independent Opus reviewer. Fixed: the WS FP8 figure
+  shown next to the board's 44% is now 46% best against best (it was the at-N 53%) on `glance`, `find-glance`, `opt-cap`,
+  `p1-final-data` and the guide; the preflight claim (two after-checks were lost to a bug); "one run" on RET-J1's 3.2%;
+  A-E2's 17 of 17 labelled as the stand-in; CMP-2's §2 table, §9, §10 Q5 and header brought up to the device results;
+  stale statuses in TRACKER and both plans; plan §5.2's granite flags amended (P1's run records, as run). Deck version 18
+  (11 slides, renderer clean), guide rev 93. Left before F (Tue 23:00): nothing, unless Sandesh asks for changes.
 - **Watch:** Thor-1 holds ~68 GB of memory outside any process with nothing running (about 51 GB before our first
   launch on 12 Oct); cause not checked (needs root); the 26B still built its full pool. A reboot is Sandesh's call.
 
@@ -216,7 +222,7 @@ which git already keeps.
   (published 13 Oct).
 - **Public repo:** `saisandeshk/jouleserve-ws` is public and holds P1's unpublished numbers in `reports/` (Sandesh's
   choice, 5 Oct). P1's own figures (deck and repository) are kept out of git (`reports/*/p1_figures/` is git-ignored), and
-  since 10 Oct so is the title of P1's submitted paper. `gh` is not logged in on this machine (HTTP 401); the public API
+  since 10 Oct so is the title of P1's submitted paper. `gh` works again (13 Oct: `gh repo view` reports PUBLIC); the public API
   (`curl https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
 - **Artifacts** (all private until Sandesh shares them from their Share menu). **They belong to one Claude account**:
   a Claude Code session signed in to another account gets "not found" and cannot read or publish them (13 Oct; deck
@@ -241,14 +247,14 @@ which git already keeps.
     self-test, glossary, and a map from plain names to repo labels. Two new drawings (where each option acts; the
     week's timeline) and eight reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
     guide (rev 184) is kept as the second tab, "Archive: the guide as of 11 Oct", with our open comment on drones per
-    device. **Updated in place 13 Oct (rev 83)** with the runs of 12-13 Oct and deck v2.4's state: a [board] source tag;
+    device. **Updated in place 13 Oct (rev 83; review fixes rev 93)** with the runs of 12-13 Oct and deck v2.4's state: a [board] source tag;
     chapter 1's summary; the simulator recheck and RET-J1 (ch. 8); A-J1 and the clean-session and board capacity
     numbers next to the 6 Oct run (ch. 9); A and CAP (ch. 11), the comparison table (ch. 12), the lean's settled wording
     (ch. 13); the platform checks (ch. 14); ch. 15 now "This week's runs, and what they found", with a result after each
     run's pre-written rule and expectation, and the checkpoints' outcomes (freeze Tue 23:00); ch. 16's plan per option
     (CMP-2 §13, who shares a unit); lessons, self-test, a glossary row, the label map. Refresh after D12.
   - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.4 (artifact
-    version 17, 143 slides). v2.4 (13 Oct, for the meeting): new slides `find-devices`, `plan-devices` and
+    version 18, 143 slides; version 17 plus the 13 Oct review fixes). v2.4 (13 Oct, for the meeting): new slides `find-devices`, `plan-devices` and
     `log-2026-10-12`; the 12 Oct corrections and CMP-2's numbers across 41 slides (top of this file). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),
     `p1-final-data` (re-run figure) and `find-p1-final` (prefill and eviction figures); `p1-paper` rewritten for the
     submitted paper; cover, glance, changelog, P1, findings, options, status and plan slides updated. v2.2 (7 Oct): the
@@ -423,7 +429,7 @@ and F4; H4 has a live but small case (the vision tool).
 The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; status is in `planning/TRACKER.md`.
 1. Done 12-13 Oct: plan v2.0 (D19-D22); P1F-1 to P1F-3; DEV-1 to DEV-6 and DEV-7a; CAP-J1 with its anchor; RET-J1;
    A-J1 (pilot and full set); COR-1 and COR-2; C1 and C2 passed.
-2. ~~Deck v2.4~~ (done 13 Oct: published, artifact version 17). No new runs are planned before F (Tue 23:00).
+2. ~~Deck v2.4~~ (done 13 Oct: published, artifact version 18 after the final review). No new runs are planned before F (Tue 23:00).
 3. **Wed 08:00:** materials final (CMP-2, deck v2.4; CMP-2 §13 is the device plan per option).
 4. **Wed 14 Oct, 09:00-10:00:** the meeting. Then MTG-3: record D12 as D23, turn the chosen branch (plan §7) into
    tasks with rules, rewrite master-plan M8, refresh the evidence doc (COR-3b) and the teaching guide.
@@ -440,14 +446,19 @@ The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; 
 3. ~~The lean's wording~~ (Sandesh, 12 Oct: as recommended. A measured design space first, a controller only if a gap
    remains, P1's FP8 pair as the main risk, tested first by CAP-J2's drone pair; CMP-2 §9).
 4. ~~The meeting's time~~ (Wed 14 Oct, 09:00-10:00; freeze F Tue 23:00).
-5. Thor-1's legacy P5 root helper (`/usr/local/sbin/jouleserve-thor`): leave it alone? And Thor-1's ~68 GB held outside
+5. **Public git history (13 Oct review):** P1's *former* working title (not the submitted one) was in tracked files
+   from 5 to 10 Oct (`cb423ac` … `e93f103`) and is still in the public history; no current file has either title.
+   Removing it needs a history rewrite and a force push. Leave it, or rewrite? Related: tracked files quote short
+   phrases of the paper under review next to "SIGMETRICS 2027" and P1's people's names.
+6. **D18** (RET-E1's comparison method, taken 6 Oct) is still "for Sandesh to confirm"; D21's 2% tie rule cites it.
+7. Thor-1's legacy P5 root helper (`/usr/local/sbin/jouleserve-thor`): leave it alone? And Thor-1's ~68 GB held outside
    any process (top of this file): reboot before the next Thor-1 campaign?
-6. The outcome of the meeting (Wed 14 Oct):
+8. The outcome of the meeting (Wed 14 Oct):
    - direction and scope (A, B, C, D, CAP);
    - agents per edge box;
    - the go/no-go thresholds (D4);
    - the split with P1 (MB4, MB5, MB6), and whether to hand P1 the sampling and step-wise results.
-7. From P1, through the mentor:
+9. From P1, through the mentor:
    - the final traffic agent's location and dependencies;
    - what the 6–10 Oct FP8 runs on the units were;
    - the answers to the task overview's §9 (which 8 AeroEval tasks; whether a step-wise paradigm is in P1's scope;

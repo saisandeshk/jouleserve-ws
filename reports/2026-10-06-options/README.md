@@ -1,6 +1,6 @@
 # P5's options side by side: the evidence for and against each
 
-**CMP-2, 2026-10-06, updated 2026-10-11 for P1's submission (§12) and 2026-10-12 for corrections (update below) · Sai
+**CMP-2, 2026-10-06, updated 2026-10-11 for P1's submission (§12), 2026-10-12 for corrections and 2026-10-13 for the first device results (box below) · Sai
 Sandesh (P5)**, prepared with Claude Code. Plan:
 [`../../planning/OPTIONS_PLAN.md`](../../planning/OPTIONS_PLAN.md) (G1); task status:
 [`../../planning/TRACKER.md`](../../planning/TRACKER.md).
@@ -18,7 +18,7 @@ doc, the teaching guide and the deck on 6 Oct. Our own lean is stated once, at t
   it on P1's bf16 26B on Thor-1). **On P1's own setup** (A-J1, 13 Oct, box below): greedy loops on 16 of 30 of P1's
   loop prompts (53%; the rule asked ≥ 80% to call it reproduced) and on 5 of 20 calls P1 recorded as finishing;
   sampling loops on 0 of 50. Greedy is not repeatable call for call there, so a loop is a per-call chance, not a
-  property of the prompt. An online stop plus one resample recovers all 17 calls that looped again, at a
+  property of the prompt. On the stand-in, an online stop plus one resample recovers all 17 calls that looped again, at a
   median 60% of the capped cost (the pre-registered cost rule was not met: 10 of 29 at half the cost or less). Also
   measured: traffic's repeated capped tool calls (31-33% of gemma traffic LLM energy) and batching (13x less energy
   per token at batch 16).
@@ -67,12 +67,12 @@ preflight bug fixed on 12 Oct: DEV-6 on Orin-32-3 and DEV-7a's FP8 point) [P1-de
 
 | Test | Unit | What was measured | Result | Rule outcome |
 | --- | --- | --- | --- | --- |
-| **CAP-J1**: FP8 against bf16 KV with several agents | Orin-32-1, Orin-32-2 (one replicate each) | P1's clean Orin 32 granite traffic sessions replayed by token counts, N = 4 and 8, 2-hour windows; J per generated token first (plan §6) | bf16 3.20-3.30 J, FP8 1.77-1.81 J. FP8 is **44.4% and 44.5% below bf16, best against best**; −45.0/−45.1% at N = 4, −44.4/−44.5% at N = 8. It completes 25-26 sessions in 2 h against 11-14, and needs 46.5% less energy per completed session (prorated). bf16 at 8 agents keeps no state (0 prompt tokens from the cache) | **Holds on the board** (≥ 25% in both replicates; they differ by 0.04 points). WS rerun (P1F-3): −45.7%; board/WS ratio 1.02 |
+| **CAP-J1**: FP8 against bf16 KV with several agents | Orin-32-1, Orin-32-2 (one replicate each) | P1's clean Orin 32 granite traffic sessions replayed by token counts, N = 4 and 8, 2-hour windows; J per generated token first (plan §6) | bf16 3.20-3.30 J, FP8 1.77-1.81 J. FP8 is **44.4% and 44.5% below bf16, best against best**; −45.0/−45.1% at N = 4, −44.4/−44.5% at N = 8. It completes 25-26 sessions in 2 h against 11-14, and needs 46.5-46.7% less energy per completed session (prorated). bf16 at 8 agents keeps no state (0 prompt tokens from the cache) | **Holds on the board** (≥ 25% in both replicates; they differ by 0.04 points). WS rerun (P1F-3): −45.7%; board/WS ratio 1.02 |
 | **CAP-J1 anchor**: is our replay P1-comparable? | Orin-32-3 | N = 1, the same sessions as P1's measured runs (10 matched) | decode 8.50 against P1's 8.40 tok/s; LLM-call energy per session 20.05 against 19.53 kJ | **Passes** (+1.2%, +2.6%; limits ±10%, ±15%): CAP-J1's numbers are P1-comparable |
 | **RET-J1**: is kept state worth anything on the board? | Orin-32-3 | one agent, state dropped at every tool wait (`--no-reuse`), against the anchor | 5.66 → 5.84 J per generated token; dropping state recomputes 2.9x the prompt tokens (273K against 93K), which costs little because prefill is cheap | **+3.2%: "retention gains little on P1's workloads" holds on the board** (< 5%) |
 | **A-J1**: do P1's loops survive sampling on P1's own setup? | Thor-1 | P1's bf16 26B, P1's image and flags; 30 of P1's Thor Reflexion loop prompts and 20 long calls that finished (controls); greedy (P1's protocol; a call stops where the loop detector fires) and Gemma's default sampling (one seed, run to the end) | Greedy loops on **16 of 30 loop prompts** (53%, Wilson 36-70%) and on **5 of 20 controls** (25%, 11-47%); sampling on **0 of 30** (0-11%) and **0 of 20** (0-16%), and every sampled call finishes. Valid programs: loop prompts 27 of 28 sampled against 8 of 12 greedy; controls 12 of 16 against 9 of 11. Per call (median board energy): loop prompts 29.3 kJ greedy (cut by the detector, so below P1's full caps) against 21.2 kJ sampled. Greedy is not repeatable on P1's setup: our greedy text shares a median 222 characters with P1's recorded text (4 of 50 match in full), and the pilot's 10 prompts, run twice, changed outcome (loop or not) in 4 of 10 | Reproduction (≥ 80% loop under greedy) **not met**: by the rule, "the 4-bit result stands alone". Sampling's loop rate meets ≤ 10%, but the controls check **is not met** on program validity (75% against 82%, beyond the 5-point margin; the intervals overlap widely, 51-90% against 52-95%); the finish rate improves (100% against 75%). One sampling seed; pass rates under sampling unmeasured (A-J2). The pilot (10 loop prompts, 12 Oct): greedy 5 of 10, sampled 0 of 10 |
 | **DEV-6**: are the Orin 32s interchangeable? | Orin-32-1/2/3 | 10-minute idle with granite loaded; decode J/token at batch 1 and 8 | idle 13.40-13.59 W; decode within 2.2% (Orin-32-3 about 3% above the other two) | **Interchangeable** (±3%): cross-unit comparisons allowed |
-| **DEV-7a**: P1's 26B on Orin-64-1 | Orin-64-1 | pools at P1's flags; idle, prefill and decode costs | pools FP8 60,000 (P1's `--max-total-tokens` cap) and bf16 55,417; decode 2.0 J per token at batch 1 (19-20 tok/s), 0.51-0.57 at batch 8 | Report only. At P1's flags FP8 buys ~8% more pool here, so CAP-J2's drone pair must lift the cap |
+| **DEV-7a**: P1's 26B on Orin-64-1 | Orin-64-1 | pools at P1's flags; idle, prefill and decode costs | pools FP8 60,000 (P1's `--max-total-tokens` cap) and bf16 55,417; decode 2.0 J per token at batch 1 (19-20 tok/s), 0.51-0.56 at batch 8 | Report only. At P1's flags FP8 buys ~8% more pool here, so CAP-J2's drone pair must lift the cap |
 
 What these cannot show: the replays carry P1's token counts, waits and prefix structure but synthetic text, so they say
 nothing about task success; FP8's cost in success stays measured only by P1's natural pair (82.1% against 81.7%) until
@@ -156,14 +156,14 @@ The criteria (plan §2.2, D16): **K1** prize, **K2** evidence strength, **K3** n
 
 | | A. Decode-side | B. Agent design | C. Benchmarks + waits | D. Memory over time | CAP. Capacity |
 | --- | --- | --- | --- | --- | --- |
-| **K1 Prize** | Decode in capped calls: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–40 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19× greedy on 9 strict successes, 7–14× sampled on 7; E4B's tokens priced at the 26B's Thor costs, our kinematic sim and checker) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on (up to 24% at Thor's drone prices), 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, pin + burst cap 2 cuts the eviction at one agent (88% → 37%) at +11% energy; at 4 agents no policy reduces it (pin −3.8% and cap 4 −4.05% are not read as gains: within 5%, one run each; others +3–14%) [WS-meas, one run per cell] | Live: FP8 KV (2x pool) cuts energy per generated token 53% at 8 agents (granite; −45% against bf16's best point; −62% per completed session, biased by sessions cut at the window's end); a 5x pool cuts energy per completed session 2.4x at 4 agents (E4B); batching cuts J/token 13x [WS-meas, one run per setting]; doubling the pool: −31–46% at 8 agents on Jetsons [sim]; overflows end 19–24% of Orin tool-calling traffic runs, up to 28% (P1's final data) [P1-meas] |
-| **K2 Evidence** | Energy measured; a 4-bit stand-in for P1's 26B (llama.cpp) loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling (one seed, temperature 1.0; Reflexion prompts only; pass rate unmeasured); E4B loops on none on the WS [WS-meas] | Step sizes measured with P1's E4B (24 missions read, 9 more lost to a since-fixed bug) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured live (D-E2, RET-E1, CAP-E1; one run per setting); the simulator held live, narrowly, within 14.2% per session and 6% per token; FP8 quality unmeasured by us (Gemma-4 FP8 KV failed on our A5000s), while P1's natural pair shows no loss (82.1% against 81.7% passed) [WS-meas, P1-meas] |
+| **K1 Prize** | Decode in capped calls: 67–69% of board energy (drone, Thor gemma), 38% (traffic, Thor gemma), 33% (Orin 32 E4B traffic), 0–19% elsewhere [P1-meas] | With P1's own E4B: 26–40 kJ per strict success on D1–D3 against P1's Reflexion 284–499 kJ (11–19× greedy on 9 strict successes, 7–14× sampled on 7; E4B's tokens priced at the 26B's Thor costs, our kinematic sim and checker) [proj from WS-meas] | Kept state worth 7.5-9.9% of LLM time at E4B's Jetson price with thinking on (up to 24% at Thor's drone prices), 25% with thinking off (tau2) [WS-meas] | Vision burst: 0.6% of LLM time at one agent [P1-meas]; live, pin + burst cap 2 cuts the eviction at one agent (88% → 37%) at +11% energy; at 4 agents no policy reduces it (pin −3.8% and cap 4 −4.05% are not read as gains: within 5%, one run each; others +3–14%) [WS-meas, one run per cell] | **On P1's Orin 32s** (CAP-J1, board energy, anchored to P1's runs): FP8 KV (2x pool) cuts energy per generated token 44.4% and 44.5%, best against best [P1-dev]; on the WS on P1's clean sessions 45.7% best against best (P1F-3) [WS-meas]. First WS run (6 Oct, faulted sessions): 53% at 8 agents (granite; −45% against bf16's best point; −62% per completed session, biased by sessions cut at the window's end); a 5x pool cuts energy per completed session 2.4x at 4 agents (E4B); batching cuts J/token 13x [WS-meas, one run per setting]; doubling the pool: −31–46% at 8 agents on Jetsons [sim]; overflows end 19–24% of Orin tool-calling traffic runs, up to 28% (P1's final data) [P1-meas] |
+| **K2 Evidence** | Energy measured; a 4-bit stand-in for P1's 26B (llama.cpp) loops on 23/30 of P1's loop prompts under greedy and on 0/30 with Gemma's default sampling (one seed, temperature 1.0; Reflexion prompts only; pass rate unmeasured); E4B loops on none on the WS [WS-meas]. **On P1's bf16 26B on Thor-1** (A-J1, 13 Oct): greedy loops on 16/30 loop prompts and 5/20 controls, sampling on 0/50 (one seed); neither pre-registered rule met as written; pass rates unmeasured [P1-dev] | Step sizes measured with P1's E4B (24 missions read, 9 more lost to a since-fixed bug) and projected; still no Jetson run | tau2-bench measured on the WS (40 tasks, E4B) | Mechanism and policies measured live on the WS (D-E2, one run per cell, gemma-4-E4B) | Pool-size effect measured on two of P1's Orin 32s (CAP-J1, two replicates 0.04 points apart; the N = 1 anchor within +1.2% decode and +2.6% energy of P1's runs) [P1-dev] and live on the WS (D-E2, RET-E1, CAP-E1, P1F-3; one run per setting); the simulator held live, narrowly, within 14.2% per session and 6% per token; FP8 quality unmeasured by us (Gemma-4 FP8 KV failed on our A5000s), while P1's natural pair shows no loss (82.1% against 81.7% passed) [WS-meas, P1-meas] |
 | **K3 Novelty** | Partly covered: loop stop + recovery (Word Salad Chopper), energy-motivated agent stop (AgentStop), stop + restart (Fail-Fast), early exit in SGLang (Dynasor); P1's paper reports the loops [lit] | Direction known (Cost of Dynamic Reasoning, Sustainable Agents, CodeAct, AeroGen); this exact comparison not found [lit] | Generic version published (INFERCEPT, Continuum, TokenCake, Adaptive KV Retention, CacheScout) | Elastic KV (Prism/kvcached, MorphServe) and tool-aware pinning (Continuum, MORI) exist; tool foreknowledge on unified memory not found [lit] | Each lever studied (TriAxialKV, Less-is-More, CarbonCall, Complexity Trap, FP8 KV); a run-time controller across levers not found [lit] |
 | **K4 Edge** | Decode is 96–99% of LLM time on Jetsons, except Qwen2.5-VL (prefill 15–16%) and Devstral drone (22%); board power; weak MoE batching | Drones per device; the price of a generated token | Weak: edge only through injected waits and prices | Strong: unified memory, model-backed tools on one board | Strong: small pools on 32–64 GB boards |
 | **K5 Generality** | Any thinking agent; loops depend on model and stack (E4B on the WS never loops) [WS-meas] | Task-dependent; delivery tasks only | High | Agents with model-backed tools | High |
 | **K6 Feasibility** | Detector, gateway, decode guard built and run live on a 4-bit stand-in for P1's 26B | aerogen driver + gateway shim run P1's E4B; needs a building-aware sim | τ²-bench + gateway run end to end | Gateway, replayer and burst policy built and run live | Replayer and calibration built; FP8 path for Gemma blocked on our A5000s (it ran on P1's Orin 64) |
 | **K7 Dependence on P1** | High: P1's paper reports the loops offline and plans capped-call replays (MB4); split to agree | High: agent design is P1's territory | Low | Medium: P1 plans a vision-tool study (MB6); devices for real unified memory | Medium: P1's paper lists these levers as untested (though P1 ran FP8 KV in its held-out Orin 64 drone sweep) and plans an FP8 window probe (MB5) |
-| **K8 Risk** | Possibly realised for drones: on a 4-bit stand-in sampling removes the loops (one seed; Reflexion prompts only; pass rate unmeasured), which would make it a configuration fix for P1; what is left is smaller | Attributable to agent engineering; the strict ratio is 1.2–9.6×, close to parity at its low end | Waits are synthetic; may collapse like traffic | Realised here: protecting the paused context costs more than recomputing it on these GPUs | A good static setting may capture it all: P1's FP8 pair shows no loss (§7) |
+| **K8 Risk** | Possibly realised for drones: on a 4-bit stand-in sampling removes the loops, and on P1's bf16 26B it loops on 0 of 50 calls (A-J1; one seed; Reflexion prompts only; pass rate unmeasured), which would make it a configuration fix for P1; what is left is smaller | Attributable to agent engineering; the strict ratio is 1.2–9.6×, close to parity at its low end | Waits are synthetic; may collapse like traffic | Realised here: protecting the paused context costs more than recomputing it on these GPUs | A good static setting may capture it all: P1's FP8 pair shows no loss (§7) |
 
 ## 3. A. Decode-side energy
 
@@ -713,12 +713,14 @@ in §8): **a measured design space first, a run-time controller only if a gap re
 (KV precision, fixed-prompt and tool-schema size, output caps, agents admitted) buys in energy per successful task on
 P1's Jetsons, against the best static setting; build a controller (CAP-J4) only if the best static setting leaves a
 gap. Its main risk is P1's own FP8 pair (below), which CAP-J2's drone pair tests first, on one device (§13). Why:
-- **It is where the large serving-layer numbers are.** Apart from A-E1's sampling result (a possible configuration
-  fix that belongs to P1, still to be tested on its setup) and B's projected agent-design gain, the large effects
-  measured this week are capacity and concurrency effects: twice the pool (FP8 KV) cuts energy per generated token
-  53% for granite at 8 agents (45% against bf16's best point; 62% per completed session, biased by sessions cut at
-  the window's end), a 5x pool cuts energy per completed session 2.4x for E4B at 4 agents (both live, one run per
-  setting; different models and workloads, so not one scale), batching cuts energy per token 13x. Every policy that
+- **It is where the large serving-layer numbers are.** Apart from the sampling result (a possible configuration fix
+  that belongs to P1: on P1's bf16 26B sampling loops on 0 of 50 calls, A-J1; pass rates still to measure, A-J2) and
+  B's projected agent-design gain, the large effects measured are capacity and concurrency effects: twice the pool
+  (FP8 KV) cuts energy per generated token 44.4% and 44.5% for granite on two of P1's Orin 32s, best against best
+  (CAP-J1, board energy, anchored to P1's runs), and 45.7% on the WS on P1's clean sessions (P1F-3; the first WS run of
+  6 Oct: 53% at 8 agents, 45% against bf16's best point, 62% per completed session, biased by sessions cut at the
+  window's end); a 5x pool cuts energy per completed session 2.4x for E4B at 4 agents (WS, one run per setting;
+  different models and workloads, so not one scale); batching cuts energy per token 13x. Every policy that
   manages kept state instead gains at most 2.4% (traffic) or 9.9% (drones) in simulation (RET) or costs more than
   recomputing (D); at 8 agents on P1's Orin 32 granite pool the engine keeps no state at all (RET-E1), so there is
   nothing for such a policy to manage.
@@ -731,7 +733,8 @@ gap. Its main risk is P1's own FP8 pair (below), which CAP-J2's drone pair tests
   probe (MB5) overlaps CAP-E1.
 
 **What we would hand to P1 rather than keep:** the sampling result (A-E1: on a 4-bit stand-in, Gemma's default
-sampling removes the loops; one seed, Reflexion prompts only, pass rate unmeasured) and the step-wise result (B; a
+sampling removes the loops; A-J1: on P1's bf16 26B on Thor-1 it loops on 0 of 50 calls; one seed, Reflexion prompts
+only, pass rate unmeasured) and the step-wise result (B; a
 projection from 9 strict successes). Both could help P1's agents, and both are cheap for P1 to test.
 
 **What speaks against the lean:**
@@ -745,14 +748,14 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
   planned MB5), not a controller.
 - FP8 KV, the strongest single lever, failed for Gemma-4 on our A5000s in SGLang 0.5.20 (P1 ran it on Orin 64 with
   0.5.16), and our own measure of its cost in task success could not run (CAP-E1 undecided on our data; P1's pair
-  above is the only reading). On the Jetsons the study needs P1's SGLang version, or rests on the other levers
-  (prompt size, output caps, admission).
+  above is the only reading). On the Jetsons it runs in P1's SGLang 0.5.16 image (DEV-7a: Orin-64-1,
+  `fp8_e5m2`, pool 60,000 at P1's flags), so what is missing is our own measure of its cost in success (CAP-J2).
 - The capacity number is a replay by token counts, so success is not measured. Its energy side now stands on the
   board: CAP-J1 (13 Oct) measured FP8 against bf16 with several agents on two of P1's Orin 32s, anchored to P1's own
   runs, at −44.4% and −44.5% energy per generated token, best against best ("holds on the board"; box at the top)
   [P1-dev].
-- Most of the capacity evidence replays tool-faulted Orin sessions (Update 11 Oct): 59-88% of RET-E1's and 61% of
-  CAP-E1's Orin 32 granite sessions. P1 has re-run them (a faulted granite run used 1.4-1.6× the energy of its
+- **Resolved 12-13 Oct:** the earlier capacity evidence replayed tool-faulted Orin sessions (Update 11 Oct): 59-88%
+  of RET-E1's and 61% of CAP-E1's Orin 32 granite sessions. P1 has re-run them (a faulted granite run used 1.4-1.6× the energy of its
   re-run), so the −53% per token had to be re-measured on the re-run sessions. It holds: on the WS (P1F-3, 12 Oct: −53%
   at 4 agents, −46% at 8, −45.7% best against best; §8) and on the Orin 32s (CAP-J1, 13 Oct: −44.4% and −44.5%);
   overflows rose in the re-runs (Orin 32 granite 10.6% → 21.2%, Orin 64
@@ -773,8 +776,8 @@ projection from 9 strict successes). Both could help P1's agents, and both are c
 3. **The deployment assumption:** how many agents one edge box should serve (it sets the memory pressure in
    CAP and D, and the batching gains in A).
 4. **Go/no-go thresholds** (D4) for the chosen option.
-5. **P1 (submitted 10 Oct):** may P5 offer P1 the sampling result (it removes the loops on a 4-bit stand-in; one
-   seed, pass rate unmeasured) and the step-wise result (B)? Who runs P1's planned follow-ups that overlap ours (MB4
+5. **P1 (submitted 10 Oct):** may P5 offer P1 the sampling result (it removes the loops on a 4-bit stand-in, and on
+   P1's bf16 26B it loops on 0 of 50 calls; one seed, pass rate unmeasured) and the step-wise result (B)? Who runs P1's planned follow-ups that overlap ours (MB4
    capped-call replays with A-E1/A-E2; MB5 FP8 window probe with CAP-E1)? What may P5 claim on loops (A) and capacity
    (CAP)?
 6. **Devices (answered 12 Oct):** P5 has five of P1's Jetsons since 12 Oct (Thor-1, Orin-64-1, Orin-32-1/2/3). The
@@ -887,8 +890,9 @@ This is plan v2.0 §7, condensed, with the unit each option needs. It replaces �
 estimates. Each branch's experiments get full specs and rules, which Sandesh approves before they run.
 
 **The platform (ready 12 Oct).** It runs P1's images and P1's server flags per unit and model. Board energy is read in
-P1's schema and agrees with P1's own sampler within 0.01% over 319 s on Orin-32-1. Every run has a preflight before and
-after it, and the replay and loop drivers run on the units from the WS. Pools at P1's flags: granite bf16, 25,358
+P1's schema and agrees with P1's own sampler within 0.01% over 319 s on Orin-32-1. Every run has a preflight before it and
+after it (two after-checks, DEV-6 on Orin-32-3 and DEV-7a's FP8 point, were lost to a preflight bug fixed on 12 Oct),
+and the replay and loop drivers run on the units from the WS. Pools at P1's flags: granite bf16, 25,358
 tokens (Orin 32); the 26B, 80,000 (Thor-1, bf16 KV) and 60,000 (Orin-64-1, FP8 KV, the cap P1's flags set) and 55,417 (Orin-64-1, bf16 KV) [DEV-7a, 12 Oct]. At P1's flags, FP8
 buys only ~8% more pool on Orin-64-1, so CAP-J2's drone pair has to lift that cap to test capacity.
 

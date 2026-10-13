@@ -376,8 +376,11 @@ memory) cut energy per generated token when several traffic agents share the box
 - **Image:** on each unit, the image P1 ran there: `jouleserve/sglang:0.5.16-orin-cu126-sm87`, digest `05119cc6` on
   Orin-32-1/2 (both replicates), `d4967327` on Orin-32-3 (anchor and spare). DEV-2 records the SGLang version in each.
 - **Model:** granite-4.2-8b `f8de16cd`.
-- **Flags:** P1's flags from DEV-1's snapshot (context 65,536; CUDA graphs off; mem 0.85). Only three things change
-  per arm:
+- **Flags:** P1's flags from DEV-1's snapshot (context 65,536; CUDA graphs off; mem 0.85). **Amended 12 Oct (DEV-4,
+  before any data):** the runs use the flags in P1's run records of the Orin 32 granite traffic runs that CAP-J1
+  replays and anchors to (triton, chunked prefill 2,048, CUDA graphs off, context 26,624, mem 0.80, parsers
+  `qwen3_coder`/`deepseek-r1`; `env/launch_jetson.py`), not those of the server DEV-1 found running. Only three
+  things change per arm:
   - the KV dtype;
   - the pool, set exactly with `--max-total-tokens`: bf16 25,358 (P1's re-run pool); FP8 `fp8_e5m2` 50,716 (the same
     bytes);
@@ -555,7 +558,7 @@ Rule for every branch:
 | Branch | Experiments (device, size) | Needs | Overlap with P1 |
 | --- | --- | --- | --- |
 | **CAP** (the lean; the default if D12 confirms it) | **CAP-J2**, FP8 against bf16 on real tasks: (1) traffic with P1's agent on the Orin 32s at N = 1, 4 and 8 (energy per successful task, overflow failures); (2) the drone pair on one device (Orin-64-1, gemma-26B Reflexion through P1's harness on the unit, matched tasks), which removes the device difference from §1.1's 82.1% vs 81.7%. **CAP-J3**: the other levers (tool-schema length, output caps, window size) as a design-space study. **CAP-J4**: capacity-aware admission (CAP-P1), only if a gap remains after the best static setting. About 1–2 weeks of the three Orin 32s plus Orin-64-1 | TRF for traffic; P1's drone harness (installed on the units) | MB5 (FP8 window probe) |
-| **A** | **A-J1** full (Thor-1, about 14 h, then 2 more sampling seeds). **A-J2**: pass rates under sampling with P1's drone harness (Thor-1; 12 CLGSCE tasks × 3 instances × 2 arms, about 30 h). **A-J3**: the decode guard (A-P1) live inside P1's agent loop (Thor-1). **A-J4**: traffic's repeated capped tool calls with P1's agent, and a retry policy | TRF for A-J4 | MB4 (capped-call replays) |
+| **A** | **A-J1**'s two more sampling seeds (Thor-1, about 8 h; the full set ran 12-13 Oct). **A-J2**: pass rates under sampling with P1's drone harness (Thor-1; 12 CLGSCE tasks × 3 instances × 2 arms, about 30 h). **A-J3**: the decode guard (A-P1) live inside P1's agent loop (Thor-1). **A-J4**: traffic's repeated capped tool calls with P1's agent, and a retry policy | TRF for A-J4 | MB4 (capped-call replays) |
 | **D** | **D-J1**: the vision-tool burst on Orin-64-1 at its real pool, with real unified-memory contention (P1's agent, or the replayer's image bursts). **D-J2**: co-located models on one board | TRF for the real bursts | MB6 (the vision tool) |
 | **B** | **B-J1**: E4B as a step-wise agent on an Orin 32 (P1's model on P1's board), tasks D1–D3 | mayankarya's OK to extend aerogen (D6) | P1's agent design |
 | **C** | **C-J1**: τ²-bench with E4B, thinking off, on an Orin 32, with the user simulator on the WS; then N sessions with injected waits | — | none |
@@ -569,7 +572,7 @@ Common to every branch after the meeting:
 - repeats of any device point a paper will cite (at least two runs per point).
 
 If the professor wants more evidence before choosing, the first experiments of the CAP and A branches run for one more
-week (CAP-J2's drone pair, A-J1 in full), and we report again.
+week (CAP-J2's drone pair, A-J1's further sampling seeds), and we report again.
 
 ## 8. The meeting (Wed 14 Oct)
 
@@ -631,13 +634,11 @@ D12 remains the professor's direction decision. Its outcome will be D23. New dec
 
 **For Sandesh:**
 1. ~~Approve this plan, including D19–D22.~~ Approved 12 Oct.
-2. **Artifacts:**
-   - the deck v2.4 before the meeting (corrections, device results, plan);
-   - the evidence doc and the teaching guide after D12 (COR-3b), unless you want them earlier.
-3. **The lean's wording, given P1's FP8 pair (§1.1).**
-   - Default: keep the lean and present the pair as its main risk.
-   - Alternative: "a design-space study first, a controller only if a gap remains".
-4. The meeting's time on Wednesday, which sets the freeze F.
+2. **Artifacts:** ~~the deck v2.4 before the meeting~~ (published 13 Oct); the teaching guide was updated with the
+   device results on 13 Oct; the evidence doc after D12 (COR-3b).
+3. ~~The lean's wording, given P1's FP8 pair (§1.1).~~ Settled 12 Oct: keep the lean, "a measured design space first,
+   a controller only if a gap remains", with the pair as its main risk (CMP-2 §9).
+4. ~~The meeting's time on Wednesday, which sets the freeze F.~~ Wed 14 Oct, 09:00-10:00; F Tue 13 Oct 23:00.
 5. Thor-1's legacy P5 root helper `/usr/local/sbin/jouleserve-thor`: leave it alone (the default)?
 6. Sudo, if needed:
    - stopping ollama on Orin-64-1;
