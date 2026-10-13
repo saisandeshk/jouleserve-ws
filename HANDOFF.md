@@ -1,8 +1,8 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-13, 10:00 (IST).
+**Last updated:** 2026-10-13, 10:05 (IST).
 
-**13 Oct: every run before the meeting is done; what is left is the deck.** The meeting is **Wed 14 Oct, 09:00-10:00**
+**13 Oct: every run before the meeting is done, and deck v2.4 is published.** The meeting is **Wed 14 Oct, 09:00-10:00**
 (D12); results freeze **Tue 13 Oct 23:00**; materials final by **Wed 08:00**. C1 passed (Mon 19:10) and C2 passed (Tue
 05:17). No run failed, so none was rerun. All five units and the WS are idle, with every P5 container stopped.
 - **Results of 12-13 Oct** (CMP-2's box "First results on P1's devices", §7, §8, §13; per-task notes in
@@ -20,9 +20,13 @@
 - **Docs:** CMP-2 has the results box, P1F-3's numbers and Sandesh's lean wording (§9: a measured design space first,
   a controller only if a gap remains; P1's FP8 pair the main risk, tested first by CAP-J2's drone pair). COR-1 is done
   except the evidence doc and the teaching guide, which wait for D12.
-- **Left before the meeting:** deck v2.4 (COR-3a, MTG-1). Sandesh edits it from the Claude account that owns the
-  artifacts (this session's account cannot see them). The brief, with the results, two new slides and the corrections
-  mapped to v2.3's slide ids, is `data/p5deck/V2.4_BRIEF.md` (local, git-ignored).
+- **Deck v2.4 published** (13 Oct, artifact version 17, 143 slides; COR-3a and MTG-1 done), from the account that owns
+  the artifacts, following `data/p5deck/V2.4_BRIEF.md` checked against CMP-2. Three new slides: `find-devices` (the
+  device results, after `find-ws-anchor`), `plan-devices` (CMP-2 §13 per option, first in section 12) and
+  `log-2026-10-12`; 41 slides corrected (the meeting date, device status, CAP per generated token with P1's FP8 pair as
+  its main risk, A as a 4-bit result plus A-J1, RET's caveats, B's base and P1's Reflexion 284-499 kJ, D19-D22,
+  `plan-next` rewritten as the work every branch needs, plan and status slides). Renderer check clean on all 44 changed
+  files. Left before F (Tue 23:00): nothing, unless Sandesh asks for changes.
 - **Watch:** Thor-1 holds ~68 GB of memory outside any process with nothing running (about 51 GB before our first
   launch on 12 Oct); cause not checked (needs root); the 26B still built its full pool. A reboot is Sandesh's call.
 
@@ -207,17 +211,17 @@ which git already keeps.
     context guard truncates calls the 8,000-token rule does not count: in part; (5) Devstral's prefix cache is off:
     adopted.
 - **The professor meeting is Wed 14 Oct, 09:00-10:00** (moved from Mon 12 Oct). Nothing has been shown to the professor
-  yet. CMP-2 is ready (corrections, the device-results box, §13's device plan per option); deck v2.4 is Sandesh's
-  (brief in `data/p5deck/V2.4_BRIEF.md`).
+  yet. The materials are ready: CMP-2 (corrections, the device-results box, §13's device plan per option) and deck v2.4
+  (published 13 Oct).
 - **Public repo:** `saisandeshk/jouleserve-ws` is public and holds P1's unpublished numbers in `reports/` (Sandesh's
   choice, 5 Oct). P1's own figures (deck and repository) are kept out of git (`reports/*/p1_figures/` is git-ignored), and
   since 10 Oct so is the title of P1's submitted paper. `gh` is not logged in on this machine (HTTP 401); the public API
   (`curl https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
 - **Artifacts** (all private until Sandesh shares them from their Share menu). **They belong to one Claude account**:
-  a Claude Code session signed in to another account gets "not found" and cannot read or publish them (13 Oct). The
-  deck and the evidence doc still carry
-  the 12 Oct meeting date and the numbers as they were before the 12 Oct corrections, until COR-3a (deck) and COR-3b
-  (evidence doc); the teaching guide was rewritten on 12 Oct:
+  a Claude Code session signed in to another account gets "not found" and cannot read or publish them (13 Oct; deck
+  v2.4 was published from the owning account). The evidence doc still carries the 12 Oct meeting date and
+  the numbers as they were before the 12 Oct corrections, until COR-3b; the deck is corrected (v2.4, 13 Oct); the
+  teaching guide was rewritten on 12 Oct:
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
     https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 171; repo copy
     `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
@@ -237,8 +241,9 @@ which git already keeps.
     week's timeline) and eight reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
     guide (rev 184) is kept as the second tab, "Archive: the guide as of 11 Oct", with our open comment on drones per
     device. Refresh it after the runs and D12.
-  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.3 (artifact
-    version 15, 140 slides). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),
+  - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.4 (artifact
+    version 17, 143 slides). v2.4 (13 Oct, for the meeting): new slides `find-devices`, `plan-devices` and
+    `log-2026-10-12`; the 12 Oct corrections and CMP-2's numbers across 41 slides (top of this file). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),
     `p1-final-data` (re-run figure) and `find-p1-final` (prefill and eviction figures); `p1-paper` rewritten for the
     submitted paper; cover, glance, changelog, P1, findings, options, status and plan slides updated. v2.2 (7 Oct): the
     tool-fault caveat. v2.1 (6 Oct): the WS test slides and `opt-cap`.
@@ -246,7 +251,7 @@ which git already keeps.
       at-a-glance slide and the changelog; matured results move into Findings.
     - **Style:** IBM Plex Sans, off-white with one blue accent, dark dividers; body text 28 px (14 pt),
       small text 24 px (12 pt).
-    - **Slide sources:** a working copy lives in `data/p5deck/` (git-ignored; synced with v2.3 on 11 Oct). Before
+    - **Slide sources:** a working copy lives in `data/p5deck/` (git-ignored; synced with v2.4 on 13 Oct). Before
       editing in a new session, re-read the changed files from the artifact if someone may have edited it in the
       browser.
     - **Figures:** uploaded as artifact assets; the blob-id → local-file map is `data/p5deck/blobs_2026-10-05.json`,
@@ -412,8 +417,7 @@ and F4; H4 has a live but small case (the vision tool).
 The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; status is in `planning/TRACKER.md`.
 1. Done 12-13 Oct: plan v2.0 (D19-D22); P1F-1 to P1F-3; DEV-1 to DEV-6 and DEV-7a; CAP-J1 with its anchor; RET-J1;
    A-J1 (pilot and full set); COR-1 and COR-2; C1 and C2 passed.
-2. **Tue 13 Oct, by F at 23:00:** deck v2.4 (COR-3a: the corrections, a device-results slide, a plan slide, a log
-   slide; Sandesh, from the owning account; brief in `data/p5deck/V2.4_BRIEF.md`). No new runs are planned before F.
+2. ~~Deck v2.4~~ (done 13 Oct: published, artifact version 17). No new runs are planned before F (Tue 23:00).
 3. **Wed 08:00:** materials final (CMP-2, deck v2.4; CMP-2 §13 is the device plan per option).
 4. **Wed 14 Oct, 09:00-10:00:** the meeting. Then MTG-3: record D12 as D23, turn the chosen branch (plan §7) into
    tasks with rules, rewrite master-plan M8, refresh the evidence doc (COR-3b) and the teaching guide.
@@ -425,8 +429,8 @@ The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; 
 ## 7. Open questions for Sandesh
 
 1. ~~Approve plan v2.0~~ (approved 12 Oct, with RET-J1 added).
-2. **Artifacts:** deck v2.4 is Sandesh's to edit (13 Oct; the artifacts belong to another Claude account); the evidence
-   doc and the teaching guide after D12.
+2. **Artifacts:** ~~deck v2.4~~ (published 13 Oct; Sandesh to look it over before Wed 08:00); the evidence doc and the
+   teaching guide after D12.
 3. ~~The lean's wording~~ (Sandesh, 12 Oct: as recommended. A measured design space first, a controller only if a gap
    remains, P1's FP8 pair as the main risk, tested first by CAP-J2's drone pair; CMP-2 §9).
 4. ~~The meeting's time~~ (Wed 14 Oct, 09:00-10:00; freeze F Tue 23:00).
