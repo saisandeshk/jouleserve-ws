@@ -1,6 +1,6 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-13, 10:05 (IST).
+**Last updated:** 2026-10-13, 10:25 (IST).
 
 **13 Oct: every run before the meeting is done, and deck v2.4 is published.** The meeting is **Wed 14 Oct, 09:00-10:00**
 (D12); results freeze **Tue 13 Oct 23:00**; materials final by **Wed 08:00**. C1 passed (Mon 19:10) and C2 passed (Tue
@@ -19,7 +19,8 @@
     FP8 60,000 (P1's cap) and bf16 55,417.
 - **Docs:** CMP-2 has the results box, P1F-3's numbers and Sandesh's lean wording (§9: a measured design space first,
   a controller only if a gap remains; P1's FP8 pair the main risk, tested first by CAP-J2's drone pair). COR-1 is done
-  except the evidence doc and the teaching guide, which wait for D12.
+  except the evidence doc, which waits for D12. The teaching guide's 12 Oct tab was updated in place on 13 Oct with the
+  device results and deck v2.4's state (rev 83; Sandesh asked for targeted edits, no rewrite and no new archive tab).
 - **Deck v2.4 published** (13 Oct, artifact version 17, 143 slides; COR-3a and MTG-1 done), from the account that owns
   the artifacts, following `data/p5deck/V2.4_BRIEF.md` checked against CMP-2. Three new slides: `find-devices` (the
   device results, after `find-ws-anchor`), `plan-devices` (CMP-2 §13 per option, first in section 12) and
@@ -221,7 +222,7 @@ which git already keeps.
   a Claude Code session signed in to another account gets "not found" and cannot read or publish them (13 Oct; deck
   v2.4 was published from the owning account). The evidence doc still carries the 12 Oct meeting date and
   the numbers as they were before the 12 Oct corrections, until COR-3b; the deck is corrected (v2.4, 13 Oct); the
-  teaching guide was rewritten on 12 Oct:
+  teaching guide was rewritten on 12 Oct and updated with the device results on 13 Oct:
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
     https://claude.ai/code/artifact/474eee56-2e2f-44f9-8b97-f7bb51b588c7 (revision 171; repo copy
     `reports/2026-10-02-p5-evidence/README.md`, keep in sync). 5 diagrams, a native chart of kept-state value, our
@@ -240,7 +241,12 @@ which git already keeps.
     self-test, glossary, and a map from plain names to repo labels. Two new drawings (where each option acts; the
     week's timeline) and eight reused figures. No task-ID verdicts in the text; numbers as in CMP-2 of 12 Oct. The old
     guide (rev 184) is kept as the second tab, "Archive: the guide as of 11 Oct", with our open comment on drones per
-    device. Refresh it after the runs and D12.
+    device. **Updated in place 13 Oct (rev 83)** with the runs of 12-13 Oct and deck v2.4's state: a [board] source tag;
+    chapter 1's summary; the simulator recheck and RET-J1 (ch. 8); A-J1 and the clean-session and board capacity
+    numbers next to the 6 Oct run (ch. 9); A and CAP (ch. 11), the comparison table (ch. 12), the lean's settled wording
+    (ch. 13); the platform checks (ch. 14); ch. 15 now "This week's runs, and what they found", with a result after each
+    run's pre-written rule and expectation, and the checkpoints' outcomes (freeze Tue 23:00); ch. 16's plan per option
+    (CMP-2 §13, who shares a unit); lessons, self-test, a glossary row, the label map. Refresh after D12.
   - **Reference deck** (Slides artifact): https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8, v2.4 (artifact
     version 17, 143 slides). v2.4 (13 Oct, for the meeting): new slides `find-devices`, `plan-devices` and
     `log-2026-10-12`; the 12 Oct corrections and CMP-2's numbers across 41 slides (top of this file). v2.3 (11 Oct): new slides `p1-overlap` (what P1's paper covers per option, MB4/MB5/MB6),

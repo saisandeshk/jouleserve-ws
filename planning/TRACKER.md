@@ -76,7 +76,7 @@ How to use it:
 | P1F-5 | Why do granite and E4B evict KV on the Orins at one agent (52–68% of drone runs)? | P1F-2 | todo | Can now be checked on the units |
 | TRF-2 | Copy P1's traffic agent, its sandbox image (`camera-agent-sandbox:1`, also on Thor-1) and data to the WS and the units | TRF-1 | todo | Look-and-copy only on Thor-2. Loading an image needs docker-root space, which the Orin 32s lack: Thor-1 or Orin-64-1 first |
 | TRF-3 | Validate the agent at N = 1 against P1's recorded runs (pass rate, tokens) | TRF-2 | todo | |
-| COR-3b | Evidence doc and teaching guide | MTG-2 | doing | Teaching guide **done** 12 Oct, at Sandesh's request: rewritten from first principles in a new first tab (the 11 Oct guide kept as an archive tab); refresh after the runs and D12. Evidence doc after MTG-2 |
+| COR-3b | Evidence doc and teaching guide | MTG-2 | doing | Teaching guide **done** 12 Oct, at Sandesh's request: rewritten from first principles in a new first tab (the 11 Oct guide kept as an archive tab); **updated in place 13 Oct** with the 12-13 Oct device results and deck v2.4's state (rev 83). Refresh after D12. Evidence doc after MTG-2 |
 | COR-4 | Notes for P1 (private, never in git) | — | todo | Kept in the git-ignored `reports/2026-10-07-p1-audit/notes_for_p1_2026-10-12.md`; passed to P1 through Sandesh |
 | DEV-7b | Calibration of the other models (Thor-1 26B and granite; Orin 32 granite bf16 and FP8, E4B) | DEV-5 | todo | |
 
@@ -201,6 +201,10 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-13, 10:25:** Teaching guide updated in place (12 Oct tab, rev 83; targeted edits at Sandesh's request): the
+  12-13 Oct device results with their rules (P1F-3, CAP-J1 and its anchor, RET-J1, A-J1, DEV-6, DEV-7a), the lean's
+  settled wording, the device plan per option, the checkpoints' outcomes; numbers as in CMP-2. COR-3b's evidence doc
+  still waits for D12.
 - **2026-10-13, 10:05:** Deck v2.4 published (artifact version 17, 143 slides): device results, device plan per option,
   the 12-13 Oct log, the 12 Oct corrections on 41 slides; renderer check clean. COR-3a and MTG-1 done.
 
