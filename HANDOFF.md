@@ -1,6 +1,30 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-12 (IST).
+**Last updated:** 2026-10-13, 10:00 (IST).
+
+**13 Oct: every run before the meeting is done; what is left is the deck.** The meeting is **Wed 14 Oct, 09:00-10:00**
+(D12); results freeze **Tue 13 Oct 23:00**; materials final by **Wed 08:00**. C1 passed (Mon 19:10) and C2 passed (Tue
+05:17). No run failed, so none was rerun. All five units and the WS are idle, with every P5 container stopped.
+- **Results of 12-13 Oct** (CMP-2's box "First results on P1's devices", §7, §8, §13; per-task notes in
+  `planning/TRACKER.md`; board energy in P1's schema, rules and analysis code fixed before the data):
+  - **CAP-J1** (Orin-32-1, Orin-32-2, two replicates): FP8 KV cuts energy per generated token **44.4% and 44.5%**,
+    best against best: "holds on the board". Its N = 1 anchor matches P1's own runs (+1.2% decode, +2.6% energy).
+  - **RET-J1** (Orin-32-3): dropping state at every wait costs **+3.2%** per token: "retention gains little" holds.
+  - **A-J1** (Thor-1, P1's bf16 26B, 30 loop prompts + 20 controls): greedy loops on **16 of 30 and 5 of 20**,
+    sampling on **0 of 50**. Neither rule is met as written (reproduction ≥ 80%; control program validity 12/16 against
+    9/11). Greedy is not repeatable call for call on P1's setup, so a loop is a per-call chance.
+  - **P1F-3** (WS, P1's clean sessions): FP8 −53% / −46% per token at 4 / 8 agents (−45.7% best against best); no
+    knee per token; the simulator holds on bf16 (within 7%) and fails on FP8 (over-predicts by 13-25%).
+  - **DEV-6:** the three Orin 32s are interchangeable (±3%). **DEV-7a:** the 26B's pools on Orin-64-1 at P1's flags,
+    FP8 60,000 (P1's cap) and bf16 55,417.
+- **Docs:** CMP-2 has the results box, P1F-3's numbers and Sandesh's lean wording (§9: a measured design space first,
+  a controller only if a gap remains; P1's FP8 pair the main risk, tested first by CAP-J2's drone pair). COR-1 is done
+  except the evidence doc and the teaching guide, which wait for D12.
+- **Left before the meeting:** deck v2.4 (COR-3a, MTG-1). Sandesh edits it from the Claude account that owns the
+  artifacts (this session's account cannot see them). The brief, with the results, two new slides and the corrections
+  mapped to v2.3's slide ids, is `data/p5deck/V2.4_BRIEF.md` (local, git-ignored).
+- **Watch:** Thor-1 holds ~68 GB of memory outside any process with nothing running (about 51 GB before our first
+  launch on 12 Oct); cause not checked (needs root); the 26B still built its full pool. A reboot is Sandesh's call.
 
 **12 Oct: the WS is back, P5 has five Jetsons, and the professor meeting moved to Wed 14 Oct (D12).**
 - **Devices:** Sandesh assigned five of P1's units to P5: Thor-1 (`dream-thor-1`), Orin-64-1 and Orin-32-1/2/3. They
@@ -22,9 +46,8 @@
     on P1's own bf16 26B on Thor-1).
 
   After D12 it has one branch per option.
-- **Done on 12 Oct after the approval:** the corrected docs committed and pushed (`42f9437`); SYNC-1 (the WS clone and
-  `~/jsw-dev` at `42f9437`); the teaching guide rewritten from first principles at Sandesh's request (§2 Artifacts).
-  Nothing runs on the WS or the units yet. **Next:** P1F-2 and DEV-1 to DEV-5, toward checkpoint C1 (Mon 23:00).
+- **Done on 12 Oct after the approval:** the corrected docs (`42f9437`); SYNC-1; the teaching guide rewritten from first
+  principles at Sandesh's request (§2 Artifacts); P1F-2 and DEV-1 to DEV-5 (C1); the night runs (above).
 
 **10–11 Oct:** P1 submitted its paper on Sat 10 Oct (SIGMETRICS 2027, under double-blind review; data frozen at
 10:30 IST) and pushed its final data. We read it from the local clone (`0cc2311a`) and brought every P5 doc, the
@@ -155,7 +178,7 @@ which git already keeps.
 - **Resources:** P5 has the 2×A5000 workstation, under its full control, and since 12 Oct five of P1's Jetsons
   (Thor-1, Orin-64-1, Orin-32-1/2/3), assigned by Sandesh after P1's submission.
 
-## 2. Situation as of 2026-10-12
+## 2. Situation as of 2026-10-13
 
 - **P1's repository** (`dream-lab/edge-agent-bench`): read-only clone in `data/edge-agent-bench` (git-ignored; HEAD
   `0cc2311a`, P1's submitted state, pulled 10 Oct at Sandesh's request; our analyses of 5-6 Oct used `3c47ebc`, the
@@ -183,13 +206,16 @@ which git already keeps.
     long-period loops: not adopted; (3) the drone Orin 32 caps are 1,024-token evaluator calls: adopted; (4) Orin 64's
     context guard truncates calls the 8,000-token rule does not count: in part; (5) Devstral's prefix cache is off:
     adopted.
-- **The professor meeting is Wed 14 Oct** (moved from Mon 12 Oct). Nothing has been shown to the professor yet. The
-  deck (v2.3) and CMP-2 get the corrections and a box with the first device results before it (MTG-1).
+- **The professor meeting is Wed 14 Oct, 09:00-10:00** (moved from Mon 12 Oct). Nothing has been shown to the professor
+  yet. CMP-2 is ready (corrections, the device-results box, §13's device plan per option); deck v2.4 is Sandesh's
+  (brief in `data/p5deck/V2.4_BRIEF.md`).
 - **Public repo:** `saisandeshk/jouleserve-ws` is public and holds P1's unpublished numbers in `reports/` (Sandesh's
   choice, 5 Oct). P1's own figures (deck and repository) are kept out of git (`reports/*/p1_figures/` is git-ignored), and
   since 10 Oct so is the title of P1's submitted paper. `gh` is not logged in on this machine (HTTP 401); the public API
   (`curl https://api.github.com/repos/saisandeshk/jouleserve-ws`) shows the visibility.
-- **Artifacts** (all private until Sandesh shares them from their Share menu). The deck and the evidence doc still carry
+- **Artifacts** (all private until Sandesh shares them from their Share menu). **They belong to one Claude account**:
+  a Claude Code session signed in to another account gets "not found" and cannot read or publish them (13 Oct). The
+  deck and the evidence doc still carry
   the 12 Oct meeting date and the numbers as they were before the 12 Oct corrections, until COR-3a (deck) and COR-3b
   (evidence doc); the teaching guide was rewritten on 12 Oct:
   - **Evidence doc**, "JouleServe (P5): drone and traffic evidence, and options":
@@ -231,10 +257,12 @@ which git already keeps.
   - **P1 audit doc** (for P1, private): https://claude.ai/code/artifact/813c66c9-0521-4430-91e6-60be5a3e0c4d (revision
     25: a note that it predates P1's submission).
 - **WS** (P5's own machine with full control; it is **not** one of P1's "workstation" lanes), checked on 12 Oct:
-  - Idle (GPUs at 47/15 MiB, no tmux server). 68 run directories in `~/work/runs/`, backed up to local
-    `data/ws_runs/` (SHA-256 checked, 2,343 files). 131 GB free.
-  - Synced on 12 Oct (SYNC-1): the clone at the latest push, `~/jsw-dev` at `42f9437` (no code change since). Before
-    each WS run: `git pull` in `~/jouleserve-ws`, then `env/sync_ws.sh` from the laptop (stamp in `~/jsw-dev/REVISION`).
+  - Idle on 13 Oct (GPUs at 47/15 MiB, no tmux server). 93 run directories in `~/work/runs/` (the 25 of 12-13 Oct:
+    `p1f3-ws-*`, `capj1-*`, `retj1-*`, `aj1*-thor-*`, `dev4*`, `dev6-*`, `dev7a-*`; the device runs carry their board
+    samples and SHA-256 sums). The local backup `data/ws_runs/` predates them. 128 GB free.
+  - The clone is at the latest push (13 Oct); `~/jsw-dev` at `bad9ff0` plus later doc-only commits. Before each WS run:
+    `git pull` in `~/jouleserve-ws`, then `env/sync_ws.sh` from the laptop (stamp in `~/jsw-dev/REVISION`).
+  - Device state snapshots of 12 Oct (before stopping P1's stack) are in `~/work/device_state/<unit>/2026-10-12/`.
   - Models on disk (pinned, offline): gemma-4-E4B, granite-4.2-8b, the 4-bit 26B checkpoints that do not run in
     SGLang (derived text-only copies in `~/work/models/`), and the 26B GGUF (Hugging Face cache, unsloth) served by
     `~/work/llama.cpp`; K2 and Qwen3.5 from before. Recipes: `AGENTS.md` §6c.
@@ -246,8 +274,9 @@ which git already keeps.
     differs; `lmsysorg/sglang:latest-cu130-runtime` on Thor).
   - **Disks:** the Orin 32 docker SSDs are full (0.3–1.9 GB). P5 writes only to its folders on the USB drives:
     `/media/hdd/p5`, or `/media/hdd2/p5` on Orin-32-2.
-  - **Found running on 12 Oct:** P1's servers, MCP and AirSim; to stop, after a snapshot (DEV-1). Nothing of P1's or
-    anyone's gets deleted.
+  - **P1's stack was stopped on 12 Oct** after a snapshot (DEV-1; the two `yash` MCP servers by Sandesh with sudo);
+    nothing of P1's or anyone's was deleted; ollama on Orin-64-1 and yash's tmux sessions untouched. Since 13 Oct
+    05:40 all five units are idle with no P5 container running.
   - **Thor-2** holds P1's final traffic agent (folder still unknown, TRF-1). Look-and-copy only.
 
 ## 3. What is built (JouleServe-WS pieces)
@@ -264,11 +293,12 @@ which git already keeps.
 | **P1 repository analyses** (2026-10-05) | `analysis/p1_repo.py` (loader), `p1_opportunity.py`, `p1_caps.py`, `traffic_sim.py`, `p1_repo_figures.py` | All 12 configurations: value of kept state, idle gaps, vision-tool bursts, prefix reuse; capped calls, loops and four stop rules; N traffic agents per device at real KV pools; energy by phase |
 | P1 final-data figures (2026-10-10) | `analysis/p1_final_figures.py` | Plots P1's committed summaries at `0cc2311a` (prefill share, drone evictions) and a sourced table of 7 vs 10 Oct values (tool faults, pass rates, overflows); writes `reports/2026-10-06-options/figures/p1final_*.png` |
 | Slide renderer | `env/render_slides.py` | Visual check of the deck's slide files |
+| **Device platform** (12 Oct) | `jsw/telemetry/jetson.py`, `env/jetson_preflight.py`, `env/launch_jetson.py`, `env/jetson_snapshot.sh`, `env/jetson_replay_point.sh`, `env/jetson_loop_point.sh`, `env/dev4_checks.py`, `env/queue_{capj1,dev6,dev7,p1f3}.sh`, `configs/jetsons.json` | Board power in P1's schema (per-unit tegrastats interval; Thor-1 requests 180 ms), preflight before and after each run, P1's images and flags per unit and model, replay and loop drivers run from the WS |
+| **Device analyses** (12-13 Oct) | `analysis/p1_selection.py` (P1's selection rule), `analysis/device_runs.py` (window metrics, CAP-J1 / anchor / RET-J1 rules), `analysis/p1f3.py`, `analysis/a_j1.py`, `analysis/a_j1_prefix.py`, `analysis/dev6.py` | Results in `reports/2026-10-06-options/` (`p1f3.json`, `a_j1.json`, `a_j1_pilot.json`, `a_j1_prefix.json`, `device/`) |
 | Launch / queues | `env/launch_k2_tp1.sh`, `env/launch_qwen35_tp1.sh`, `env/queue*.sh` | K2 pinned to revision `f846b1e` |
 | **Options work (5-6 Oct)** | `jsw/gateway/`, `jsw/policies/` (loop detector, decode guard, burst memory), `jsw/workloads/replay.py`, `loop_replay.py`, `jsw/runner/run.py`, `jsw/costs/calibrate2.py`, `env/launch_model.sh`, `env/launch_llamacpp.sh`, `analysis/{a_e1,a_e2,a_e4,b_e1,b_e2,c_e1,d_e2,ret_e1,cap_e1,options_figures}.py` | The shared base and option prototypes of `planning/OPTIONS_PLAN.md`; tests in `tests/` (run with the legacy venv: `python -m tests.<name>`) |
 
 Not built:
-- a Jetson telemetry adapter (DEV-3 in plan v2.0);
 - the CLGSCE port (rarely needed now: P1's drone stack runs on the units);
 - policies inside a live agent loop.
 
@@ -380,39 +410,28 @@ and F4; H4 has a live but small case (the vision tool).
 ## 6. Next steps
 
 The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; status is in `planning/TRACKER.md`.
-In short:
-1. Done 12 Oct: plan v2.0 approved (D19–D22), committed and pushed; SYNC-1.
-2. **Mon 12 Oct, by C1 at 23:00:**
-   - P1F-2 (the loader applies P1's selection rule; replay sets rebuilt);
-   - DEV-1 to DEV-5 (stop P1's stack after a snapshot; P5 folders and containers; Jetson telemetry; our stack on SGLang
-     0.5.16; preflight).
-3. **Mon night to Tue:**
-   - P1F-3 (WS reruns on the clean sessions);
-   - DEV-6 (are the Orin 32s interchangeable?);
-   - CAP-J1 on the three Orin 32s with its N = 1 anchor;
-   - the A-J1 pilot on Thor-1;
-   - DEV-7 on Orin-64-1.
-
-   C2 at Tue 12:00 decides whether device numbers reach the meeting.
-4. **Tue:** COR-1 and COR-2 (the correction checklist), then MTG-1 (CMP-2 box, deck v2.4, one-page device plan per
-   option). Results freeze Tue 23:00; materials final by Wed 08:00.
-5. **Wed 14 Oct, 09:00-10:00:** the meeting. Record D12 as D23, turn the chosen branch (plan §7) into tasks with rules, and rewrite
-   master-plan M8.
-6. **Ask P1 (through Sandesh and the mentor):**
-   - where the final traffic agent is (TRF-1);
+1. Done 12-13 Oct: plan v2.0 (D19-D22); P1F-1 to P1F-3; DEV-1 to DEV-6 and DEV-7a; CAP-J1 with its anchor; RET-J1;
+   A-J1 (pilot and full set); COR-1 and COR-2; C1 and C2 passed.
+2. **Tue 13 Oct, by F at 23:00:** deck v2.4 (COR-3a: the corrections, a device-results slide, a plan slide, a log
+   slide; Sandesh, from the owning account; brief in `data/p5deck/V2.4_BRIEF.md`). No new runs are planned before F.
+3. **Wed 08:00:** materials final (CMP-2, deck v2.4; CMP-2 §13 is the device plan per option).
+4. **Wed 14 Oct, 09:00-10:00:** the meeting. Then MTG-3: record D12 as D23, turn the chosen branch (plan §7) into
+   tasks with rules, rewrite master-plan M8, refresh the evidence doc (COR-3b) and the teaching guide.
+5. **Ask P1 (through Sandesh and the mentor):**
+   - where the final traffic agent is (TRF-1; CAP-J2's traffic arm and A-J4 need it);
    - what the 6–10 Oct FP8 runs on the units were (MB5?);
    - the split of MB4, MB5 and MB6.
 
 ## 7. Open questions for Sandesh
 
 1. ~~Approve plan v2.0~~ (approved 12 Oct, with RET-J1 added).
-2. **Artifacts:**
-   - the deck v2.4 before the meeting;
-   - the evidence doc after D12, unless wanted earlier (the teaching guide was rewritten on 12 Oct).
+2. **Artifacts:** deck v2.4 is Sandesh's to edit (13 Oct; the artifacts belong to another Claude account); the evidence
+   doc and the teaching guide after D12.
 3. ~~The lean's wording~~ (Sandesh, 12 Oct: as recommended. A measured design space first, a controller only if a gap
    remains, P1's FP8 pair as the main risk, tested first by CAP-J2's drone pair; CMP-2 §9).
 4. ~~The meeting's time~~ (Wed 14 Oct, 09:00-10:00; freeze F Tue 23:00).
-5. Thor-1's legacy P5 root helper (`/usr/local/sbin/jouleserve-thor`): leave it alone?
+5. Thor-1's legacy P5 root helper (`/usr/local/sbin/jouleserve-thor`): leave it alone? And Thor-1's ~68 GB held outside
+   any process (top of this file): reboot before the next Thor-1 campaign?
 6. The outcome of the meeting (Wed 14 Oct):
    - direction and scope (A, B, C, D, CAP);
    - agents per edge box;
