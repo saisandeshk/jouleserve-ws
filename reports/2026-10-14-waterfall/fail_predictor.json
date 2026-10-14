@@ -1,0 +1,630 @@
+{
+ "pass_loss_max": 0.05,
+ "configs": [
+  {
+   "key": "d_thor_gemma_rfx",
+   "domain": "drone",
+   "best_fixed": "budget_task_3",
+   "fixed_change": -0.26074102815996314,
+   "oracle_change": -0.6316884859558594,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 2356060.716344287,
+    "passes_cut": 7,
+    "passes": 102,
+    "e_per_success_J": 140907.680963277,
+    "change": -0.08700811089838911,
+    "captured_gap": -0.46834912495118336
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 7787829.894801272,
+    "passes_cut": 6,
+    "passes": 102,
+    "e_per_success_J": 82858.96367764927,
+    "change": -0.4631267702377817,
+    "captured_gap": 0.5455913979849294
+   }
+  },
+  {
+   "key": "d_thor_gemma_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_2",
+   "fixed_change": -0.49227663764927554,
+   "oracle_change": -0.8419685215917094,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 11423720.553999884,
+    "passes_cut": 13,
+    "passes": 74,
+    "e_per_success_J": 294369.62952962075,
+    "change": -0.25857202465516105,
+    "captured_gap": -0.6683158052149325
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 15413495.096424725,
+    "passes_cut": 3,
+    "passes": 74,
+    "e_per_success_J": 196715.1106884792,
+    "change": -0.5045341923670867,
+    "captured_gap": 0.035052442680737185
+   }
+  },
+  {
+   "key": "d_o64_devstral_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_1.5",
+   "fixed_change": -0.8519526559747934,
+   "oracle_change": -0.960080623716375,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 3558407.3531387188,
+    "passes_cut": 6,
+    "passes": 45,
+    "e_per_success_J": 19495.98076927638,
+    "change": -0.7968581158681702,
+    "captured_gap": -0.5095308943408178
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 3731730.0637394227,
+    "passes_cut": 0,
+    "passes": 45,
+    "e_per_success_J": 13044.900875579442,
+    "change": -0.8640763050836492,
+    "captured_gap": 0.11212315705248928
+   }
+  },
+  {
+   "key": "d_o32_e4b_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_1.5",
+   "fixed_change": -0.905519947121877,
+   "oracle_change": -0.9705110836141148,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 6330506.697021295,
+    "passes_cut": 2,
+    "passes": 50,
+    "e_per_success_J": 70011.93732929161,
+    "change": -0.6387815414932179,
+    "captured_gap": -4.104227438160233
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 6660406.385427704,
+    "passes_cut": 1,
+    "passes": 50,
+    "e_per_success_J": 61850.47557958345,
+    "change": -0.6808896554070751,
+    "captured_gap": -3.4563219515576646
+   }
+  },
+  {
+   "key": "d_o32_granite_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_5",
+   "fixed_change": -0.5894523253903656,
+   "oracle_change": -0.8979035739260464,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 7301333.83934283,
+    "passes_cut": 12,
+    "passes": 49,
+    "e_per_success_J": 413772.9291249701,
+    "change": -0.10331545234080453,
+    "captured_gap": -1.5760574008288581
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 13275435.487257438,
+    "passes_cut": 1,
+    "passes": 49,
+    "e_per_success_J": 194489.51520227676,
+    "change": -0.5785230722260766,
+    "captured_gap": -0.03543267604256353
+   }
+  },
+  {
+   "key": "d_o32_ministral_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_1.5",
+   "fixed_change": -0.9482080403436842,
+   "oracle_change": -0.9829347396250904,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 2056436.106009596,
+    "passes_cut": 4,
+    "passes": 43,
+    "e_per_success_J": 178414.4388119535,
+    "change": -0.14895596776293252,
+    "captured_gap": -23.015492088783027
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 6453408.069025805,
+    "passes_cut": 3,
+    "passes": 43,
+    "e_per_success_J": 64029.778766249445,
+    "change": -0.6945753860094792,
+    "captured_gap": -7.303678713571494
+   }
+  },
+  {
+   "key": "d_o64_granite_tc",
+   "domain": "drone",
+   "best_fixed": "budget_task_2",
+   "fixed_change": -0.6982623193167611,
+   "oracle_change": -0.9331800445892007,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 7947134.79220034,
+    "passes_cut": 4,
+    "passes": 45,
+    "e_per_success_J": 303984.68622519134,
+    "change": -0.32979073333315234,
+    "captured_gap": -1.568513340388784
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 12437459.242933203,
+    "passes_cut": 1,
+    "passes": 45,
+    "e_per_success_J": 181205.62919318143,
+    "change": -0.600487467426237,
+    "captured_gap": -0.41620891644992847
+   }
+  },
+  {
+   "key": "d_o64_qwen38_tc",
+   "domain": "drone",
+   "best_fixed": "sign_any",
+   "fixed_change": -0.019839018143670617,
+   "oracle_change": -0.5108809751661345,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 2351083.5632349555,
+    "passes_cut": 12,
+    "passes": 109,
+    "e_per_success_J": 198626.35785332313,
+    "change": 0.0015002761882008109,
+    "captured_gap": -0.04345717107610671
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 4709809.547356935,
+    "passes_cut": 5,
+    "passes": 109,
+    "e_per_success_J": 162577.21853509967,
+    "change": -0.18026423570104388,
+    "captured_gap": 0.32670368644289643
+   }
+  },
+  {
+   "key": "t_thor_gemma",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_5",
+   "fixed_change": -0.4274124372834698,
+   "oracle_change": -0.6809859069227084,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 5945211.608148977,
+    "passes_cut": 10,
+    "passes": 187,
+    "e_per_success_J": 27788.737976559423,
+    "change": -0.5216696476689288,
+    "captured_gap": 0.3717155841246308
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 6106387.985183584,
+    "passes_cut": 14,
+    "passes": 187,
+    "e_per_success_J": 27499.596790846306,
+    "change": -0.5266466640901941,
+    "captured_gap": 0.3913430965309811
+   }
+  },
+  {
+   "key": "t_thor_granite",
+   "domain": "traffic",
+   "best_fixed": "sign_any",
+   "fixed_change": -0.07636976938721862,
+   "oracle_change": -0.5443782298349342,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 2025861.9267762648,
+    "passes_cut": 5,
+    "passes": 124,
+    "e_per_success_J": 89091.90792624981,
+    "change": -0.12515264068580711,
+    "captured_gap": 0.10423502013600543
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 3669096.1462462163,
+    "passes_cut": 8,
+    "passes": 124,
+    "e_per_success_J": 77230.19675649806,
+    "change": -0.24162996096494194,
+    "captured_gap": 0.3531136839270572
+   }
+  },
+  {
+   "key": "t_thor_qwen36",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_8",
+   "fixed_change": -0.00621342273912584,
+   "oracle_change": -0.13120056963251425,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 51218.81486000981,
+    "passes_cut": 6,
+    "passes": 226,
+    "e_per_success_J": 30245.018432454526,
+    "change": 0.019425638912224263,
+    "captured_gap": -0.20513358604160956
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 329591.08386961906,
+    "passes_cut": 8,
+    "passes": 226,
+    "e_per_success_J": 29245.55865197425,
+    "change": -0.014261724431878342,
+    "captured_gap": 0.06439303474634468
+   }
+  },
+  {
+   "key": "t_o64_gemma",
+   "domain": "traffic",
+   "best_fixed": "budget_task_3",
+   "fixed_change": -0.04260404232052739,
+   "oracle_change": -0.5695666718662284,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 177340.29697943156,
+    "passes_cut": 4,
+    "passes": 113,
+    "e_per_success_J": 25291.31250477585,
+    "change": -0.025962039244834423,
+    "captured_gap": -0.03158099292551392
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 848296.6999593453,
+    "passes_cut": 5,
+    "passes": 113,
+    "e_per_success_J": 19312.932037413466,
+    "change": -0.2562059033364493,
+    "captured_gap": 0.4053453680388492
+   }
+  },
+  {
+   "key": "t_o64_granite",
+   "domain": "traffic",
+   "best_fixed": "sign_any",
+   "fixed_change": -0.03569218990606737,
+   "oracle_change": -0.48781705912822615,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 257612.8194215834,
+    "passes_cut": 4,
+    "passes": 111,
+    "e_per_success_J": 51159.13159419079,
+    "change": -0.009242781118335985,
+    "captured_gap": -0.05850022988833877
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 1476089.775231199,
+    "passes_cut": 6,
+    "passes": 111,
+    "e_per_success_J": 40529.048807321895,
+    "change": -0.2151069334253306,
+    "captured_gap": 0.39682564648109403
+   }
+  },
+  {
+   "key": "t_o32_granite",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_3",
+   "fixed_change": -0.05281854851418177,
+   "oracle_change": -0.5855694829025225,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 453301.8497426537,
+    "passes_cut": 5,
+    "passes": 97,
+    "e_per_success_J": 69425.24717671025,
+    "change": -0.015521787056072656,
+    "captured_gap": -0.0700078761962757
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 1538963.9798542564,
+    "passes_cut": 7,
+    "passes": 97,
+    "e_per_success_J": 58905.11789050823,
+    "change": -0.16470149473874984,
+    "captured_gap": 0.21000985451676876
+   }
+  },
+  {
+   "key": "t_o32_e4b",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_3",
+   "fixed_change": -0.29167927102434754,
+   "oracle_change": -0.5002126458202901,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 1792293.7201319532,
+    "passes_cut": 5,
+    "passes": 184,
+    "e_per_success_J": 28376.091060715342,
+    "change": -0.240178400594796,
+    "captured_gap": -0.24696704055140778
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 2359901.5669372715,
+    "passes_cut": 14,
+    "passes": 184,
+    "e_per_success_J": 26539.485018016047,
+    "change": -0.28935687756877926,
+    "captured_gap": -0.011136795047031611
+   }
+  },
+  {
+   "key": "t_o32_qwenvl",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_2",
+   "fixed_change": -0.11721368115386821,
+   "oracle_change": -0.7771348332370458,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 74659.73646392813,
+    "passes_cut": 7,
+    "passes": 66,
+    "e_per_success_J": 7884.719890441896,
+    "change": -0.03605890745059681,
+    "captured_gap": -0.12297646991173065
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 204934.83859011094,
+    "passes_cut": 2,
+    "passes": 66,
+    "e_per_success_J": 5233.177678279516,
+    "change": -0.3602214056049122,
+    "captured_gap": 0.3682375139574477
+   }
+  },
+  {
+   "key": "t_thor_devstral",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_5",
+   "fixed_change": -0.3778805201899812,
+   "oracle_change": -0.6883477770607171,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 1388388.055841384,
+    "passes_cut": 4,
+    "passes": 126,
+    "e_per_success_J": 45540.719952119834,
+    "change": -0.1736986403260078,
+    "captured_gap": -0.6576599475318752
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 2924390.1244004937,
+    "passes_cut": 7,
+    "passes": 126,
+    "e_per_success_J": 33781.22492100429,
+    "change": -0.38706563899239643,
+    "captured_gap": 0.02958482287309134
+   }
+  },
+  {
+   "key": "t_thor_gemma_rfx",
+   "domain": "traffic",
+   "best_fixed": "budget_task_3",
+   "fixed_change": -0.4734877976132549,
+   "oracle_change": -0.6301929387515967,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 5711406.227435822,
+    "passes_cut": 6,
+    "passes": 167,
+    "e_per_success_J": 125696.08666188928,
+    "change": -0.191041264738517,
+    "captured_gap": -1.802407571461804
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 7833140.051612397,
+    "passes_cut": 6,
+    "passes": 167,
+    "e_per_success_J": 112517.61570427078,
+    "change": -0.2758556729008961,
+    "captured_gap": -1.2611719263115053
+   }
+  },
+  {
+   "key": "t_o64_devstral",
+   "domain": "traffic",
+   "best_fixed": "budget_task_3",
+   "fixed_change": -0.13768337994571522,
+   "oracle_change": -0.6206911033965643,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 170621.36861652855,
+    "passes_cut": 5,
+    "passes": 111,
+    "e_per_success_J": 31954.006711164813,
+    "change": -0.0030500588902916403,
+    "captured_gap": -0.27873947872621097
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 1648708.2802286365,
+    "passes_cut": 5,
+    "passes": 111,
+    "e_per_success_J": 18009.790563880775,
+    "change": -0.4381030271303772,
+    "captured_gap": 0.6219769014009002
+   }
+  },
+  {
+   "key": "t_o64_qwenvl",
+   "domain": "traffic",
+   "best_fixed": "budget_task_1.5",
+   "fixed_change": -0.18975860971193637,
+   "oracle_change": -0.8232317925134981,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 64719.609562162266,
+    "passes_cut": 2,
+    "passes": 60,
+    "e_per_success_J": 7883.656559273065,
+    "change": -0.0937834319014813,
+    "captured_gap": -0.15150629958161882
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 261330.98361879785,
+    "passes_cut": 3,
+    "passes": 60,
+    "e_per_success_J": 4572.643971600038,
+    "change": -0.4743802325831076,
+    "captured_gap": 0.44930334953157797
+   }
+  },
+  {
+   "key": "t_o64_gemma_rfx",
+   "domain": "traffic",
+   "best_fixed": "budget_task_3",
+   "fixed_change": -0.12015204191918183,
+   "oracle_change": -0.7266225125992175,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 923317.4084975512,
+    "passes_cut": 2,
+    "passes": 64,
+    "e_per_success_J": 45324.62066939437,
+    "change": -0.2230295115426959,
+    "captured_gap": 0.1696331059749001
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 2045634.3196095882,
+    "passes_cut": 9,
+    "passes": 64,
+    "e_per_success_J": 30687.446734371166,
+    "change": -0.47394506282515647,
+    "captured_gap": 0.5833639690804177
+   }
+  },
+  {
+   "key": "t_o64_devstral_rfx",
+   "domain": "traffic",
+   "best_fixed": "budget_task_1.5",
+   "fixed_change": -0.7894105906326195,
+   "oracle_change": -0.9497002739565703,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 1199685.8987636913,
+    "passes_cut": 7,
+    "passes": 31,
+    "e_per_success_J": 114278.02296817947,
+    "change": -0.10139609146561368,
+    "captured_gap": -4.292319286553869
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 3614357.274093883,
+    "passes_cut": 2,
+    "passes": 31,
+    "e_per_success_J": 11310.385376072954,
+    "change": -0.9110628951920235,
+    "captured_gap": 0.7589528036782048
+   }
+  },
+  {
+   "key": "t_o32_ministral",
+   "domain": "traffic",
+   "best_fixed": "budget_cfg_12",
+   "fixed_change": -0.47044474612976594,
+   "oracle_change": -0.7278522438533002,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 445679.3756428555,
+    "passes_cut": 8,
+    "passes": 154,
+    "e_per_success_J": 17185.111399706457,
+    "change": -0.10430767798757912,
+    "captured_gap": -1.422402499461894
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 1256547.0257298695,
+    "passes_cut": 11,
+    "passes": 154,
+    "e_per_success_J": 11875.235064826074,
+    "change": -0.3810597660810582,
+    "captured_gap": -0.3472508797887107
+   }
+  },
+  {
+   "key": "t_o32_granite_rfx",
+   "domain": "traffic",
+   "best_fixed": "sign_ctx80",
+   "fixed_change": -0.044684699822900686,
+   "oracle_change": -0.42829109448904235,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 159976.58763759365,
+    "passes_cut": 3,
+    "passes": 73,
+    "e_per_success_J": 118691.19517660578,
+    "change": 0.023156430773268566,
+    "captured_gap": -0.17685088554170822
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 1754533.5552793902,
+    "passes_cut": 4,
+    "passes": 73,
+    "e_per_success_J": 97301.83615537113,
+    "change": -0.16122675114794582,
+    "captured_gap": 0.3038063310348968
+   }
+  },
+  {
+   "key": "t_o32_qwenvl_rfx",
+   "domain": "traffic",
+   "best_fixed": "budget_task_2",
+   "fixed_change": -0.25629966450716557,
+   "oracle_change": -0.8202025516064577,
+   "tasks": {
+    "mode": "tasks",
+    "saved_J": 160855.74814226874,
+    "passes_cut": 3,
+    "passes": 70,
+    "e_per_success_J": 12952.071221757182,
+    "change": -0.11860223051302232,
+    "captured_gap": -0.2441864319979931
+   },
+   "repeats": {
+    "mode": "repeats",
+    "saved_J": 480459.12187559984,
+    "passes_cut": 4,
+    "passes": 70,
+    "e_per_success_J": 8305.839365521213,
+    "change": -0.4347816526680325,
+    "captured_gap": 0.31651192473756534
+   }
+  }
+ ]
+}

@@ -13,7 +13,7 @@ their status is in her doc.
 | WF-1 | Traffic waterfall from P1's final data (ENERGY_PLAN §4) | WS | **done** 14 Oct | figure and table for 17 configurations; code committed before its results are read | `reports/2026-10-14-waterfall/`: failed runs take 13–95% of traffic board energy (median 62%); one-at-a-time decode 2–36%; Orin overflows are one-jump tool outputs |
 | WF-2 | Drone waterfall: P1's 8 configurations, and the mentor's runs as a separate column | WS | **done** for P1's 8 (14 Oct); the mentor's column waits for her protocol | the same outputs | failed runs take 51–98% of drone board energy |
 | WF-3 | Q1 and Q2 bounds for each lever, from the logs and cost curves (ENERGY_PLAN §5) | WS | doing: stopping doomed work done 14 Oct | one table: lever, fixed or run-time, bound against B* | `stop_bounds.json`: the best fixed stop rule (≤ 5% passes cut) varies by configuration; ≥ 15% left to the oracle in 24 of 25. Left: WF-3b, WF-4 |
-| WF-3b | Online failure predictor on P1's logs, trained and scored on different tasks: how much of the oracle gap it captures at ≤ 5% passes cut | WS | todo | per configuration, captured share of the gap; code committed first |
+| WF-3b | Online failure predictor on P1's logs, trained and scored on different tasks: how much of the oracle gap it captures at ≤ 5% passes cut | WS | **done** 14 Oct | per configuration, captured share of the gap; code committed first | Mostly no without task history: beats the best fixed rule in 3 of 25 on unseen tasks; with history 18 of 25 but cuts a median 5.4% of passes held-out; both bars in 5 of 25 (`fail_predictor.json`) |
 | WF-4 | Success-aware capacity under load: the simulator driven by P1's episodes and the measured cost curves, against fixed packing | WS | todo | energy per success and pass rate at N = 1, 2, 4, 8 against B* |
 | TH-1 | One-page thesis | repo | doing: draft 1 written 14 Oct (`planning/THESIS.md`) | agreed with the mentor |
 | TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | **done** 14 Oct | code on the WS, SHA-256 recorded | `~/work/p1/traffic_agent/` (131 files, 4 MB); needs and blockers in `reports/2026-10-14-traffic-agent/` (no docker on the WS; package versions from P1) |
@@ -214,6 +214,7 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-14, late night:** WF-3b done: an online failure predictor rarely beats the best fixed stop rule on unseen tasks (3 of 25); with task history it does in 18 of 25 but does not hold the pass rate reliably (both bars in 5 of 25). Thesis draft 1 updated: stopping is a weak core alone.
 - **2026-10-14, night:** WF-1 and WF-2 done (`reports/2026-10-14-waterfall/`); WF-3's stop-rule bounds; thesis draft 1 (`planning/THESIS.md`); the traffic agent's code on the WS and its needs (`reports/2026-10-14-traffic-agent/`); P1's final traffic traces keep the tool outputs (text replay possible).
 - **2026-10-14, evening:** The professor meeting (D23): follow the energy; retention during tool waits out; KV as
   capacity, several agents per box and justified agent changes allowed; target OSDI (1 and 8 Dec). The one-page plan

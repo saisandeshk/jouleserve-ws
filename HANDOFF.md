@@ -32,8 +32,11 @@ block is the state of 13 Oct and earlier: still true as a record, but read the p
       25.
   - **Thesis draft 1** (`planning/THESIS.md`): success-aware capacity allocation on edge boards.
   - **The traffic agent's code** on the WS, with its needs (`reports/2026-10-14-traffic-agent/`).
-- **Next:** WF-3b (can an online failure predictor capture the oracle gap?) and WF-4 (success-aware capacity under
-  load, simulated); the thesis agreed with the mentor; the traffic agent's data and package versions from P1. The flow
+  - **WF-3b:** an online failure predictor rarely beats the best fixed stop rule on unseen tasks (3 of 25); with task
+    history it does in 18 of 25 but does not hold the pass rate reliably (both bars in 5 of 25). So "stop doomed
+    runs" is a weak core on its own (THESIS.md risks).
+- **Next:** agree the thesis's core with the mentor (rescue with spare width, or success-aware capacity under load);
+  WF-4 (capacity under load, simulated); the thesis agreed with the mentor; the traffic agent's data and package versions from P1. The flow
   is drawn in https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP (private).
 - **P1's traffic agent found** on Thor-2, look-only: `/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`
   (`agent.py` of 6 Oct, tool servers, `deploy/`, 60 GB of camera data in `fixtures/`; the `camera-agent-sandbox:1`

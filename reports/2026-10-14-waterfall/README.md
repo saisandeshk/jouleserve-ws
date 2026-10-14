@@ -1,6 +1,6 @@
 # Energy waterfall: where P1's board energy went (WF-1, WF-2, first WF-3)
 
-**14 Oct 2026 · ENERGY_PLAN §4–§5.** Code: `analysis/waterfall.py`, `analysis/stop_bounds.py`, `analysis/waterfall_figure.py`
+**14 Oct 2026 · ENERGY_PLAN §4–§5.** Code: `analysis/waterfall.py`, `analysis/stop_bounds.py`, `analysis/fail_predictor.py`, `analysis/waterfall_figure.py`
 (each committed before its results were read). Data: P1's final data at `0cc2311a`, P1's selection rule and grades, all
 25 edge configurations (17 traffic, 8 drone). Outputs: `waterfall.json`, `stop_bounds.json`, `waterfall.png`.
 
@@ -99,6 +99,37 @@ never passes. "Oracle" stops every failing run at its start.
 5. **Inside passing runs, one-at-a-time decoding is the largest avoidable part** (9–36% of traffic energy).
    - Packing agents captures it as a fixed setting (B*).
    - What a run-time policy can add there depends on load, which these logs do not have.
+
+## Can an online predictor capture the gap? (WF-3b)
+
+**Mostly no, without task history.** Code: `analysis/fail_predictor.py` (committed before its results were read).
+Output: `fail_predictor.json`.
+
+**Setup:**
+- **Decision points:** at the end of every LLM call, a logistic model decides whether to stop the run.
+- **Features:** only what the serving layer has seen by then:
+  - energy so far against a reference;
+  - calls, capped calls and consecutive caps;
+  - prompt against the window;
+  - output against its cap;
+  - tool calls so far;
+  - with history, the task's past pass rate.
+- **Threshold:** chosen on the training runs to cut at most 5% of their passes.
+- **Comparison:** against the in-sample best fixed rule above, which favours the fixed rule.
+
+| Evaluation | Beats the best fixed rule | Keeps cuts ≤ 5% of passes on held-out runs | Both, and ≥ 15% of the gap to the oracle |
+| --- | --- | --- | --- |
+| New tasks (folds by task, no history) | 3 of 25 | 13 of 25 (cuts 2.7–24.5%) | 1 of 25 |
+| Repeats (one repeat held out, the task's history known) | 18 of 25 (3–76% of the gap) | 12 of 25 (cuts 0–14%, median 5.4%) | 5 of 25 (Orin 64 gemma-26B, Devstral and Qwen2.5-VL traffic; Orin 32 Qwen2.5-VL traffic; Orin 64 Qwen3.8 drone) |
+
+**What it means:**
+- The signals the serving layer sees inside a run predict failure poorly on tasks it has not seen.
+- With per-task history, a predictor captures a real part of the gap, but its threshold does not hold the pass rate
+  reliably on held-out runs.
+- Most of what it captures comes from knowing which tasks fail. That is closer to deciding before a run (admit, route
+  or skip) than to stopping during it.
+- Richer in-run signals are untested: tool errors, repeated arguments, the text itself. P1's traffic traces now carry
+  them.
 
 ## Method notes and caveats
 

@@ -1,6 +1,6 @@
 # P5 thesis: draft for discussion (TH-1)
 
-**14 Oct 2026, draft 1.** It is built on the energy waterfall
+**14 Oct 2026, draft 1 (WF-3b result added the same night).** It is built on the energy waterfall
 ([`../reports/2026-10-14-waterfall/README.md`](../reports/2026-10-14-waterfall/README.md)) and follows ENERGY_PLAN §3–§5.
 Sandesh and the mentor decide whether to adopt it; nothing in it is agreed yet.
 
@@ -88,7 +88,7 @@ The second half, load, is absent from P1's logs, because P1 ran one agent per bo
 | Is failure the biggest bucket? | Yes in 22 of 25 configurations (median 69%); P1's headline too | waterfall |
 | Can a fixed rule capture it? (Q1) | Partly; the best rule varies by configuration | `stop_bounds.json` |
 | Is there room beyond B*? (Q2 bound) | ≥ 15% to the oracle in 24 of 25, an upper bound | `stop_bounds.json` |
-| Can an online estimate capture that room without losing passes? | **Not tested.** Next: a predictor on P1's logs, trained and scored on different tasks | WF-3b |
+| Can an online estimate capture that room without losing passes? | **Mostly no, without task history** (WF-3b, 14 Oct). A simple predictor on in-run signals beats the best fixed rule in 3 of 25 configurations on unseen tasks; with the task's history it does in 18 of 25 (3–76% of the gap) but cuts a median 5.4% of passes on held-out runs, meeting both bars in 5 of 25. Most of the gain is knowing which tasks fail, closer to admission or routing than to stopping | `fail_predictor.json` |
 | Do rescues turn failures into passes? | Partly: on a 4-bit stand-in, one resample recovered 17 of 17 looping calls (A-E2). The mentor's banks show sampled programs pass on hard prompts. Overflow rescue is not tested | live traffic agent (TRF-3) |
 | Does success-aware capacity beat fixed packing under load? | **Not tested.** Next: the simulator driven by P1's episodes and the measured cost curves, then a live fleet | WF-4 (new) |
 
@@ -107,9 +107,13 @@ The second half, load, is absent from P1's logs, because P1 ran one agent per bo
 
   The novelty has to be the combination: online success estimation driving capacity decisions on a unified-memory
   edge board, judged by energy per success.
-- **The oracle gap may not be predictable.** Failures may only show after most of their energy is spent. WF-3b
-  answers this first. If an online estimate captures less than 15% beyond B*, the stop and rescue part weakens. What
-  remains is the capacity and widening part (the mentor's first-of-k), or the fallback, a limit study.
+- **The oracle gap is only partly predictable** (WF-3b, 14 Oct). In-run signals alone rarely beat the best fixed rule
+  on unseen tasks. Per-task history helps but does not hold the pass rate reliably. So "stop doomed runs" is a weak
+  core on its own.
+  - **The stronger halves:** rescuing at-risk steps with spare width (the mentor's first-of-k: does it turn failures
+    into passes?); and success-aware admission and capacity under load (WF-4).
+  - **Possibly richer signals:** tool errors, repeated arguments, the text itself.
+  - **If those fail too:** the fallback, a limit study.
 - **Gaming the metric:** refusing hard tasks lowers energy per success. Every result keeps the pass rate fixed (at
   most 5% of passes lost, as in WF-3).
 
