@@ -55,7 +55,7 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 | **Thor-1** `dream-thor-1` | `ssh Thor-1` (`yash@10.24.24.79`) | **P5's since 2026-10-12** (Sandesh lifted the 5 Oct ban for it). AGX Thor, 126 GB. P1's image `lmsysorg/sglang:latest-cu130-runtime`; P1's 26B, granite and other models in yash's HF cache; P1's drone stack. P5 folder `~/p5` (`/` has 72 GB free). Role (D19): option A |
 | **Orin-64-1** (orin45) | `ssh Orin-64-1` (`mayankarya@10.24.24.45`) | **P5's since 2026-10-12.** AGX Orin 64 GB. Image `jouleserve/sglang:0.5.16-orin-cu126-sm87`; P1's 26B on the HDD. P5 folder `/media/hdd/p5`. Role: calibration, then D and the Gemma FP8 drone pair |
 | **Orin-32-1/2/3** (orin56/57/58) | `ssh Orin-32-1` / `-2` / `-3` (`mayankarya@10.24.24.56/.57/.58`) | **P5's since 2026-10-12.** AGX Orin 32 GB. Image as above (Orin-32-3's build differs: check before pairing). granite on all three, E4B on Orin-32-1. The docker SSDs are full. P5 folders `/media/hdd/p5` (Orin-32-1, -3), `/media/hdd2/p5` (Orin-32-2). Role: capacity (CAP) |
-| Thor-2 `dream-thor-2` | `ssh mayankarya@10.24.24.80` | **P1's.** It holds P1's traffic agent. **Look-and-copy only**; never run experiments there. The P1 Thor rules below apply |
+| Thor-2 `dream-thor-2` | `ssh mayankarya@10.24.24.80` | **P1's**, holding P1's traffic agent, code, venv, 60 GB of camera data, the sandbox image and models. **Since 15 Oct P5 may use it when it is free** (P1's team, through Sandesh). Work in `/media/hdd/p5` (the root disk is 99% full); use P1's agent folder read-only (`env/thor2/traffic_run.sh` redirects every write); P1's idle `sweep-llm` server may be stopped after its configuration is saved (`/media/hdd/p5/state/2026-10-15/`), and restored with `docker start sweep-llm` |
 | P1's repository clone | `data/edge-agent-bench` (local, git-ignored) | P1's raw drone and traffic runs, pipeline and paper (`dream-lab/edge-agent-bench`, cloned by Sandesh 2026-10-05). **Read-only**; rules in §4 |
 
 - **Aliases:** the `ssh` aliases work from the laptop and from the WS, with passwordless keys. `ssh WS` reaches the WS
@@ -120,8 +120,11 @@ They are shared lab machines, and we work inside P1 members' accounts (`yash`, `
 
 ### Thor-2, and any machine where P1 still runs: someone else's live experiment
 
-- Thor-2 (`mayankarya@10.24.24.80`) is look-and-copy only (Sandesh, 12 Oct). The rules below apply to it, and to any
-  unit P1 takes back. (They were written for Thor-1, P1's sweep device until 10 Oct.)
+- Thor-2 (`mayankarya@10.24.24.80`): **usable by P5 when free since 15 Oct** (P1's team, through Sandesh; see §3). Check it is
+  idle first (no requests to P1's server, no harness, GPU idle). Never use the sudo password file in that account
+  (`~/.cqa_sudo`): P1's campaign scripts read it, so P5 runs its own scripts (`env/thor2/`). The look-only rules below
+  still apply whenever P1 runs there, and to any unit P1 takes back. (They were written for Thor-1, P1's sweep device
+  until 10 Oct.)
 - **Look only.** Use `ls`, `cat`, `tail`, `ps` and copies *out*.
   - Never write, install, launch, kill or restart anything there.
   - Never send requests to P1's SGLang server (port 30000), MCP server (8001) or Docker.
