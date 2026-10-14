@@ -4,12 +4,18 @@
 # Differences from P1, recorded in p5_run.txt: no sudo (the OS page cache is not dropped, CAMERA_AGENT_CACHE_FLUSHED=0);
 # the server on port 30101.
 #   traffic_run.sh <label> <comma,separated,task,ids> [instance A|B|C] [run number]
+# MODEL=gemma|granite (default gemma).
 # GW_K=<k> (optional): route the agent's calls through the P5 gateway (/media/hdd/p5/jsw-dev) in first-of-k mode with
 # Gemma's model-card sampling (temperature 1.0, top_p 0.95, top_k 64); k = 1 is plain sampling. The vision tool's
 # calls still go straight to the server. Unset: P1's protocol (greedy) straight to the server.
 set -u
 B=/media/ssd/Deepstream-Yolo-upstream/camera_query_agent; P=/media/hdd/p5
-LABEL=$1; IDS=$2; INST=${3:-A}; N=${4:-1}; PORT=30101; SERVED=gemma4-it
+LABEL=$1; IDS=$2; INST=${3:-A}; N=${4:-1}; PORT=30101
+# MODEL=gemma (default) or granite: the served name, tokenizer and text-only flag of P1's campaign for that model
+case "${MODEL:-gemma}" in
+  granite) SERVED=granite; TOKENIZER=ibm-granite/granite-4.2-8b; TEXTONLY=1 ;;
+  *)       SERVED=gemma4-it; TOKENIZER=google/gemma-4-26B-A4B-it; TEXTONLY= ;;
+esac
 D=$P/runs/${LABEL}-$(date +%Y%m%dT%H%M); mkdir -p "$D" $P/tmp
 cd $B || exit 1
 . ./instances.sh && "instance_$INST"
@@ -30,13 +36,13 @@ if [ -n "${GW_K:-}" ]; then
   AGENT_URL=http://127.0.0.1:31101/v1
 fi
 KV=$(curl -s -o /dev/null -w "%{http_code}" -m 10 -X POST http://127.0.0.1:$PORT/flush_cache); [ "$KV" = 200 ] && KV=1 || KV=0
-{ echo "label=$LABEL ids=$IDS instance=$INST run=$N kv_flushed=$KV page_cache_dropped=0 port=$PORT served=$SERVED"
+{ echo "label=$LABEL model=${MODEL:-gemma} ids=$IDS instance=$INST run=$N kv_flushed=$KV page_cache_dropped=0 port=$PORT served=$SERVED"
   echo "fixtures_db=$CAMERA_AGENT_DB overlay=$O agent_url=$AGENT_URL gw_k=${GW_K:-none} started=$(date -Iseconds)"; } > "$D/p5_run.txt"
 .venv/bin/python sweep_vitals.py "$D/vitals.jsonl" --interval 0.2 --label "$LABEL" --llm-url http://127.0.0.1:$PORT/v1 \
   > "$D/_vitals.log" 2>&1 &
 VP=$!; sleep 6
 env CAMERA_AGENT_TEMPERATURE=0 CAMERA_AGENT_SEED=42 CAMERA_AGENT_TOP_P=1.0 CAMERA_AGENT_TOKEN_BREAKDOWN=1 \
-  CAMERA_AGENT_TOKENIZER=google/gemma-4-26B-A4B-it HF_HUB_OFFLINE=1 CAMERA_AGENT_PRECISION=BF16 \
+  CAMERA_AGENT_TOKENIZER=$TOKENIZER ${TEXTONLY:+CAMERA_AGENT_TEXT_ONLY=$TEXTONLY} HF_HUB_OFFLINE=1 CAMERA_AGENT_PRECISION=BF16 \
   CAMERA_AGENT_RUN_NUMBER="$N" CAMERA_AGENT_CACHE_FLUSHED=0 CAMERA_AGENT_KV_FLUSHED=$KV CAMERA_AGENT_MAX_STEPS=20 \
   CAMERA_AGENT_MAX_TOKENS=8000 CAMERA_AGENT_TOOL_TIMEOUT=600 CAMERA_AGENT_SANDBOX_TIMEOUT=180 \
   CAMERA_AGENT_LLM_TIMEOUT=3600 LANGCHAIN_OPENAI_STREAM_CHUNK_TIMEOUT_S=0 \

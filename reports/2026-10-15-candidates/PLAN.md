@@ -58,3 +58,33 @@ cut board energy per successful task? The comparisons:
    - It counts as same-setup where TRF-3 shows our greedy runs match P1's within their spread.
 3. **Noise:** 12 tasks × 2 repeats is small. Differences of 2 passes or fewer are not read as effects. Each arm's
    repeat-to-repeat spread is reported beside its result.
+
+## Amendment, 15 Oct 01:00 IST (before any CAND-T1 or CAND-T2 data)
+
+**Why:** the bank analysis (`README.md` here, from the mentor's drone banks) now shows the following:
+- **On Thor's mixture-of-experts gemma-26B:** first-of-4 raises the pass rate but costs 12–25% more energy per success,
+  because extra streams are expensive (1.81× per step at 4).
+- **On a dense model (E4B on the Orin):** it cuts energy per success by 70%.
+
+So the dense case is the informative test on traffic, and a second gemma repeat is worth less than a dense arm.
+
+**Changes:**
+1. **CAND-T1, gemma-26B:** one repeat of S1 and of F4, not two. The tasks and the rules are unchanged, but with 12 runs
+   per arm only differences larger than 2 passes or 25% energy per success are read.
+2. **New CAND-T2, granite-4.2-8b (dense, P1's Thor flags), on Thor-2:**
+   - **Calibration first:** its cost curve (`env/thor2/costcurve.py`; widths 1–16 at 4K and 16K contexts; the
+     mentor's design, our sampler).
+   - **Arms:** S1 and F4, one repeat each.
+   - **Tasks:** 10 instance-A tasks, chosen now from P1's recorded granite runs.
+     - Controls (P1 3 of 3): busiest-hour, avg-per-minute, stalled-vehicle.
+     - Mixed or failing, several with capped calls: peak-count, class-mix, viz-class-vs-dwell, unusual-vs-median,
+       peak-start-end, compare-periods, day-summary.
+   - **G:** P1's 3 recorded Thor granite runs per task (cross-setup).
+   - **Rules as for CAND-T1:**
+     - "First-of-k pays on traffic" if F4's energy per success is at least 30% below S1's, with passes not lower by more
+       than 1.
+     - "Weaker" for 10–30%.
+     - "Absent" below 10%.
+     - Differences of 2 passes or fewer are not read as effects.
+3. **Run order on Thor-2** (`env/thor2/cand_chain2.sh`): TRF-3 → gemma S1 → gemma F4 → granite server and cost curve →
+   granite S1 → granite F4.
