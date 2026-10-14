@@ -70,6 +70,16 @@ CONFIGS = [
         "drones/edge_devices/final_sweep_orin64/tool_calling/devstral"),
     Cfg("d_o32_e4b_tc", "drone", "Orin 32", "gemma-E4B", "tool calling",
         "drones/edge_devices/final_sweep_orin32/tool_calling/gemma-4-E4B-it"),
+    # the other four drone cells of P1's main analysis (added 14 Oct for the energy waterfall; P1 holds out Orin 32
+    # Qwen2.5-VL, and the Thor granite/Qwen3.6, Orin 64 gemma and Orin 32 granite Reflexion sweeps are partial)
+    Cfg("d_o32_granite_tc", "drone", "Orin 32", "granite-8B", "tool calling",
+        "drones/edge_devices/final_sweep_orin32/tool_calling/granite-4.2-8b"),
+    Cfg("d_o32_ministral_tc", "drone", "Orin 32", "Ministral-8B", "tool calling",
+        "drones/edge_devices/final_sweep_orin32/tool_calling/Ministral-3-8B-Instruct-2512"),
+    Cfg("d_o64_granite_tc", "drone", "Orin 64", "granite-8B", "tool calling",
+        "drones/edge_devices/final_sweep_orin64/tool_calling/granite-4.2-8b"),
+    Cfg("d_o64_qwen38_tc", "drone", "Orin 64", "Qwen3.8-27B", "tool calling",
+        "drones/edge_devices/final_sweep_orin64/tool_calling/Qwen3.8-27B"),
     Cfg("t_thor_gemma", "traffic", "Thor", "gemma-26B", "tool calling",
         "traffic/final_sweep_thor/tool_calling/gemma-4-26B-A4B-it"),
     Cfg("t_thor_granite", "traffic", "Thor", "granite-8B", "tool calling",
