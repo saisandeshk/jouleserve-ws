@@ -7,8 +7,8 @@
 **The answer:**
 - **Runs that fail take most of the energy.** That is over half of the board energy in 22 of 25 configurations (median 69%).
   P1's submitted paper reports the same headline, so it is P1's finding, not ours.
-- **Inside passing runs**, the largest avoidable part is decoding one request at a time: 9–36% of all energy in traffic,
-  priced at 4 requests decoding together.
+- **Inside passing runs**, the largest avoidable part is decoding one request at a time: 2–36% of all energy in traffic (median 17%;
+  drone 1–34%, median 5%), priced at 4 requests decoding together.
 - **Reading prompts and tool waits are small:** prefill 0–4%, tool waits 0–7% (traffic Reflexion's unmetered critic
   calls sit in the grey "other").
 - **No single fixed stop rule closes the gap.** The best fixed stop rule that keeps the pass rate differs by
@@ -96,7 +96,7 @@ never passes. "Oracle" stops every failing run at its start.
    - The task oracle saves −53% to −97% for the small drone models and for Qwen2.5-VL in traffic.
    - Not attempting, or handing the task to a stronger model, would save it.
    - Stopping late saves less.
-5. **Inside passing runs, one-at-a-time decoding is the largest avoidable part** (9–36% of traffic energy).
+5. **Inside passing runs, one-at-a-time decoding is the largest avoidable part** (2–36% of traffic energy, median 17%).
    - Packing agents captures it as a fixed setting (B*).
    - What a run-time policy can add there depends on load, which these logs do not have.
 

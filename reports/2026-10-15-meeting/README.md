@@ -1,0 +1,162 @@
+# P5 for the professor: where the energy goes, and what we propose
+
+**Draft, 15 Oct 2026.** This brief prepares the next meeting, whose date is not fixed. It answers the questions of
+14 Oct (D23). Sources:
+- the energy waterfall ([`../2026-10-14-waterfall/`](../2026-10-14-waterfall/README.md));
+- the candidates analysis ([`../2026-10-15-candidates/`](../2026-10-15-candidates/README.md));
+- the thesis draft ([`../../planning/THESIS.md`](../../planning/THESIS.md));
+- the mentor's drone fleets (her doc, 14 Oct);
+- the live traffic runs on Thor-2 (§3; slots marked *pending* fill in as the runs end).
+
+## The short answer
+
+1. **Is there an opportunity?** Yes, and it is in decoding.
+   - Runs that fail take a median 69% of board energy. That is P1's own headline.
+   - Inside passing runs, decoding one request at a time is the largest avoidable part: 2–36% of traffic energy,
+     median 17%.
+   - Reading prompts and tool waits are small, which is why retention is out.
+2. **What do we propose?** A serving layer that spends the board's spare decode width and KV memory in one of two ways:
+   - on **more agents** (packing);
+   - on **parallel candidates** for an agent's risky calls (first of k sampled answers wins).
+
+   It chooses between them at run time, from the model's cost curve, the load and the free memory, to cut energy per
+   successful task.
+3. **Why is it not a setting?** The right choice flips:
+   - **with the model:** candidates cut energy per success by 70% on a dense model and raise it by 12–25% on a
+     mixture-of-experts;
+   - **with the load:** the best number of candidates falls from 8 to 4 to 1 as agents are added.
+
+   No fixed setting is best everywhere. A fixed k = 1 costs 2.7× the adaptive choice on the Orin.
+4. **What did the workstation work bring?**
+   - It closed retention with numbers: at most 3.2% on the board.
+   - It built the platform: a gateway with first-of-k, replayers, cost models, and P1's grader reproduced exactly.
+   - Every result in this brief is from P1's boards or P1's logs.
+
+## 1. The opportunity: where P1's board energy went
+
+![Where P1's board energy went](../2026-10-14-waterfall/waterfall.png)
+
+The data is all 25 of P1's edge configurations (17 traffic, 8 drone), from P1's final data with P1's selection rule and
+grades.
+
+| Bucket | Share of board energy | Whose finding |
+| --- | --- | --- |
+| Runs that fail | 13–98%, median 69%; over half in 22 of 25 | P1's paper reports it |
+| Decoding one request at a time, in passing runs (priced at 4 together) | traffic 2–36% (median 17%); drone 1–34% (median 5%) | ours |
+| Degenerate decoding (calls run to the cap) in passing runs | large on Thor gemma; small elsewhere | P1 (loops) and ours |
+| Reading prompts (prefill) | 0–4% | ours, and P1's |
+| Tool waits | 0–7% | ours |
+
+- **Stopping doomed runs is not our core.**
+  - The best fixed stop rule leaves at least 15% to the oracle in 24 of 25 configurations.
+  - But an online predictor beats that rule in only 3 of 25 on unseen tasks.
+  - It also cuts too many passes even when it knows the task's history: both bars are met in 5 of 25.
+  - A wrong "stop" loses a success, while a wrong "widen" costs a few percent of decode. So we use the risk estimate
+    only to choose which calls get candidates.
+- **The two halves of "spare capacity" are visible in P1's logs.** P1 ran one request at a time, so:
+  - the decode width the board could add almost for free went unused;
+  - so did most of the KV pool on Thor. In our simulation on P1's traces (5 Oct), 8 traffic agents fit Thor's pool and
+    cut energy per completed task by 2.2× (gemma) to 3.8× (granite). On the Orins, the pool binds after 2–4 agents.
+
+## 2. The proposal: agents or candidates, chosen at run time
+
+![Energy per success against candidates per call, by load](../2026-10-15-candidates/candidates.png)
+
+This comes from the mentor's drone sample banks: 8 sampled programs per prompt, each flown and graded. It is combined
+with each board's measured energy per decode step.
+
+| Board, model | Cost of 4 streams against 1, per step | First-of-4 against one answer, energy per success | Best k at 1, 2, 4 agents | Best use of spare capacity |
+| --- | --- | --- | --- | --- |
+| Thor, gemma-26B (mixture of experts) | 1.81× | +12% (hard prompts), +25% (controls); passes 56% → 70% | 1, 1, 1 | more agents |
+| Orin 32, gemma-E4B (dense) | 1.05× | **−70%**; passes 8.9% → 12.6% | 8, 4, 1 (memory) | candidates: 2 agents × 4 beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
+
+- **Why the answer flips with the model.**
+  - On a mixture-of-experts, each extra stream wakes other experts, so width is expensive. Sampling already removed its
+    runaway answers.
+  - On a dense model, width is nearly free. Candidates double as an escape from answers that still run to the cap.
+- **Why it flips with the load.** k candidates per agent must fit the KV pool. As agents are added, the best k falls.
+- **The mechanism**, at every agent call:
+  - **Inputs:** the model's cost curve, the free KV memory, the agents on the board, and a cheap risk estimate (a
+    retry after a failure, signs of a loop or cap, the task's history).
+  - **Decision:** how many candidates to run (k ≥ 1). At admission, it also decides whether to take another agent or to
+    keep width for candidates.
+  - **Selection:** the first candidate that finishes on its own wins, or one that passes a cheap check (it parses, the
+    tool call is well-formed).
+- **The baseline it must beat (B\*)** is P1's agents with every fixed setting that helps:
+  - model-card sampling;
+  - the best fixed number of agents per box;
+  - FP8 KV where the pool binds;
+  - the best fixed k.
+
+  The bar is 15% better in energy per success at the same pass rate (ENERGY_PLAN §5).
+
+## 3. Evidence on P1's boards
+
+**Drones: the mentor's fleets (her doc, 14 Oct).** Thor, P1's gemma-26B agent, the same 21 missions:
+
+| | P1, 1 drone (recorded) | 8 drones on one board (SGLang default) |
+| --- | --- | --- |
+| Passed | about 17.3 expected (P1's per-task pass rates) | 17 |
+| Energy per success | about 131 kJ | **58 kJ (2.3× less)** |
+| Time for all 21 missions | about 9.1 h | 3.5 h |
+| p95 mission time | about 69 min | 3.5 h |
+
+Packing is a large energy win at the same pass rate. Its price is each mission's latency. That is the trade a run-time
+choice between agents and candidates has to manage.
+
+**Traffic: P1's agent, unchanged, on Thor-2 (ours, 15 Oct).**
+- **Is the platform faithful to P1?** TRF-3 runs gemma-26B with P1's greedy protocol on 9 tasks, graded by P1's
+  grader, which reproduces 336 of 336 of P1's grades.
+  - *pending (≈01:30): pass and energy per task against P1's recorded runs.*
+- **Do candidates pay on a dense model?** CAND-T2 runs granite-8B on 10 tasks, one sampled answer (S1) against
+  first-of-4 (F4). The rules were fixed before the data.
+  - *pending (≈08:00): verdict, passes, energy per success; granite's cost curve on Thor.*
+- **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.
+  - *pending (≈12:00).* The bank analysis predicts that first-of-4 costs energy here.
+
+## 4. The critiques of 14 Oct, answered
+
+| Critique | Answer |
+| --- | --- |
+| "What did the WS experiments bring?" | They closed retention with numbers, built the platform, and found the decode-width lever. All new results are on P1's boards |
+| "FP8 to enlarge the pool is common sense, just a recommendation" | Agreed. FP8, packing and sampling are settings. They join B\*, the baseline we must beat by 15% |
+| "Multiple agents help, so what?" | Packing alone is a setting. What is not a setting is how to split spare width between agents and candidates: the split flips with the model and the load, and packing costs latency (p95 69 min → 3.5 h) |
+| "How does it look as a paper?" | See the outline below |
+
+**Paper outline (working):**
+- **Claim:** edge boards serving LLM agents waste their spare decode width and memory. A serving layer that spends them
+  on agents or on candidates, chosen at run time, cuts energy per successful task against the best fixed configuration.
+- **Measurement:** the energy waterfall over P1's 25 configurations. Where the joules go, and what is avoidable.
+- **Design:** the controller (inputs, decision, selection), inside SGLang's serving path, through our gateway.
+- **Evaluation:**
+  - 2 agent families (traffic, drones), each with P1's agents unchanged except for sampling;
+  - Thor and Orin boards, MoE and dense models, 1 to N agents;
+  - against P1 as run and against B\*;
+  - energy per success, pass rate, p95 latency.
+- **Related work:**
+  - parallel sampling with first-to-finish for reasoning (short-m@k, SART): fixed k, no energy, no agents;
+  - EdgeReasoning (energy of reasoning on a Jetson): measurement only;
+  - agent schedulers (Continuum, Autellix): latency, not energy.
+
+## 5. Path to OSDI (abstract 1 Dec, paper 8 Dec)
+
+| By | What | Who |
+| --- | --- | --- |
+| 25 Oct | The controller, first version, in the gateway. B\* measured on traffic (Thor-2) and drones (the mentor's fleets) | Sandesh with Claude; the mentor |
+| 8 Nov | Live fleets with the controller: traffic on Thor-2 and an Orin, drones on Thor and the Orins | both |
+| 22 Nov | Full evaluation, ablations, sensitivity (pool size, model) | both |
+| 1 Dec | Abstract | both |
+| 8 Dec | Paper | both |
+
+**Fallback:** if no run-time policy beats B\* by 15%, the paper becomes a measured design space. That is the waterfall,
+plus the agents-against-candidates map per board and model. We tell the professor as soon as that is clear.
+
+## 6. Decisions for the professor
+
+1. Is "spend spare width and memory on agents or candidates, chosen at run time" the proposal he asked for?
+2. Candidates need sampling, while P1 ran greedy. Is switching to the model card's sampling an acceptable, justified
+   change to P1's agents?
+3. If candidates pay only on dense models (the Orin class), is a story centred on Orin-class boards acceptable? Or must
+   it hold on Thor's mixture-of-experts too, where packing alone wins?
+4. **The split with P1:** failed-run energy and offline stop policies stay P1's. P5 claims the online, multi-agent
+   decision. Is that right?
