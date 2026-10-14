@@ -26,6 +26,8 @@ Code: `analysis/candidates_bank.py` (committed before its results were read). Ou
 | Thor-1, gemma-26B, 9 control prompts | 5,904, 88% | 4,135, 88% | 1.81× | **+25%** | 1, 1, 1 |
 | Orin-32-1, gemma-E4B (dense), 21 prompts | 7,192, 8.9% | 2,880, 12.6% | 1.05× | **−70%** | 8, 4, 1 (memory) |
 
+![Energy per success against candidates per call, by load](candidates.png)
+
 **What it shows:**
 - **Mixture-of-experts on Thor: candidates buy success, not energy.**
   - First-of-4 raises the pass rate on hard prompts from 56% to 70%, and first-of-8 to 75%.
@@ -41,6 +43,12 @@ Code: `analysis/candidates_bank.py` (committed before its results were read). Ou
   - As agents are added, the 46K-token pool cannot hold all the candidates, so the best k goes from 8 to 4 to 1.
   - A fixed k loses: k = 1 costs 2.7× the adaptive choice on average over 1–4 agents.
   - This rests on few successes: E4B passed 15 of 168 sampled programs.
+- **Agents or candidates: on the Orin the board's capacity is better spent on candidates.**
+  - Under the Orin's memory limit, the most efficient feasible point is 2 agents with 4 candidates each: 0.16 of one
+    answer at one agent.
+  - That beats 4 agents with one answer each (0.26). With more than 2 agents, the candidates no longer fit the pool.
+  - On Thor's mixture-of-experts model it is the reverse: more agents always help, and candidates never do.
+  - Whether to pack more agents or to widen each agent's risky calls depends on the model and the memory.
 - **The decision depends on the model's cost curve, on how often it still degenerates under sampling, on load and on
   memory.** That is a run-time decision, not a setting. It is the shape of an answer to "isn't that just a
   recommendation?". But it holds on one of the two boards measured, with a weak model.
