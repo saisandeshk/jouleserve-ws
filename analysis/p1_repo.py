@@ -188,7 +188,10 @@ def _traffic_dir(rd):
         rid = os.path.basename(tf)[:-5]
         t = json.load(open(tf))
         b = t.get("benchmark") or {}
-        ok_calls = [c for c in (b.get("llm_calls") or []) if "error" not in c and c.get("output_tokens") is not None]
+        # Reflexion traces also list the critic's call without phase times or energy: its energy stays in the run's
+        # total (the waterfall's "other"), and it is not an assistant turn, so the alignment below is unaffected
+        ok_calls = [c for c in (b.get("llm_calls") or []) if "error" not in c and c.get("output_tokens") is not None
+                    and c.get("t_phase_start") is not None and c.get("t_phase_end") is not None]
         turns = [x for x in (t.get("turns") or []) if x.get("role") == "assistant"]
         aligned = len(turns) == len(ok_calls) > 0
         calls = []
