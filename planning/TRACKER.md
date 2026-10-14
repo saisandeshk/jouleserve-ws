@@ -1,24 +1,33 @@
-# Tracker — P5 work plan (v2.0, from 12 Oct)
+# Tracker — P5
 
-**Updated:** 2026-10-13 (IST). Plan: [`OPTIONS_PLAN.md`](OPTIONS_PLAN.md) v2.0, approved by Sandesh on 12 Oct. The G1/G2 tasks of 5–11 Oct are closed (table near the end).
+**Updated:** 2026-10-14 (IST). Plan: [`ENERGY_PLAN.md`](ENERGY_PLAN.md), from 14 Oct (D24). Everything below "Now (13 Oct)" is the record of plan v2.0 ([`OPTIONS_PLAN.md`](OPTIONS_PLAN.md), 12-13 Oct) and of G1/G2 (5–11 Oct).
 
-**Stop points.** Report to Sandesh:
-- at checkpoint C1 (Mon 12 Oct 23:00);
-- at checkpoint C2 (Tue 13 Oct 12:00);
-- when the meeting materials (MTG-1) are ready;
-- whenever a "done when" cannot be met.
+## Now (14 Oct): follow the energy
 
-Otherwise keep working.
+The meeting took place on 14 Oct (D23; ENERGY_PLAN §1). The mentor's drone runs on the units (`p5_osdi/`) are hers;
+their status is in her doc.
+
+| ID | Task | Where | Status | Done when |
+| --- | --- | --- | --- | --- |
+| EP-0 | One-page plan, agreed with the mentor | repo | doing (written 14 Oct; the mentor's review pending) | the mentor agrees, or changes are folded in |
+| WF-1 | Traffic waterfall from P1's final data (ENERGY_PLAN §4) | WS | todo | figure and table for 17 configurations; code committed before its results are read |
+| WF-2 | Drone waterfall: P1's 8 configurations, and the mentor's runs as a separate column | WS | todo | the same outputs |
+| WF-3 | Q1 and Q2 bounds for each lever, from the logs and cost curves (ENERGY_PLAN §5) | WS | todo | one table: lever, fixed or run-time, bound against B* |
+| TH-1 | One-page thesis | repo | todo | agreed with the mentor |
+| TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | waits for Sandesh's go | code on the WS, SHA-256 recorded |
+| TRF-2b | Camera data (only what the final tasks use) and the sandbox image | Thor-2 → WS/unit | waits for P1's reply | data on the WS, checked |
+| TRF-3 | Bring up the agent; check one agent against P1's recorded runs | WS or an Orin | todo | tokens and pass rate within agreed bounds |
 
 How to use it:
-- **When a task moves,** update its status and notes, and add one line to the log below.
-- **Status values:** `todo`, `doing`, `done`, `blocked`, `dropped`, `waits D12`.
+- **Stop points:** report to Sandesh when a step's output is ready (ENERGY_PLAN §7), when a time box overruns, and
+  whenever a "done when" cannot be met. Otherwise keep working.
+- **When a task moves,** update its status and add one line to the log below.
+- **Status values:** `todo`, `doing`, `done`, `blocked`, `dropped`.
 - **Done:** a task is `done` only when its "done when" holds and its output is in the repo, in `~/work/runs/` (WS) or
   in `data/ws_runs/` (local).
-- **Results** go into CMP-2 (`reports/2026-10-06-options/README.md`). This file only points to them.
-- **Specs and rules** are in the plan's sections, cited as "plan §x".
+- **Specs and rules** are in the plan's sections, cited as "ENERGY_PLAN §x".
 
-## Now
+## Now (13 Oct, record of plan v2.0)
 
 - **2026-10-13, 07:40 IST. All runs before the meeting are complete** (A-J1's full set ended 07:36). C1 passed (12 Oct
   19:10); C2 passed at 05:17. No point failed, so nothing was rerun.
@@ -203,6 +212,10 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-14, evening:** The professor meeting (D23): follow the energy; retention during tool waits out; KV as
+  capacity, several agents per box and justified agent changes allowed; target OSDI (1 and 8 Dec). The one-page plan
+  `ENERGY_PLAN.md` replaces OPTIONS_PLAN v2.0 (D24-D26). P1's traffic agent found on Thor-2 (look-only). The units run
+  the mentor's drone campaign (`p5_osdi/`), started 13 Oct evening.
 - **2026-10-13, 10:40:** Final review (ours, plus an independent Opus reviewer): the WS FP8 figure beside the board's 44%
   is now 46% best against best (was the at-N 53%) in the deck, the guide and CMP-2 §2/§9; CMP-2's header, §10 Q5 and
   §13 preflight wording; "one run" on RET-J1; COR-1 done; stale plan and tracker statuses; plan §5.2's flags amended.

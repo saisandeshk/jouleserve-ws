@@ -1,10 +1,40 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-13, 10:40 (IST).
+**Last updated:** 2026-10-14, evening (IST).
 
-**13 Oct: every run before the meeting is done, and deck v2.4 is published.** The meeting is **Wed 14 Oct, 09:00-10:00**
-(D12); results freeze **Tue 13 Oct 23:00**; materials final by **Wed 08:00**. C1 passed (Mon 19:10) and C2 passed (Tue
-05:17). No run failed, so none was rerun. All five units and the WS are idle, with every P5 container stopped.
+**14 Oct: the professor meeting took place; P5 now follows the energy.** The current plan is
+[`planning/ENERGY_PLAN.md`](planning/ENERGY_PLAN.md) (one page; it replaces OPTIONS_PLAN v2.0). Everything below this
+block is the state of 13 Oct and earlier: still true as a record, but read the plan first.
+- **The meeting (D23):**
+  - Retention during tool waits is out (a saturated literature, and worth 3.2% at most on P1's workloads).
+  - Follow the energy: where P1's agents spend board energy, how much is avoidable, and what a serving system can do.
+  - Allowed: KV as capacity, several agents per box, justified changes to P1's agents.
+  - The professor asked for an opportunity bound, a proposal rather than recommendations (FP8 and packing are
+    settings), and the paper's relevance.
+  - Target: OSDI, abstract 1 Dec, paper 8 Dec 2026.
+- **People:** P5 is Sandesh and his mentor. Since 13 Oct evening the mentor runs a drone campaign on the units from
+  `/home/yash/p5_osdi` (Thor-1, Orin-32-3) and `/home/mayankarya/p5_osdi` (Orin-32-1/2):
+  - cost curves (energy per step at 1–16 requests);
+  - sample banks (sampled drone programs, each flown);
+  - fleets of N drones per board (Thor-1, N = 8: 17 of 21 passed, 58 kJ per success, against about 131 kJ for P1's
+    single drone);
+  - a step-wise agent.
+
+  Her plan and results are in her doc "P5 (JouleServe): where we are and what we are testing"
+  (https://claude.ai/artifact/884RCSbJVHEZo3EbCTL5iX). Sandesh takes traffic. Their outputs are not on the WS or in
+  git yet; protocol issues to agree are in ENERGY_PLAN §9.
+- **Next:** the energy waterfall (traffic first, then drones) and a one-page thesis, in parallel. ENERGY_PLAN §7 has
+  the schedule, TRACKER "Now (14 Oct)" the tasks. The flow is drawn in
+  https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP (private).
+- **P1's traffic agent found** on Thor-2, look-only: `/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`
+  (`agent.py` of 6 Oct, tool servers, `deploy/`, 60 GB of camera data in `fixtures/`; the `camera-agent-sandbox:1`
+  image is on Thor-2). The code is copied on Sandesh's go; the data after P1 replies.
+- **Watch:** the Orin 32 root disks are at 97% and their docker SSDs at 100% (Orin-32-2: 253 MB free), while the
+  campaign's containers log to json files there.
+
+**13 Oct: every run before the meeting is done, and deck v2.4 is published.** The meeting was **Wed 14 Oct, 09:00-10:00**
+(D12, now D23). C1 passed (Mon 19:10) and C2 passed (Tue 05:17). No run failed, so none was rerun. On 13 Oct morning
+all five units and the WS were idle; the mentor's campaign started that evening.
 - **Results of 12-13 Oct** (CMP-2's box "First results on P1's devices", §7, §8, §13; per-task notes in
   `planning/TRACKER.md`; board energy in P1's schema, rules and analysis code fixed before the data):
   - **CAP-J1** (Orin-32-1, Orin-32-2, two replicates): FP8 KV cuts energy per generated token **44.4% and 44.5%**,

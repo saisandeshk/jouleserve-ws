@@ -1,5 +1,9 @@
 # P5 work plan: corrected evidence, the Jetsons, the direction decision, and what follows
 
+> **Superseded on 14 Oct 2026** by [`ENERGY_PLAN.md`](ENERGY_PLAN.md) (D24), after the professor meeting (D23). This
+> file stays as the record of 5–13 Oct: its device protocol (§4), metrics (§6) and the G1/G2 record (Appendix R) are
+> still cited.
+
 Status: **v2.0 (2026-10-12), approved by Sandesh on 12 Oct** (D19–D22; RET-J1 added the same day). This version
 replaces v1.2's structure.
 - **Why a new version:** four things changed after v1.2 (11 Oct):

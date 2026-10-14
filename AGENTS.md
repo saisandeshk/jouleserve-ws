@@ -6,12 +6,12 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 ## 1. The project
 
 - **JouleServe (P5)** is one of Prof. Yogesh's edge-LLM projects (P1–P10) at IISc. It is run as
-  an independent study project (ISP) by Sandesh, who is the only person working on P5 for now.
-  The professor makes the direction calls; our job is to bring evidence.
-- **Research question:** how should an edge LLM serving system manage the *retained state* of
-  agent sessions (KV cache, and for hybrid models the sliding-window or recurrent state) while
-  those agents wait for tools, so as to minimize **energy per successful task** on Jetson
-  Orin/Thor-class devices?
+  an independent study project (ISP) by Sandesh, with his mentor since 13 Oct (she runs the drone experiments,
+  Sandesh the traffic side). The professor makes the direction calls; our job is to bring evidence.
+- **Research question (since 14 Oct, D23):** follow the energy. Where do P1's agents spend board energy, how much
+  is avoidable, and what can a serving system do about it, judged by **energy per successful task** on Jetson
+  Orin/Thor-class devices? The original question (managing an agent's retained state while it waits for a tool)
+  was answered "little to gain" and is out. Target: OSDI (abstract 1 Dec, paper 8 Dec 2026).
 - **P5 depends on P1 (EdgeAgentBench).**
   - P1 is a closed-loop agentic benchmark for edge devices: drone and traffic workloads,
     targeting SIGMETRICS.
@@ -27,12 +27,12 @@ questions. This file changes rarely. `HANDOFF.md` changes every working session.
 ## 2. Read order
 
 1. `HANDOFF.md`: state as of the last session, audit findings, open questions, next steps.
-2. `planning/OPTIONS_PLAN.md` (v2.0, 2026-10-12) and `planning/TRACKER.md`: **the current work plan**.
-   - The plan covers the schedule to the professor meeting (Wed 14 Oct, D12), the device platform, the experiment
-     rules, and one branch per option after D12.
-   - It holds decisions D19–D22. Its Appendix R keeps the G1/G2 record (5–11 Oct: criteria, rules, outcomes,
-     S1–S6, D13–D18).
-   - The tracker holds task status and the correction checklist.
+2. `planning/ENERGY_PLAN.md` (14 Oct) and `planning/TRACKER.md`: **the current work plan**.
+   - The plan holds the direction from the 14 Oct meeting, the waterfall's definitions, the decision rules (B*, Q1,
+     Q2), the working rules, the schedule and decisions D23–D26.
+   - `planning/OPTIONS_PLAN.md` (v2.0, 12 Oct) is superseded but still cited: its device protocol (§4), metrics
+     (§6), D19–D22 and Appendix R (the G1/G2 record of 5–11 Oct, D13–D18).
+   - The tracker holds task status.
 3. `planning/JOULESERVE_WS_PLAN.md`: **master plan** (v2.0). It covers architecture, milestones M0–M9 (old M3–M5
    replaced; M6 = the device platform), the devices, risks and decisions D6–D11.
 4. `planning/PLAN.md`: Track A working notes and measurements. It holds P1 trace analysis, WS
@@ -308,8 +308,8 @@ CUDA_VISIBLE_DEVICES=1 taskset -c 10-19 $L/.venv/bin/python -m sglang.launch_ser
 - **Keep docs consolidated.** Update `HANDOFF.md`, the two plans and the review index instead
   of adding new dated notes. Update `HANDOFF.md` at the end of every working session.
 - **Decisions** go into the tables: D1–D5 in `PLAN.md` §6, D6–D11 in
-  `JOULESERVE_WS_PLAN.md` §8, D13–D18 in `OPTIONS_PLAN.md` Appendix R, D19–D22 in `OPTIONS_PLAN.md` §9. D12 is the
-  professor's direction decision (open; meeting Wed 14 Oct); its outcome will take the next free ID, **D23**.
+  `JOULESERVE_WS_PLAN.md` §8, D13–D18 in `OPTIONS_PLAN.md` Appendix R, D19–D22 in `OPTIONS_PLAN.md` §9, D23 onwards
+  in `ENERGY_PLAN.md` §8. D12 (the professor's direction decision) was taken on 14 Oct and recorded as D23.
 - **Dates and numbers.**
   - Use absolute dates.
   - Label every number with its source: a Thor trace, a WS measurement or a paper.
