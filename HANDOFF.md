@@ -37,7 +37,7 @@ block is the state of 13 Oct and earlier: still true as a record, but read the p
   is drawn in https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP (private).
 - **P1's traffic agent found** on Thor-2, look-only: `/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`
   (`agent.py` of 6 Oct, tool servers, `deploy/`, 60 GB of camera data in `fixtures/`; the `camera-agent-sandbox:1`
-  image is on Thor-2). The code is copied on Sandesh's go; the data after P1 replies.
+  image is on Thor-2). The code is on the WS since 14 Oct (`~/work/p1/traffic_agent/`); the data waits for P1's reply.
 - **Watch:** the Orin 32 root disks are at 97% and their docker SSDs at 100% (Orin-32-2: 253 MB free), while the
   campaign's containers log to json files there.
 
