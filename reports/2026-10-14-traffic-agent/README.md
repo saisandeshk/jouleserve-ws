@@ -65,6 +65,58 @@ the data of 5 Oct.
 - **What still needs the live agent:** continuing an episode beyond the recorded tool outputs needs the agent and its
   data.
 
+## Update, 14 Oct night: P1's code map, checked against the machines
+
+P1 shared a code map of the traffic agent (a copy, not in git: `data/p1_traffic/AGENT_CODE_MAP_2026-10-14.md`). Checked
+read-only against our copy, Thor-2 and the WS:
+
+- **Our copy is the version P1 ran.** All 11 files the map lists have the same line counts in our copy
+  (`agent.py` 1,359, `agent_reflect.py` 600, `run_traces.py` 679, and so on). `CAMERA_AGENT_IMPL=agent|reflect`
+  selects tool calling or Reflexion. P1's traffic campaigns ran on other boxes than P5's units (Orin 32: .54, .55;
+  Orin 64: .74, .75; Thor: .80).
+- **Package versions are now known.** From the agent's `.venv` on Thor-2 (its `dist-info` folders):
+  - Python 3.12;
+  - langchain 1.4.0, langchain-core 1.6.1, langchain-openai 1.6.0, langchain-mcp-adapters 0.3.2;
+  - langgraph 1.2.11;
+  - mcp 1.29.1 (with mcp-types 2.1.0);
+  - openai 3.8.0;
+  - pydantic 2.13.5, httpx 0.28.1, tiktoken 0.14.0, tokenizers 0.23.2.
+- **Data on Thor-2** (`fixtures/`, 60 GB):
+
+  | What | Size | Needed for |
+  | --- | --- | --- |
+  | `fixtures.db` (Kamath store, instances A and B) | 20.8 GB | every model |
+  | `stores/Silk_Brd_JN_HD_2_2025-07-30_6d` (instance C) | 10 GB | every model |
+  | `meta.json`, `ground_truth.json` | small | every model |
+  | `_real_kamath/` images | 21 GB | vision tasks only |
+  | `_real_silk6/` images | 8.4 GB | vision tasks only |
+
+  So a text-only model (granite) needs about 31 GB, and a vision model about 60 GB. The map's `frames/` (574 MB) does
+  not exist on Thor-2, where images live in `_real_*`. Ask which layout the Orin boxes use.
+- **Sandbox: run it on the WS with P1's x86 variant.**
+  - Our copy (the Thor version) runs `run_python` only in docker; its header says bwrap is blocked on the Jetsons by
+    AppArmor.
+  - `deploy/CANONICAL.json` lists an x86 variant ("bwrap backend + rlimits", plus `SmiReader` for NVIDIA power),
+    used on P1's RTX and cloud boxes.
+  - The WS has bwrap 0.6.1, unprivileged user namespaces are allowed, and a test sandbox ran.
+  - So the WS can run the agent with P1's x86 variant, which is a request to P1 rather than a change to their code.
+- **Serving:** no traffic campaign set `--kv-cache-dtype`, so every traffic arm ran with **bf16 KV**, including the
+  FP8-weight models. That agrees with the waterfall's pools.
+- **Devstral counting differs.**
+  - P1's submitted selection rule (`analysis/edgebench/selection.py`, `TEXT_ONLY`) treats Devstral as text-only and
+    drops its 7 vision tasks; our waterfall follows that rule (189 runs per Devstral cell).
+  - The code map says Devstral has a vision config, so all 28 tasks count, and both Devstral sweeps did run all 7
+    vision tasks (9 runs each).
+  - If P1 adopts the map's reading, the three Devstral cells of the waterfall change.
+- **A data trap behind some wrong answers:** `detections.ts` has one-second resolution over about 15 fps video, so raw
+  row counts overcount 2–4× (the map's note on `store.py`).
+
+**Updated asks for P1:**
+1. The x86 variant of the agent folder (bwrap sandbox, `SmiReader`), for example from the RTX box.
+2. `deploy/campaigns/orin_campaign_v6.sh`.
+3. Permission to copy the data: 31 GB for text-only models, 60 GB with images.
+4. Whether Devstral counts as text-only.
+
 ## Questions for P1 (through Sandesh)
 
 1. A `pip freeze` of `camera_query_agent/.venv`, and which `agent.py` the final sweeps used. The copy's `agent.py` differs
