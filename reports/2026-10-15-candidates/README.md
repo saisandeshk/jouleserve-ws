@@ -65,3 +65,13 @@ Running on Thor-2 after the TRF-3 validation. See [`PLAN.md`](PLAN.md) for the a
 answer; first-of-4), the 12 tasks and the rules. Given the bank result on Thor's mixture-of-experts model, first-of-4 is
 expected to cost energy on gemma-26B traffic too. The experiment checks whether traffic's chains of capped calls change
 that, and what sampling alone does against P1's greedy protocol.
+
+**Gateway check (15 Oct, 00:55, before the arms):** the first-of-k gateway was run against P1's client stack.
+- **Client:** langchain 1.4.0, langchain-core 1.6.1, langchain-openai 1.6.0, langgraph 1.2.11, openai 3.8.0, with P1's
+  agent module imported so that its sglang reasoning patch applies.
+- **Setup:** `ChatOpenAI` built as P1 builds it (streaming with usage, temperature 0, seed 42), a two-tool `create_agent`
+  loop, and granite-4.2-8b on the WS (SGLang 0.5.20, P1's parsers).
+- **Results:**
+  - Direct, k = 1 and k = 4 all completed the task, with tool calls, reasoning and usage intact.
+  - At k = 4 every call ran 4 candidates. Each had one winner, the rest were aborted, and different candidates won.
+  - SGLang 0.5.16 on Thor-2 accepts the `rid`, `top_k` and `seed` fields the gateway sends.

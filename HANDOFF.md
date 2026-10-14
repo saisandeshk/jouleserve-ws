@@ -1,6 +1,21 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-14, evening (IST).
+**Last updated:** 2026-10-15, 01:00 (IST).
+
+**15 Oct, running (survives laptop power cuts):** after a restart, run `env/p5_status.sh` from the repo root. It shows
+Thor-2's chains and runs, the WS follower's status and the units' containers, and relays Thor-2's finished runs to the
+WS.
+- **Thor-2, tmux `p5-trf3`, then `p5-cand`** (self-chaining, nothing on the laptop):
+  - TRF-3 (gemma greedy, 9 tasks);
+  - then CAND-T2 (granite: cost curve, S1, F4);
+  - then CAND-T1 (gemma: S1, F4).
+
+  Logs are in `/media/hdd/p5/logs/{trf3_chain,cand_chain}.log` ("CHAIN DONE", "CAND CHAIN DONE").
+- **WS, tmux `p5-follow`** (`env/ws_follow.py`): every 5 minutes it verifies the SHA-256 of each finished run that has
+  reached `~/work/runs/thor2/` and runs its analysis. TRF-3 → `p5_validate.txt`; cost curve → `p5_costcurve.txt`; each
+  CAND pair → `cand_<model>.txt`. It writes `~/work/runs/thor2/STATUS.txt`.
+- **Copying:** the WS's key is not authorized on Thor-2, so the laptop relays the runs (`env/p5_relay_thor2.sh`). Once
+  Sandesh authorizes the WS key there, the follower copies them itself.
 
 **14 Oct: the professor meeting took place; P5 now follows the energy.** The current plan is
 [`planning/ENERGY_PLAN.md`](planning/ENERGY_PLAN.md) (one page; it replaces OPTIONS_PLAN v2.0). Everything below this
@@ -509,7 +524,8 @@ The schedule, checkpoints and rules are in `planning/OPTIONS_PLAN.md` v2.0 §3; 
 
 ## 8. Resume checklist for a new session
 
-1. Read `AGENTS.md`, then this file.
+1. Read `AGENTS.md`, then this file. Run `env/p5_status.sh` to see what P5 has running (Thor-2, WS follower,
+   units) and to relay Thor-2's finished runs to the WS.
 2. `git status`, `git log --oneline -5`. Before any `git push`, check the visibility:
    `gh repo view saisandeshk/jouleserve-ws --json visibility` (if `gh` is logged out: `curl -s https://api.github.com/repos/saisandeshk/jouleserve-ws`).
 3. P1's data: `git -C data/edge-agent-bench log --oneline -3` (read-only; do not pull without Sandesh; `0cc2311a` is
