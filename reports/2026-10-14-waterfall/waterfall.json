@@ -1,0 +1,2012 @@
+{
+ "meta": {
+  "sign_ctx_frac": 0.8,
+  "k_head": 4,
+  "ratio": {
+   "moe": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "dense": {
+    "4": 0.262,
+    "8": 0.14
+   }
+  },
+  "buckets": [
+   "failed_after_sign",
+   "failed_before_sign",
+   "degenerate",
+   "tool_wait",
+   "vision_tool",
+   "prefill",
+   "batch1_cost",
+   "decode_floor",
+   "other"
+  ],
+  "note": "P1's final data at 0cc2311a; board energy; see analysis/waterfall.py for definitions"
+ },
+ "configs": [
+  {
+   "key": "d_thor_gemma_rfx",
+   "label": "Drone \u00b7 Thor \u00b7 gemma-26B \u00b7 Reflexion",
+   "domain": "drone",
+   "device": "Thor",
+   "model": "gemma-26B",
+   "agent": "Reflexion",
+   "runs": 144,
+   "passes": 102,
+   "untraced_passes": 0,
+   "total_J": 15742290.407855602,
+   "e_per_success_J": 154336.18046917257,
+   "curve": "moe",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "failed_after_sign": 5774321.560729052,
+    "failed_before_sign": 4169902.032486696,
+    "prefill": 94317.44693120479,
+    "degenerate": 3115315.2003470045,
+    "decode_floor": 1025325.6243608851,
+    "batch1_cost": 1253175.7631077487,
+    "tool_wait": 294097.90845182526,
+    "other": 15834.87144118112
+   },
+   "floor_k8_J": 720006.4384400882,
+   "by_cause": {
+    "capped": {
+     "runs": 35,
+     "energy_J": 9415558.870704457,
+     "after_sign_J": 5774321.560729052
+    },
+    "wrong": {
+     "runs": 7,
+     "energy_J": 528664.7225112964,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 7919385.825710868,
+     "passes_lost": 22,
+     "passes_left": 80,
+     "e_per_success_J": 97786.30727680917,
+     "change": -0.36640710571205815
+    },
+    "cap2": {
+     "saved_J": 4540.422567234675,
+     "passes_lost": 0,
+     "passes_left": 102,
+     "e_per_success_J": 154291.66652243497,
+     "change": -0.00028842197987721807
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 102,
+     "e_per_success_J": 154336.18046917257,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 7919385.825710868,
+     "passes_lost": 22,
+     "passes_left": 80,
+     "e_per_success_J": 97786.30727680917,
+     "change": -0.36640710571205815
+    }
+   },
+   "ctx": [
+    65536
+   ]
+  },
+  {
+   "key": "d_thor_gemma_tc",
+   "label": "Drone \u00b7 Thor \u00b7 gemma-26B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Thor",
+   "model": "gemma-26B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 74,
+   "untraced_passes": 0,
+   "total_J": 29380267.95530675,
+   "e_per_success_J": 397030.64804468583,
+   "curve": "moe",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "prefill": 63907.61531693448,
+    "decode_floor": 1173632.8148758984,
+    "batch1_cost": 1434440.107070542,
+    "tool_wait": 133208.9637953865,
+    "other": 11379.039913325116,
+    "failed_after_sign": 17694548.1697158,
+    "failed_before_sign": 7042712.604582111,
+    "degenerate": 1827519.6105395244
+   },
+   "floor_k8_J": 824151.0433350751,
+   "by_cause": {
+    "capped": {
+     "runs": 66,
+     "energy_J": 24523722.895452753,
+     "after_sign_J": 17694548.1697158
+    },
+    "wrong": {
+     "runs": 4,
+     "energy_J": 213537.87884514531,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 19905728.117446005,
+     "passes_lost": 17,
+     "passes_left": 57,
+     "e_per_success_J": 166219.99715545165,
+     "change": -0.5813421508539472
+    },
+    "cap2": {
+     "saved_J": 11283032.03909606,
+     "passes_lost": 7,
+     "passes_left": 67,
+     "e_per_success_J": 270107.99874941324,
+     "change": -0.31967972729648675
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 74,
+     "e_per_success_J": 397030.64804468583,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 19905728.117446005,
+     "passes_lost": 17,
+     "passes_left": 57,
+     "e_per_success_J": 166219.99715545165,
+     "change": -0.5813421508539472
+    }
+   },
+   "ctx": [
+    65536
+   ]
+  },
+  {
+   "key": "d_o64_devstral_tc",
+   "label": "Drone \u00b7 Orin 64 \u00b7 Devstral-24B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 64",
+   "model": "Devstral-24B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 45,
+   "untraced_passes": 0,
+   "total_J": 4318750.603140498,
+   "e_per_success_J": 95972.23562534439,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 2.1397145486604763,
+    "failed_before_sign": 4146346.633024051,
+    "prefill": 72463.0227320889,
+    "decode_floor": 19344.25731720406,
+    "batch1_cost": 54488.78587823127,
+    "tool_wait": 21702.10441294368,
+    "other": 4403.660061430477
+   },
+   "floor_k8_J": 10336.626047360947,
+   "by_cause": {
+    "wrong": {
+     "runs": 96,
+     "energy_J": 3774669.6678794306,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 3,
+     "energy_J": 371679.104859169,
+     "after_sign_J": 2.1397145486604763
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 2.1397145486604763,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 95972.18807613221,
+     "change": -4.954475829599403e-07
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 95972.23562534439,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 95972.23562534439,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 2.1397145486604763,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 95972.18807613221,
+     "change": -4.954475829599403e-07
+    }
+   },
+   "ctx": [
+    40960,
+    65536
+   ]
+  },
+  {
+   "key": "d_o32_e4b_tc",
+   "label": "Drone \u00b7 Orin 32 \u00b7 gemma-E4B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 32",
+   "model": "gemma-E4B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 50,
+   "untraced_passes": 0,
+   "total_J": 9691079.688827293,
+   "e_per_success_J": 193821.59377654587,
+   "curve": "dense",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 4509826.565006767,
+    "failed_before_sign": 4895473.685187749,
+    "prefill": 23640.749881983556,
+    "decode_floor": 54740.27590533129,
+    "batch1_cost": 154192.07487837586,
+    "tool_wait": 28902.093599704243,
+    "other": 3254.0505059994302,
+    "degenerate": 21050.193861384716
+   },
+   "floor_k8_J": 29250.529109719013,
+   "by_cause": {
+    "wrong": {
+     "runs": 23,
+     "energy_J": 752678.8079940822,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 71,
+     "energy_J": 8652621.442200433,
+     "after_sign_J": 4509826.565006767
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 4522902.891489951,
+     "passes_lost": 7,
+     "passes_left": 43,
+     "e_per_success_J": 120190.1580776126,
+     "change": -0.3798928399269169
+    },
+    "cap2": {
+     "saved_J": 1375532.4092236208,
+     "passes_lost": 0,
+     "passes_left": 50,
+     "e_per_success_J": 166310.94559207343,
+     "change": -0.1419379938449431
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 50,
+     "e_per_success_J": 193821.59377654587,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 4522902.891489951,
+     "passes_lost": 7,
+     "passes_left": 43,
+     "e_per_success_J": 120190.1580776126,
+     "change": -0.3798928399269169
+    }
+   },
+   "ctx": [
+    40960,
+    65536
+   ]
+  },
+  {
+   "key": "d_o32_granite_tc",
+   "label": "Drone \u00b7 Orin 32 \u00b7 granite-8B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 32",
+   "model": "granite-8B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 49,
+   "untraced_passes": 0,
+   "total_J": 22610932.216966722,
+   "e_per_success_J": 461447.596264627,
+   "curve": "dense",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 759027.9897766102,
+    "failed_before_sign": 19543408.857637394,
+    "prefill": 56576.95354211876,
+    "decode_floor": 580501.8210861902,
+    "batch1_cost": 1635153.9845862915,
+    "tool_wait": 31792.209225734256,
+    "other": 4470.401112393414
+   },
+   "floor_k8_J": 310191.8127941474,
+   "by_cause": {
+    "wrong": {
+     "runs": 86,
+     "energy_J": 17870803.2070385,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 9,
+     "energy_J": 2431633.6403755127,
+     "after_sign_J": 759027.9897766102
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 759027.9897766102,
+     "passes_lost": 0,
+     "passes_left": 49,
+     "e_per_success_J": 445957.2291263288,
+     "change": -0.033569071035782216
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 49,
+     "e_per_success_J": 461447.596264627,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 49,
+     "e_per_success_J": 461447.596264627,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 759027.9897766102,
+     "passes_lost": 0,
+     "passes_left": 49,
+     "e_per_success_J": 445957.2291263288,
+     "change": -0.033569071035782216
+    }
+   },
+   "ctx": [
+    40960,
+    65536
+   ]
+  },
+  {
+   "key": "d_o32_ministral_tc",
+   "label": "Drone \u00b7 Orin 32 \u00b7 Ministral-8B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 32",
+   "model": "Ministral-8B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 43,
+   "untraced_passes": 0,
+   "total_J": 9014599.219675783,
+   "e_per_success_J": 209641.84231804145,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 796124.0745373323,
+    "failed_before_sign": 8064638.662279226,
+    "prefill": 35098.84946072341,
+    "decode_floor": 19096.411159077845,
+    "batch1_cost": 53790.654333585684,
+    "tool_wait": 37235.07827031088,
+    "other": 7227.225687770482,
+    "degenerate": 1388.2639477550385
+   },
+   "floor_k8_J": 10204.189168972898,
+   "by_cause": {
+    "wrong": {
+     "runs": 61,
+     "energy_J": 2279080.6335816937,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 36,
+     "energy_J": 6264805.320572807,
+     "after_sign_J": 796124.0745373323
+    },
+    "other": {
+     "runs": 4,
+     "energy_J": 316876.78266205837,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 796124.0745373323,
+     "passes_lost": 1,
+     "passes_left": 42,
+     "e_per_success_J": 195677.9796461536,
+     "change": -0.06660818526248058
+    },
+    "cap2": {
+     "saved_J": 3.6766025534203166,
+     "passes_lost": 0,
+     "passes_left": 43,
+     "e_per_success_J": 209641.7568156565,
+     "change": -4.07849807149141e-07
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 43,
+     "e_per_success_J": 209641.84231804145,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 796124.0745373323,
+     "passes_lost": 1,
+     "passes_left": 42,
+     "e_per_success_J": 195677.9796461536,
+     "change": -0.06660818526248058
+    }
+   },
+   "ctx": [
+    65536
+   ]
+  },
+  {
+   "key": "d_o64_granite_tc",
+   "label": "Drone \u00b7 Orin 64 \u00b7 granite-8B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 64",
+   "model": "granite-8B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 45,
+   "untraced_passes": 0,
+   "total_J": 20410506.927433185,
+   "e_per_success_J": 453566.82060962636,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 523831.2989986416,
+    "failed_before_sign": 18522846.46563164,
+    "prefill": 52773.35815825312,
+    "decode_floor": 334545.7597162289,
+    "batch1_cost": 942346.4529411334,
+    "tool_wait": 29110.022215024575,
+    "other": 5053.569772256732
+   },
+   "floor_k8_J": 178764.90977203075,
+   "by_cause": {
+    "wrong": {
+     "runs": 91,
+     "energy_J": 16205578.48556103,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 8,
+     "energy_J": 2841099.2790692537,
+     "after_sign_J": 523831.2989986416
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 523831.2989986416,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 441926.12507632317,
+     "change": -0.025664786321136224
+    },
+    "cap2": {
+     "saved_J": 39003.72098871748,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 452700.0712543215,
+     "change": -0.00191096287453274
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 453566.82060962636,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 523831.2989986416,
+     "passes_lost": 0,
+     "passes_left": 45,
+     "e_per_success_J": 441926.12507632317,
+     "change": -0.025664786321136224
+    }
+   },
+   "ctx": [
+    40960,
+    65536
+   ]
+  },
+  {
+   "key": "d_o64_qwen38_tc",
+   "label": "Drone \u00b7 Orin 64 \u00b7 Qwen3.8-27B \u00b7 tool calling",
+   "domain": "drone",
+   "device": "Orin 64",
+   "model": "Qwen3.8-27B",
+   "agent": "tool calling",
+   "runs": 144,
+   "passes": 109,
+   "untraced_passes": 0,
+   "total_J": 21617840.2750073,
+   "e_per_success_J": 198328.8098624523,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 392161.23487366823,
+    "decode_floor": 2594949.960022181,
+    "batch1_cost": 7309439.200367823,
+    "tool_wait": 480156.50366000435,
+    "other": 10509.937992735217,
+    "failed_after_sign": 390502.8627429077,
+    "failed_before_sign": 10653640.457938557,
+    "degenerate": 57630.45149515467
+   },
+   "floor_k8_J": 1386614.4824546003,
+   "by_cause": {
+    "wrong": {
+     "runs": 30,
+     "energy_J": 9156740.505709892,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 2,
+     "energy_J": 955765.9225539675,
+     "after_sign_J": 390502.8627429077
+    },
+    "other": {
+     "runs": 3,
+     "energy_J": 931636.8924176075,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 623270.8864480223,
+     "passes_lost": 1,
+     "passes_left": 108,
+     "e_per_success_J": 194394.1610051785,
+     "change": -0.019839018143670617
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 109,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 109,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 623270.8864480223,
+     "passes_lost": 1,
+     "passes_left": 108,
+     "e_per_success_J": 194394.1610051785,
+     "change": -0.019839018143670617
+    }
+   },
+   "ctx": [
+    65536
+   ]
+  },
+  {
+   "key": "t_thor_gemma",
+   "label": "Traffic \u00b7 Thor \u00b7 gemma-26B",
+   "domain": "traffic",
+   "device": "Thor",
+   "model": "gemma-26B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 187,
+   "untraced_passes": 0,
+   "total_J": 10863818.229999995,
+   "e_per_success_J": 58095.284652406386,
+   "curve": "moe",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "failed_after_sign": 4052962.755680136,
+    "failed_before_sign": 3345144.354319864,
+    "prefill": 78954.33749970108,
+    "decode_floor": 1135808.5368665105,
+    "batch1_cost": 1388210.433947957,
+    "tool_wait": 78823.08999999998,
+    "other": 183482.29000000007,
+    "vision_tool": 577958.2699999999,
+    "degenerate": 22474.161685831812
+   },
+   "floor_k8_J": 797589.9947773715,
+   "by_cause": {
+    "capped": {
+     "runs": 32,
+     "energy_J": 6422089.759999999,
+     "after_sign_J": 4052962.755680136
+    },
+    "wrong": {
+     "runs": 32,
+     "energy_J": 941618.7900000002,
+     "after_sign_J": 0.0
+    },
+    "other": {
+     "runs": 1,
+     "energy_J": 34398.56,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 4088867.3310229657,
+     "passes_lost": 1,
+     "passes_left": 186,
+     "e_per_success_J": 36424.467198801234,
+     "change": -0.3730219687065002
+    },
+    "cap2": {
+     "saved_J": 3000617.987569525,
+     "passes_lost": 0,
+     "passes_left": 187,
+     "e_per_success_J": 42049.199157382194,
+     "change": -0.2762028896326191
+    },
+    "ctx80": {
+     "saved_J": 92123.00654272534,
+     "passes_lost": 0,
+     "passes_left": 187,
+     "e_per_success_J": 57602.64825378219,
+     "change": -0.008479800065904208
+    },
+    "any": {
+     "saved_J": 4088867.3310229657,
+     "passes_lost": 1,
+     "passes_left": 186,
+     "e_per_success_J": 36424.467198801234,
+     "change": -0.3730219687065002
+    }
+   },
+   "ctx": [
+    110000
+   ]
+  },
+  {
+   "key": "t_thor_granite",
+   "label": "Traffic \u00b7 Thor \u00b7 granite-8B",
+   "domain": "traffic",
+   "device": "Thor",
+   "model": "granite-8B",
+   "agent": "tool calling",
+   "runs": 189,
+   "passes": 124,
+   "untraced_passes": 0,
+   "total_J": 12627798.969999991,
+   "e_per_success_J": 101837.08846774187,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 831537.9222753857,
+    "failed_before_sign": 6042760.927724615,
+    "prefill": 77609.0839950697,
+    "decode_floor": 1417698.1456595585,
+    "batch1_cost": 3993363.4789952463,
+    "tool_wait": 120919.7600000001,
+    "other": 41371.570000000036,
+    "degenerate": 102538.08135012617
+   },
+   "floor_k8_J": 757548.6274516727,
+   "by_cause": {
+    "wrong": {
+     "runs": 33,
+     "energy_J": 2226883.73,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 31,
+     "energy_J": 4529427.51,
+     "after_sign_J": 831537.9222753857
+    },
+    "other": {
+     "runs": 1,
+     "energy_J": 117987.61,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 1152501.7222198448,
+     "passes_lost": 2,
+     "passes_left": 122,
+     "e_per_success_J": 94059.81350639464,
+     "change": -0.07636976938721862
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 124,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 124,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 1152501.7222198448,
+     "passes_lost": 2,
+     "passes_left": 122,
+     "e_per_success_J": 94059.81350639464,
+     "change": -0.07636976938721862
+    }
+   },
+   "ctx": [
+    110000
+   ]
+  },
+  {
+   "key": "t_thor_qwen36",
+   "label": "Traffic \u00b7 Thor \u00b7 Qwen3.6-35B-A3B",
+   "domain": "traffic",
+   "device": "Thor",
+   "model": "Qwen3.6-35B-A3B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 226,
+   "untraced_passes": 0,
+   "total_J": 6705122.870000006,
+   "e_per_success_J": 29668.68526548675,
+   "curve": "moe",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "prefill": 93074.94790566518,
+    "decode_floor": 1904685.3639683698,
+    "batch1_cost": 2327948.778183562,
+    "tool_wait": 165745.6800000001,
+    "other": 57313.20999999994,
+    "failed_after_sign": 0.0,
+    "failed_before_sign": 879715.9399999997,
+    "vision_tool": 1211190.3800000001,
+    "degenerate": 105910.24994240442
+   },
+   "floor_k8_J": 1337512.3889200096,
+   "by_cause": {
+    "wrong": {
+     "runs": 16,
+     "energy_J": 310633.33,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 7,
+     "energy_J": 481561.21,
+     "after_sign_J": 0.0
+    },
+    "other": {
+     "runs": 3,
+     "energy_J": 87521.40000000001,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 34389.63060853797,
+     "passes_lost": 4,
+     "passes_left": 222,
+     "e_per_success_J": 30048.34792518679,
+     "change": 0.012796747018031684
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 226,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 226,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 34389.63060853797,
+     "passes_lost": 4,
+     "passes_left": 222,
+     "e_per_success_J": 30048.34792518679,
+     "change": 0.012796747018031684
+    }
+   },
+   "ctx": [
+    110000
+   ]
+  },
+  {
+   "key": "t_o64_gemma",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 gemma-26B",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "gemma-26B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 113,
+   "untraced_passes": 0,
+   "total_J": 2934093.3599999994,
+   "e_per_success_J": 25965.427964601764,
+   "curve": "moe",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "prefill": 38504.94285979616,
+    "decode_floor": 396715.83171309164,
+    "batch1_cost": 484874.90542711224,
+    "tool_wait": 25114.269999999986,
+    "other": 12692.110000000017,
+    "failed_after_sign": 452233.4518940438,
+    "failed_before_sign": 1218928.3381059559,
+    "vision_tool": 305029.51
+   },
+   "floor_k8_J": 278582.6729363045,
+   "by_cause": {
+    "capped": {
+     "runs": 19,
+     "energy_J": 362575.08999999997,
+     "after_sign_J": 178976.86800883207
+    },
+    "wrong": {
+     "runs": 16,
+     "energy_J": 127044.93000000001,
+     "after_sign_J": 4477.888741561047
+    },
+    "overflow": {
+     "runs": 61,
+     "energy_J": 515937.9500000001,
+     "after_sign_J": 48079.42145624115
+    },
+    "other": {
+     "runs": 43,
+     "energy_J": 665603.8200000001,
+     "after_sign_J": 220699.27368740956
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 116724.48103533828,
+     "passes_lost": 0,
+     "passes_left": 113,
+     "e_per_success_J": 24932.46795543948,
+     "change": -0.03978212916692547
+    },
+    "cap2": {
+     "saved_J": 97265.300201971,
+     "passes_lost": 0,
+     "passes_left": 113,
+     "e_per_success_J": 25104.673095557773,
+     "change": -0.03315003589455345
+    },
+    "ctx80": {
+     "saved_J": 507824.88673655584,
+     "passes_lost": 28,
+     "passes_left": 85,
+     "e_per_success_J": 28544.33497956992,
+     "change": 0.09932079758068846
+    },
+    "any": {
+     "saved_J": 507824.88673655584,
+     "passes_lost": 28,
+     "passes_left": 85,
+     "e_per_success_J": 28544.33497956992,
+     "change": 0.09932079758068846
+    }
+   },
+   "ctx": [
+    12288
+   ]
+  },
+  {
+   "key": "t_o64_granite",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 granite-8B",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "granite-8B",
+   "agent": "tool calling",
+   "runs": 189,
+   "passes": 111,
+   "untraced_passes": 0,
+   "total_J": 5731639.8999999985,
+   "e_per_success_J": 51636.39549549548,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 335654.41870438936,
+    "failed_before_sign": 2460337.3012956097,
+    "prefill": 51795.96920492759,
+    "decode_floor": 723639.293957841,
+    "batch1_cost": 2038342.7440491861,
+    "tool_wait": 27997.869999999988,
+    "other": 17435.37999999995,
+    "degenerate": 76436.92278804482
+   },
+   "floor_k8_J": 386677.485320984,
+   "by_cause": {
+    "capped": {
+     "runs": 20,
+     "energy_J": 934968.7300000002,
+     "after_sign_J": 308008.30280742387
+    },
+    "overflow": {
+     "runs": 36,
+     "energy_J": 675437.73,
+     "after_sign_J": 27646.1158969655
+    },
+    "wrong": {
+     "runs": 19,
+     "energy_J": 744731.69,
+     "after_sign_J": 0.0
+    },
+    "other": {
+     "runs": 3,
+     "energy_J": 440853.56999999995,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 225350.8561806097,
+     "passes_lost": 2,
+     "passes_left": 109,
+     "e_per_success_J": 50516.41324604944,
+     "change": -0.021689783701957843
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 111,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 199399.00047417535,
+     "passes_lost": 1,
+     "passes_left": 110,
+     "e_per_success_J": 50293.09908659839,
+     "change": -0.026014527079340266
+    },
+    "any": {
+     "saved_J": 353954.91816820914,
+     "passes_lost": 3,
+     "passes_left": 108,
+     "e_per_success_J": 49793.37946140546,
+     "change": -0.03569218990606737
+    }
+   },
+   "ctx": [
+    26624
+   ]
+  },
+  {
+   "key": "t_o32_granite",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 granite-8B",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "granite-8B",
+   "agent": "tool calling",
+   "runs": 189,
+   "passes": 97,
+   "untraced_passes": 0,
+   "total_J": 6840424.589999997,
+   "e_per_success_J": 70519.8411340206,
+   "curve": "dense",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 48386.266665497045,
+    "decode_floor": 712267.3870936399,
+    "batch1_cost": 2006310.4262408623,
+    "tool_wait": 49049.16999999999,
+    "other": 18867.449999999964,
+    "failed_after_sign": 308198.19829569454,
+    "failed_before_sign": 3697345.691704305
+   },
+   "floor_k8_J": 380600.8938668304,
+   "by_cause": {
+    "overflow": {
+     "runs": 40,
+     "energy_J": 1263106.4199999997,
+     "after_sign_J": 132542.02067973034
+    },
+    "wrong": {
+     "runs": 28,
+     "energy_J": 1066885.66,
+     "after_sign_J": 14737.816200873802
+    },
+    "other": {
+     "runs": 18,
+     "energy_J": 1394592.16,
+     "after_sign_J": 83734.2220628779
+    },
+    "capped": {
+     "runs": 6,
+     "energy_J": 280959.64999999997,
+     "after_sign_J": 77184.13935221249
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 141223.97027424665,
+     "passes_lost": 0,
+     "passes_left": 97,
+     "e_per_success_J": 69063.92391469846,
+     "change": -0.020645497719644745
+    },
+    "cap2": {
+     "saved_J": 35580.4606613806,
+     "passes_lost": 0,
+     "passes_left": 97,
+     "e_per_success_J": 70153.03226122285,
+     "change": -0.005201498853360076
+    },
+    "ctx80": {
+     "saved_J": 174482.78915734706,
+     "passes_lost": 1,
+     "passes_left": 96,
+     "e_per_success_J": 69436.8937587776,
+     "change": -0.015356633790267415
+    },
+    "any": {
+     "saved_J": 315706.7594315937,
+     "passes_lost": 1,
+     "passes_left": 96,
+     "e_per_success_J": 67965.81073508754,
+     "change": -0.03621718877782509
+    }
+   },
+   "ctx": [
+    26624
+   ]
+  },
+  {
+   "key": "t_o32_e4b",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 gemma-E4B",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "gemma-E4B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 184,
+   "untraced_passes": 0,
+   "total_J": 6871614.02,
+   "e_per_success_J": 37345.728369565215,
+   "curve": "dense",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 72780.74266397428,
+    "decode_floor": 741749.73851527,
+    "batch1_cost": 2089356.1336804158,
+    "tool_wait": 170572.1000000001,
+    "other": 27136.62999999997,
+    "failed_after_sign": 1746615.268918632,
+    "failed_before_sign": 1690652.9610813675,
+    "vision_tool": 258221.79999999996,
+    "degenerate": 74528.64514034023
+   },
+   "floor_k8_J": 396354.8221073962,
+   "by_cause": {
+    "wrong": {
+     "runs": 48,
+     "energy_J": 373920.43999999994,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 16,
+     "energy_J": 2533519.1900000004,
+     "after_sign_J": 1746615.268918632
+    },
+    "other": {
+     "runs": 4,
+     "energy_J": 529828.6000000001,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 1756174.5996737382,
+     "passes_lost": 2,
+     "passes_left": 182,
+     "e_per_success_J": 28106.81000179264,
+     "change": -0.2473888921470816
+    },
+    "cap2": {
+     "saved_J": 1378616.060183412,
+     "passes_lost": 1,
+     "passes_left": 183,
+     "e_per_success_J": 30016.382294079718,
+     "change": -0.19625661074155198
+    },
+    "ctx80": {
+     "saved_J": 227515.94151099274,
+     "passes_lost": 2,
+     "passes_left": 182,
+     "e_per_success_J": 36506.03339829124,
+     "change": -0.02248436455608882
+    },
+    "any": {
+     "saved_J": 1852144.829044217,
+     "passes_lost": 4,
+     "passes_left": 180,
+     "e_per_success_J": 27885.939949754345,
+     "change": -0.25330309068279133
+    }
+   },
+   "ctx": [
+    32768
+   ]
+  },
+  {
+   "key": "t_o32_qwenvl",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 Qwen2.5-VL-7B",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "Qwen2.5-VL-7B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 66,
+   "untraced_passes": 0,
+   "total_J": 539858.21,
+   "e_per_success_J": 8179.6698484848475,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 19714.380904543446,
+    "decode_floor": 23997.61466300962,
+    "batch1_cost": 67596.33443244692,
+    "tool_wait": 5224.850000000002,
+    "other": 3541.7600000000043,
+    "failed_after_sign": 13040.252652896266,
+    "failed_before_sign": 406502.36734710366,
+    "vision_tool": 240.64999999999998
+   },
+   "floor_k8_J": 12823.152873363915,
+   "by_cause": {
+    "wrong": {
+     "runs": 181,
+     "energy_J": 334139.86999999994,
+     "after_sign_J": 13040.252652896266
+    },
+    "other": {
+     "runs": 5,
+     "energy_J": 85402.75,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 66,
+     "e_per_success_J": 8179.6698484848475,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 66,
+     "e_per_success_J": 8179.6698484848475,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 15867.34670636995,
+     "passes_lost": 1,
+     "passes_left": 65,
+     "e_per_success_J": 8061.397896825077,
+     "change": -0.014459257384536017
+    },
+    "any": {
+     "saved_J": 15867.34670636995,
+     "passes_lost": 1,
+     "passes_left": 65,
+     "e_per_success_J": 8061.397896825077,
+     "change": -0.014459257384536017
+    }
+   },
+   "ctx": [
+    32768
+   ]
+  },
+  {
+   "key": "t_thor_devstral",
+   "label": "Traffic \u00b7 Thor \u00b7 Devstral-24B",
+   "domain": "traffic",
+   "device": "Thor",
+   "model": "Devstral-24B",
+   "agent": "tool calling",
+   "runs": 189,
+   "passes": 126,
+   "untraced_passes": 0,
+   "total_J": 6944355.890000003,
+   "e_per_success_J": 55113.935634920665,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 0.0,
+    "decode_floor": 537502.9638599999,
+    "batch1_cost": 1514035.0661399993,
+    "tool_wait": 81363.09000000003,
+    "other": 26042.760000000053,
+    "failed_after_sign": 376936.95336116187,
+    "failed_before_sign": 4403194.986638838,
+    "vision_tool": 5280.07
+   },
+   "floor_k8_J": 287215.3241999998,
+   "by_cause": {
+    "other": {
+     "runs": 4,
+     "energy_J": 413516.03,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 16,
+     "energy_J": 2756039.6299999994,
+     "after_sign_J": 376936.95336116187
+    },
+    "wrong": {
+     "runs": 40,
+     "energy_J": 1220088.8699999999,
+     "after_sign_J": 0.0
+    },
+    "overflow": {
+     "runs": 3,
+     "energy_J": 390487.41000000003,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 376936.95336116187,
+     "passes_lost": 0,
+     "passes_left": 126,
+     "e_per_success_J": 52122.37251300668,
+     "change": -0.05427961344895327
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 126,
+     "e_per_success_J": 55113.935634920665,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 126,
+     "e_per_success_J": 55113.935634920665,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 376936.95336116187,
+     "passes_lost": 0,
+     "passes_left": 126,
+     "e_per_success_J": 52122.37251300668,
+     "change": -0.05427961344895327
+    }
+   },
+   "ctx": []
+  },
+  {
+   "key": "t_thor_gemma_rfx",
+   "label": "Traffic \u00b7 Thor \u00b7 gemma-26B \u00b7 Reflexion",
+   "domain": "traffic",
+   "device": "Thor",
+   "model": "gemma-26B",
+   "agent": "Reflexion",
+   "runs": 196,
+   "passes": 167,
+   "untraced_passes": 0,
+   "total_J": 25948476.179999992,
+   "e_per_success_J": 155380.0968862275,
+   "curve": "moe",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "failed_after_sign": 6022084.00793862,
+    "failed_before_sign": 10330462.452061383,
+    "prefill": 137482.5828704332,
+    "decode_floor": 1802006.412638246,
+    "batch1_cost": 2202452.282113413,
+    "tool_wait": 275860.1199999999,
+    "other": 1461919.6800000009,
+    "degenerate": 3124412.9123779084,
+    "vision_tool": 591795.7300000004
+   },
+   "floor_k8_J": 1265408.9475415244,
+   "by_cause": {
+    "wrong": {
+     "runs": 11,
+     "energy_J": 894890.1600000003,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 8,
+     "energy_J": 6452274.569999999,
+     "after_sign_J": 5249353.188323867
+    },
+    "other": {
+     "runs": 9,
+     "energy_J": 8195388.070000001,
+     "after_sign_J": 0.0
+    },
+    "overflow": {
+     "runs": 1,
+     "energy_J": 809993.66,
+     "after_sign_J": 772730.8196147534
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 7309018.343606657,
+     "passes_lost": 12,
+     "passes_left": 155,
+     "e_per_success_J": 120254.56668640861,
+     "change": -0.22606196613159868
+    },
+    "cap2": {
+     "saved_J": 3785278.5031708986,
+     "passes_lost": 0,
+     "passes_left": 167,
+     "e_per_success_J": 132713.75854388677,
+     "change": -0.14587671649437495
+    },
+    "ctx80": {
+     "saved_J": 1826666.813746753,
+     "passes_lost": 2,
+     "passes_left": 165,
+     "e_per_success_J": 146192.7840378984,
+     "change": -0.05912799021522186
+    },
+    "any": {
+     "saved_J": 7309018.343606657,
+     "passes_lost": 12,
+     "passes_left": 155,
+     "e_per_success_J": 120254.56668640861,
+     "change": -0.22606196613159868
+    }
+   },
+   "ctx": [
+    110000
+   ]
+  },
+  {
+   "key": "t_o64_devstral",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 Devstral-24B",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "Devstral-24B",
+   "agent": "tool calling",
+   "runs": 189,
+   "passes": 111,
+   "untraced_passes": 0,
+   "total_J": 3557746.0799999987,
+   "e_per_success_J": 32051.766486486475,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 189526.58432905702,
+    "failed_before_sign": 2018734.755670943,
+    "prefill": 46129.763340058846,
+    "decode_floor": 320208.8771049046,
+    "batch1_cost": 901962.4095550365,
+    "tool_wait": 69217.25999999998,
+    "other": 11966.430000000002
+   },
+   "floor_k8_J": 171103.98013239185,
+   "by_cause": {
+    "wrong": {
+     "runs": 52,
+     "energy_J": 755137.82,
+     "after_sign_J": 60379.19623260153
+    },
+    "other": {
+     "runs": 15,
+     "energy_J": 968163.2599999999,
+     "after_sign_J": 42961.679067306955
+    },
+    "overflow": {
+     "runs": 11,
+     "energy_J": 484960.2599999999,
+     "after_sign_J": 86185.70902914855
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 111,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 111,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 213949.10810238018,
+     "passes_lost": 4,
+     "passes_left": 107,
+     "e_per_success_J": 31250.43898969737,
+     "change": -0.02500104002464132
+    },
+    "any": {
+     "saved_J": 213949.10810238018,
+     "passes_lost": 4,
+     "passes_left": 107,
+     "e_per_success_J": 31250.43898969737,
+     "change": -0.02500104002464132
+    }
+   },
+   "ctx": [
+    16384
+   ]
+  },
+  {
+   "key": "t_o64_qwenvl",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 Qwen2.5-VL-7B",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "Qwen2.5-VL-7B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 60,
+   "untraced_passes": 0,
+   "total_J": 521971.69,
+   "e_per_success_J": 8699.528166666667,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 0.0,
+    "failed_before_sign": 429703.68999999994,
+    "prefill": 15950.94620542778,
+    "decode_floor": 18190.797234177928,
+    "batch1_cost": 51239.726560394294,
+    "tool_wait": 3503.560000000001,
+    "other": 3382.9700000000007
+   },
+   "floor_k8_J": 9720.273331240109,
+   "by_cause": {
+    "wrong": {
+     "runs": 188,
+     "energy_J": 372070.29000000004,
+     "after_sign_J": 0.0
+    },
+    "other": {
+     "runs": 4,
+     "energy_J": 57633.399999999994,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 60,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 60,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 60,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 60,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    }
+   },
+   "ctx": [
+    128000
+   ]
+  },
+  {
+   "key": "t_o64_gemma_rfx",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 gemma-26B \u00b7 Reflexion",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "gemma-26B",
+   "agent": "Reflexion",
+   "runs": 196,
+   "passes": 64,
+   "untraced_passes": 0,
+   "total_J": 3733443.8900000025,
+   "e_per_success_J": 58335.06078125004,
+   "curve": "moe",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.45,
+    "8": 0.316
+   },
+   "buckets_J": {
+    "failed_after_sign": 501971.2265555046,
+    "failed_before_sign": 2210833.1534444946,
+    "prefill": 31573.03622247778,
+    "decode_floor": 196956.03319988505,
+    "batch1_cost": 240724.04057763732,
+    "tool_wait": 10706.760000000002,
+    "other": 234355.49,
+    "vision_tool": 306324.15
+   },
+   "floor_k8_J": 138306.90331369702,
+   "by_cause": {
+    "overflow": {
+     "runs": 55,
+     "energy_J": 621948.7599999998,
+     "after_sign_J": 25649.949132855076
+    },
+    "wrong": {
+     "runs": 65,
+     "energy_J": 1573903.3500000006,
+     "after_sign_J": 233711.21711504116
+    },
+    "other": {
+     "runs": 12,
+     "energy_J": 516952.2700000001,
+     "after_sign_J": 242610.06030760836
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 64,
+     "e_per_success_J": 58335.06078125004,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 64,
+     "e_per_success_J": 58335.06078125004,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 666139.8770256574,
+     "passes_lost": 10,
+     "passes_left": 54,
+     "e_per_success_J": 56801.92616619157,
+     "change": -0.026281529401461445
+    },
+    "any": {
+     "saved_J": 666139.8770256574,
+     "passes_lost": 10,
+     "passes_left": 54,
+     "e_per_success_J": 56801.92616619157,
+     "change": -0.026281529401461445
+    }
+   },
+   "ctx": [
+    12288
+   ]
+  },
+  {
+   "key": "t_o64_devstral_rfx",
+   "label": "Traffic \u00b7 Orin 64 \u00b7 Devstral-24B \u00b7 Reflexion",
+   "domain": "traffic",
+   "device": "Orin 64",
+   "model": "Devstral-24B",
+   "agent": "Reflexion",
+   "runs": 126,
+   "passes": 31,
+   "untraced_passes": 0,
+   "total_J": 3942358.449999999,
+   "e_per_success_J": 127172.85322580641,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 0.0,
+    "failed_before_sign": 3744058.8999999985,
+    "prefill": 0.0,
+    "decode_floor": 32207.783139999996,
+    "batch1_cost": 90722.68686000002,
+    "tool_wait": 33823.979999999996,
+    "other": 41545.10000000002
+   },
+   "floor_k8_J": 17210.265799999997,
+   "by_cause": {
+    "wrong": {
+     "runs": 86,
+     "energy_J": 2968029.6299999994,
+     "after_sign_J": 0.0
+    },
+    "other": {
+     "runs": 4,
+     "energy_J": 484559.84,
+     "after_sign_J": 0.0
+    },
+    "overflow": {
+     "runs": 5,
+     "energy_J": 291469.43,
+     "after_sign_J": 0.0
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 31,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 31,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 31,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "any": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 31,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    }
+   },
+   "ctx": []
+  },
+  {
+   "key": "t_o32_ministral",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 Ministral-8B",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "Ministral-8B",
+   "agent": "tool calling",
+   "runs": 252,
+   "passes": 154,
+   "untraced_passes": 0,
+   "total_J": 2954705.6399999983,
+   "e_per_success_J": 19186.400259740247,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 15553.848205672704,
+    "decode_floor": 149604.2772501138,
+    "batch1_cost": 421404.4145442134,
+    "tool_wait": 198445.3500000001,
+    "other": 16216.020000000002,
+    "failed_after_sign": 142967.1186849367,
+    "failed_before_sign": 2007622.0113150633,
+    "vision_tool": 2892.600000000001
+   },
+   "floor_k8_J": 79941.21685120583,
+   "by_cause": {
+    "wrong": {
+     "runs": 65,
+     "energy_J": 177015.66,
+     "after_sign_J": 1992.5525874023378
+    },
+    "capped": {
+     "runs": 4,
+     "energy_J": 411355.47000000003,
+     "after_sign_J": 40642.56066156124
+    },
+    "other": {
+     "runs": 22,
+     "energy_J": 1027131.01,
+     "after_sign_J": 71504.4445971117
+    },
+    "overflow": {
+     "runs": 7,
+     "energy_J": 535086.99,
+     "after_sign_J": 28827.560838861427
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 40642.56066156124,
+     "passes_lost": 0,
+     "passes_left": 154,
+     "e_per_success_J": 18922.487528171667,
+     "change": -0.013755197848257184
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 154,
+     "e_per_success_J": 19186.400259740247,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 102324.55802337546,
+     "passes_lost": 0,
+     "passes_left": 154,
+     "e_per_success_J": 18521.95507777028,
+     "change": -0.03463104975268372
+    },
+    "any": {
+     "saved_J": 142967.1186849367,
+     "passes_lost": 0,
+     "passes_left": 154,
+     "e_per_success_J": 18258.0423462017,
+     "change": -0.0483862476009409
+    }
+   },
+   "ctx": [
+    40960
+   ]
+  },
+  {
+   "key": "t_o32_granite_rfx",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 granite-8B \u00b7 Reflexion",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "granite-8B",
+   "agent": "Reflexion",
+   "runs": 126,
+   "passes": 73,
+   "untraced_passes": 0,
+   "total_J": 8468360.249999998,
+   "e_per_success_J": 116004.93493150682,
+   "curve": "dense",
+   "curve_source": "measured",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "prefill": 46607.51959347433,
+    "decode_floor": 646656.485563648,
+    "batch1_cost": 1821498.0394884434,
+    "tool_wait": 52622.45000000002,
+    "other": 2123030.2800000007,
+    "failed_after_sign": 415875.2588884873,
+    "failed_before_sign": 3211048.021111512,
+    "degenerate": 151022.19535443443
+   },
+   "floor_k8_J": 345541.6335072928,
+   "by_cause": {
+    "other": {
+     "runs": 13,
+     "energy_J": 1574378.2900000003,
+     "after_sign_J": 18669.056132671623
+    },
+    "overflow": {
+     "runs": 25,
+     "energy_J": 650761.59,
+     "after_sign_J": 24.495467636965405
+    },
+    "wrong": {
+     "runs": 13,
+     "energy_J": 822926.9299999999,
+     "after_sign_J": 0.0
+    },
+    "capped": {
+     "runs": 2,
+     "energy_J": 578856.47,
+     "after_sign_J": 397181.70728817873
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 278416.44682217145,
+     "passes_lost": 2,
+     "passes_left": 71,
+     "e_per_success_J": 115351.32117151869,
+     "change": -0.00563436167930309
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 73,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 378406.1357634339,
+     "passes_lost": 0,
+     "passes_left": 73,
+     "e_per_success_J": 110821.28923611731,
+     "change": -0.044684699822900686
+    },
+    "any": {
+     "saved_J": 434424.4365967349,
+     "passes_lost": 2,
+     "passes_left": 71,
+     "e_per_success_J": 113154.02554089103,
+     "change": -0.024575759576944467
+    }
+   },
+   "ctx": [
+    26624
+   ]
+  },
+  {
+   "key": "t_o32_qwenvl_rfx",
+   "label": "Traffic \u00b7 Orin 32 \u00b7 Qwen2.5-VL-7B \u00b7 Reflexion",
+   "domain": "traffic",
+   "device": "Orin 32",
+   "model": "Qwen2.5-VL-7B",
+   "agent": "Reflexion",
+   "runs": 252,
+   "passes": 70,
+   "untraced_passes": 0,
+   "total_J": 1028644.5199999999,
+   "e_per_success_J": 14694.921714285712,
+   "curve": "dense",
+   "curve_source": "proxy",
+   "ratio": {
+    "4": 0.262,
+    "8": 0.14
+   },
+   "buckets_J": {
+    "failed_after_sign": 22107.942832606474,
+    "failed_before_sign": 821588.9171673933,
+    "prefill": 24485.4713553146,
+    "decode_floor": 31848.42882490759,
+    "batch1_cost": 89710.4598197778,
+    "tool_wait": 6305.840000000001,
+    "other": 28373.719999999994,
+    "vision_tool": 4223.740000000001
+   },
+   "floor_k8_J": 17018.244410255953,
+   "by_cause": {
+    "wrong": {
+     "runs": 182,
+     "energy_J": 843696.8599999999,
+     "after_sign_J": 22107.942832606474
+    }
+   },
+   "stop_rules": {
+    "cap1": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 70,
+     "e_per_success_J": 14694.921714285712,
+     "change": 0.0
+    },
+    "cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "passes_left": 70,
+     "e_per_success_J": 14694.921714285712,
+     "change": 0.0
+    },
+    "ctx80": {
+     "saved_J": 22107.942832606474,
+     "passes_lost": 0,
+     "passes_left": 70,
+     "e_per_success_J": 14379.093959534192,
+     "change": -0.021492306042330767
+    },
+    "any": {
+     "saved_J": 22107.942832606474,
+     "passes_lost": 0,
+     "passes_left": 70,
+     "e_per_success_J": 14379.093959534192,
+     "change": -0.021492306042330767
+    }
+   },
+   "ctx": [
+    32768
+   ]
+  }
+ ]
+}

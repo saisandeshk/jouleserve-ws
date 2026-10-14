@@ -1,0 +1,3264 @@
+{
+ "M": [
+  1.5,
+  2.0,
+  3.0,
+  5.0,
+  8.0,
+  12.0
+ ],
+ "pass_loss_max": 0.05,
+ "global_best": "budget_task_5",
+ "configs": [
+  {
+   "key": "d_thor_gemma_rfx",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 102,
+   "e_per_success_J": 154336.18046917257,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 7919385.825710868,
+     "passes_lost": 22,
+     "e_per_success_J": 97786.30727680917,
+     "change": -0.36640710571205815
+    },
+    "sign_cap2": {
+     "saved_J": 4540.422567234675,
+     "passes_lost": 0,
+     "e_per_success_J": 154291.66652243497,
+     "change": -0.00028842197987721807
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 154336.18046917257,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 7919385.825710868,
+     "passes_lost": 22,
+     "e_per_success_J": 97786.30727680917,
+     "change": -0.36640710571205815
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 12599143.457378011,
+     "passes_lost": 36,
+     "e_per_success_J": 47623.43864359986,
+     "change": -0.691430496084408
+    },
+    "budget_task_1.5": {
+     "saved_J": 6015433.2848428665,
+     "passes_lost": 15,
+     "e_per_success_J": 111802.95543692801,
+     "change": -0.2755881667081961
+    },
+    "budget_cfg_2": {
+     "saved_J": 11854614.53610847,
+     "passes_lost": 32,
+     "e_per_success_J": 55538.22673924475,
+     "change": -0.6401477179854269
+    },
+    "budget_task_2": {
+     "saved_J": 5374312.9343295675,
+     "passes_lost": 6,
+     "e_per_success_J": 107999.76534922952,
+     "change": -0.30023041246118165
+    },
+    "budget_cfg_3": {
+     "saved_J": 10553971.459758015,
+     "passes_lost": 24,
+     "e_per_success_J": 66516.9095909947,
+     "change": -0.569012856293402
+    },
+    "budget_task_3": {
+     "saved_J": 4561038.61090243,
+     "passes_lost": 4,
+     "e_per_success_J": 114094.40609135889,
+     "change": -0.26074102815996314
+    },
+    "budget_cfg_5": {
+     "saved_J": 8119665.533894277,
+     "passes_lost": 18,
+     "e_per_success_J": 90745.53421382529,
+     "change": -0.4120268239244719
+    },
+    "budget_task_5": {
+     "saved_J": 3519377.4441205077,
+     "passes_lost": 4,
+     "e_per_success_J": 124723.60167076626,
+     "change": -0.19187062105843145
+    },
+    "budget_cfg_8": {
+     "saved_J": 5174995.686041928,
+     "passes_lost": 13,
+     "e_per_success_J": 118733.64855970422,
+     "change": -0.23068169628948199
+    },
+    "budget_task_8": {
+     "saved_J": 2429201.5650157076,
+     "passes_lost": 1,
+     "e_per_success_J": 131812.76082019697,
+     "change": -0.14593739187082233
+    },
+    "budget_cfg_12": {
+     "saved_J": 2026934.3298087306,
+     "passes_lost": 6,
+     "e_per_success_J": 142868.29247965492,
+     "change": -0.07430459892590302
+    },
+    "budget_task_12": {
+     "saved_J": 1131440.3913817448,
+     "passes_lost": 1,
+     "e_per_success_J": 144661.8813512263,
+     "change": -0.06268328714975968
+    },
+    "oracle": {
+     "saved_J": 9944223.593215752,
+     "passes_lost": 0,
+     "e_per_success_J": 56843.79230039068,
+     "change": -0.6316884859558594
+    },
+    "oracle_task": {
+     "saved_J": 4970717.279851303,
+     "passes_lost": 0,
+     "e_per_success_J": 105603.65811768919,
+     "change": -0.31575565886974455
+    }
+   },
+   "failed_share": 0.6316884859558594,
+   "best_fixed": "budget_task_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.26074102815996314,
+    "best_fixed_lost": 4,
+    "global_change": -0.19187062105843145,
+    "global_lost": 4,
+    "oracle_change": -0.6316884859558594,
+    "oracle_task_change": -0.31575565886974455,
+    "gap_oracle_vs_best_fixed": -0.5017828283809627,
+    "e_per_success_J": 154336.18046917257
+   }
+  },
+  {
+   "key": "d_thor_gemma_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 74,
+   "e_per_success_J": 397030.64804468583,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 19905728.117446005,
+     "passes_lost": 17,
+     "e_per_success_J": 166219.99715545165,
+     "change": -0.5813421508539472
+    },
+    "sign_cap2": {
+     "saved_J": 11283032.03909606,
+     "passes_lost": 7,
+     "e_per_success_J": 270107.99874941324,
+     "change": -0.31967972729648675
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 397030.64804468583,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 19905728.117446005,
+     "passes_lost": 17,
+     "e_per_success_J": 166219.99715545165,
+     "change": -0.5813421508539472
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 26411878.059654772,
+     "passes_lost": 23,
+     "e_per_success_J": 58203.72344415642,
+     "change": -0.8534024420260735
+    },
+    "budget_task_1.5": {
+     "saved_J": 16572484.808165647,
+     "passes_lost": 5,
+     "e_per_success_J": 185620.0456107406,
+     "change": -0.5324793022279504
+    },
+    "budget_cfg_2": {
+     "saved_J": 25639084.528811853,
+     "passes_lost": 20,
+     "e_per_success_J": 69281.1745647203,
+     "change": -0.8255016963906456
+    },
+    "budget_task_2": {
+     "saved_J": 15067964.729017766,
+     "passes_lost": 3,
+     "e_per_success_J": 201581.73558153497,
+     "change": -0.49227663764927554
+    },
+    "budget_cfg_3": {
+     "saved_J": 24166857.282364562,
+     "passes_lost": 17,
+     "e_per_success_J": 91463.34513933663,
+     "change": -0.769631524443316
+    },
+    "budget_task_3": {
+     "saved_J": 13374595.794997996,
+     "passes_lost": 2,
+     "e_per_success_J": 222301.00222651046,
+     "change": -0.4400910778014032
+    },
+    "budget_cfg_5": {
+     "saved_J": 21227386.790611517,
+     "passes_lost": 16,
+     "e_per_success_J": 140566.91663267644,
+     "change": -0.6459544941304994
+    },
+    "budget_task_5": {
+     "saved_J": 10399285.034966854,
+     "passes_lost": 0,
+     "e_per_success_J": 256499.76919378238,
+     "change": -0.3539547376077795
+    },
+    "budget_cfg_8": {
+     "saved_J": 16922929.957999066,
+     "passes_lost": 11,
+     "e_per_success_J": 197735.52376678862,
+     "change": -0.5019640807564723
+    },
+    "budget_task_8": {
+     "saved_J": 7704623.363613899,
+     "passes_lost": 0,
+     "e_per_success_J": 292914.1161039574,
+     "change": -0.2622380223126002
+    },
+    "budget_cfg_12": {
+     "saved_J": 11649722.706623875,
+     "passes_lost": 7,
+     "e_per_success_J": 264635.0037116847,
+     "change": -0.33346454482803545
+    },
+    "budget_task_12": {
+     "saved_J": 4972707.682380393,
+     "passes_lost": 0,
+     "e_per_success_J": 329831.8955800859,
+     "change": -0.1692533127997632
+    },
+    "oracle": {
+     "saved_J": 24737260.7742979,
+     "passes_lost": 0,
+     "e_per_success_J": 62743.340283903366,
+     "change": -0.8419685215917094
+    },
+    "oracle_task": {
+     "saved_J": 12486552.445940308,
+     "passes_lost": 0,
+     "e_per_success_J": 228293.45282927624,
+     "change": -0.4249979089685243
+    }
+   },
+   "failed_share": 0.8419685215917094,
+   "best_fixed": "budget_task_2",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.49227663764927554,
+    "best_fixed_lost": 3,
+    "global_change": -0.3539547376077795,
+    "global_lost": 0,
+    "oracle_change": -0.8419685215917094,
+    "oracle_task_change": -0.4249979089685243,
+    "gap_oracle_vs_best_fixed": -0.6887449147964837,
+    "e_per_success_J": 397030.64804468583
+   }
+  },
+  {
+   "key": "d_o64_devstral_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 45,
+   "e_per_success_J": 95972.23562534439,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 2.1397145486604763,
+     "passes_lost": 0,
+     "e_per_success_J": 95972.18807613221,
+     "change": -4.954475829599403e-07
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 95972.23562534439,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 95972.23562534439,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 2.1397145486604763,
+     "passes_lost": 0,
+     "e_per_success_J": 95972.18807613221,
+     "change": -4.954475829599403e-07
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 3738763.1882532607,
+     "passes_lost": 18,
+     "e_per_success_J": 21481.01536619396,
+     "change": -0.7761746902505078
+    },
+    "budget_task_1.5": {
+     "saved_J": 3679371.0468382877,
+     "passes_lost": 0,
+     "e_per_success_J": 14208.434584493552,
+     "change": -0.8519526559747934
+    },
+    "budget_cfg_2": {
+     "saved_J": 3573683.9545889613,
+     "passes_lost": 8,
+     "e_per_success_J": 20136.93644733882,
+     "change": -0.7901795627023922
+    },
+    "budget_task_2": {
+     "saved_J": 3523711.8048715196,
+     "passes_lost": 0,
+     "e_per_success_J": 17667.528850421735,
+     "change": -0.8159100000609334
+    },
+    "budget_cfg_3": {
+     "saved_J": 3286033.7405612366,
+     "passes_lost": 0,
+     "e_per_success_J": 22949.263612872466,
+     "change": -0.7608760131163183
+    },
+    "budget_task_3": {
+     "saved_J": 3230158.4317187546,
+     "passes_lost": 0,
+     "e_per_success_J": 24190.9371427054,
+     "change": -0.7479381720652858
+    },
+    "budget_cfg_5": {
+     "saved_J": 2712513.1471155398,
+     "passes_lost": 0,
+     "e_per_success_J": 35694.16568944351,
+     "change": -0.6280782097357188
+    },
+    "budget_task_5": {
+     "saved_J": 2703827.3454507855,
+     "passes_lost": 0,
+     "e_per_success_J": 35887.18350421583,
+     "change": -0.6260670258395156
+    },
+    "budget_cfg_8": {
+     "saved_J": 2005770.3606824954,
+     "passes_lost": 0,
+     "e_per_success_J": 51399.56094351116,
+     "change": -0.46443301431296924
+    },
+    "budget_task_8": {
+     "saved_J": 2005770.3606824954,
+     "passes_lost": 0,
+     "e_per_success_J": 51399.56094351116,
+     "change": -0.46443301431296924
+    },
+    "budget_cfg_12": {
+     "saved_J": 1302201.904783492,
+     "passes_lost": 0,
+     "e_per_success_J": 67034.41551904457,
+     "change": -0.30152283019921544
+    },
+    "budget_task_12": {
+     "saved_J": 1302201.904783492,
+     "passes_lost": 0,
+     "e_per_success_J": 67034.41551904457,
+     "change": -0.30152283019921544
+    },
+    "oracle": {
+     "saved_J": 4146348.7727385997,
+     "passes_lost": 0,
+     "e_per_success_J": 3831.1517867088423,
+     "change": -0.960080623716375
+    },
+    "oracle_task": {
+     "saved_J": 4007334.9699619394,
+     "passes_lost": 0,
+     "e_per_success_J": 6920.34740396796,
+     "change": -0.9278921934153587
+    }
+   },
+   "failed_share": 0.960080623716375,
+   "best_fixed": "budget_task_1.5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.8519526559747934,
+    "best_fixed_lost": 0,
+    "global_change": -0.6260670258395156,
+    "global_lost": 0,
+    "oracle_change": -0.960080623716375,
+    "oracle_task_change": -0.9278921934153587,
+    "gap_oracle_vs_best_fixed": -0.7303607400290255,
+    "e_per_success_J": 95972.23562534439
+   }
+  },
+  {
+   "key": "d_o32_e4b_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 50,
+   "e_per_success_J": 193821.59377654587,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 4522902.891489951,
+     "passes_lost": 7,
+     "e_per_success_J": 120190.1580776126,
+     "change": -0.3798928399269169
+    },
+    "sign_cap2": {
+     "saved_J": 1375532.4092236208,
+     "passes_lost": 0,
+     "e_per_success_J": 166310.94559207343,
+     "change": -0.1419379938449431
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 193821.59377654587,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 4522902.891489951,
+     "passes_lost": 7,
+     "e_per_success_J": 120190.1580776126,
+     "change": -0.3798928399269169
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 8878086.039670195,
+     "passes_lost": 17,
+     "e_per_success_J": 24636.171186578715,
+     "change": -0.8728925363446273
+    },
+    "budget_task_1.5": {
+     "saved_J": 8812090.516238647,
+     "passes_lost": 2,
+     "e_per_success_J": 18312.274428930134,
+     "change": -0.905519947121877
+    },
+    "budget_cfg_2": {
+     "saved_J": 8643956.897750292,
+     "passes_lost": 13,
+     "e_per_success_J": 28300.615975054083,
+     "change": -0.8539862590972116
+    },
+    "budget_task_2": {
+     "saved_J": 8604055.15020859,
+     "passes_lost": 1,
+     "e_per_success_J": 22184.17425752454,
+     "change": -0.885543329691632
+    },
+    "budget_cfg_3": {
+     "saved_J": 8231456.623825329,
+     "passes_lost": 2,
+     "e_per_success_J": 30408.813854207576,
+     "change": -0.8431092570146469
+    },
+    "budget_task_3": {
+     "saved_J": 8200488.283126404,
+     "passes_lost": 0,
+     "e_per_success_J": 29811.82811401779,
+     "change": -0.8461893355990694
+    },
+    "budget_cfg_5": {
+     "saved_J": 7443278.059579069,
+     "passes_lost": 1,
+     "e_per_success_J": 45873.50263771886,
+     "change": -0.7633209915165295
+    },
+    "budget_task_5": {
+     "saved_J": 7432379.809867195,
+     "passes_lost": 0,
+     "e_per_success_J": 45173.99757920196,
+     "change": -0.7669300066158654
+    },
+    "budget_cfg_8": {
+     "saved_J": 6341589.519094387,
+     "passes_lost": 0,
+     "e_per_success_J": 66989.80339465811,
+     "change": -0.6543738904970016
+    },
+    "budget_task_8": {
+     "saved_J": 6341589.519094387,
+     "passes_lost": 0,
+     "e_per_success_J": 66989.80339465811,
+     "change": -0.6543738904970016
+    },
+    "budget_cfg_12": {
+     "saved_J": 5405023.935214484,
+     "passes_lost": 0,
+     "e_per_success_J": 85721.11507225617,
+     "change": -0.557731863607092
+    },
+    "budget_task_12": {
+     "saved_J": 5405023.935214484,
+     "passes_lost": 0,
+     "e_per_success_J": 85721.11507225617,
+     "change": -0.557731863607092
+    },
+    "oracle": {
+     "saved_J": 9405300.250194514,
+     "passes_lost": 0,
+     "e_per_success_J": 5715.588772655577,
+     "change": -0.9705110836141148
+    },
+    "oracle_task": {
+     "saved_J": 9349684.214883463,
+     "passes_lost": 0,
+     "e_per_success_J": 6827.909478876591,
+     "change": -0.9647721941305034
+    }
+   },
+   "failed_share": 0.9705110836141148,
+   "best_fixed": "budget_task_1.5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.905519947121877,
+    "best_fixed_lost": 2,
+    "global_change": -0.7669300066158654,
+    "global_lost": 0,
+    "oracle_change": -0.9705110836141148,
+    "oracle_task_change": -0.9647721941305034,
+    "gap_oracle_vs_best_fixed": -0.6878820927002949,
+    "e_per_success_J": 193821.59377654587
+   }
+  },
+  {
+   "key": "d_o32_granite_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 49,
+   "e_per_success_J": 461447.596264627,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 759027.9897766102,
+     "passes_lost": 0,
+     "e_per_success_J": 445957.2291263288,
+     "change": -0.033569071035782216
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 461447.596264627,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 461447.596264627,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 759027.9897766102,
+     "passes_lost": 0,
+     "e_per_success_J": 445957.2291263288,
+     "change": -0.033569071035782216
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 20217395.48144701,
+     "passes_lost": 21,
+     "e_per_success_J": 85483.45483998967,
+     "change": -0.8147493766746867
+    },
+    "budget_task_1.5": {
+     "saved_J": 18035799.00313223,
+     "passes_lost": 4,
+     "e_per_success_J": 101669.6269740998,
+     "change": -0.7796724312855773
+    },
+    "budget_cfg_2": {
+     "saved_J": 19524725.522333674,
+     "passes_lost": 16,
+     "e_per_success_J": 93521.41498888025,
+     "change": -0.7973303669887395
+    },
+    "budget_task_2": {
+     "saved_J": 17264957.58980607,
+     "passes_lost": 4,
+     "e_per_success_J": 118799.43615912563,
+     "change": -0.7425505363538668
+    },
+    "budget_cfg_3": {
+     "saved_J": 18146730.78181889,
+     "passes_lost": 16,
+     "e_per_success_J": 135278.83136811617,
+     "change": -0.7068381492000717
+    },
+    "budget_task_3": {
+     "saved_J": 15858430.111812117,
+     "passes_lost": 4,
+     "e_per_success_J": 150055.60233676902,
+     "change": -0.6748155076514551
+    },
+    "budget_cfg_5": {
+     "saved_J": 15500041.338870347,
+     "passes_lost": 12,
+     "e_per_success_J": 192186.2399485507,
+     "change": -0.5835144846256011
+    },
+    "budget_task_5": {
+     "saved_J": 13328066.57453497,
+     "passes_lost": 0,
+     "e_per_success_J": 189446.23760064802,
+     "change": -0.5894523253903656
+    },
+    "budget_cfg_8": {
+     "saved_J": 11896696.82156106,
+     "passes_lost": 9,
+     "e_per_success_J": 267855.8848851415,
+     "change": -0.41953130311348763
+    },
+    "budget_task_8": {
+     "saved_J": 10412438.802582573,
+     "passes_lost": 0,
+     "e_per_success_J": 248948.84519151325,
+     "change": -0.46050462239541456
+    },
+    "budget_cfg_12": {
+     "saved_J": 7599061.3896856215,
+     "passes_lost": 9,
+     "e_per_success_J": 375296.7706820275,
+     "change": -0.1866968779986763
+    },
+    "budget_task_12": {
+     "saved_J": 6881155.994514974,
+     "passes_lost": 0,
+     "e_per_success_J": 321015.8412745255,
+     "change": -0.3043287171216901
+    },
+    "oracle": {
+     "saved_J": 20302436.847414,
+     "passes_lost": 0,
+     "e_per_success_J": 47112.15039903511,
+     "change": -0.8979035739260464
+    },
+    "oracle_task": {
+     "saved_J": 16892037.194359545,
+     "passes_lost": 0,
+     "e_per_success_J": 116712.14331851383,
+     "change": -0.7470738947102831
+    }
+   },
+   "failed_share": 0.8979035739260464,
+   "best_fixed": "budget_task_5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.5894523253903656,
+    "best_fixed_lost": 0,
+    "global_change": -0.5894523253903656,
+    "global_lost": 0,
+    "oracle_change": -0.8979035739260464,
+    "oracle_task_change": -0.7470738947102831,
+    "gap_oracle_vs_best_fixed": -0.7513165159904238,
+    "e_per_success_J": 461447.596264627
+   }
+  },
+  {
+   "key": "d_o32_ministral_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 43,
+   "e_per_success_J": 209641.84231804145,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 796124.0745373323,
+     "passes_lost": 1,
+     "e_per_success_J": 195677.9796461536,
+     "change": -0.06660818526248058
+    },
+    "sign_cap2": {
+     "saved_J": 3.6766025534203166,
+     "passes_lost": 0,
+     "e_per_success_J": 209641.7568156565,
+     "change": -4.07849807149141e-07
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 209641.84231804145,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 796124.0745373323,
+     "passes_lost": 1,
+     "e_per_success_J": 195677.9796461536,
+     "change": -0.06660818526248058
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 8730558.18002606,
+     "passes_lost": 13,
+     "e_per_success_J": 9468.03465499077,
+     "change": -0.9548370947788796
+    },
+    "budget_task_1.5": {
+     "saved_J": 8558573.22241209,
+     "passes_lost": 1,
+     "e_per_success_J": 10857.761839611721,
+     "change": -0.9482080403436842
+    },
+    "budget_cfg_2": {
+     "saved_J": 8649414.060726462,
+     "passes_lost": 12,
+     "e_per_success_J": 11780.166417720036,
+     "change": -0.9438081334934622
+    },
+    "budget_task_2": {
+     "saved_J": 8460418.777593521,
+     "passes_lost": 0,
+     "e_per_success_J": 12887.917257727015,
+     "change": -0.9385241175367314
+    },
+    "budget_cfg_3": {
+     "saved_J": 8488081.517422413,
+     "passes_lost": 12,
+     "e_per_success_J": 16984.442008173213,
+     "change": -0.9189835300988883
+    },
+    "budget_task_3": {
+     "saved_J": 8264980.459496139,
+     "passes_lost": 0,
+     "e_per_success_J": 17432.99442278243,
+     "change": -0.9168439170824718
+    },
+    "budget_cfg_5": {
+     "saved_J": 8212317.986305873,
+     "passes_lost": 7,
+     "e_per_success_J": 22285.589815830837,
+     "change": -0.8936968423411294
+    },
+    "budget_task_5": {
+     "saved_J": 7906740.684773417,
+     "passes_lost": 0,
+     "e_per_success_J": 25764.151974473625,
+     "change": -0.877103961262716
+    },
+    "budget_cfg_8": {
+     "saved_J": 7830488.707485008,
+     "passes_lost": 3,
+     "e_per_success_J": 29602.762804769376,
+     "change": -0.8587936335731113
+    },
+    "budget_task_8": {
+     "saved_J": 7378687.207103415,
+     "passes_lost": 0,
+     "e_per_success_J": 38044.465408659715,
+     "change": -0.8185263734186061
+    },
+    "budget_cfg_12": {
+     "saved_J": 7340830.048180366,
+     "passes_lost": 1,
+     "e_per_success_J": 39851.64694036708,
+     "change": -0.8099060449969271
+    },
+    "budget_task_12": {
+     "saved_J": 6687465.701116575,
+     "passes_lost": 0,
+     "e_per_success_J": 54119.38415253972,
+     "change": -0.7418483659839394
+    },
+    "oracle": {
+     "saved_J": 8860762.736816559,
+     "passes_lost": 0,
+     "e_per_success_J": 3577.5926246331182,
+     "change": -0.9829347396250904
+    },
+    "oracle_task": {
+     "saved_J": 8106738.7783292215,
+     "passes_lost": 0,
+     "e_per_success_J": 21113.033519687477,
+     "change": -0.8992899829240314
+    }
+   },
+   "failed_share": 0.9829347396250904,
+   "best_fixed": "budget_task_1.5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.9482080403436842,
+    "best_fixed_lost": 1,
+    "global_change": -0.877103961262716,
+    "global_lost": 0,
+    "oracle_change": -0.9829347396250904,
+    "oracle_task_change": -0.8992899829240314,
+    "gap_oracle_vs_best_fixed": -0.6705036749303892,
+    "e_per_success_J": 209641.84231804145
+   }
+  },
+  {
+   "key": "d_o64_granite_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 45,
+   "e_per_success_J": 453566.82060962636,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 523831.2989986416,
+     "passes_lost": 0,
+     "e_per_success_J": 441926.12507632317,
+     "change": -0.025664786321136224
+    },
+    "sign_cap2": {
+     "saved_J": 39003.72098871748,
+     "passes_lost": 0,
+     "e_per_success_J": 452700.0712543215,
+     "change": -0.00191096287453274
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 453566.82060962636,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 523831.2989986416,
+     "passes_lost": 0,
+     "e_per_success_J": 441926.12507632317,
+     "change": -0.025664786321136224
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 17339744.829151582,
+     "passes_lost": 9,
+     "e_per_success_J": 85298.94717448897,
+     "change": -0.8119374184825929
+    },
+    "budget_task_1.5": {
+     "saved_J": 15474096.331804724,
+     "passes_lost": 4,
+     "e_per_success_J": 120400.25842996246,
+     "change": -0.7345479145318966
+    },
+    "budget_cfg_2": {
+     "saved_J": 16454091.734103793,
+     "passes_lost": 9,
+     "e_per_success_J": 109900.42203692756,
+     "change": -0.7576973953050324
+    },
+    "budget_task_2": {
+     "saved_J": 14388746.106065935,
+     "passes_lost": 1,
+     "e_per_success_J": 136858.20048561934,
+     "change": -0.6982623193167611
+    },
+    "budget_cfg_3": {
+     "saved_J": 14704616.046100665,
+     "passes_lost": 7,
+     "e_per_success_J": 150155.02319296106,
+     "change": -0.6689461918948526
+    },
+    "budget_task_3": {
+     "saved_J": 12858197.8918938,
+     "passes_lost": 1,
+     "e_per_success_J": 171643.38717134966,
+     "change": -0.6215697900021685
+    },
+    "budget_cfg_5": {
+     "saved_J": 11461391.12577266,
+     "passes_lost": 7,
+     "e_per_success_J": 235503.04741211908,
+     "change": -0.4807754079198604
+    },
+    "budget_task_5": {
+     "saved_J": 10088212.472302638,
+     "passes_lost": 1,
+     "e_per_success_J": 234597.601252967,
+     "change": -0.4827716874491591
+    },
+    "budget_cfg_8": {
+     "saved_J": 7680233.3215203965,
+     "passes_lost": 3,
+     "e_per_success_J": 303101.7525217331,
+     "change": -0.3317373785976174
+    },
+    "budget_task_8": {
+     "saved_J": 6763790.442707035,
+     "passes_lost": 0,
+     "e_per_success_J": 303260.36632724776,
+     "change": -0.33138767531618807
+    },
+    "budget_cfg_12": {
+     "saved_J": 3892415.772546497,
+     "passes_lost": 0,
+     "e_per_success_J": 367068.6923308153,
+     "change": -0.19070647222949721
+    },
+    "budget_task_12": {
+     "saved_J": 3540819.02243316,
+     "passes_lost": 0,
+     "e_per_success_J": 374881.953444445,
+     "change": -0.17348020972835554
+    },
+    "oracle": {
+     "saved_J": 19046677.764630288,
+     "passes_lost": 0,
+     "e_per_success_J": 30307.314728953275,
+     "change": -0.9331800445892007
+    },
+    "oracle_task": {
+     "saved_J": 16108351.860768821,
+     "passes_lost": 0,
+     "e_per_success_J": 95603.44592587477,
+     "change": -0.7892186077513852
+    }
+   },
+   "failed_share": 0.9331800445892006,
+   "best_fixed": "budget_task_2",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.6982623193167611,
+    "best_fixed_lost": 1,
+    "global_change": -0.4827716874491591,
+    "global_lost": 1,
+    "oracle_change": -0.9331800445892007,
+    "oracle_task_change": -0.7892186077513852,
+    "gap_oracle_vs_best_fixed": -0.7785495160581344,
+    "e_per_success_J": 453566.82060962636
+   }
+  },
+  {
+   "key": "d_o64_qwen38_tc",
+   "domain": "drone",
+   "runs": 144,
+   "passes": 109,
+   "e_per_success_J": 198328.8098624523,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 623270.8864480223,
+     "passes_lost": 1,
+     "e_per_success_J": 194394.1610051785,
+     "change": -0.019839018143670617
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 623270.8864480223,
+     "passes_lost": 1,
+     "e_per_success_J": 194394.1610051785,
+     "change": -0.019839018143670617
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 10782466.297095042,
+     "passes_lost": 40,
+     "e_per_success_J": 157034.40547698925,
+     "change": -0.20821182970896712
+    },
+    "budget_task_1.5": {
+     "saved_J": 4545810.356026979,
+     "passes_lost": 21,
+     "e_per_success_J": 194000.33998841277,
+     "change": -0.021824715617672852
+    },
+    "budget_cfg_2": {
+     "saved_J": 8453724.811968656,
+     "passes_lost": 19,
+     "e_per_success_J": 146267.94958931828,
+     "change": -0.2624977193643222
+    },
+    "budget_task_2": {
+     "saved_J": 2809883.5342216725,
+     "passes_lost": 8,
+     "e_per_success_J": 186217.39347312503,
+     "change": -0.06106735777685013
+    },
+    "budget_cfg_3": {
+     "saved_J": 5259877.778500754,
+     "passes_lost": 12,
+     "e_per_success_J": 168638.78862377882,
+     "change": -0.14970100037036727
+    },
+    "budget_task_3": {
+     "saved_J": 796525.6193457226,
+     "passes_lost": 5,
+     "e_per_success_J": 200204.94861213057,
+     "change": 0.009459738859822986
+    },
+    "budget_cfg_5": {
+     "saved_J": 1060069.442351735,
+     "passes_lost": 4,
+     "e_per_success_J": 195788.2936443387,
+     "change": -0.012809617623760872
+    },
+    "budget_task_5": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "budget_cfg_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "budget_task_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 198328.8098624523,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 11044143.320681468,
+     "passes_lost": 0,
+     "e_per_success_J": 97006.39407638379,
+     "change": -0.5108809751661345
+    },
+    "oracle_task": {
+     "saved_J": 1877653.5252082897,
+     "passes_lost": 0,
+     "e_per_success_J": 181102.630732101,
+     "change": -0.08685666566697103
+    }
+   },
+   "failed_share": 0.5108809751661345,
+   "best_fixed": "sign_any",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.019839018143670617,
+    "best_fixed_lost": 1,
+    "global_change": 0.0,
+    "global_lost": 0,
+    "oracle_change": -0.5108809751661345,
+    "oracle_task_change": -0.08685666566697103,
+    "gap_oracle_vs_best_fixed": -0.5009809267172401,
+    "e_per_success_J": 198328.8098624523
+   }
+  },
+  {
+   "key": "t_thor_gemma",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 187,
+   "e_per_success_J": 58095.284652406386,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 4088867.3310229657,
+     "passes_lost": 1,
+     "e_per_success_J": 36424.467198801234,
+     "change": -0.3730219687065002
+    },
+    "sign_cap2": {
+     "saved_J": 3000617.987569525,
+     "passes_lost": 0,
+     "e_per_success_J": 42049.199157382194,
+     "change": -0.2762028896326191
+    },
+    "sign_ctx80": {
+     "saved_J": 92123.00654272534,
+     "passes_lost": 0,
+     "e_per_success_J": 57602.64825378219,
+     "change": -0.008479800065904208
+    },
+    "sign_any": {
+     "saved_J": 4088867.3310229657,
+     "passes_lost": 1,
+     "e_per_success_J": 36424.467198801234,
+     "change": -0.3730219687065002
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 7577974.1049999995,
+     "passes_lost": 56,
+     "e_per_success_J": 25082.779580152637,
+     "change": -0.5682475827388226
+    },
+    "budget_task_1.5": {
+     "saved_J": 5906527.345,
+     "passes_lost": 42,
+     "e_per_success_J": 34188.21299999997,
+     "change": -0.41151483800185074
+    },
+    "budget_cfg_2": {
+     "saved_J": 7014642.200000001,
+     "passes_lost": 36,
+     "e_per_success_J": 25491.231986754927,
+     "change": -0.5612168502267758
+    },
+    "budget_task_2": {
+     "saved_J": 5212707.58,
+     "passes_lost": 24,
+     "e_per_success_J": 34669.390490797516,
+     "change": -0.4032322812732537
+    },
+    "budget_cfg_3": {
+     "saved_J": 6103298.129999999,
+     "passes_lost": 23,
+     "e_per_success_J": 29027.561585365827,
+     "change": -0.5003456518193776
+    },
+    "budget_task_3": {
+     "saved_J": 4484783.195000001,
+     "passes_lost": 4,
+     "e_per_success_J": 34858.114945355155,
+     "change": -0.399983748183403
+    },
+    "budget_cfg_5": {
+     "saved_J": 4876183.49,
+     "passes_lost": 7,
+     "e_per_success_J": 33264.637444444415,
+     "change": -0.4274124372834698
+    },
+    "budget_task_5": {
+     "saved_J": 3823727.3500000006,
+     "passes_lost": 0,
+     "e_per_success_J": 37647.544812834196,
+     "change": -0.35196901025469396
+    },
+    "budget_cfg_8": {
+     "saved_J": 3877381.159999999,
+     "passes_lost": 2,
+     "e_per_success_J": 37764.52470270268,
+     "change": -0.3499554236001421
+    },
+    "budget_task_8": {
+     "saved_J": 3280137.98,
+     "passes_lost": 0,
+     "e_per_success_J": 40554.439839572166,
+     "change": -0.30193233268042274
+    },
+    "budget_cfg_12": {
+     "saved_J": 2965803.0100000007,
+     "passes_lost": 0,
+     "e_per_success_J": 42235.37550802136,
+     "change": -0.27299821731277274
+    },
+    "budget_task_12": {
+     "saved_J": 2718811.6399999997,
+     "passes_lost": 0,
+     "e_per_success_J": 43556.184973262,
+     "change": -0.2502629906391577
+    },
+    "oracle": {
+     "saved_J": 7398107.11,
+     "passes_lost": 0,
+     "e_per_success_J": 18533.214545454517,
+     "change": -0.6809859069227084
+    },
+    "oracle_task": {
+     "saved_J": 3461443.96,
+     "passes_lost": 0,
+     "e_per_success_J": 39584.889144385,
+     "change": -0.3186213066821536
+    }
+   },
+   "failed_share": 0.6809859069227086,
+   "best_fixed": "budget_cfg_5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.4274124372834698,
+    "best_fixed_lost": 7,
+    "global_change": -0.35196901025469396,
+    "global_lost": 0,
+    "oracle_change": -0.6809859069227084,
+    "oracle_task_change": -0.3186213066821536,
+    "gap_oracle_vs_best_fixed": -0.442855357242146,
+    "e_per_success_J": 58095.284652406386
+   }
+  },
+  {
+   "key": "t_thor_granite",
+   "domain": "traffic",
+   "runs": 189,
+   "passes": 124,
+   "e_per_success_J": 101837.08846774187,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 1152501.7222198448,
+     "passes_lost": 2,
+     "e_per_success_J": 94059.81350639464,
+     "change": -0.07636976938721862
+    },
+    "sign_cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 1152501.7222198448,
+     "passes_lost": 2,
+     "e_per_success_J": 94059.81350639464,
+     "change": -0.07636976938721862
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 5943372.139999996,
+     "passes_lost": 38,
+     "e_per_success_J": 77725.89337209296,
+     "change": -0.23676241591771763
+    },
+    "budget_task_1.5": {
+     "saved_J": 3058434.9275,
+     "passes_lost": 25,
+     "e_per_success_J": 96660.24285353527,
+     "change": -0.050834579936428814
+    },
+    "budget_cfg_2": {
+     "saved_J": 4771096.370000002,
+     "passes_lost": 26,
+     "e_per_success_J": 80170.43469387744,
+     "change": -0.21275798532601997
+    },
+    "budget_task_2": {
+     "saved_J": 2165027.8600000003,
+     "passes_lost": 14,
+     "e_per_success_J": 95116.10099999992,
+     "change": -0.06599744325831647
+    },
+    "budget_cfg_3": {
+     "saved_J": 3141023.3250000007,
+     "passes_lost": 11,
+     "e_per_success_J": 83953.76676991142,
+     "change": -0.17560715812780925
+    },
+    "budget_task_3": {
+     "saved_J": 1071417.6500000001,
+     "passes_lost": 4,
+     "e_per_success_J": 96303.1776666666,
+     "change": -0.054340819089974346
+    },
+    "budget_cfg_5": {
+     "saved_J": 1254933.385,
+     "passes_lost": 4,
+     "e_per_success_J": 94773.87987499993,
+     "change": -0.06935791958525306
+    },
+    "budget_task_5": {
+     "saved_J": 325531.47500000003,
+     "passes_lost": 1,
+     "e_per_success_J": 100018.43491869912,
+     "change": -0.01785845978519729
+    },
+    "budget_cfg_8": {
+     "saved_J": 275425.28,
+     "passes_lost": 1,
+     "e_per_success_J": 100425.80235772351,
+     "change": -0.013858272376526037
+    },
+    "budget_task_8": {
+     "saved_J": 145466.19000000003,
+     "passes_lost": 0,
+     "e_per_success_J": 100663.974032258,
+     "change": -0.011519520570891562
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 16134.110000000044,
+     "passes_lost": 0,
+     "e_per_success_J": 101706.97467741929,
+     "change": -0.0012776660476089274
+    },
+    "oracle": {
+     "saved_J": 6874298.8500000015,
+     "passes_lost": 0,
+     "e_per_success_J": 46399.19451612895,
+     "change": -0.5443782298349342
+    },
+    "oracle_task": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 101837.08846774187,
+     "change": 0.0
+    }
+   },
+   "failed_share": 0.5443782298349342,
+   "best_fixed": "sign_any",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.07636976938721862,
+    "best_fixed_lost": 2,
+    "global_change": -0.01785845978519729,
+    "global_lost": 1,
+    "oracle_change": -0.5443782298349342,
+    "oracle_task_change": 0.0,
+    "gap_oracle_vs_best_fixed": -0.5067054378863456,
+    "e_per_success_J": 101837.08846774187
+   }
+  },
+  {
+   "key": "t_thor_qwen36",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 226,
+   "e_per_success_J": 29668.68526548675,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 34389.63060853797,
+     "passes_lost": 4,
+     "e_per_success_J": 30048.34792518679,
+     "change": 0.012796747018031684
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 34389.63060853797,
+     "passes_lost": 4,
+     "e_per_success_J": 30048.34792518679,
+     "change": 0.012796747018031684
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 3052845.6275,
+     "passes_lost": 76,
+     "e_per_success_J": 24348.514950000037,
+     "change": -0.17931938230089384
+    },
+    "budget_task_1.5": {
+     "saved_J": 1047270.4850000002,
+     "passes_lost": 45,
+     "e_per_success_J": 31258.852955801136,
+     "change": 0.05359751118342304
+    },
+    "budget_cfg_2": {
+     "saved_J": 2472536.5999999996,
+     "passes_lost": 56,
+     "e_per_success_J": 24897.56629411768,
+     "change": -0.16081329282626688
+    },
+    "budget_task_2": {
+     "saved_J": 616386.6599999999,
+     "passes_lost": 25,
+     "e_per_success_J": 30292.219950248786,
+     "change": 0.021016593057036737
+    },
+    "budget_cfg_3": {
+     "saved_J": 1673952.2300000002,
+     "passes_lost": 34,
+     "e_per_success_J": 26204.013750000027,
+     "change": -0.11677873436195496
+    },
+    "budget_task_3": {
+     "saved_J": 298257.0800000001,
+     "passes_lost": 9,
+     "e_per_success_J": 29524.72714285717,
+     "change": -0.00485219083155819
+    },
+    "budget_cfg_5": {
+     "saved_J": 752841.0450000002,
+     "passes_lost": 17,
+     "e_per_success_J": 28479.817344497635,
+     "change": -0.040071473014414716
+    },
+    "budget_task_5": {
+     "saved_J": 75249.085,
+     "passes_lost": 2,
+     "e_per_success_J": 29597.650825892884,
+     "change": -0.0023942564005861033
+    },
+    "budget_cfg_8": {
+     "saved_J": 218567.81000000008,
+     "passes_lost": 6,
+     "e_per_success_J": 29484.341181818207,
+     "change": -0.00621342273912584
+    },
+    "budget_task_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "budget_cfg_12": {
+     "saved_J": 53604.890000000014,
+     "passes_lost": 1,
+     "e_per_success_J": 29562.30213333336,
+     "change": -0.0035857042939865247
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 879715.9399999997,
+     "passes_lost": 0,
+     "e_per_success_J": 25776.136858407106,
+     "change": -0.13120056963251425
+    },
+    "oracle_task": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 29668.68526548675,
+     "change": 0.0
+    }
+   },
+   "failed_share": 0.13120056963251428,
+   "best_fixed": "budget_cfg_8",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.00621342273912584,
+    "best_fixed_lost": 6,
+    "global_change": -0.0023942564005861033,
+    "global_lost": 2,
+    "oracle_change": -0.13120056963251425,
+    "oracle_task_change": 0.0,
+    "gap_oracle_vs_best_fixed": -0.1257686003748254,
+    "e_per_success_J": 29668.68526548675
+   }
+  },
+  {
+   "key": "t_o64_gemma",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 113,
+   "e_per_success_J": 25965.427964601764,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 116724.48103533828,
+     "passes_lost": 0,
+     "e_per_success_J": 24932.46795543948,
+     "change": -0.03978212916692547
+    },
+    "sign_cap2": {
+     "saved_J": 97265.300201971,
+     "passes_lost": 0,
+     "e_per_success_J": 25104.673095557773,
+     "change": -0.03315003589455345
+    },
+    "sign_ctx80": {
+     "saved_J": 507824.88673655584,
+     "passes_lost": 28,
+     "e_per_success_J": 28544.33497956992,
+     "change": 0.09932079758068846
+    },
+    "sign_any": {
+     "saved_J": 507824.88673655584,
+     "passes_lost": 28,
+     "e_per_success_J": 28544.33497956992,
+     "change": 0.09932079758068846
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 847311.2399999996,
+     "passes_lost": 33,
+     "e_per_success_J": 26084.776499999996,
+     "change": 0.004596440141904745
+    },
+    "budget_task_1.5": {
+     "saved_J": 517490.27,
+     "passes_lost": 19,
+     "e_per_success_J": 25708.54351063829,
+     "change": -0.009893326399768143
+    },
+    "budget_cfg_2": {
+     "saved_J": 583124.8800000002,
+     "passes_lost": 20,
+     "e_per_success_J": 25279.230967741925,
+     "change": -0.026427332443559992
+    },
+    "budget_task_2": {
+     "saved_J": 342423.48000000004,
+     "passes_lost": 11,
+     "e_per_success_J": 25408.52823529411,
+     "change": -0.021447739281126643
+    },
+    "budget_cfg_3": {
+     "saved_J": 319709.74,
+     "passes_lost": 10,
+     "e_per_success_J": 25382.36524271844,
+     "change": -0.02245534803732885
+    },
+    "budget_task_3": {
+     "saved_J": 199581.82499999995,
+     "passes_lost": 3,
+     "e_per_success_J": 24859.195772727264,
+     "change": -0.04260404232052739
+    },
+    "budget_cfg_5": {
+     "saved_J": 113706.23,
+     "passes_lost": 2,
+     "e_per_success_J": 25408.893063063057,
+     "change": -0.021433688760971736
+    },
+    "budget_task_5": {
+     "saved_J": 102323.94499999999,
+     "passes_lost": 1,
+     "e_per_success_J": 25283.655491071426,
+     "change": -0.02625693188880951
+    },
+    "budget_cfg_8": {
+     "saved_J": 36108.34,
+     "passes_lost": 1,
+     "e_per_success_J": 25874.866249999995,
+     "change": -0.003487780549014219
+    },
+    "budget_task_8": {
+     "saved_J": 42671.5,
+     "passes_lost": 1,
+     "e_per_success_J": 25816.26660714285,
+     "change": -0.005744613863567505
+    },
+    "budget_cfg_12": {
+     "saved_J": 5872.699999999997,
+     "passes_lost": 1,
+     "e_per_success_J": 26144.827321428565,
+     "change": 0.0069091623319812445
+    },
+    "budget_task_12": {
+     "saved_J": 15717.440000000002,
+     "passes_lost": 1,
+     "e_per_success_J": 26056.92785714285,
+     "change": 0.003523912360151593
+    },
+    "oracle": {
+     "saved_J": 1671161.7899999993,
+     "passes_lost": 0,
+     "e_per_success_J": 11176.38557522124,
+     "change": -0.5695666718662284
+    },
+    "oracle_task": {
+     "saved_J": 704357.3899999995,
+     "passes_lost": 0,
+     "e_per_success_J": 19732.176725663714,
+     "change": -0.24005963804778174
+    }
+   },
+   "failed_share": 0.5695666718662284,
+   "best_fixed": "budget_task_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.04260404232052739,
+    "best_fixed_lost": 3,
+    "global_change": -0.02625693188880951,
+    "global_lost": 1,
+    "oracle_change": -0.5695666718662284,
+    "oracle_task_change": -0.24005963804778174,
+    "gap_oracle_vs_best_fixed": -0.5504124237404846,
+    "e_per_success_J": 25965.427964601764
+   }
+  },
+  {
+   "key": "t_o64_granite",
+   "domain": "traffic",
+   "runs": 189,
+   "passes": 111,
+   "e_per_success_J": 51636.39549549548,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 225350.8561806097,
+     "passes_lost": 2,
+     "e_per_success_J": 50516.41324604944,
+     "change": -0.021689783701957843
+    },
+    "sign_cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 199399.00047417535,
+     "passes_lost": 1,
+     "e_per_success_J": 50293.09908659839,
+     "change": -0.026014527079340266
+    },
+    "sign_any": {
+     "saved_J": 353954.91816820914,
+     "passes_lost": 3,
+     "e_per_success_J": 49793.37946140546,
+     "change": -0.03569218990606737
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 2025845.1050000011,
+     "passes_lost": 30,
+     "e_per_success_J": 45750.553024691326,
+     "change": -0.11398631554980654
+    },
+    "budget_task_1.5": {
+     "saved_J": 943364.6850000002,
+     "passes_lost": 16,
+     "e_per_success_J": 50402.896999999975,
+     "change": -0.023888160350059917
+    },
+    "budget_cfg_2": {
+     "saved_J": 1537065.0299999993,
+     "passes_lost": 22,
+     "e_per_success_J": 47130.054719101114,
+     "change": -0.08727063020476478
+    },
+    "budget_task_2": {
+     "saved_J": 559141.6000000001,
+     "passes_lost": 6,
+     "e_per_success_J": 49261.888571428564,
+     "change": -0.04598514093173023
+    },
+    "budget_cfg_3": {
+     "saved_J": 903140.8400000001,
+     "passes_lost": 8,
+     "e_per_success_J": 46878.631650485426,
+     "change": -0.09213973592376523
+    },
+    "budget_task_3": {
+     "saved_J": 228940.34500000003,
+     "passes_lost": 3,
+     "e_per_success_J": 50950.92180555555,
+     "change": -0.013275010452651226
+    },
+    "budget_cfg_5": {
+     "saved_J": 247372.95000000007,
+     "passes_lost": 1,
+     "e_per_success_J": 49856.97227272726,
+     "change": -0.03446063974243618
+    },
+    "budget_task_5": {
+     "saved_J": 41818.07000000001,
+     "passes_lost": 0,
+     "e_per_success_J": 51259.65612612611,
+     "change": -0.007296004412280066
+    },
+    "budget_cfg_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "budget_task_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 51636.39549549548,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 2795991.7199999993,
+     "passes_lost": 0,
+     "e_per_success_J": 26447.280900900892,
+     "change": -0.48781705912822615
+    },
+    "oracle_task": {
+     "saved_J": 755329.47,
+     "passes_lost": 0,
+     "e_per_success_J": 44831.625495495486,
+     "change": -0.13178243629715813
+    }
+   },
+   "failed_share": 0.4878170591282261,
+   "best_fixed": "sign_any",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.03569218990606737,
+    "best_fixed_lost": 3,
+    "global_change": -0.007296004412280066,
+    "global_lost": 0,
+    "oracle_change": -0.48781705912822615,
+    "oracle_task_change": -0.13178243629715813,
+    "gap_oracle_vs_best_fixed": -0.4688594912221209,
+    "e_per_success_J": 51636.39549549548
+   }
+  },
+  {
+   "key": "t_o32_granite",
+   "domain": "traffic",
+   "runs": 189,
+   "passes": 97,
+   "e_per_success_J": 70519.8411340206,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 141223.97027424665,
+     "passes_lost": 0,
+     "e_per_success_J": 69063.92391469846,
+     "change": -0.020645497719644745
+    },
+    "sign_cap2": {
+     "saved_J": 35580.4606613806,
+     "passes_lost": 0,
+     "e_per_success_J": 70153.03226122285,
+     "change": -0.005201498853360076
+    },
+    "sign_ctx80": {
+     "saved_J": 174482.78915734706,
+     "passes_lost": 1,
+     "e_per_success_J": 69436.8937587776,
+     "change": -0.015356633790267415
+    },
+    "sign_any": {
+     "saved_J": 315706.7594315937,
+     "passes_lost": 1,
+     "e_per_success_J": 67965.81073508754,
+     "change": -0.03621718877782509
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 2224770.090000001,
+     "passes_lost": 23,
+     "e_per_success_J": 62373.70945945941,
+     "change": -0.11551545697727439
+    },
+    "budget_task_1.5": {
+     "saved_J": 1323565.8375000004,
+     "passes_lost": 13,
+     "e_per_success_J": 65676.88991071425,
+     "change": -0.06867501607246218
+    },
+    "budget_cfg_2": {
+     "saved_J": 1503503.06,
+     "passes_lost": 16,
+     "e_per_success_J": 65887.92012345676,
+     "change": -0.06568252191267732
+    },
+    "budget_task_2": {
+     "saved_J": 729827.7,
+     "passes_lost": 7,
+     "e_per_success_J": 67895.52099999996,
+     "change": -0.03721392578059268
+    },
+    "budget_cfg_3": {
+     "saved_J": 628481.6400000001,
+     "passes_lost": 4,
+     "e_per_success_J": 66795.08548387093,
+     "change": -0.05281854851418177
+    },
+    "budget_task_3": {
+     "saved_J": 144138.00000000006,
+     "passes_lost": 1,
+     "e_per_success_J": 69752.98531249996,
+     "change": -0.01087432712820846
+    },
+    "budget_cfg_5": {
+     "saved_J": 113614.19000000003,
+     "passes_lost": 0,
+     "e_per_success_J": 69348.56082474224,
+     "change": -0.016609230685196485
+    },
+    "budget_task_5": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 70519.8411340206,
+     "change": 0.0
+    },
+    "budget_cfg_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 70519.8411340206,
+     "change": 0.0
+    },
+    "budget_task_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 70519.8411340206,
+     "change": 0.0
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 70519.8411340206,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 70519.8411340206,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 4005543.889999998,
+     "passes_lost": 0,
+     "e_per_success_J": 29225.574226804118,
+     "change": -0.5855694829025225
+    },
+    "oracle_task": {
+     "saved_J": 1350987.49,
+     "passes_lost": 0,
+     "e_per_success_J": 56592.13505154636,
+     "change": -0.19750053117682298
+    }
+   },
+   "failed_share": 0.5855694829025225,
+   "best_fixed": "budget_cfg_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.05281854851418177,
+    "best_fixed_lost": 4,
+    "global_change": 0.0,
+    "global_lost": 0,
+    "oracle_change": -0.5855694829025225,
+    "oracle_task_change": -0.19750053117682298,
+    "gap_oracle_vs_best_fixed": -0.56245921365186,
+    "e_per_success_J": 70519.8411340206
+   }
+  },
+  {
+   "key": "t_o32_e4b",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 184,
+   "e_per_success_J": 37345.728369565215,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 1756174.5996737382,
+     "passes_lost": 2,
+     "e_per_success_J": 28106.81000179264,
+     "change": -0.2473888921470816
+    },
+    "sign_cap2": {
+     "saved_J": 1378616.060183412,
+     "passes_lost": 1,
+     "e_per_success_J": 30016.382294079718,
+     "change": -0.19625661074155198
+    },
+    "sign_ctx80": {
+     "saved_J": 227515.94151099274,
+     "passes_lost": 2,
+     "e_per_success_J": 36506.03339829124,
+     "change": -0.02248436455608882
+    },
+    "sign_any": {
+     "saved_J": 1852144.829044217,
+     "passes_lost": 4,
+     "e_per_success_J": 27885.939949754345,
+     "change": -0.25330309068279133
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 3273644.3250000007,
+     "passes_lost": 49,
+     "e_per_success_J": 26651.627370370363,
+     "change": -0.2863540615239406
+    },
+    "budget_task_1.5": {
+     "saved_J": 2761823.475000001,
+     "passes_lost": 35,
+     "e_per_success_J": 27582.48687919462,
+     "change": -0.26142860018033864
+    },
+    "budget_cfg_2": {
+     "saved_J": 2824937.8900000006,
+     "passes_lost": 19,
+     "e_per_success_J": 24525.309878787873,
+     "change": -0.34329009100878327
+    },
+    "budget_task_2": {
+     "saved_J": 2295447.29,
+     "passes_lost": 19,
+     "e_per_success_J": 27734.343818181816,
+     "change": -0.2573623536344297
+    },
+    "budget_cfg_3": {
+     "saved_J": 2242382.1500000004,
+     "passes_lost": 9,
+     "e_per_success_J": 26452.75354285714,
+     "change": -0.29167927102434754
+    },
+    "budget_task_3": {
+     "saved_J": 1690352.365,
+     "passes_lost": 11,
+     "e_per_success_J": 29949.48933526011,
+     "change": -0.19804779173439946
+    },
+    "budget_cfg_5": {
+     "saved_J": 1474894.8399999999,
+     "passes_lost": 1,
+     "e_per_success_J": 29490.268743169396,
+     "change": -0.21034426075881818
+    },
+    "budget_task_5": {
+     "saved_J": 1179069.36,
+     "passes_lost": 0,
+     "e_per_success_J": 30937.7427173913,
+     "change": -0.1715855047399768
+    },
+    "budget_cfg_8": {
+     "saved_J": 778089.6300000001,
+     "passes_lost": 0,
+     "e_per_success_J": 33116.98038043478,
+     "change": -0.1132324411317851
+    },
+    "budget_task_8": {
+     "saved_J": 776854.7600000001,
+     "passes_lost": 0,
+     "e_per_success_J": 33123.69163043478,
+     "change": -0.11305273517094305
+    },
+    "budget_cfg_12": {
+     "saved_J": 631496.6000000001,
+     "passes_lost": 0,
+     "e_per_success_J": 33913.68163043478,
+     "change": -0.0918993118883007
+    },
+    "budget_task_12": {
+     "saved_J": 631496.6000000001,
+     "passes_lost": 0,
+     "e_per_success_J": 33913.68163043478,
+     "change": -0.0918993118883007
+    },
+    "oracle": {
+     "saved_J": 3437268.23,
+     "passes_lost": 0,
+     "e_per_success_J": 18664.92277173913,
+     "change": -0.5002126458202901
+    },
+    "oracle_task": {
+     "saved_J": 1924797.9499999997,
+     "passes_lost": 0,
+     "e_per_success_J": 26884.869945652175,
+     "change": -0.28010856610948
+    }
+   },
+   "failed_share": 0.5002126458202901,
+   "best_fixed": "budget_cfg_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.29167927102434754,
+    "best_fixed_lost": 9,
+    "global_change": -0.1715855047399768,
+    "global_lost": 0,
+    "oracle_change": -0.5002126458202901,
+    "oracle_task_change": -0.28010856610948,
+    "gap_oracle_vs_best_fixed": -0.2944052972973358,
+    "e_per_success_J": 37345.728369565215
+   }
+  },
+  {
+   "key": "t_o32_qwenvl",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 66,
+   "e_per_success_J": 8179.6698484848475,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8179.6698484848475,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8179.6698484848475,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 15867.34670636995,
+     "passes_lost": 1,
+     "e_per_success_J": 8061.397896825077,
+     "change": -0.014459257384536017
+    },
+    "sign_any": {
+     "saved_J": 15867.34670636995,
+     "passes_lost": 1,
+     "e_per_success_J": 8061.397896825077,
+     "change": -0.014459257384536017
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 106628.2425,
+     "passes_lost": 7,
+     "e_per_success_J": 7342.880805084746,
+     "change": -0.10230107802640764
+    },
+    "budget_task_1.5": {
+     "saved_J": 71928.57750000001,
+     "passes_lost": 3,
+     "e_per_success_J": 7427.4544841269835,
+     "change": -0.09196158014827449
+    },
+    "budget_cfg_2": {
+     "saved_J": 84941.47,
+     "passes_lost": 3,
+     "e_per_success_J": 7220.900634920635,
+     "change": -0.11721368115386821
+    },
+    "budget_task_2": {
+     "saved_J": 51634.759999999995,
+     "passes_lost": 2,
+     "e_per_success_J": 7628.491406249999,
+     "change": -0.06738394732850317
+    },
+    "budget_cfg_3": {
+     "saved_J": 65008.93999999999,
+     "passes_lost": 2,
+     "e_per_success_J": 7419.519843749999,
+     "change": -0.0929316242361119
+    },
+    "budget_task_3": {
+     "saved_J": 31361.644999999993,
+     "passes_lost": 1,
+     "e_per_success_J": 7823.024076923076,
+     "change": -0.04360148736661229
+    },
+    "budget_cfg_5": {
+     "saved_J": 41396.74,
+     "passes_lost": 0,
+     "e_per_success_J": 7552.446515151515,
+     "change": -0.07668076401023882
+    },
+    "budget_task_5": {
+     "saved_J": 18202.034999999996,
+     "passes_lost": 0,
+     "e_per_success_J": 7903.881439393939,
+     "change": -0.03371632525510715
+    },
+    "budget_cfg_8": {
+     "saved_J": 16592.969999999994,
+     "passes_lost": 0,
+     "e_per_success_J": 7928.261212121212,
+     "change": -0.030735792644516646
+    },
+    "budget_task_8": {
+     "saved_J": 9028.789999999997,
+     "passes_lost": 0,
+     "e_per_success_J": 8042.869999999999,
+     "change": -0.01672437286820183
+    },
+    "budget_cfg_12": {
+     "saved_J": 1929.0899999999965,
+     "passes_lost": 0,
+     "e_per_success_J": 8150.441212121212,
+     "change": -0.0035733271519571286
+    },
+    "budget_task_12": {
+     "saved_J": 1929.0899999999965,
+     "passes_lost": 0,
+     "e_per_success_J": 8150.441212121212,
+     "change": -0.0035733271519571286
+    },
+    "oracle": {
+     "saved_J": 419542.62,
+     "passes_lost": 0,
+     "e_per_success_J": 1822.9634848484843,
+     "change": -0.7771348332370458
+    },
+    "oracle_task": {
+     "saved_J": 285252.69000000006,
+     "passes_lost": 0,
+     "e_per_success_J": 3857.6593939393924,
+     "change": -0.5283844622831615
+    }
+   },
+   "failed_share": 0.7771348332370458,
+   "best_fixed": "budget_cfg_2",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.11721368115386821,
+    "best_fixed_lost": 3,
+    "global_change": -0.03371632525510715,
+    "global_lost": 0,
+    "oracle_change": -0.7771348332370458,
+    "oracle_task_change": -0.5283844622831615,
+    "gap_oracle_vs_best_fixed": -0.7475434745587632,
+    "e_per_success_J": 8179.6698484848475
+   }
+  },
+  {
+   "key": "t_thor_devstral",
+   "domain": "traffic",
+   "runs": 189,
+   "passes": 126,
+   "e_per_success_J": 55113.935634920665,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 376936.95336116187,
+     "passes_lost": 0,
+     "e_per_success_J": 52122.37251300668,
+     "change": -0.05427961344895327
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 55113.935634920665,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 55113.935634920665,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 376936.95336116187,
+     "passes_lost": 0,
+     "e_per_success_J": 52122.37251300668,
+     "change": -0.05427961344895327
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 4659277.225,
+     "passes_lost": 35,
+     "e_per_success_J": 25110.7545604396,
+     "change": -0.5443846593214583
+    },
+    "budget_task_1.5": {
+     "saved_J": 3978308.8049999997,
+     "passes_lost": 27,
+     "e_per_success_J": 29960.071565656603,
+     "change": -0.45639752958100055
+    },
+    "budget_cfg_2": {
+     "saved_J": 4247253.5,
+     "passes_lost": 29,
+     "e_per_success_J": 27805.17927835055,
+     "change": -0.4954963938243425
+    },
+    "budget_task_2": {
+     "saved_J": 3479696.2100000004,
+     "passes_lost": 20,
+     "e_per_success_J": 32685.46867924531,
+     "change": -0.40694729377055205
+    },
+    "budget_cfg_3": {
+     "saved_J": 3604757.029999999,
+     "passes_lost": 10,
+     "e_per_success_J": 28789.645344827626,
+     "change": -0.4776340137359696
+    },
+    "budget_task_3": {
+     "saved_J": 2719784.5199999996,
+     "passes_lost": 12,
+     "e_per_success_J": 37057.64359649126,
+     "change": -0.3276175404717202
+    },
+    "budget_cfg_5": {
+     "saved_J": 2726999.1750000003,
+     "passes_lost": 3,
+     "e_per_success_J": 34287.4529674797,
+     "change": -0.3778805201899812
+    },
+    "budget_task_5": {
+     "saved_J": 1678147.4650000003,
+     "passes_lost": 6,
+     "e_per_success_J": 43885.07020833335,
+     "change": -0.20373913234881758
+    },
+    "budget_cfg_8": {
+     "saved_J": 1706086.7299999997,
+     "passes_lost": 2,
+     "e_per_success_J": 42244.10612903229,
+     "change": -0.23351316427734725
+    },
+    "budget_task_8": {
+     "saved_J": 830235.1699999999,
+     "passes_lost": 5,
+     "e_per_success_J": 50529.92330578515,
+     "change": -0.08317338031347266
+    },
+    "budget_cfg_12": {
+     "saved_J": 686426.7899999999,
+     "passes_lost": 1,
+     "e_per_success_J": 50063.432800000024,
+     "change": -0.09163749198343585
+    },
+    "budget_task_12": {
+     "saved_J": 298431.61999999994,
+     "passes_lost": 1,
+     "e_per_success_J": 53167.394160000025,
+     "change": -0.03531849889680705
+    },
+    "oracle": {
+     "saved_J": 4780131.94,
+     "passes_lost": 0,
+     "e_per_success_J": 17176.38055555558,
+     "change": -0.6883477770607171
+    },
+    "oracle_task": {
+     "saved_J": 1819105.0099999998,
+     "passes_lost": 0,
+     "e_per_success_J": 40676.594285714316,
+     "change": -0.2619544618413845
+    }
+   },
+   "failed_share": 0.6883477770607171,
+   "best_fixed": "budget_cfg_5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.3778805201899812,
+    "best_fixed_lost": 3,
+    "global_change": -0.20373913234881758,
+    "global_lost": 6,
+    "oracle_change": -0.6883477770607171,
+    "oracle_task_change": -0.2619544618413845,
+    "gap_oracle_vs_best_fixed": -0.4990476378678025,
+    "e_per_success_J": 55113.935634920665
+   }
+  },
+  {
+   "key": "t_thor_gemma_rfx",
+   "domain": "traffic",
+   "runs": 196,
+   "passes": 167,
+   "e_per_success_J": 155380.0968862275,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 7309018.343606657,
+     "passes_lost": 12,
+     "e_per_success_J": 120254.56668640861,
+     "change": -0.22606196613159868
+    },
+    "sign_cap2": {
+     "saved_J": 3785278.5031708986,
+     "passes_lost": 0,
+     "e_per_success_J": 132713.75854388677,
+     "change": -0.14587671649437495
+    },
+    "sign_ctx80": {
+     "saved_J": 1826666.813746753,
+     "passes_lost": 2,
+     "e_per_success_J": 146192.7840378984,
+     "change": -0.05912799021522186
+    },
+    "sign_any": {
+     "saved_J": 7309018.343606657,
+     "passes_lost": 12,
+     "e_per_success_J": 120254.56668640861,
+     "change": -0.22606196613159868
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 21671725.97,
+     "passes_lost": 51,
+     "e_per_success_J": 36868.53629310339,
+     "change": -0.7627203417172581
+    },
+    "budget_task_1.5": {
+     "saved_J": 14168385.147500006,
+     "passes_lost": 33,
+     "e_per_success_J": 87911.12710820885,
+     "change": -0.4342188679893848
+    },
+    "budget_cfg_2": {
+     "saved_J": 21003751.45,
+     "passes_lost": 33,
+     "e_per_success_J": 36900.93082089547,
+     "change": -0.7625118560203042
+    },
+    "budget_task_2": {
+     "saved_J": 13344578.989999996,
+     "passes_lost": 18,
+     "e_per_success_J": 84589.91402684561,
+     "change": -0.4555936331486259
+    },
+    "budget_cfg_3": {
+     "saved_J": 19987775.03,
+     "passes_lost": 24,
+     "e_per_success_J": 41683.224825174766,
+     "change": -0.7317338213806361
+    },
+    "budget_task_3": {
+     "saved_J": 12777143.940000003,
+     "passes_lost": 6,
+     "e_per_success_J": 81809.51701863347,
+     "change": -0.4734877976132549
+    },
+    "budget_cfg_5": {
+     "saved_J": 18380173.41,
+     "passes_lost": 15,
+     "e_per_success_J": 49791.46559210521,
+     "change": -0.6795505564103004
+    },
+    "budget_task_5": {
+     "saved_J": 12182354.155000001,
+     "passes_lost": 3,
+     "e_per_success_J": 83939.7684451219,
+     "change": -0.4597778600525373
+    },
+    "budget_cfg_8": {
+     "saved_J": 16314936.830000004,
+     "passes_lost": 13,
+     "e_per_success_J": 62555.45032467525,
+     "change": -0.5974037114259259
+    },
+    "budget_task_8": {
+     "saved_J": 11392931.83,
+     "passes_lost": 3,
+     "e_per_success_J": 88753.31920731702,
+     "change": -0.4287986622102312
+    },
+    "budget_cfg_12": {
+     "saved_J": 13706401.940000003,
+     "passes_lost": 12,
+     "e_per_success_J": 78981.12412903219,
+     "change": -0.49169085544550917
+    },
+    "budget_task_12": {
+     "saved_J": 10390012.860000001,
+     "passes_lost": 2,
+     "e_per_success_J": 94293.71709090903,
+     "change": -0.3931415993391172
+    },
+    "oracle": {
+     "saved_J": 16352546.46,
+     "passes_lost": 0,
+     "e_per_success_J": 57460.657005987974,
+     "change": -0.6301929387515967
+    },
+    "oracle_task": {
+     "saved_J": 7891333.430000001,
+     "passes_lost": 0,
+     "e_per_success_J": 108126.60329341314,
+     "change": -0.30411548544350786
+    }
+   },
+   "failed_share": 0.6301929387515967,
+   "best_fixed": "budget_task_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.4734877976132549,
+    "best_fixed_lost": 6,
+    "global_change": -0.4597778600525373,
+    "global_lost": 3,
+    "oracle_change": -0.6301929387515967,
+    "oracle_task_change": -0.30411548544350786,
+    "gap_oracle_vs_best_fixed": -0.2976286977357371,
+    "e_per_success_J": 155380.0968862275
+   }
+  },
+  {
+   "key": "t_o64_devstral",
+   "domain": "traffic",
+   "runs": 189,
+   "passes": 111,
+   "e_per_success_J": 32051.766486486475,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 213949.10810238018,
+     "passes_lost": 4,
+     "e_per_success_J": 31250.43898969737,
+     "change": -0.02500104002464132
+    },
+    "sign_any": {
+     "saved_J": 213949.10810238018,
+     "passes_lost": 4,
+     "e_per_success_J": 31250.43898969737,
+     "change": -0.02500104002464132
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 1849363.5999999999,
+     "passes_lost": 26,
+     "e_per_success_J": 20098.61741176469,
+     "change": -0.3729326144866748
+    },
+    "budget_task_1.5": {
+     "saved_J": 1257690.5450000002,
+     "passes_lost": 13,
+     "e_per_success_J": 23469.954438775494,
+     "change": -0.2677484890366092
+    },
+    "budget_cfg_2": {
+     "saved_J": 1554557.0000000005,
+     "passes_lost": 18,
+     "e_per_success_J": 21539.6675268817,
+     "change": -0.3279725304387463
+    },
+    "budget_task_2": {
+     "saved_J": 997486.0399999999,
+     "passes_lost": 10,
+     "e_per_success_J": 25349.10930693068,
+     "change": -0.2091197432872144
+    },
+    "budget_cfg_3": {
+     "saved_J": 1072890.28,
+     "passes_lost": 14,
+     "e_per_success_J": 25617.07010309277,
+     "change": -0.20075949280694627
+    },
+    "budget_task_3": {
+     "saved_J": 628036.3600000001,
+     "passes_lost": 5,
+     "e_per_success_J": 27638.770943396215,
+     "change": -0.13768337994571522
+    },
+    "budget_cfg_5": {
+     "saved_J": 388869.63,
+     "passes_lost": 5,
+     "e_per_success_J": 29895.060849056594,
+     "change": -0.06728819886851423
+    },
+    "budget_task_5": {
+     "saved_J": 243879.48999999996,
+     "passes_lost": 3,
+     "e_per_success_J": 30683.949907407397,
+     "change": -0.04267523225765946
+    },
+    "budget_cfg_8": {
+     "saved_J": 40891.89,
+     "passes_lost": 0,
+     "e_per_success_J": 31683.371081081066,
+     "change": -0.011493762927566875
+    },
+    "budget_task_8": {
+     "saved_J": 23410.72,
+     "passes_lost": 1,
+     "e_per_success_J": 32130.32145454544,
+     "change": 0.00245087795994281
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 32051.766486486475,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 2208261.3400000003,
+     "passes_lost": 0,
+     "e_per_success_J": 12157.520180180165,
+     "change": -0.6206911033965643
+    },
+    "oracle_task": {
+     "saved_J": 1238540.8300000003,
+     "passes_lost": 0,
+     "e_per_success_J": 20893.740990990973,
+     "change": -0.3481251337644651
+    }
+   },
+   "failed_share": 0.6206911033965642,
+   "best_fixed": "budget_task_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.13768337994571522,
+    "best_fixed_lost": 5,
+    "global_change": -0.04267523225765946,
+    "global_lost": 3,
+    "oracle_change": -0.6206911033965643,
+    "oracle_task_change": -0.3481251337644651,
+    "gap_oracle_vs_best_fixed": -0.5601280460307522,
+    "e_per_success_J": 32051.766486486475
+   }
+  },
+  {
+   "key": "t_o64_qwenvl",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 60,
+   "e_per_success_J": 8699.528166666667,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 8699.528166666667,
+     "change": 0.0
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 112748.35999999996,
+     "passes_lost": 10,
+     "e_per_success_J": 8184.466600000002,
+     "change": -0.05920568987180108
+    },
+    "budget_task_1.5": {
+     "saved_J": 106097.33999999997,
+     "passes_lost": 1,
+     "e_per_success_J": 7048.71779661017,
+     "change": -0.18975860971193637
+    },
+    "budget_cfg_2": {
+     "saved_J": 80290.33,
+     "passes_lost": 0,
+     "e_per_success_J": 7361.356,
+     "change": -0.1538212350175544
+    },
+    "budget_task_2": {
+     "saved_J": 79990.86,
+     "passes_lost": 0,
+     "e_per_success_J": 7366.347166666667,
+     "change": -0.15324750658412145
+    },
+    "budget_cfg_3": {
+     "saved_J": 61901.759999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 7667.832166666666,
+     "change": -0.11859217882103923
+    },
+    "budget_task_3": {
+     "saved_J": 61901.759999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 7667.832166666666,
+     "change": -0.11859217882103923
+    },
+    "budget_cfg_5": {
+     "saved_J": 45821.600000000006,
+     "passes_lost": 0,
+     "e_per_success_J": 7935.834833333332,
+     "change": -0.08778560385142742
+    },
+    "budget_task_5": {
+     "saved_J": 45821.600000000006,
+     "passes_lost": 0,
+     "e_per_success_J": 7935.834833333332,
+     "change": -0.08778560385142742
+    },
+    "budget_cfg_8": {
+     "saved_J": 24239.96,
+     "passes_lost": 0,
+     "e_per_success_J": 8295.528833333334,
+     "change": -0.04643922355252639
+    },
+    "budget_task_8": {
+     "saved_J": 24239.96,
+     "passes_lost": 0,
+     "e_per_success_J": 8295.528833333334,
+     "change": -0.04643922355252639
+    },
+    "budget_cfg_12": {
+     "saved_J": 9789.189999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 8536.375,
+     "change": -0.0187542546608227
+    },
+    "budget_task_12": {
+     "saved_J": 9789.189999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 8536.375,
+     "change": -0.0187542546608227
+    },
+    "oracle": {
+     "saved_J": 429703.68999999994,
+     "passes_lost": 0,
+     "e_per_success_J": 1537.8000000000009,
+     "change": -0.8232317925134981
+    },
+    "oracle_task": {
+     "saved_J": 379673.06,
+     "passes_lost": 0,
+     "e_per_success_J": 2371.6438333333335,
+     "change": -0.7273824754748672
+    }
+   },
+   "failed_share": 0.8232317925134981,
+   "best_fixed": "budget_task_1.5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.18975860971193637,
+    "best_fixed_lost": 1,
+    "global_change": -0.08778560385142742,
+    "global_lost": 0,
+    "oracle_change": -0.8232317925134981,
+    "oracle_task_change": -0.7273824754748672,
+    "gap_oracle_vs_best_fixed": -0.781832661716213,
+    "e_per_success_J": 8699.528166666667
+   }
+  },
+  {
+   "key": "t_o64_gemma_rfx",
+   "domain": "traffic",
+   "runs": 196,
+   "passes": 64,
+   "e_per_success_J": 58335.06078125004,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 58335.06078125004,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 58335.06078125004,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 666139.8770256574,
+     "passes_lost": 10,
+     "e_per_success_J": 56801.92616619157,
+     "change": -0.026281529401461445
+    },
+    "sign_any": {
+     "saved_J": 666139.8770256574,
+     "passes_lost": 10,
+     "e_per_success_J": 56801.92616619157,
+     "change": -0.026281529401461445
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 1631722.8049999997,
+     "passes_lost": 26,
+     "e_per_success_J": 55308.44960526323,
+     "change": -0.05188322657854527
+    },
+    "budget_task_1.5": {
+     "saved_J": 1244786.7574999998,
+     "passes_lost": 10,
+     "e_per_success_J": 46086.24319444449,
+     "change": -0.20997351203142212
+    },
+    "budget_cfg_2": {
+     "saved_J": 1261816.5800000005,
+     "passes_lost": 20,
+     "e_per_success_J": 56173.3479545455,
+     "change": -0.03705683679341176
+    },
+    "budget_task_2": {
+     "saved_J": 916160.0900000002,
+     "passes_lost": 6,
+     "e_per_success_J": 48573.858620689694,
+     "change": -0.16732993897381476
+    },
+    "budget_cfg_3": {
+     "saved_J": 753909.3850000001,
+     "passes_lost": 10,
+     "e_per_success_J": 55176.564907407446,
+     "change": -0.05414404016285501
+    },
+    "budget_task_3": {
+     "saved_J": 551232.875,
+     "passes_lost": 2,
+     "e_per_success_J": 51325.984112903265,
+     "change": -0.12015204191918183
+    },
+    "budget_cfg_5": {
+     "saved_J": 339402.2150000001,
+     "passes_lost": 3,
+     "e_per_success_J": 55640.02745901643,
+     "change": -0.04619920312313852
+    },
+    "budget_task_5": {
+     "saved_J": 280321.74,
+     "passes_lost": 1,
+     "e_per_success_J": 54811.46269841273,
+     "change": -0.06040274983256477
+    },
+    "budget_cfg_8": {
+     "saved_J": 147072.28000000003,
+     "passes_lost": 1,
+     "e_per_success_J": 56926.53349206353,
+     "change": -0.02414546707113807
+    },
+    "budget_task_8": {
+     "saved_J": 147633.66999999998,
+     "passes_lost": 1,
+     "e_per_success_J": 56917.62253968258,
+     "change": -0.024298221731227643
+    },
+    "budget_cfg_12": {
+     "saved_J": 69296.20000000001,
+     "passes_lost": 0,
+     "e_per_success_J": 57252.307656250036,
+     "change": -0.01856093249067159
+    },
+    "budget_task_12": {
+     "saved_J": 69296.20000000001,
+     "passes_lost": 0,
+     "e_per_success_J": 57252.307656250036,
+     "change": -0.01856093249067159
+    },
+    "oracle": {
+     "saved_J": 2712804.3799999985,
+     "passes_lost": 0,
+     "e_per_success_J": 15947.492343750062,
+     "change": -0.7266225125992175
+    },
+    "oracle_task": {
+     "saved_J": 1990645.5199999998,
+     "passes_lost": 0,
+     "e_per_success_J": 27231.22453125004,
+     "change": -0.533192831779775
+    }
+   },
+   "failed_share": 0.7266225125992175,
+   "best_fixed": "budget_task_3",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.12015204191918183,
+    "best_fixed_lost": 2,
+    "global_change": -0.06040274983256477,
+    "global_lost": 1,
+    "oracle_change": -0.7266225125992175,
+    "oracle_task_change": -0.533192831779775,
+    "gap_oracle_vs_best_fixed": -0.6892900814396486,
+    "e_per_success_J": 58335.06078125004
+   }
+  },
+  {
+   "key": "t_o64_devstral_rfx",
+   "domain": "traffic",
+   "runs": 126,
+   "passes": 31,
+   "e_per_success_J": 127172.85322580641,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "sign_any": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 127172.85322580641,
+     "change": 0.0
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 3273814.9699999983,
+     "passes_lost": 8,
+     "e_per_success_J": 29067.107826086976,
+     "change": -0.7714362217345567
+    },
+    "budget_task_1.5": {
+     "saved_J": 3112139.5124999974,
+     "passes_lost": 0,
+     "e_per_success_J": 26781.256048387142,
+     "change": -0.7894105906326195
+    },
+    "budget_cfg_2": {
+     "saved_J": 3090229.0700000017,
+     "passes_lost": 8,
+     "e_per_success_J": 37049.103478260746,
+     "change": -0.7086712884197317
+    },
+    "budget_task_2": {
+     "saved_J": 2941973.370000002,
+     "passes_lost": 0,
+     "e_per_success_J": 32270.4864516128,
+     "change": -0.7462470516855216
+    },
+    "budget_cfg_3": {
+     "saved_J": 2726649.459999998,
+     "passes_lost": 7,
+     "e_per_success_J": 50654.54125000003,
+     "change": -0.6016874673712125
+    },
+    "budget_task_3": {
+     "saved_J": 2625224.949999999,
+     "passes_lost": 0,
+     "e_per_success_J": 42488.17741935484,
+     "change": -0.6659021454530598
+    },
+    "budget_cfg_5": {
+     "saved_J": 2061781.0300000007,
+     "passes_lost": 1,
+     "e_per_success_J": 62685.91399999994,
+     "change": -0.5070810128896324
+    },
+    "budget_task_5": {
+     "saved_J": 2015227.9800000004,
+     "passes_lost": 0,
+     "e_per_success_J": 62165.49903225801,
+     "change": -0.5111731988754095
+    },
+    "budget_cfg_8": {
+     "saved_J": 1299755.4899999998,
+     "passes_lost": 0,
+     "e_per_success_J": 85245.25677419352,
+     "change": -0.3296898307154186
+    },
+    "budget_task_8": {
+     "saved_J": 1291949.3299999996,
+     "passes_lost": 0,
+     "e_per_success_J": 85497.06838709675,
+     "change": -0.32770975708715677
+    },
+    "budget_cfg_12": {
+     "saved_J": 661540.18,
+     "passes_lost": 0,
+     "e_per_success_J": 105832.84741935479,
+     "change": -0.16780315346515495
+    },
+    "budget_task_12": {
+     "saved_J": 661540.18,
+     "passes_lost": 0,
+     "e_per_success_J": 105832.84741935479,
+     "change": -0.16780315346515495
+    },
+    "oracle": {
+     "saved_J": 3744058.8999999985,
+     "passes_lost": 0,
+     "e_per_success_J": 6396.7596774193635,
+     "change": -0.9497002739565703
+    },
+    "oracle_task": {
+     "saved_J": 3596580.339999999,
+     "passes_lost": 0,
+     "e_per_success_J": 11154.132580645157,
+     "change": -0.9122915598910089
+    }
+   },
+   "failed_share": 0.9497002739565702,
+   "best_fixed": "budget_task_1.5",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.7894105906326195,
+    "best_fixed_lost": 0,
+    "global_change": -0.5111731988754095,
+    "global_lost": 0,
+    "oracle_change": -0.9497002739565703,
+    "oracle_task_change": -0.9122915598910089,
+    "gap_oracle_vs_best_fixed": -0.7611478839580192,
+    "e_per_success_J": 127172.85322580641
+   }
+  },
+  {
+   "key": "t_o32_ministral",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 154,
+   "e_per_success_J": 19186.400259740247,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 40642.56066156124,
+     "passes_lost": 0,
+     "e_per_success_J": 18922.487528171667,
+     "change": -0.013755197848257184
+    },
+    "sign_cap2": {
+     "saved_J": 0.0,
+     "passes_lost": 0,
+     "e_per_success_J": 19186.400259740247,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 102324.55802337546,
+     "passes_lost": 0,
+     "e_per_success_J": 18521.95507777028,
+     "change": -0.03463104975268372
+    },
+    "sign_any": {
+     "saved_J": 142967.1186849367,
+     "passes_lost": 0,
+     "e_per_success_J": 18258.0423462017,
+     "change": -0.0483862476009409
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 2411924.3525000005,
+     "passes_lost": 49,
+     "e_per_success_J": 5169.345595238074,
+     "change": -0.7305724093494932
+    },
+    "budget_task_1.5": {
+     "saved_J": 1580508.9699999995,
+     "passes_lost": 21,
+     "e_per_success_J": 10332.305789473676,
+     "change": -0.46147762740286136
+    },
+    "budget_cfg_2": {
+     "saved_J": 2327887.25,
+     "passes_lost": 36,
+     "e_per_success_J": 5312.020254237274,
+     "change": -0.723136170291217
+    },
+    "budget_task_2": {
+     "saved_J": 1306212.5300000003,
+     "passes_lost": 14,
+     "e_per_success_J": 11774.95078571427,
+     "change": -0.38628660789370584
+    },
+    "budget_cfg_3": {
+     "saved_J": 2206581.5600000015,
+     "passes_lost": 20,
+     "e_per_success_J": 5583.015522388036,
+     "change": -0.709011828857592
+    },
+    "budget_task_3": {
+     "saved_J": 979366.4199999999,
+     "passes_lost": 7,
+     "e_per_success_J": 13437.68176870747,
+     "change": -0.2996246514827271
+    },
+    "budget_cfg_5": {
+     "saved_J": 2010054.6650000003,
+     "passes_lost": 16,
+     "e_per_success_J": 6845.29692028984,
+     "change": -0.6432214053902723
+    },
+    "budget_task_5": {
+     "saved_J": 839092.67,
+     "passes_lost": 5,
+     "e_per_success_J": 14198.74476510066,
+     "change": -0.25995785697775864
+    },
+    "budget_cfg_8": {
+     "saved_J": 1748961.7700000003,
+     "passes_lost": 12,
+     "e_per_success_J": 8491.154014084494,
+     "change": -0.5574389203220214
+    },
+    "budget_task_8": {
+     "saved_J": 677620.47,
+     "passes_lost": 4,
+     "e_per_success_J": 15180.567799999988,
+     "change": -0.20878499382429183
+    },
+    "budget_cfg_12": {
+     "saved_J": 1440827.0400000005,
+     "passes_lost": 5,
+     "e_per_success_J": 10160.25906040267,
+     "change": -0.47044474612976594
+    },
+    "budget_task_12": {
+     "saved_J": 501225.94000000006,
+     "passes_lost": 3,
+     "e_per_success_J": 16248.209933774824,
+     "change": -0.15313921768487082
+    },
+    "oracle": {
+     "saved_J": 2150589.1300000004,
+     "passes_lost": 0,
+     "e_per_success_J": 5221.535779220766,
+     "change": -0.7278522438533002
+    },
+    "oracle_task": {
+     "saved_J": 46909.689999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 18881.79188311687,
+     "change": -0.015876265088795694
+    }
+   },
+   "failed_share": 0.7278522438533003,
+   "best_fixed": "budget_cfg_12",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.47044474612976594,
+    "best_fixed_lost": 5,
+    "global_change": -0.25995785697775864,
+    "global_lost": 5,
+    "oracle_change": -0.7278522438533002,
+    "oracle_task_change": -0.015876265088795694,
+    "gap_oracle_vs_best_fixed": -0.4860824169759086,
+    "e_per_success_J": 19186.400259740247
+   }
+  },
+  {
+   "key": "t_o32_granite_rfx",
+   "domain": "traffic",
+   "runs": 126,
+   "passes": 73,
+   "e_per_success_J": 116004.93493150682,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 278416.44682217145,
+     "passes_lost": 2,
+     "e_per_success_J": 115351.32117151869,
+     "change": -0.00563436167930309
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 378406.1357634339,
+     "passes_lost": 0,
+     "e_per_success_J": 110821.28923611731,
+     "change": -0.044684699822900686
+    },
+    "sign_any": {
+     "saved_J": 434424.4365967349,
+     "passes_lost": 2,
+     "e_per_success_J": 113154.02554089103,
+     "change": -0.024575759576944467
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 1778116.7600000002,
+     "passes_lost": 17,
+     "e_per_success_J": 119468.63374999996,
+     "change": 0.029858202330256267
+    },
+    "budget_task_1.5": {
+     "saved_J": 1371678.8049999995,
+     "passes_lost": 15,
+     "e_per_success_J": 122356.57663793101,
+     "change": 0.05475320261309924
+    },
+    "budget_cfg_2": {
+     "saved_J": 1071453.1099999999,
+     "passes_lost": 8,
+     "e_per_success_J": 113798.57138461537,
+     "change": -0.019019566264091847
+    },
+    "budget_task_2": {
+     "saved_J": 726284.37,
+     "passes_lost": 8,
+     "e_per_success_J": 119108.85969230765,
+     "change": 0.02675683377292093
+    },
+    "budget_cfg_3": {
+     "saved_J": 344797.1,
+     "passes_lost": 2,
+     "e_per_success_J": 114416.38239436617,
+     "change": -0.013693835853436642
+    },
+    "budget_task_3": {
+     "saved_J": 220246.59999999998,
+     "passes_lost": 3,
+     "e_per_success_J": 117830.19499999998,
+     "change": 0.015734331212468256
+    },
+    "budget_cfg_5": {
+     "saved_J": 18029.140000000014,
+     "passes_lost": 0,
+     "e_per_success_J": 115757.96041095887,
+     "change": -0.0021290001213636334
+    },
+    "budget_task_5": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "budget_cfg_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "budget_task_8": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "budget_cfg_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "budget_task_12": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 116004.93493150682,
+     "change": 0.0
+    },
+    "oracle": {
+     "saved_J": 3626923.28,
+     "passes_lost": 0,
+     "e_per_success_J": 66321.05438356163,
+     "change": -0.42829109448904235
+    },
+    "oracle_task": {
+     "saved_J": 1344184.8900000004,
+     "passes_lost": 0,
+     "e_per_success_J": 97591.4432876712,
+     "change": -0.158730244146144
+    }
+   },
+   "failed_share": 0.4282910944890424,
+   "best_fixed": "sign_ctx80",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.044684699822900686,
+    "best_fixed_lost": 0,
+    "global_change": 0.0,
+    "global_lost": 0,
+    "oracle_change": -0.42829109448904235,
+    "oracle_task_change": -0.158730244146144,
+    "gap_oracle_vs_best_fixed": -0.4015495141708999,
+    "e_per_success_J": 116004.93493150682
+   }
+  },
+  {
+   "key": "t_o32_qwenvl_rfx",
+   "domain": "traffic",
+   "runs": 252,
+   "passes": 70,
+   "e_per_success_J": 14694.921714285712,
+   "rules": {
+    "sign_cap1": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 14694.921714285712,
+     "change": 0.0
+    },
+    "sign_cap2": {
+     "saved_J": 0,
+     "passes_lost": 0,
+     "e_per_success_J": 14694.921714285712,
+     "change": 0.0
+    },
+    "sign_ctx80": {
+     "saved_J": 22107.942832606474,
+     "passes_lost": 0,
+     "e_per_success_J": 14379.093959534192,
+     "change": -0.021492306042330767
+    },
+    "sign_any": {
+     "saved_J": 22107.942832606474,
+     "passes_lost": 0,
+     "e_per_success_J": 14379.093959534192,
+     "change": -0.021492306042330767
+    },
+    "budget_cfg_1.5": {
+     "saved_J": 414875.0649999999,
+     "passes_lost": 17,
+     "e_per_success_J": 11580.555754716983,
+     "change": -0.21193484525617368
+    },
+    "budget_task_1.5": {
+     "saved_J": 368603.0624999998,
+     "passes_lost": 8,
+     "e_per_success_J": 10645.82995967742,
+     "change": -0.27554360842031267
+    },
+    "budget_cfg_2": {
+     "saved_J": 330796.4699999999,
+     "passes_lost": 11,
+     "e_per_success_J": 11827.933050847458,
+     "change": -0.19510064219335743
+    },
+    "budget_task_2": {
+     "saved_J": 296427.10000000003,
+     "passes_lost": 3,
+     "e_per_success_J": 10928.618208955222,
+     "change": -0.25629966450716557
+    },
+    "budget_cfg_3": {
+     "saved_J": 234009.36999999994,
+     "passes_lost": 3,
+     "e_per_success_J": 11860.226119402983,
+     "change": -0.19290307563373887
+    },
+    "budget_task_3": {
+     "saved_J": 214911.48999999993,
+     "passes_lost": 1,
+     "e_per_success_J": 11793.23231884058,
+     "change": -0.19746205198386635
+    },
+    "budget_cfg_5": {
+     "saved_J": 150275.32999999996,
+     "passes_lost": 0,
+     "e_per_success_J": 12548.131285714286,
+     "change": -0.14609063391500876
+    },
+    "budget_task_5": {
+     "saved_J": 157874.81999999998,
+     "passes_lost": 0,
+     "e_per_success_J": 12439.567142857142,
+     "change": -0.15347850198045088
+    },
+    "budget_cfg_8": {
+     "saved_J": 65621.22999999995,
+     "passes_lost": 0,
+     "e_per_success_J": 13757.475571428571,
+     "change": -0.06379388479122006
+    },
+    "budget_task_8": {
+     "saved_J": 100897.41999999998,
+     "passes_lost": 0,
+     "e_per_success_J": 13253.529999999999,
+     "change": -0.09808774366483763
+    },
+    "budget_cfg_12": {
+     "saved_J": 21071.269999999982,
+     "passes_lost": 0,
+     "e_per_success_J": 14393.90357142857,
+     "change": -0.02048450129302204
+    },
+    "budget_task_12": {
+     "saved_J": 52237.499999999985,
+     "passes_lost": 0,
+     "e_per_success_J": 13948.671714285712,
+     "change": -0.05078284964761204
+    },
+    "oracle": {
+     "saved_J": 843696.8599999999,
+     "passes_lost": 0,
+     "e_per_success_J": 2642.109428571429,
+     "change": -0.8202025516064577
+    },
+    "oracle_task": {
+     "saved_J": 543244.4900000001,
+     "passes_lost": 0,
+     "e_per_success_J": 6934.28614285714,
+     "change": -0.5281168367085649
+    }
+   },
+   "failed_share": 0.8202025516064577,
+   "best_fixed": "budget_task_2",
+   "global_rule": "budget_task_5",
+   "summary": {
+    "best_fixed_change": -0.25629966450716557,
+    "best_fixed_lost": 3,
+    "global_change": -0.15347850198045088,
+    "global_lost": 0,
+    "oracle_change": -0.8202025516064577,
+    "oracle_task_change": -0.5281168367085649,
+    "gap_oracle_vs_best_fixed": -0.7582393878114977,
+    "e_per_success_J": 14694.921714285712
+   }
+  }
+ ]
+}
