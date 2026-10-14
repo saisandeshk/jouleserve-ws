@@ -1,128 +1,104 @@
 # P5 thesis: draft for discussion (TH-1)
 
-**14 Oct 2026, draft 1 (WF-3b result added the same night).** It is built on the energy waterfall
-([`../reports/2026-10-14-waterfall/README.md`](../reports/2026-10-14-waterfall/README.md)) and follows ENERGY_PLAN §3–§5.
-Sandesh and the mentor decide whether to adopt it; nothing in it is agreed yet.
+**15 Oct 2026, draft 2.** Draft 1 (14 Oct) is in git. It led with stopping doomed runs; the predictor test (WF-3b)
+weakened that, and the candidates analysis moved the core. It is built on:
+- the energy waterfall ([`../reports/2026-10-14-waterfall/`](../reports/2026-10-14-waterfall/README.md));
+- the candidates analysis ([`../reports/2026-10-15-candidates/`](../reports/2026-10-15-candidates/README.md)).
 
-## The claim, in one paragraph
+Sandesh and the mentor decide whether to adopt it; nothing is agreed yet. The traffic experiments (CAND-T1/T2) are
+running, and their results will confirm or change §4.
 
-On edge boards, an LLM agent's energy per successful task is set by two things the serving system controls but never
-looks at.
+## 1. The claim
 
-**What P1's logs show** (25 edge configurations, board energy):
-- **Work spent on episodes that fail:** runs that fail take 13–98% of board energy (median 69%).
-- **Decoding one request at a time:** inside passing runs it costs up to 36% more than decoding 4 at once.
-- **Fixed settings capture only part of each:**
-  - a stop rule tuned per configuration;
-  - packing several agents on one board.
+An edge board serving LLM agents has spare decode width and a small KV pool, and P1 left both idle (one request at a
+time). There are two ways to spend them:
+- **across agents:** pack more agents on the board;
+- **within an agent:** run several sampled candidates for a risky step and keep the first good one.
 
-  The best fixed setting differs by model, task and load. It leaves at least 15% of energy per success between itself
-  and the oracle in 24 of 25 configurations.
+Which is better, and how wide to go, changes with:
+- the model's cost curve (dense or mixture-of-experts);
+- how often the model still degenerates under sampling;
+- the board's load;
+- its memory.
 
-**What P5 proposes:** a serving layer that estimates, while each episode runs, how likely it is to succeed, and uses
-that estimate to spend the board's scarce capacity: batch slots and KV memory. It would:
-- stop or rescue episodes headed for failure;
-- give capacity first to episodes likely to succeed;
-- spend spare width on candidate answers when the board is lightly loaded.
+So a fixed setting loses, and a serving layer that makes the choice at run time cuts energy per successful task.
 
-## Why a fixed setting cannot do this (Q1)
+## 2. Why it is not a setting (the professor's "isn't that common sense?")
 
-The value of letting an episode continue depends on two quantities that change while it runs:
-- **Its chance of success.** It falls as it loops, repeats capped calls, retries, or approaches the window.
-- **The value of the capacity it holds.** That is near zero on an idle board, and high when other agents wait or the
-  pool is full.
+From the mentor's drone sample banks and the boards' measured cost curves (computed by us):
 
-A fixed energy budget or a fixed number of agents tracks neither. P1's logs already show the first half:
-- **The best rule varies:** the best stop rule that keeps the pass rate is a warning sign in some configurations and an
-  energy budget in others. Its multiple ranges from 1.5× to 12× a passing run's median.
-- **One rule underperforms:** the single rule that keeps the pass rate everywhere often gives far less than the
-  per-configuration best.
-- **P1 itself:** P1's paper concludes from its offline attempt budgets that "reductions require task-specific
-  decisions".
+| Board, model | One more candidate costs | First-of-4 against one answer, energy per success | Best k at 1, 2, 4 agents | Best use of spare capacity |
+| --- | --- | --- | --- | --- |
+| Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls) | 1, 1, 1 | more agents |
+| Orin 32, gemma-E4B (dense) | +5% per step at 4 | **−70%** | 8, 4, 1 (memory) | **candidates**: 2 agents × 4 candidates beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
 
-The second half, load, is absent from P1's logs, because P1 ran one agent per board.
+- **The answer flips with the model.** On the MoE, extra streams activate other experts. Sampling already removed its
+  runaway answers (0 of 168 samples capped), so candidates only buy pass rate (56% → 70% on hard prompts), at more
+  energy per success.
+- **On the dense model, candidates are nearly free, and they double as an escape** from answers that still run to the
+  cap under sampling (21 of 168 samples).
+- **The best k falls with load, because of memory.** k = 8 at one agent, 4 at two, 1 at four.
+- **A fixed k loses:** k = 1 costs 2.7× the adaptive choice on average over 1–4 agents.
+- No fixed "use FP8", "pack N agents" or "use k candidates" reproduces this, because the right answer depends on run-time
+  load and on the model.
 
-## Why it matters on an edge board
+## 3. Where the energy is (the professor's "is there an opportunity?")
 
-- **Small windows turn capacity into failure.** On the Orins, 19–28% of granite and gemma-26B traffic runs end in a
-  window overflow.
-  - The overflow happens in one jump: a single tool output, a median 10.5K tokens, pushes the next request past a
-    26,624- or 12,288-token window.
-  - The serving layer sees it coming the moment the tool returns.
-- **One-at-a-time decoding is the least efficient point on a Jetson.** Energy per token at 4 requests is 0.45× (Thor,
-  26B) and 0.26× (Orin 32, dense models) that of one request.
-  - A doomed 32K-token call holds a Thor's decoder for about 20 minutes.
-- **No host tier, and energy is the budget.** Unified memory has nothing to spill to.
+P1's logs, all 25 edge configurations (waterfall):
+- **Failed runs take most of the board energy** (13–98%, median 69%). That is P1's own headline.
+- **Inside passing runs, one-at-a-time decoding is the largest avoidable part** (traffic 2–36%).
+- **Reading prompts and tool waits are small**, which is why retention is out.
+- **Stopping doomed runs is a weak core.**
+  - The best fixed stop rule leaves at least 15% to the oracle in 24 of 25 configurations.
+  - But an online predictor rarely beats it on unseen tasks (3 of 25), and does not hold the pass rate reliably even
+    with task history.
+  - A wrong "stop" costs a success, while a wrong "widen" costs a few percent of decode. So the success estimate is used
+    where being wrong is cheap: to choose which steps get candidates.
 
-## The mechanism (sketch)
+## 4. The mechanism (sketch)
 
-1. **Online success estimate per episode.** It uses signals the serving layer already sees:
-   - repetition (the loop detector);
-   - consecutive capped calls;
-   - context headroom against the window;
-   - repeated or failing tool calls;
-   - energy spent against the task's history.
-2. **Actions, chosen by the estimate and the board's load:**
-   - **stop:** end the episode early;
-   - **rescue:**
-     - resample a looping call;
-     - fit an oversized tool output into the window instead of failing;
-     - hand the task to a stronger model;
-   - **schedule:** give batch slots and KV to the episodes most likely to succeed;
-   - **widen:** run k candidate answers for an at-risk step when the board has spare width. This is the mentor's
-     first-of-k.
-3. **Objective:** board energy per success, at an unchanged pass rate, at each load.
+- **Inputs:** the model's measured cost curve (energy per step against width), the KV pool, the current load (agents
+  and their contexts), and a rough risk estimate per step:
+  - a retry after a failed attempt;
+  - loop or cap signs;
+  - the task's history.
+- **Decision, at every agent call:** how many candidates to run (k ≥ 1) within the board's spare width and memory, and,
+  when agents are admitted, whether to admit another agent or keep width for candidates.
+- **Selection:** the first candidate to finish on its own, or a cheap check (the program parses; a tool call is
+  well-formed).
+- **Baseline it must beat (B\*):** P1's agents with model-card sampling, the best fixed number of agents per box, FP8 KV
+  where the pool binds, and the best fixed k.
 
-## The baseline it must beat (B*)
+## 5. What we have, and what is missing
 
-- P1 as run;
-- plus model-card sampling;
-- plus the best fixed stop rule per configuration;
-- plus the best fixed number of agents per box, with FP8 KV where the pool binds;
-- plus, for comparison, P1's attempt budget and a Continuum-style program-aware scheduler.
+| Question | Status |
+| --- | --- |
+| Where does the energy go? | Done: waterfall, 25 configurations |
+| Do candidates pay on drones? | Done on banks: yes on the Orin's dense E4B, no on Thor's MoE 26B. The E4B base is weak (15 of 168 sampled programs pass) |
+| Do candidates pay on traffic? | **Running** (CAND-T1 gemma-26B, CAND-T2 granite dense; rules fixed before data) |
+| Is the live traffic platform faithful to P1? | **Running** (TRF-3); P1's grader reproduces 336 of 336 of P1's grades |
+| Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
+| Do other dense models behave like E4B? | Partly testable now: granite's cost curve on Thor-2 is queued |
 
-## What we have, and what is missing
+## 6. Overlaps and risks
 
-| Question | Status | Where |
-| --- | --- | --- |
-| Is failure the biggest bucket? | Yes in 22 of 25 configurations (median 69%); P1's headline too | waterfall |
-| Can a fixed rule capture it? (Q1) | Partly; the best rule varies by configuration | `stop_bounds.json` |
-| Is there room beyond B*? (Q2 bound) | ≥ 15% to the oracle in 24 of 25, an upper bound | `stop_bounds.json` |
-| Can an online estimate capture that room without losing passes? | **Mostly no, without task history** (WF-3b, 14 Oct). A simple predictor on in-run signals beats the best fixed rule in 3 of 25 configurations on unseen tasks; with the task's history it does in 18 of 25 (3–76% of the gap) but cuts a median 5.4% of passes on held-out runs, meeting both bars in 5 of 25. Most of the gain is knowing which tasks fail, closer to admission or routing than to stopping | `fail_predictor.json` |
-| Do rescues turn failures into passes? | Partly: on a 4-bit stand-in, one resample recovered 17 of 17 looping calls (A-E2). The mentor's banks show sampled programs pass on hard prompts. Overflow rescue is not tested | live traffic agent (TRF-3) |
-| Does success-aware capacity beat fixed packing under load? | **Not tested.** Next: the simulator driven by P1's episodes and the measured cost curves, then a live fleet | WF-4 (new) |
+- **Prior work:**
+  - Parallel sampling with first-to-finish exists for math reasoning (short-m@k, SART): fixed k, no energy, no agents,
+    no edge.
+  - EdgeReasoning measures thinking budgets and parallel sampling energy on a Jetson: measurement only, no controller.
+  - Continuum and Autellix schedule agent programs for latency.
 
-## Overlaps and risks
+  The novelty is the run-time choice between agents and candidates, driven by cost curve, load and memory, judged by
+  energy per success on edge boards.
+- **The dense case rests on E4B, a weak model.** The granite and traffic runs test whether it generalises.
+- **On the MoE, candidates lose energy.** If every model worth deploying on a Thor is an MoE, the story narrows to the
+  Orin-class boards.
+- **Overlap with P1.** P1 owns the failed-energy observation and its offline policies (attempt budgets, step cutoffs).
+  P5's part is the online, multi-agent decision.
 
-- **P1 owns the observation and the offline policies.**
-  - The observation: failed runs consume most energy.
-  - The offline policies: attempt budgets and step cutoffs.
-  - P5's part would be the online, capacity-aware mechanism with several agents per board. P1 has no multi-agent
-    result. The split must be agreed with P1.
-- **Prior work to position against:**
-  - AgentStop (energy-motivated early stop of local agents);
-  - Fail-Fast Restart-Smart (stop and restart);
-  - Continuum and Autellix (program-aware scheduling, latency);
-  - KAIROS (energy).
+## 7. Decisions this draft needs
 
-  The novelty has to be the combination: online success estimation driving capacity decisions on a unified-memory
-  edge board, judged by energy per success.
-- **The oracle gap is only partly predictable** (WF-3b, 14 Oct). In-run signals alone rarely beat the best fixed rule
-  on unseen tasks. Per-task history helps but does not hold the pass rate reliably. So "stop doomed runs" is a weak
-  core on its own.
-  - **The stronger halves:** rescuing at-risk steps with spare width (the mentor's first-of-k: does it turn failures
-    into passes?); and success-aware admission and capacity under load (WF-4).
-  - **Possibly richer signals:** tool errors, repeated arguments, the text itself.
-  - **If those fail too:** the fallback, a limit study.
-- **Gaming the metric:** refusing hard tasks lowers energy per success. Every result keeps the pass rate fixed (at
-  most 5% of passes lost, as in WF-3).
-
-## Decisions this draft needs
-
-1. **Sandesh and the mentor:** adopt this shape, or keep the mentor's 13 Oct framing (first-of-k with load-elastic k) as
-   the core, with this as its success model?
-2. **With P1 (through Sandesh):** the split.
-   - P1 keeps the measurement and the offline policies.
-   - P5 takes the online, multi-agent mechanism.
-3. **The professor, at the next meeting:** is "success-aware capacity allocation on edge boards" the proposal he was
-   asking for?
+1. **Sandesh and the mentor:** adopt "spend the board's width and memory: agents or candidates, chosen at run time" as
+   the core?
+2. **The professor:** is this the proposal he asked for?
+3. **P1:** agree the split.
