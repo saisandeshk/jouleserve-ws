@@ -92,17 +92,32 @@ with each board's measured energy per decode step.
 
 ## 3. Evidence on P1's boards
 
-**Drones: the mentor's fleets (her doc, 14 Oct).** Thor, P1's gemma-26B agent, the same 21 missions:
+**Drones: the mentor's fleets.** These are N copies of P1's Reflexion drone agent, unchanged, on one board with
+SGLang's default scheduler. The numbers come from her run summaries, read on the units on 15 Oct at 01:15, and from
+her doc for P1's single-drone column.
 
-| | P1, 1 drone (recorded) | 8 drones on one board (SGLang default) |
-| --- | --- | --- |
-| Passed | about 17.3 expected (P1's per-task pass rates) | 17 |
-| Energy per success | about 131 kJ | **58 kJ (2.3× less)** |
-| Time for all 21 missions | about 9.1 h | 3.5 h |
-| p95 mission time | about 69 min | 3.5 h |
+| Board, model, missions | Drones per board | Passed | kJ per success | Missions per hour | p95 mission time |
+| --- | --- | --- | --- | --- | --- |
+| Thor-1, gemma-26B (MoE), 21 hard missions | 1 (P1, recorded) | about 17.3 expected | about 131 | about 2.3 | about 69 min |
+| | 4 | 16 | 80.3 | 4.5 | 2.3 h |
+| | 8 | 17 | **58.2** | 6.0 | 3.5 h |
+| Orin-32-1, gemma-E4B (dense), 36 missions | 2 | 17 | 35.7 | 7.5 | 29 min |
+| | 4 | 17 | **25.7** | 11.1 | 1.8 h |
+| | 8 | 17 | 29.0 | 9.8 | 2.2 h |
 
-Packing is a large energy win at the same pass rate. Its price is each mission's latency. That is the trade a run-time
-choice between agents and candidates has to manage.
+- **Packing pays on both boards at the same pass count.** On Thor, 8 drones cost 2.3× less per success than P1's
+  single drone.
+- **The best number of agents differs by board.** Thor is still improving at 8. The Orin is best at 4 and worse at 8:
+  E4B's 46,645-token pool binds, as P1's logs predicted (§1).
+- **Packing's price is each mission's latency.** p95 mission time grows nearly 4× from 2 to 4 agents on the Orin, and
+  rises to 3.5 h at 8 on Thor.
+- **The open question for the controller:** on the Orin, the bank analysis says the capacity past 2 agents is better
+  spent on candidates (2 agents × 4 candidates). The live test is a 2-drone fleet with first-of-4 against the 4-drone
+  fleet above.
+- **Still running (15 Oct, 01:15):**
+  - Thor-1: step-wise fleet, gemma-26B, 4 drones. So far 9 of 12 missions passed; all 7 short B-tasks passed.
+  - Orin-32-2: step-wise fleet, granite, 2 drones.
+  - Orin-32-3: Reflexion fleet, granite, 4 drones.
 
 **Traffic: P1's agent, unchanged, on Thor-2 (ours, 15 Oct).**
 - **Is the platform faithful to P1?** TRF-3 runs gemma-26B with P1's greedy protocol on 9 tasks, graded by P1's
