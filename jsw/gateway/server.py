@@ -13,6 +13,12 @@ Routes (sid = any session id chosen by the client; agents only change their base
 Chat calls are always streamed from SGLang, so a policy can watch every token (on_chunk) and stop a call; a client
 that did not ask for a stream gets one aggregated response. Every call (and every retry) is logged to
 <log-dir>/calls.jsonl with its timings and token counts; driver events go to <log-dir>/events.jsonl.
+
+First-of-k (--first-of-k K, with --sampling '{"temperature": 1.0, "top_p": 0.95, "top_k": 64}'): every agent chat call
+is sent upstream as K candidates with the sampling override and a distinct seed each. The first candidate to finish
+on its own (finish reason other than "length") wins; the others are cancelled and aborted upstream. If none finishes
+on its own, the first to end wins. The winner's own stream is replayed to the client, so the agent sees one normal
+answer. Every candidate is logged (meta: candidate, k, winner). K = 1 with a sampling override is plain sampling.
 """
 from __future__ import annotations
 
@@ -23,6 +29,7 @@ import itertools
 import json
 import time
 import uuid
+import hashlib
 from pathlib import Path
 
 import aiohttp
@@ -85,6 +92,16 @@ class Call:
         )
 
 
+class _Buf:
+    """Collects the raw stream lines of one candidate instead of writing them to the client."""
+
+    def __init__(self):
+        self.lines = []
+
+    async def write(self, b):
+        self.lines.append(b)
+
+
 def _parse_metrics(text: str) -> dict:
     out = {}
     for line in text.splitlines():
@@ -99,8 +116,10 @@ def _parse_metrics(text: str) -> dict:
 
 class Gateway:
     def __init__(self, upstream: str, log_dir: Path, policy: Policy, tick_s: float = 0.5,
-                 pythonic_fallback: str = "off", generate_stream: bool = False):
+                 pythonic_fallback: str = "off", generate_stream: bool = False, first_of_k: int = 0,
+                 sampling: dict | None = None):
         self.upstream, self.policy, self.tick_s = upstream.rstrip("/"), policy, tick_s
+        self.first_of_k, self.sampling = first_of_k, sampling
         # stream /generate from the engine to time its first token (t_first: prefill vs decode, as P1's agent recorded
         # ttft); the client still gets one JSON response, the last streamed chunk
         self.generate_stream = generate_stream
@@ -120,7 +139,7 @@ class Gateway:
                                           timeout=aiohttp.ClientTimeout(total=None, sock_read=1800))
         self._tick_task = asyncio.create_task(self._tick())
         self.log_event(None, "gateway_start", upstream=self.upstream, pythonic_fallback=self.pythonic_fallback,
-                       **self.policy.describe())
+                       **self.policy.describe(), gw_first_of_k=self.first_of_k, gw_sampling=self.sampling)
 
     async def stop(self, app):
         self._tick_task.cancel()
@@ -182,6 +201,8 @@ class Gateway:
                 call.status, call.stopped_by = "rejected", "policy"
                 self.log_call(call)
                 return web.json_response(early)
+            if self.first_of_k and tag == "agent":
+                return await self._chat_first_of_k(call, request)
             resp = None
             while True:
                 if call.client_stream and resp is None:
@@ -221,6 +242,54 @@ class Gateway:
             sess.t_last_end = time.monotonic()
             if tag == "agent" and sess.open_calls == 0:
                 sess.phase = "idle"
+
+    async def _chat_first_of_k(self, call: Call, request: web.Request):
+        """K sampled candidates of one agent call; the first to finish on its own is returned (module docstring)."""
+        k = self.first_of_k
+        cands = []
+        for i in range(k):
+            body = dict(call.body, **(self.sampling or {}))
+            if self.sampling is not None:
+                body["seed"] = int(hashlib.sha256(f"{call.session.sid}:{call.index}:{i}".encode()).hexdigest()[:8], 16) & 0x7FFFFFFF
+            c = Call(call.session, "chat", "agent", body, call.client_stream)
+            c.index, c.attempt, c.t_req, c.held_s = call.index, i, call.t_req, call.held_s
+            c.buf = _Buf()
+            cands.append(c)
+        tasks = {asyncio.create_task(self._chat_upstream(c, c.buf)): c for c in cands}
+        winner, ended, pending = None, [], set(tasks)
+        while pending and winner is None:
+            done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+            for t in sorted(done, key=lambda t: tasks[t].t_last or 0):
+                c = tasks[t]
+                ended.append(c)
+                if winner is None and c.status == 200 and c.finish_reason not in (None, "length"):
+                    winner = c
+        if winner is None:
+            ok = [c for c in ended if c.status == 200]
+            winner = ok[0] if ok else ended[0]
+        for t in pending:
+            t.cancel()
+            loser = tasks[t]
+            loser.stopped_by = "lost_race"
+            asyncio.create_task(self.abort_upstream(loser.rid))
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
+        for c in cands:
+            c.meta = dict(c.meta or {}, candidate=c.attempt, k=k, winner=c is winner)
+            self.log_call(c)
+        if call.client_stream:
+            resp = web.StreamResponse(headers={"Content-Type": "text/event-stream"})
+            await resp.prepare(request)
+            for line in winner.buf.lines:
+                await resp.write(line)
+            await resp.write(b"data: [DONE]\n\n")
+            await resp.write_eof()
+            return resp
+        if winner.status != 200 and winner.error:
+            return web.json_response({"error": winner.error}, status=winner.status or 502)
+        out = self._aggregate(winner)
+        out["gateway"]["candidates"] = k
+        return web.json_response(out)
 
     async def _chat_upstream(self, call: Call, client):
         body = dict(call.body, stream=True, stream_options={"include_usage": True}, rid=call.rid)
@@ -438,9 +507,14 @@ def main():
     ap.add_argument("--pythonic-fallback", default="off", choices=("off", "all", "first"),
                     help="turn content that is only Python-style calls to the request's tools into tool calls; "
                          "'first' also stops a reply when it opens a new thought after its calls")
+    ap.add_argument("--first-of-k", type=int, default=0,
+                    help="send each agent chat call as K sampled candidates and return the first to finish (0: off)")
+    ap.add_argument("--sampling", default=None,
+                    help='JSON sampling override for --first-of-k, e.g. \'{"temperature": 1.0, "top_p": 0.95, "top_k": 64}\'')
     a = ap.parse_args()
     gw = Gateway(a.upstream, Path(a.log_dir), load_policy(a.policy, json.loads(a.policy_args)),
-                 pythonic_fallback=a.pythonic_fallback, generate_stream=a.generate_stream)
+                 pythonic_fallback=a.pythonic_fallback, generate_stream=a.generate_stream,
+                 first_of_k=a.first_of_k, sampling=json.loads(a.sampling) if a.sampling else None)
     web.run_app(make_app(gw), host=a.host, port=a.port, access_log=None, print=None)
 
 
