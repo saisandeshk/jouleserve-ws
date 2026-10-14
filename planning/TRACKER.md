@@ -14,11 +14,13 @@ their status is in her doc.
 | WF-2 | Drone waterfall: P1's 8 configurations, and the mentor's runs as a separate column | WS | **done** for P1's 8 (14 Oct); the mentor's column waits for her protocol | the same outputs | failed runs take 51–98% of drone board energy |
 | WF-3 | Q1 and Q2 bounds for each lever, from the logs and cost curves (ENERGY_PLAN §5) | WS | doing: stopping doomed work done 14 Oct | one table: lever, fixed or run-time, bound against B* | `stop_bounds.json`: the best fixed stop rule (≤ 5% passes cut) varies by configuration; ≥ 15% left to the oracle in 24 of 25. Left: WF-3b, WF-4 |
 | WF-3b | Online failure predictor on P1's logs, trained and scored on different tasks: how much of the oracle gap it captures at ≤ 5% passes cut | WS | **done** 14 Oct | per configuration, captured share of the gap; code committed first | Mostly no without task history: beats the best fixed rule in 3 of 25 on unseen tasks; with history 18 of 25 but cuts a median 5.4% of passes held-out; both bars in 5 of 25 (`fail_predictor.json`) |
-| WF-4 | Success-aware capacity under load: the simulator driven by P1's episodes and the measured cost curves, against fixed packing | WS | todo | energy per success and pass rate at N = 1, 2, 4, 8 against B* |
+| WF-4 | When do parallel candidates pay, and does the best k change with load? | WS | doing: part 1 done 15 Oct (`analysis/candidates_bank.py`, the mentor's banks and cost curves) | best k per load against the best fixed k, per board | `reports/2026-10-15-candidates/`: on Thor's MoE gemma-26B first-of-4 raises passes (56→70%) but costs +12–25% energy per success (best k = 1 at all loads); on the Orin's dense E4B −70% at one agent and the best k falls 8→4→1 with load (memory). Part 2: the same on traffic from CAND-T1/T2 |
+| TRF-3 | P1's traffic agent on Thor-2 (P1's gemma-26B traffic flags), 9 instance-A tasks, against P1's runs | Thor-2 | doing: running since 15 Oct 00:30 | graded by P1's grader (copy reproduces 336/336) and compared per task | Thor-2 usable since 15 Oct; `env/thor2/`, `analysis/traffic_validate.py` |
+| CAND-T1/T2 | Traffic candidates: one sampled answer against first-of-4, gemma-26B (MoE) and granite (dense), on Thor-2 | Thor-2 | queued after TRF-3 (`env/thor2/cand_chain2.sh`) | plan and rules in `reports/2026-10-15-candidates/PLAN.md`, fixed before data | gateway first-of-k mode (`jsw/gateway/server.py`, `tests/test_first_of_k.py`) |
 | TH-1 | One-page thesis | repo | doing: draft 1 written 14 Oct (`planning/THESIS.md`) | agreed with the mentor |
 | TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | **done** 14 Oct | code on the WS, SHA-256 recorded | `~/work/p1/traffic_agent/` (131 files, 4 MB); needs and blockers in `reports/2026-10-14-traffic-agent/` (no docker on the WS; package versions from P1) |
 | TRF-2b | Camera data (only what the final tasks use) and the sandbox image | Thor-2 → WS/unit | waits for P1's reply | data on the WS, checked |
-| TRF-3 | Bring up the agent; check one agent against P1's recorded runs | WS or an Orin | todo | tokens and pass rate within agreed bounds |
+
 
 How to use it:
 - **Stop points:** report to Sandesh when a step's output is ready (ENERGY_PLAN §7), when a time box overruns, and
@@ -214,6 +216,7 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-15, 01:00:** Thor-2 in use (P1's idle Qwen3.6 server stopped, its configuration saved). TRF-3 running; CAND-T1/T2 queued (plan fixed before data, amended before data after the bank analysis). WF-4 part 1: candidates pay on the dense Orin model (−70%, best k falls with load) but not on Thor's MoE 26B (+12–25%).
 - **2026-10-14, late night:** WF-3b done: an online failure predictor rarely beats the best fixed stop rule on unseen tasks (3 of 25); with task history it does in 18 of 25 but does not hold the pass rate reliably (both bars in 5 of 25). Thesis draft 1 updated: stopping is a weak core alone.
 - **2026-10-14, night:** WF-1 and WF-2 done (`reports/2026-10-14-waterfall/`); WF-3's stop-rule bounds; thesis draft 1 (`planning/THESIS.md`); the traffic agent's code on the WS and its needs (`reports/2026-10-14-traffic-agent/`); P1's final traffic traces keep the tool outputs (text replay possible).
 - **2026-10-14, evening:** The professor meeting (D23): follow the energy; retention during tool waits out; KV as
