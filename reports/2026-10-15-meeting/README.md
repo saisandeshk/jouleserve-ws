@@ -93,7 +93,7 @@ with each board's measured energy per decode step.
 ## 3. Evidence on P1's boards
 
 **Drones: the mentor's fleets.** These are N copies of P1's Reflexion drone agent, unchanged, on one board with
-SGLang's default scheduler. The numbers come from her run summaries, read on the units on 15 Oct at 01:15, and from
+SGLang's default scheduler. The numbers come from her run summaries, read on the units on 15 Oct at 01:00, and from
 her doc for P1's single-drone column.
 
 | Board, model, missions | Drones per board | Passed | kJ per success | Missions per hour | p95 mission time |
@@ -114,7 +114,7 @@ her doc for P1's single-drone column.
 - **The open question for the controller:** on the Orin, the bank analysis says the capacity past 2 agents is better
   spent on candidates (2 agents × 4 candidates). The live test is a 2-drone fleet with first-of-4 against the 4-drone
   fleet above.
-- **Still running (15 Oct, 01:15):**
+- **Still running (15 Oct, 01:00):**
   - Thor-1: step-wise fleet, gemma-26B, 4 drones. So far 9 of 12 missions passed; all 7 short B-tasks passed.
   - Orin-32-2: step-wise fleet, granite, 2 drones.
   - Orin-32-3: Reflexion fleet, granite, 4 drones.
