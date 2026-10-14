@@ -23,9 +23,18 @@ block is the state of 13 Oct and earlier: still true as a record, but read the p
   Her plan and results are in her doc "P5 (JouleServe): where we are and what we are testing"
   (https://claude.ai/artifact/884RCSbJVHEZo3EbCTL5iX). Sandesh takes traffic. Their outputs are not on the WS or in
   git yet; protocol issues to agree are in ENERGY_PLAN §9.
-- **Next:** the energy waterfall (traffic first, then drones) and a one-page thesis, in parallel. ENERGY_PLAN §7 has
-  the schedule, TRACKER "Now (14 Oct)" the tasks. The flow is drawn in
-  https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP (private).
+- **Done 14 Oct night** (TRACKER "Now (14 Oct)"):
+  - **The energy waterfall** over all 25 of P1's edge configurations (`reports/2026-10-14-waterfall/`):
+    - runs that fail take most of the board energy (13–98%, median 69%; P1's paper already reports this headline);
+    - inside passing runs, one-at-a-time decoding is the largest avoidable part (traffic 2–36%);
+    - Orin window overflows are one-jump tool outputs (median 10.5K tokens);
+    - the best fixed stop rule that keeps the pass rate varies by configuration and leaves ≥ 15% to the oracle in 24 of
+      25.
+  - **Thesis draft 1** (`planning/THESIS.md`): success-aware capacity allocation on edge boards.
+  - **The traffic agent's code** on the WS, with its needs (`reports/2026-10-14-traffic-agent/`).
+- **Next:** WF-3b (can an online failure predictor capture the oracle gap?) and WF-4 (success-aware capacity under
+  load, simulated); the thesis agreed with the mentor; the traffic agent's data and package versions from P1. The flow
+  is drawn in https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP (private).
 - **P1's traffic agent found** on Thor-2, look-only: `/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`
   (`agent.py` of 6 Oct, tool servers, `deploy/`, 60 GB of camera data in `fixtures/`; the `camera-agent-sandbox:1`
   image is on Thor-2). The code is copied on Sandesh's go; the data after P1 replies.
@@ -446,9 +455,10 @@ and F4; H4 has a live but small case (the vision tool).
   - Drone: every `llm_calls` record holds the full prompt `messages`, the reasoning and the output, with the
     decoding settings (temperature 0, top_k 1, seed 42). All 265 capped Thor calls have their prompts (122
     Reflexion in the repository, 143 tool calling in `data/p1_thor_toolcalling/`), so they replay exactly.
-  - Traffic: the trace keeps the system prompt, the question and the assistant turns, but tool results are
-    empty and the 7 tool definitions are absent. Traffic replays only by token counts (synthetic text). The
-    traffic agent's code is not in the repository.
+  - Traffic: as of P1's final data (`0cc2311a`) the trace keeps the system prompt, the question, the assistant turns
+    **and the tool outputs** (`turns[]` of role `tool`: `tool`, `args`, `result`, `result_truncated`; checked 14 Oct),
+    so episodes replay as text step by step. The 5 Oct data had empty tool results. The tool definitions are in the
+    agent's code (`~/work/p1/traffic_agent/`, copied 14 Oct; not in P1's repository).
 - **P1-style sessions (40–55K tokens) do not fit a one-GPU pool.** They need tp2, a lower `max_tokens`, or
   FP8 KV.
 - **P1's AeroEval agent, task sets and Reflexion harness** are in `data/p1_aeroeval_src/` (read-only copies,

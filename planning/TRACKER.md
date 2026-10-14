@@ -10,11 +10,13 @@ their status is in her doc.
 | ID | Task | Where | Status | Done when |
 | --- | --- | --- | --- | --- |
 | EP-0 | One-page plan, agreed with the mentor | repo | doing (written 14 Oct; the mentor's review pending) | the mentor agrees, or changes are folded in |
-| WF-1 | Traffic waterfall from P1's final data (ENERGY_PLAN §4) | WS | todo | figure and table for 17 configurations; code committed before its results are read |
-| WF-2 | Drone waterfall: P1's 8 configurations, and the mentor's runs as a separate column | WS | todo | the same outputs |
-| WF-3 | Q1 and Q2 bounds for each lever, from the logs and cost curves (ENERGY_PLAN §5) | WS | todo | one table: lever, fixed or run-time, bound against B* |
-| TH-1 | One-page thesis | repo | todo | agreed with the mentor |
-| TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | waits for Sandesh's go | code on the WS, SHA-256 recorded |
+| WF-1 | Traffic waterfall from P1's final data (ENERGY_PLAN §4) | WS | **done** 14 Oct | figure and table for 17 configurations; code committed before its results are read | `reports/2026-10-14-waterfall/`: failed runs take 13–95% of traffic board energy (median 62%); one-at-a-time decode 2–36%; Orin overflows are one-jump tool outputs |
+| WF-2 | Drone waterfall: P1's 8 configurations, and the mentor's runs as a separate column | WS | **done** for P1's 8 (14 Oct); the mentor's column waits for her protocol | the same outputs | failed runs take 51–98% of drone board energy |
+| WF-3 | Q1 and Q2 bounds for each lever, from the logs and cost curves (ENERGY_PLAN §5) | WS | doing: stopping doomed work done 14 Oct | one table: lever, fixed or run-time, bound against B* | `stop_bounds.json`: the best fixed stop rule (≤ 5% passes cut) varies by configuration; ≥ 15% left to the oracle in 24 of 25. Left: WF-3b, WF-4 |
+| WF-3b | Online failure predictor on P1's logs, trained and scored on different tasks: how much of the oracle gap it captures at ≤ 5% passes cut | WS | todo | per configuration, captured share of the gap; code committed first |
+| WF-4 | Success-aware capacity under load: the simulator driven by P1's episodes and the measured cost curves, against fixed packing | WS | todo | energy per success and pass rate at N = 1, 2, 4, 8 against B* |
+| TH-1 | One-page thesis | repo | doing: draft 1 written 14 Oct (`planning/THESIS.md`) | agreed with the mentor |
+| TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | **done** 14 Oct | code on the WS, SHA-256 recorded | `~/work/p1/traffic_agent/` (131 files, 4 MB); needs and blockers in `reports/2026-10-14-traffic-agent/` (no docker on the WS; package versions from P1) |
 | TRF-2b | Camera data (only what the final tasks use) and the sandbox image | Thor-2 → WS/unit | waits for P1's reply | data on the WS, checked |
 | TRF-3 | Bring up the agent; check one agent against P1's recorded runs | WS or an Orin | todo | tokens and pass rate within agreed bounds |
 
@@ -212,6 +214,7 @@ Specs and rules are in the plan's Appendix R. Corrections to these outcomes are 
 
 ## Log (newest first)
 
+- **2026-10-14, night:** WF-1 and WF-2 done (`reports/2026-10-14-waterfall/`); WF-3's stop-rule bounds; thesis draft 1 (`planning/THESIS.md`); the traffic agent's code on the WS and its needs (`reports/2026-10-14-traffic-agent/`); P1's final traffic traces keep the tool outputs (text replay possible).
 - **2026-10-14, evening:** The professor meeting (D23): follow the energy; retention during tool waits out; KV as
   capacity, several agents per box and justified agent changes allowed; target OSDI (1 and 8 Dec). The one-page plan
   `ENERGY_PLAN.md` replaces OPTIONS_PLAN v2.0 (D24-D26). P1's traffic agent found on Thor-2 (look-only). The units run

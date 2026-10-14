@@ -151,7 +151,8 @@ Who does what:
   - `deploy/`;
   - 60 GB of camera data in `fixtures/`.
 
-  The code is copied on Sandesh's go; the data after P1 replies.
+  The code was copied to the WS on 14 Oct (`~/work/p1/traffic_agent/`; needs in
+  `reports/2026-10-14-traffic-agent/`); the data waits for P1's reply.
 - **The mentor's device runs.** Agree a common protocol for joint results:
   - a single-agent point run with the same server and driver (not P1's recorded runs);
   - the pool pinned with `--max-total-tokens`: two Thor-1 launches with identical flags gave 215,865 and 296,823
