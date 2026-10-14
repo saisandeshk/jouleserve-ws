@@ -88,3 +88,7 @@ So the dense case is the informative test on traffic, and a second gemma repeat 
      - Differences of 2 passes or fewer are not read as effects.
 3. **Run order on Thor-2** (`env/thor2/cand_chain2.sh`): TRF-3 → gemma S1 → gemma F4 → granite server and cost curve →
    granite S1 → granite F4.
+
+**Order change, 15 Oct 00:50 IST (before any data):** CAND-T2 (granite, the informative dense case) now runs before CAND-T1
+(gemma-26B, whose result the bank analysis already predicts), so the test of the thesis's positive half comes first
+(`env/thor2/cand_chain3.sh`). Arms, tasks and rules are unchanged.
