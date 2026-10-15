@@ -56,7 +56,12 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
 - **On the dense model, candidates are nearly free, and they double as an escape** from answers that still run to the
   cap under sampling (21 of 168 samples).
 - **The best k falls with load, because of memory.** k = 8 at one agent, 4 at two, 1 at four.
-- **A fixed k loses:** k = 1 costs 2.7× the adaptive choice on average over 1–4 agents.
+- **Against fixed settings, the gap is smaller than it first looks.** Always k = 1 costs 2.7× the adaptive choice over
+  1–4 agents. But the best fixed k (4) is within 8% at the loads where it fits, and on Thor's MoE the adaptive choice
+  is always k = 1, which a setting captures.
+  - So the thesis rests on conditions that change during operation: agents arriving and leaving, contexts growing
+    (the cost of 4 streams rises from 1.10× to 1.23× between 4K and 16K on granite), memory filling, and risky calls.
+  - This is the missing Q2 bound (§6).
 - No fixed "use FP8", "pack N agents" or "use k candidates" reproduces this, because the right answer depends on run-time
   load and on the model.
 

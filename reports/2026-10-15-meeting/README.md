@@ -26,7 +26,9 @@
      mixture-of-experts;
    - **with the load:** the best number of candidates falls from 8 to 4 to 1 as agents are added.
 
-   No fixed setting is best everywhere. A fixed k = 1 costs 2.7× the adaptive choice on the Orin.
+   At a steady load, though, the best fixed k comes close: on the Orin, fixed k = 4 is within 8% of the adaptive choice
+   where it fits. The case for a run-time choice therefore rests on changing conditions (load, context length, memory,
+   risky calls), which is the next analysis (§5).
 4. **What did the workstation work bring?**
    - It closed retention with numbers: at most 3.2% on the board.
    - It built the platform: a gateway with first-of-k, replayers, cost models, and P1's grader reproduced exactly.

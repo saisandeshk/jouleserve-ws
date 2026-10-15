@@ -41,7 +41,10 @@ Code: `analysis/candidates_bank.py` (committed before its results were read). Ou
     60% shorter.
   - At one agent, first-of-4 cuts energy per success by 70%.
   - As agents are added, the 46K-token pool cannot hold all the candidates, so the best k goes from 8 to 4 to 1.
-  - A fixed k loses: k = 1 costs 2.7× the adaptive choice on average over 1–4 agents.
+  - Against fixed settings: always k = 1 costs 2.7× the adaptive choice over 1–4 agents. But the best fixed k, 4, is
+    within 8% of it at the loads where 4 candidates fit (1 and 2 agents), and it does not fit at 4. So at a steady load
+    a well-chosen setting captures most of the gain. The run-time gain has to come from changing conditions: load,
+    growing contexts, memory, and which calls are risky. That is not measured yet (the Q2 bound).
   - This rests on few successes: E4B passed 15 of 168 sampled programs.
 - **Agents or candidates: on the Orin the board's capacity is better spent on candidates.**
   - Under the Orin's memory limit, the most efficient feasible point is 2 agents with 4 candidates each: 0.16 of one
