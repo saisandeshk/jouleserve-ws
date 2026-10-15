@@ -1,0 +1,2243 @@
+{
+ "_note": "Recomputed on the WS from the read-only copies (made 16 Oct 00:20-00:25 IST). Energy = trapezoid of the 200 ms board samples over [first mission start, last mission end], the rule of P1's run_one.energy_j.",
+ "runs": {
+  "thor_w1_n4": {
+   "label": "Reflexion (P1) 4 drones",
+   "n_drones": 4,
+   "missions": 21,
+   "passed": 16,
+   "passed_transcript_PASSED_line": 16,
+   "complete_summary_file": true,
+   "window_s": 16759.6,
+   "energy_kJ_recomputed": 1284.7,
+   "kJ_per_success_recomputed": 80.295,
+   "summary_energy_kJ": 1284.7,
+   "summary_kJ_per_success": 80.295,
+   "timed_out": 0,
+   "tracebacks": 1,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 11,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A8i3",
+     "wall_min": 41.2,
+     "longest_call_s": 2290
+    },
+    {
+     "mission": "A8i1",
+     "wall_min": 68.7,
+     "longest_call_s": 2293
+    },
+    {
+     "mission": "A9i1",
+     "wall_min": 130.0,
+     "longest_call_s": 2264
+    },
+    {
+     "mission": "A8i2",
+     "wall_min": 139.0,
+     "longest_call_s": 2235
+    },
+    {
+     "mission": "A6i2",
+     "wall_min": 39.8,
+     "longest_call_s": 2248
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 116.793
+  },
+  "thor_w1_n8": {
+   "label": "Reflexion (P1) 8 drones",
+   "n_drones": 8,
+   "missions": 21,
+   "passed": 17,
+   "passed_transcript_PASSED_line": 17,
+   "complete_summary_file": true,
+   "window_s": 12679.2,
+   "energy_kJ_recomputed": 989.8,
+   "kJ_per_success_recomputed": 58.222,
+   "summary_energy_kJ": 989.8,
+   "summary_kJ_per_success": 58.222,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 10,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A9i1",
+     "wall_min": 54.3,
+     "longest_call_s": 3095
+    },
+    {
+     "mission": "A9i3",
+     "wall_min": 54.7,
+     "longest_call_s": 3131
+    },
+    {
+     "mission": "A8i1",
+     "wall_min": 56.8,
+     "longest_call_s": 3173
+    },
+    {
+     "mission": "A8i3",
+     "wall_min": 56.6,
+     "longest_call_s": 3177
+    },
+    {
+     "mission": "A7i2",
+     "wall_min": 151.4,
+     "longest_call_s": 2987
+    },
+    {
+     "mission": "A3i3",
+     "wall_min": 46.7,
+     "longest_call_s": 2709
+    },
+    {
+     "mission": "A6i3",
+     "wall_min": 102.3,
+     "longest_call_s": 2826
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 98.978
+  },
+  "thor_w3f_n4": {
+   "label": "Step-wise final 4 drones",
+   "n_drones": 4,
+   "missions": 14,
+   "passed": 10,
+   "passed_transcript_PASSED_line": 10,
+   "complete_summary_file": true,
+   "window_s": 17570.8,
+   "energy_kJ_recomputed": 1304.8,
+   "kJ_per_success_recomputed": 130.479,
+   "summary_energy_kJ": 1304.8,
+   "summary_kJ_per_success": 130.479,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 7,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A9i1",
+     "wall_min": 57.1,
+     "longest_call_s": 2268
+    },
+    {
+     "mission": "A9i2",
+     "wall_min": 63.1,
+     "longest_call_s": 2287
+    },
+    {
+     "mission": "A3i2",
+     "wall_min": 47.7,
+     "longest_call_s": 2317
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 186.399
+  },
+  "thor_w3f_n8": {
+   "label": "Step-wise final 8 drones",
+   "n_drones": 8,
+   "missions": 14,
+   "passed": 11,
+   "passed_transcript_PASSED_line": 11,
+   "complete_summary_file": true,
+   "window_s": 15500.5,
+   "energy_kJ_recomputed": 1135.6,
+   "kJ_per_success_recomputed": 103.236,
+   "summary_energy_kJ": 1135.6,
+   "summary_kJ_per_success": 103.236,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 10,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A9i2",
+     "wall_min": 62.3,
+     "longest_call_s": 2396
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 113.559
+  },
+  "thor_w3_n4": {
+   "label": "Step-wise fast-sim 4 drones",
+   "n_drones": 4,
+   "missions": 14,
+   "passed": 10,
+   "passed_transcript_PASSED_line": 10,
+   "complete_summary_file": true,
+   "window_s": 12644.2,
+   "energy_kJ_recomputed": 929.6,
+   "kJ_per_success_recomputed": 92.958,
+   "summary_energy_kJ": 929.6,
+   "summary_kJ_per_success": 92.958,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 8,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A6i2",
+     "wall_min": 58.8,
+     "longest_call_s": 2294
+    },
+    {
+     "mission": "A3i2",
+     "wall_min": 76.4,
+     "longest_call_s": 2384
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 116.197
+  },
+  "thor_w3_n8": {
+   "label": "Step-wise fast-sim 8 drones",
+   "n_drones": 8,
+   "missions": 14,
+   "passed": 10,
+   "passed_transcript_PASSED_line": 10,
+   "complete_summary_file": true,
+   "window_s": 8578.3,
+   "energy_kJ_recomputed": 643.5,
+   "kJ_per_success_recomputed": 64.349,
+   "summary_energy_kJ": 643.5,
+   "summary_kJ_per_success": 64.347,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 9,
+   "passes_over_P1_limits": [
+    {
+     "mission": "A9i1",
+     "wall_min": 92.3,
+     "longest_call_s": 2828
+    }
+   ],
+   "kJ_per_success_if_P1_limits": 71.499
+  },
+  "orin_w1_n2": {
+   "label": "E4B tool-calling 2 drones",
+   "n_drones": 2,
+   "missions": 36,
+   "passed": 17,
+   "passed_transcript_PASSED_line": 17,
+   "complete_summary_file": true,
+   "window_s": 17238.5,
+   "energy_kJ_recomputed": 606.3,
+   "kJ_per_success_recomputed": 35.665,
+   "summary_energy_kJ": 606.3,
+   "summary_kJ_per_success": 35.665,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 17,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 35.665
+  },
+  "orin_w1_n4": {
+   "label": "E4B tool-calling 4 drones",
+   "n_drones": 4,
+   "missions": 36,
+   "passed": 17,
+   "passed_transcript_PASSED_line": 17,
+   "complete_summary_file": true,
+   "window_s": 11726.2,
+   "energy_kJ_recomputed": 436.8,
+   "kJ_per_success_recomputed": 25.693,
+   "summary_energy_kJ": 436.8,
+   "summary_kJ_per_success": 25.693,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 17,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 25.693
+  },
+  "orin_w1_n8": {
+   "label": "E4B tool-calling 8 drones",
+   "n_drones": 8,
+   "missions": 36,
+   "passed": 17,
+   "passed_transcript_PASSED_line": 17,
+   "complete_summary_file": true,
+   "window_s": 13164.6,
+   "energy_kJ_recomputed": 492.2,
+   "kJ_per_success_recomputed": 28.954,
+   "summary_energy_kJ": 492.2,
+   "summary_kJ_per_success": 28.954,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 17,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 28.954
+  },
+  "orin_w3f_n2": {
+   "label": "E4B step-wise 2 drones",
+   "n_drones": 2,
+   "missions": 12,
+   "passed": 6,
+   "passed_transcript_PASSED_line": 6,
+   "complete_summary_file": true,
+   "window_s": 6722.7,
+   "energy_kJ_recomputed": 231.9,
+   "kJ_per_success_recomputed": 38.656,
+   "summary_energy_kJ": 231.9,
+   "summary_kJ_per_success": 38.656,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 6,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 38.656
+  },
+  "orin_w3f_n4": {
+   "label": "E4B step-wise 4 drones",
+   "n_drones": 4,
+   "missions": 12,
+   "passed": 5,
+   "passed_transcript_PASSED_line": 5,
+   "complete_summary_file": true,
+   "window_s": 5338.6,
+   "energy_kJ_recomputed": 184.2,
+   "kJ_per_success_recomputed": 36.834,
+   "summary_energy_kJ": 184.2,
+   "summary_kJ_per_success": 36.832,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 5,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 36.834
+  },
+  "orin_w3f_n8": {
+   "label": "E4B step-wise 8 drones",
+   "n_drones": 8,
+   "missions": 12,
+   "passed": 6,
+   "passed_transcript_PASSED_line": 6,
+   "complete_summary_file": true,
+   "window_s": 5389.4,
+   "energy_kJ_recomputed": 186.9,
+   "kJ_per_success_recomputed": 31.146,
+   "summary_energy_kJ": 186.9,
+   "summary_kJ_per_success": 31.146,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 6,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 31.146
+  },
+  "gr_w3_n2": {
+   "label": "granite step-wise 2 drones (earlier agent version)",
+   "n_drones": 2,
+   "missions": 12,
+   "passed": 2,
+   "passed_transcript_PASSED_line": 2,
+   "complete_summary_file": true,
+   "window_s": 37290.5,
+   "energy_kJ_recomputed": 1632.7,
+   "kJ_per_success_recomputed": 816.341,
+   "summary_energy_kJ": 1632.7,
+   "summary_kJ_per_success": 816.341,
+   "timed_out": 8,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 2,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 816.341
+  },
+  "gr_w3f_sf_n2": {
+   "label": "granite step-wise final 2 drones (stopped, 11 of 12)",
+   "n_drones": 2,
+   "missions": 11,
+   "passed": 6,
+   "passed_transcript_PASSED_line": 6,
+   "complete_summary_file": false,
+   "window_s": 19890.2,
+   "energy_kJ_recomputed": 852.0,
+   "kJ_per_success_recomputed": 141.997,
+   "summary_energy_kJ": null,
+   "summary_kJ_per_success": null,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 6,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 141.997
+  },
+  "gr_ss_n2": {
+   "label": "granite steady load 2 drones",
+   "n_drones": 2,
+   "missions": 6,
+   "passed": 3,
+   "passed_transcript_PASSED_line": 3,
+   "complete_summary_file": true,
+   "window_s": 8525.7,
+   "energy_kJ_recomputed": 364.5,
+   "kJ_per_success_recomputed": 121.493,
+   "summary_energy_kJ": 364.5,
+   "summary_kJ_per_success": 121.493,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 3,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 121.493
+  },
+  "gr_ss_n4": {
+   "label": "granite steady load 4 drones (running at copy)",
+   "n_drones": 4,
+   "missions": 4,
+   "passed": 3,
+   "passed_transcript_PASSED_line": 3,
+   "complete_summary_file": false,
+   "window_s": 3892.9,
+   "energy_kJ_recomputed": 167.3,
+   "kJ_per_success_recomputed": 55.751,
+   "summary_energy_kJ": null,
+   "summary_kJ_per_success": null,
+   "timed_out": 0,
+   "tracebacks": 0,
+   "sim_restarts": 0,
+   "passed_if_P1_limits_applied": 3,
+   "passes_over_P1_limits": [],
+   "kJ_per_success_if_P1_limits": 55.751
+  }
+ },
+ "T1_p1_baseline": {
+  "p1_single_drone_call_times_on_these_63_runs": {
+   "calls": 289,
+   "longest_call_s": 1256,
+   "calls_over_1800s": 0,
+   "capped_calls": 43,
+   "capped_call_e2e_s_min_median_max": [
+    1211,
+    1226,
+    1256
+   ],
+   "capped_call_tokens_per_s_median": 26.7
+  },
+  "definition": "P1 Thor gemma-4-26B Reflexion, drones/edge_devices/final_sweep_thor/reflexion/gemma-4-26B-A4B-it, runs run_1..run_3 of each (task, instance). Pass = P1's grades.csv final_result (equals the harness final_result in all 63 runs). Energy = run_meta workflow_energy_J (board energy over the run).",
+  "n_runs": 63,
+  "runs_per_mission": [
+   3
+  ],
+  "expected_passes_of_21": 17.333,
+  "expected_energy_kJ": 2272.0,
+  "kJ_per_success": 131.077,
+  "check_pooled_all_63_runs": {
+   "passes": 52,
+   "energy_kJ": 6816.0,
+   "kJ_per_pass": 131.08
+  },
+  "harness_vs_grade_disagreements": 0,
+  "per_mission": {
+   "A3i1": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 11.5,
+    "max_wall_min": 3.0
+   },
+   "A3i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 12.5,
+    "max_wall_min": 3.3
+   },
+   "A3i3": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 8.0,
+    "max_wall_min": 2.3
+   },
+   "A6i1": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 27.5,
+    "max_wall_min": 6.7
+   },
+   "A6i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 27.0,
+    "max_wall_min": 6.7
+   },
+   "A6i3": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 35.3,
+    "max_wall_min": 8.7
+   },
+   "A7i1": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 186.7,
+    "max_wall_min": 60.7
+   },
+   "A7i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 46.7,
+    "max_wall_min": 11.6
+   },
+   "A7i3": {
+    "pass_rate": 0.667,
+    "mean_E_kJ": 219.5,
+    "max_wall_min": 71.4
+   },
+   "A8i1": {
+    "pass_rate": 0.333,
+    "mean_E_kJ": 210.1,
+    "max_wall_min": 62.6
+   },
+   "A8i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 40.8,
+    "max_wall_min": 10.2
+   },
+   "A8i3": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 96.6,
+    "max_wall_min": 23.4
+   },
+   "A9i1": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 205.2,
+    "max_wall_min": 70.7
+   },
+   "A9i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 14.8,
+    "max_wall_min": 4.4
+   },
+   "A9i3": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 177.3,
+    "max_wall_min": 48.8
+   },
+   "A16i1": {
+    "pass_rate": 0.0,
+    "mean_E_kJ": 237.9,
+    "max_wall_min": 61.5
+   },
+   "A16i2": {
+    "pass_rate": 0.333,
+    "mean_E_kJ": 340.9,
+    "max_wall_min": 84.3
+   },
+   "A16i3": {
+    "pass_rate": 0.0,
+    "mean_E_kJ": 284.8,
+    "max_wall_min": 81.1
+   },
+   "A20i1": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 22.4,
+    "max_wall_min": 5.9
+   },
+   "A20i2": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 41.9,
+    "max_wall_min": 10.5
+   },
+   "A20i3": {
+    "pass_rate": 1.0,
+    "mean_E_kJ": 24.8,
+    "max_wall_min": 6.6
+   }
+  },
+  "all_p1_runs_within_7200s_mission_limit": true,
+  "B_task_harness_vs_grade_agreement_in_P1_Thor_Reflexion": {
+   "A_tasks_agree": 72,
+   "B_tasks_agree": 36
+  }
+ },
+ "T4_T5_per_run": {
+  "thor_w1_n4": {
+   "calls": 102,
+   "calls_with_response": 100,
+   "errored_calls": 2,
+   "calls_finish_length_any_cap": 20,
+   "capped_calls_finish_length": 20,
+   "capped_calls_ge32000_tokens": 20,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.1961,
+   "capped_share_of_output_tokens": 0.6976,
+   "capped_share_of_llm_time": 0.6987,
+   "llm_time_total_s": 64030,
+   "cache_reuse_token_weighted_all_calls": 0.2581,
+   "cache_reuse_token_weighted_stepcalls_only": 0.247,
+   "cache_reuse_per_call_mean": 0.2524,
+   "cache_reuse_per_call_median": 0.2403,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.6114,
+   "capped_call_e2e_s_min_median_max": [
+    2179,
+    2236,
+    2293
+   ],
+   "capped_call_tokens_per_s_median": 14.7,
+   "capped_calls_over_1800s": 20,
+   "pool_full_token_usage": {
+    "mean": 0.254,
+    "p95": 0.367,
+    "max": 0.426
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.033,
+    "p95": 0.036,
+    "max": 0.054
+   },
+   "pool_tokens": 296823,
+   "queue_gt0_time_share": 0.0,
+   "queue_max": 0,
+   "running_mean": 3.81
+  },
+  "thor_w1_n8": {
+   "calls": 95,
+   "calls_with_response": 95,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 17,
+   "capped_calls_finish_length": 17,
+   "capped_calls_ge32000_tokens": 17,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.1789,
+   "capped_share_of_output_tokens": 0.6554,
+   "capped_share_of_llm_time": 0.6414,
+   "llm_time_total_s": 75857,
+   "cache_reuse_token_weighted_all_calls": 0.2198,
+   "cache_reuse_token_weighted_stepcalls_only": 0.1921,
+   "cache_reuse_per_call_mean": 0.2182,
+   "cache_reuse_per_call_median": 0.1612,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.5612,
+   "capped_call_e2e_s_min_median_max": [
+    2199,
+    3094,
+    3178
+   ],
+   "capped_call_tokens_per_s_median": 10.6,
+   "capped_calls_over_1800s": 17,
+   "pool_full_token_usage": {
+    "mean": 0.38,
+    "p95": 0.579,
+    "max": 0.716
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.052,
+    "p95": 0.072,
+    "max": 0.084
+   },
+   "pool_tokens": 296823,
+   "queue_gt0_time_share": 0.0006,
+   "queue_max": 4,
+   "running_mean": 5.96
+  },
+  "thor_w3f_n4": {
+   "calls": 189,
+   "calls_with_response": 189,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 21,
+   "capped_calls_finish_length": 21,
+   "capped_calls_ge32000_tokens": 21,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.1111,
+   "capped_share_of_output_tokens": 0.8486,
+   "capped_share_of_llm_time": 0.8431,
+   "llm_time_total_s": 54180,
+   "cache_reuse_token_weighted_all_calls": 0.943,
+   "cache_reuse_token_weighted_stepcalls_only": 0.9598,
+   "cache_reuse_per_call_mean": 0.9036,
+   "cache_reuse_per_call_median": 0.9833,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.7377,
+   "capped_call_e2e_s_min_median_max": [
+    1351,
+    2271,
+    2364
+   ],
+   "capped_call_tokens_per_s_median": 14.4,
+   "capped_calls_over_1800s": 19,
+   "pool_full_token_usage": {
+    "mean": 0.195,
+    "p95": 0.307,
+    "max": 0.359
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.029,
+    "p95": 0.057,
+    "max": 0.058
+   },
+   "pool_tokens": 343494,
+   "queue_gt0_time_share": 0.0,
+   "queue_max": 0,
+   "running_mean": 3.07
+  },
+  "thor_w3f_n8": {
+   "calls": 185,
+   "calls_with_response": 185,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 15,
+   "capped_calls_finish_length": 15,
+   "capped_calls_ge32000_tokens": 15,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.0811,
+   "capped_share_of_output_tokens": 0.8306,
+   "capped_share_of_llm_time": 0.7907,
+   "llm_time_total_s": 35542,
+   "cache_reuse_token_weighted_all_calls": 0.9506,
+   "cache_reuse_token_weighted_stepcalls_only": 0.9653,
+   "cache_reuse_per_call_mean": 0.9099,
+   "cache_reuse_per_call_median": 0.9844,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.6919,
+   "capped_call_e2e_s_min_median_max": [
+    1328,
+    1846,
+    2464
+   ],
+   "capped_call_tokens_per_s_median": 17.8,
+   "capped_calls_over_1800s": 8,
+   "pool_full_token_usage": {
+    "mean": 0.158,
+    "p95": 0.28,
+    "max": 0.385
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.018,
+    "p95": 0.035,
+    "max": 0.076
+   },
+   "pool_tokens": 343494,
+   "queue_gt0_time_share": 0.0,
+   "queue_max": 0,
+   "running_mean": 2.28
+  },
+  "thor_w3_n4": {
+   "calls": 224,
+   "calls_with_response": 224,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 12,
+   "capped_calls_finish_length": 12,
+   "capped_calls_ge32000_tokens": 12,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.0536,
+   "capped_share_of_output_tokens": 0.7432,
+   "capped_share_of_llm_time": 0.7146,
+   "llm_time_total_s": 32945,
+   "cache_reuse_token_weighted_all_calls": 0.9221,
+   "cache_reuse_token_weighted_stepcalls_only": 0.9367,
+   "cache_reuse_per_call_mean": 0.8664,
+   "cache_reuse_per_call_median": 0.9827,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.6253,
+   "capped_call_e2e_s_min_median_max": [
+    1303,
+    2228,
+    2392
+   ],
+   "capped_call_tokens_per_s_median": 14.7,
+   "capped_calls_over_1800s": 7,
+   "pool_full_token_usage": {
+    "mean": 0.183,
+    "p95": 0.358,
+    "max": 0.422
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.022,
+    "p95": 0.04,
+    "max": 0.043
+   },
+   "pool_tokens": 343494,
+   "queue_gt0_time_share": 0.0,
+   "queue_max": 0,
+   "running_mean": 2.59
+  },
+  "thor_w3_n8": {
+   "calls": 254,
+   "calls_with_response": 254,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 9,
+   "capped_calls_finish_length": 9,
+   "capped_calls_ge32000_tokens": 9,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.0354,
+   "capped_share_of_output_tokens": 0.6885,
+   "capped_share_of_llm_time": 0.6437,
+   "llm_time_total_s": 33688,
+   "cache_reuse_token_weighted_all_calls": 0.9304,
+   "cache_reuse_token_weighted_stepcalls_only": 0.945,
+   "cache_reuse_per_call_mean": 0.8733,
+   "cache_reuse_per_call_median": 0.9826,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.5632,
+   "capped_call_e2e_s_min_median_max": [
+    1305,
+    2785,
+    2973
+   ],
+   "capped_call_tokens_per_s_median": 11.8,
+   "capped_calls_over_1800s": 7,
+   "pool_full_token_usage": {
+    "mean": 0.24,
+    "p95": 0.458,
+    "max": 0.531
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.03,
+    "p95": 0.057,
+    "max": 0.067
+   },
+   "pool_tokens": 343494,
+   "queue_gt0_time_share": 0.0007,
+   "queue_max": 3,
+   "running_mean": 3.88
+  }
+ },
+ "T4_T5_orin_for_reference": {
+  "orin_w1_n2": {
+   "calls": 154,
+   "calls_with_response": 154,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 29,
+   "capped_calls_finish_length": 2,
+   "capped_calls_ge32000_tokens": 2,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.013,
+   "capped_share_of_output_tokens": 0.2125,
+   "capped_share_of_llm_time": 0.2106,
+   "llm_time_total_s": 29317,
+   "cache_reuse_token_weighted_all_calls": 0.0,
+   "cache_reuse_token_weighted_stepcalls_only": 0.0,
+   "cache_reuse_per_call_mean": 0.0,
+   "cache_reuse_per_call_median": 0.0,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.1842,
+   "capped_call_e2e_s_min_median_max": [
+    3075,
+    3086,
+    3098
+   ],
+   "capped_call_tokens_per_s_median": 10.6,
+   "capped_calls_over_1800s": 2,
+   "pool_full_token_usage": {
+    "mean": 0.335,
+    "p95": 0.808,
+    "max": 0.947
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.055,
+    "p95": 0.08,
+    "max": 0.112
+   },
+   "pool_tokens": 46645,
+   "queue_gt0_time_share": 0.0001,
+   "queue_max": 1,
+   "running_mean": 1.67
+  },
+  "orin_w1_n4": {
+   "calls": 155,
+   "calls_with_response": 155,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 32,
+   "capped_calls_finish_length": 3,
+   "capped_calls_ge32000_tokens": 3,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.0194,
+   "capped_share_of_output_tokens": 0.2774,
+   "capped_share_of_llm_time": 0.2595,
+   "llm_time_total_s": 41655,
+   "cache_reuse_token_weighted_all_calls": 0.0,
+   "cache_reuse_token_weighted_stepcalls_only": 0.0,
+   "cache_reuse_per_call_mean": 0.0,
+   "cache_reuse_per_call_median": 0.0,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.227,
+   "capped_call_e2e_s_min_median_max": [
+    3108,
+    3302,
+    4397
+   ],
+   "capped_call_tokens_per_s_median": 9.9,
+   "capped_calls_over_1800s": 3,
+   "pool_full_token_usage": {
+    "mean": 0.626,
+    "p95": 0.953,
+    "max": 1.0
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.09,
+    "p95": 0.136,
+    "max": 0.19
+   },
+   "pool_tokens": 46645,
+   "queue_gt0_time_share": 0.3111,
+   "queue_max": 3,
+   "running_mean": 2.92
+  },
+  "orin_w1_n8": {
+   "calls": 157,
+   "calls_with_response": 157,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 31,
+   "capped_calls_finish_length": 5,
+   "capped_calls_ge32000_tokens": 5,
+   "capped_max_tokens_values": [
+    32768
+   ],
+   "capped_share_of_calls": 0.0318,
+   "capped_share_of_output_tokens": 0.404,
+   "capped_share_of_llm_time": 0.2466,
+   "llm_time_total_s": 74367,
+   "cache_reuse_token_weighted_all_calls": 0.0,
+   "cache_reuse_token_weighted_stepcalls_only": 0.0,
+   "cache_reuse_per_call_mean": 0.0,
+   "cache_reuse_per_call_median": 0.0,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.2158,
+   "capped_call_e2e_s_min_median_max": [
+    3179,
+    3275,
+    4493
+   ],
+   "capped_call_tokens_per_s_median": 10.0,
+   "capped_calls_over_1800s": 5,
+   "pool_full_token_usage": {
+    "mean": 0.752,
+    "p95": 0.961,
+    "max": 0.999
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.092,
+    "p95": 0.197,
+    "max": 0.273
+   },
+   "pool_tokens": 46645,
+   "queue_gt0_time_share": 0.6305,
+   "queue_max": 7,
+   "running_mean": 3.06
+  },
+  "orin_w3f_n2": {
+   "calls": 182,
+   "calls_with_response": 182,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 0,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 12216,
+   "cache_reuse_token_weighted_all_calls": 0.9543,
+   "cache_reuse_token_weighted_stepcalls_only": 0.9732,
+   "cache_reuse_per_call_mean": 0.9178,
+   "cache_reuse_per_call_median": 0.9812,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.286,
+    "p95": 0.414,
+    "max": 0.469
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.05,
+    "p95": 0.067,
+    "max": 0.113
+   },
+   "pool_tokens": 45891,
+   "queue_gt0_time_share": 0.0004,
+   "queue_max": 1,
+   "running_mean": 1.78
+  },
+  "orin_w3f_n4": {
+   "calls": 180,
+   "calls_with_response": 180,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 0,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 11109,
+   "cache_reuse_token_weighted_all_calls": 0.9531,
+   "cache_reuse_token_weighted_stepcalls_only": 0.9713,
+   "cache_reuse_per_call_mean": 0.9146,
+   "cache_reuse_per_call_median": 0.9808,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.308,
+    "p95": 0.47,
+    "max": 0.545
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.056,
+    "p95": 0.12,
+    "max": 0.146
+   },
+   "pool_tokens": 45891,
+   "queue_gt0_time_share": 0.0011,
+   "queue_max": 3,
+   "running_mean": 2.03
+  },
+  "orin_w3f_n8": {
+   "calls": 178,
+   "calls_with_response": 178,
+   "errored_calls": 0,
+   "calls_finish_length_any_cap": 0,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 11325,
+   "cache_reuse_token_weighted_all_calls": 0.9514,
+   "cache_reuse_token_weighted_stepcalls_only": 0.971,
+   "cache_reuse_per_call_mean": 0.9133,
+   "cache_reuse_per_call_median": 0.9813,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.306,
+    "p95": 0.523,
+    "max": 0.614
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.055,
+    "p95": 0.182,
+    "max": 0.233
+   },
+   "pool_tokens": 45891,
+   "queue_gt0_time_share": 0.0012,
+   "queue_max": 7,
+   "running_mean": 2.04
+  },
+  "gr_w3_n2": {
+   "calls": 138,
+   "calls_with_response": 133,
+   "errored_calls": 5,
+   "calls_finish_length_any_cap": 13,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 68586,
+   "cache_reuse_token_weighted_all_calls": 0.0,
+   "cache_reuse_token_weighted_stepcalls_only": 0.0,
+   "cache_reuse_per_call_mean": 0.0,
+   "cache_reuse_per_call_median": 0.0,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.706,
+    "p95": 0.947,
+    "max": 1.0
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "pool_tokens": 21430,
+   "queue_gt0_time_share": 0.7835,
+   "queue_max": 1,
+   "running_mean": 1.12
+  },
+  "gr_w3f_sf_n2": {
+   "calls": 111,
+   "calls_with_response": 103,
+   "errored_calls": 8,
+   "calls_finish_length_any_cap": 3,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 35617,
+   "cache_reuse_token_weighted_all_calls": 0.7885,
+   "cache_reuse_token_weighted_stepcalls_only": 0.8102,
+   "cache_reuse_per_call_mean": 0.7339,
+   "cache_reuse_per_call_median": 0.7903,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.528,
+    "p95": 0.925,
+    "max": 1.0
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "pool_tokens": 21351,
+   "queue_gt0_time_share": 0.6652,
+   "queue_max": 1,
+   "running_mean": 1.27
+  },
+  "gr_ss_n2": {
+   "calls": 57,
+   "calls_with_response": 54,
+   "errored_calls": 3,
+   "calls_finish_length_any_cap": 2,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 15942,
+   "cache_reuse_token_weighted_all_calls": 0.8071,
+   "cache_reuse_token_weighted_stepcalls_only": 0.836,
+   "cache_reuse_per_call_mean": 0.7312,
+   "cache_reuse_per_call_median": 0.8465,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.569,
+    "p95": 0.939,
+    "max": 1.0
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "pool_tokens": 21351,
+   "queue_gt0_time_share": 0.468,
+   "queue_max": 1,
+   "running_mean": 1.38
+  },
+  "gr_ss_n4": {
+   "calls": 23,
+   "calls_with_response": 21,
+   "errored_calls": 2,
+   "calls_finish_length_any_cap": 1,
+   "capped_calls_finish_length": 0,
+   "capped_calls_ge32000_tokens": 0,
+   "capped_max_tokens_values": [],
+   "capped_share_of_calls": 0.0,
+   "capped_share_of_output_tokens": 0.0,
+   "capped_share_of_llm_time": 0.0,
+   "llm_time_total_s": 9298,
+   "cache_reuse_token_weighted_all_calls": 0.7826,
+   "cache_reuse_token_weighted_stepcalls_only": 0.8134,
+   "cache_reuse_per_call_mean": 0.7258,
+   "cache_reuse_per_call_median": 0.7647,
+   "llm_time_saved_if_capped_calls_cut_at_4096_tokens": 0.0,
+   "pool_full_token_usage": {
+    "mean": 0.691,
+    "p95": 0.955,
+    "max": 0.998
+   },
+   "pool_swa_token_usage": {
+    "mean": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   },
+   "pool_tokens": 21351,
+   "queue_gt0_time_share": 0.7917,
+   "queue_max": 3,
+   "running_mean": 2.01
+  }
+ },
+ "T6_decoding": {
+  "thor_w1_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 102
+   },
+   "max_tokens_recorded": {
+    "32768": 102
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "thor_w1_n8": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 95
+   },
+   "max_tokens_recorded": {
+    "32768": 95
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "thor_w3f_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 189
+   },
+   "max_tokens_recorded": {
+    "32768": 189
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=all temperature=0.0 top_p=1.0 top_k=0": 14
+   }
+  },
+  "thor_w3f_n8": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 185
+   },
+   "max_tokens_recorded": {
+    "32768": 185
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=all temperature=0.0 top_p=1.0 top_k=0": 14
+   }
+  },
+  "thor_w3_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 224
+   },
+   "max_tokens_recorded": {
+    "32768": 224
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "thor_w3_n8": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 254
+   },
+   "max_tokens_recorded": {
+    "32768": 254
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "orin_w1_n2": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 154
+   },
+   "max_tokens_recorded": {
+    "32768": 78,
+    "1024": 76
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "orin_w1_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 155
+   },
+   "max_tokens_recorded": {
+    "32768": 79,
+    "1024": 76
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "orin_w1_n8": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 157
+   },
+   "max_tokens_recorded": {
+    "32768": 81,
+    "1024": 76
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "orin_w3f_n2": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 182
+   },
+   "max_tokens_recorded": {
+    "32768": 182
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=all temperature=0.0 top_p=1.0 top_k=0": 12
+   }
+  },
+  "orin_w3f_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 180
+   },
+   "max_tokens_recorded": {
+    "32768": 180
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=all temperature=0.0 top_p=1.0 top_k=0": 12
+   }
+  },
+  "orin_w3f_n8": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 178
+   },
+   "max_tokens_recorded": {
+    "32768": 178
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=all temperature=0.0 top_p=1.0 top_k=0": 12
+   }
+  },
+  "gr_w3_n2": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 138
+   },
+   "max_tokens_recorded": {
+    "32768": 138
+   },
+   "requested_by_stepwise_agent_banner:missions": {}
+  },
+  "gr_w3f_sf_n2": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 111
+   },
+   "max_tokens_recorded": {
+    "32768": 48,
+    "4096": 63
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=first temperature=0.6 top_p=0.95 top_k=0": 11
+   }
+  },
+  "gr_ss_n2": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 57
+   },
+   "max_tokens_recorded": {
+    "32768": 28,
+    "4096": 29
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=first temperature=0.6 top_p=0.95 top_k=0": 6
+   }
+  },
+  "gr_ss_n4": {
+   "recorded_(temperature,top_p,top_k,seed):calls": {
+    "(0.0, 1.0, 1, 42)": 23
+   },
+   "max_tokens_recorded": {
+    "32768": 12,
+    "4096": 11
+   },
+   "requested_by_stepwise_agent_banner:missions": {
+    "thinking=first temperature=0.6 top_p=0.95 top_k=0": 4
+   }
+  }
+ },
+ "P3c_loop_detector": {
+  "population": "the 6 Thor runs (W1 n4/n8, step-wise final n4/n8, step-wise fast-sim n4/n8)",
+  "looping_calls = calls that ended finish_reason=length (32,768 tokens)": 94,
+  "other_long_calls = calls with >= 2,000 output tokens that finished normally": 90,
+  "note": "her detector's exact rule is not in the data copy; these are my rules (a W-character block of the model's reasoning/answer/tool-call text appearing for the k-th time; trigger position converted from characters to tokens by the call's tokens-per-character ratio)",
+  "rules": {
+   "block200chars_3x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2558,
+      5747,
+      13501,
+      21217
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 5,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      6248,
+      7775,
+      12888,
+      16253
+     ]
+    }
+   },
+   "block200chars_2x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      1965,
+      4112,
+      9025,
+      15230
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 39,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      2391,
+      5711,
+      12066,
+      15048
+     ]
+    }
+   },
+   "block300chars_2x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2513,
+      5481,
+      11422,
+      21258
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 27,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      3905,
+      7117,
+      13730,
+      18315
+     ]
+    }
+   },
+   "block500chars_2x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2806,
+      5991,
+      14324,
+      21340
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 5,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      7341,
+      12257,
+      14429,
+      14655
+     ]
+    }
+   },
+   "block100chars_3x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2060,
+      3912,
+      7011,
+      10855
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 47,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      2410,
+      4228,
+      8573,
+      15006
+     ]
+    }
+   },
+   "block300chars_3x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2708,
+      6132,
+      15011,
+      21368
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 3,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": [
+      6856,
+      7808,
+      14595,
+      16292
+     ]
+    }
+   },
+   "block500chars_3x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      2892,
+      6331,
+      15520,
+      23041
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 0,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": null
+    }
+   },
+   "block1000chars_2x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      3383,
+      6625,
+      14922,
+      22296
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 0,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": null
+    }
+   },
+   "block1000chars_3x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      3504,
+      6766,
+      15870,
+      23223
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 0,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": null
+    }
+   },
+   "block2000chars_2x": {
+    "capped_looping_calls": {
+     "flagged": 94,
+     "of": 94,
+     "trigger_tokens_p10_p50_p90_max": [
+      4380,
+      7572,
+      16006,
+      22659
+     ]
+    },
+    "other_long_calls": {
+     "flagged": 0,
+     "of": 90,
+     "trigger_tokens_p10_p50_p90_max": null
+    }
+   }
+  },
+  "share_of_llm_time_saved_if_detector_200chars_3x_stops_each_capped_call_where_it_fires": {
+   "thor_w1_n4": 0.5034,
+   "thor_w1_n8": 0.4308,
+   "thor_w3f_n4": 0.7062,
+   "thor_w3f_n8": 0.6232,
+   "thor_w3_n4": 0.6156,
+   "thor_w3_n8": 0.5698
+  },
+  "capped_calls_total_by_run": {
+   "thor_w1_n4": 20,
+   "thor_w1_n8": 17,
+   "thor_w3f_n4": 21,
+   "thor_w3f_n8": 15,
+   "thor_w3_n4": 12,
+   "thor_w3_n8": 9
+  }
+ },
+ "P1c_next_call_time": {
+  "definition": "gap = (send time of the next LLM call) - (end time of the call that issued the move); move = step_fly_to/step_fly_body with distance > 0.5 m (distance from the transcript states); calls separated by an evaluator call are excluded. Prediction = 10.6 s + distance / 2 m/s. NB the 10 s is the hover the P5 tool server itself adds after every move (P5_INSPECT_S=10, stepwise_mcp_server.py line 45) and 2 m/s is the simulator's flight speed.",
+  "unaligned_missions_skipped": {
+   "thor_w3f_n4": [],
+   "thor_w3f_n8": [],
+   "orin_w3f_n2": [],
+   "orin_w3f_n4": [],
+   "orin_w3f_n8": [],
+   "thor_w3_n4": [],
+   "thor_w3_n8": [],
+   "gr_w3f_sf_n2": [],
+   "gr_ss_n2": [],
+   "gr_ss_n4": [],
+   "gr_w3_n2": []
+  },
+  "final_runs": {
+   "thor_w3f_n4": {
+    "moves": 60,
+    "fitted_offset_s": 10.58,
+    "err_p50_p90_fitted_offset": [
+     0.007,
+     0.038
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.009,
+     0.036
+    ],
+    "share_within_4pct_fixed": 0.95,
+    "share_within_5pct_fixed": 0.95
+   },
+   "thor_w3f_n8": {
+    "moves": 54,
+    "fitted_offset_s": 10.64,
+    "err_p50_p90_fitted_offset": [
+     0.015,
+     0.031
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.012,
+     0.034
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   },
+   "orin_w3f_n2": {
+    "moves": 28,
+    "fitted_offset_s": 10.61,
+    "err_p50_p90_fitted_offset": [
+     0.007,
+     0.034
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.006,
+     0.035
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   },
+   "orin_w3f_n4": {
+    "moves": 26,
+    "fitted_offset_s": 10.61,
+    "err_p50_p90_fitted_offset": [
+     0.008,
+     0.035
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.008,
+     0.036
+    ],
+    "share_within_4pct_fixed": 0.923,
+    "share_within_5pct_fixed": 0.923
+   },
+   "orin_w3f_n8": {
+    "moves": 25,
+    "fitted_offset_s": 10.57,
+    "err_p50_p90_fitted_offset": [
+     0.006,
+     0.037
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.006,
+     0.035
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   }
+  },
+  "pooled_final_runs": {
+   "moves": 193,
+   "err_p50_p90_p100": [
+    0.008,
+    0.035,
+    0.163
+   ],
+   "share_within_4pct": 0.974,
+   "share_within_5pct": 0.974,
+   "share_within_10pct": 0.995
+  },
+  "other_step_runs": {
+   "thor_w3_n4": {
+    "moves": 69,
+    "fitted_offset_s": -1.82,
+    "err_p50_p90_fitted_offset": [
+     0.404,
+     0.934
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     14.841,
+     17.312
+    ],
+    "share_within_4pct_fixed": 0.0,
+    "share_within_5pct_fixed": 0.0
+   },
+   "thor_w3_n8": {
+    "moves": 81,
+    "fitted_offset_s": -1.81,
+    "err_p50_p90_fitted_offset": [
+     0.311,
+     0.867
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     14.903,
+     17.838
+    ],
+    "share_within_4pct_fixed": 0.0,
+    "share_within_5pct_fixed": 0.0
+   },
+   "gr_w3f_sf_n2": {
+    "moves": 15,
+    "fitted_offset_s": 10.72,
+    "err_p50_p90_fitted_offset": [
+     0.016,
+     0.027
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.007,
+     0.035
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   },
+   "gr_ss_n2": {
+    "moves": 7,
+    "fitted_offset_s": 10.61,
+    "err_p50_p90_fitted_offset": [
+     0.005,
+     0.035
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.004,
+     0.035
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   },
+   "gr_ss_n4": {
+    "moves": 3,
+    "fitted_offset_s": 11.06,
+    "err_p50_p90_fitted_offset": [
+     0.003,
+     0.017
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     0.035,
+     0.035
+    ],
+    "share_within_4pct_fixed": 1.0,
+    "share_within_5pct_fixed": 1.0
+   },
+   "gr_w3_n2": {
+    "moves": 24,
+    "fitted_offset_s": -2.06,
+    "err_p50_p90_fitted_offset": [
+     0.384,
+     1.105
+    ],
+    "err_p50_p90_fixed_10.6s": [
+     12.933,
+     15.498
+    ],
+    "share_within_4pct_fixed": 0.0,
+    "share_within_5pct_fixed": 0.0
+   }
+  },
+  "variant_her_definition_(gap_across_attempt_boundaries_allowed,_no_state_reset)": {
+   "five_final_runs": {
+    "per_run_moves": {
+     "thor_w3f_n4": 60,
+     "thor_w3f_n8": 55,
+     "orin_w3f_n2": 32,
+     "orin_w3f_n4": 28,
+     "orin_w3f_n8": 27
+    },
+    "moves": 202,
+    "err_p50_p90": [
+     0.008,
+     0.036
+    ],
+    "share_within_4pct": 0.955
+   },
+   "five_final_runs_plus_granite_final_and_steady_runs": {
+    "per_run_moves": {
+     "thor_w3f_n4": 60,
+     "thor_w3f_n8": 55,
+     "orin_w3f_n2": 32,
+     "orin_w3f_n4": 28,
+     "orin_w3f_n8": 27,
+     "gr_w3f_sf_n2": 16,
+     "gr_ss_n2": 7,
+     "gr_ss_n4": 3
+    },
+    "moves": 228,
+    "err_p50_p90": [
+     0.008,
+     0.036
+    ],
+    "share_within_4pct": 0.956
+   }
+  }
+ },
+ "P2c_conversation_growth": {
+  "definition": "growth = prompt_tokens of the next step call - prompt_tokens of this step call (same attempt, no evaluator call in between)",
+  "pairs_by_run": {
+   "thor_w3f_n4": 145,
+   "thor_w3f_n8": 145,
+   "orin_w3f_n2": 134,
+   "orin_w3f_n4": 128,
+   "orin_w3f_n8": 130,
+   "thor_w3_n4": 174,
+   "thor_w3_n8": 198,
+   "gr_w3f_sf_n2": 59,
+   "gr_ss_n2": 27,
+   "gr_ss_n4": 10,
+   "gr_w3_n2": 99
+  },
+  "final_runs_all_steps": {
+   "steps": 682,
+   "growth_tokens_p10_p25_p50_p75_p90": [
+    113.0,
+    157.0,
+    187.0,
+    216.0,
+    517.7
+   ],
+   "median_growth": 187.0,
+   "err_of_prompt_pred_(prompt+median_growth)_p50_p90": [
+    0.003,
+    0.036
+   ],
+   "share_within_4pct": 0.906,
+   "naive_no_growth_err_p90": [
+    0.059
+   ],
+   "naive_share_within_4pct": 0.856,
+   "err_of_growth_pred_p50_p90": [
+    0.184,
+    0.952
+   ],
+   "share_growth_within_4pct_of_growth": 0.155,
+   "share_growth_in_150_200": 0.469
+  },
+  "final_runs_excluding_first_step": {
+   "steps": 618,
+   "growth_tokens_p10_p25_p50_p75_p90": [
+    88.4,
+    156.0,
+    184.0,
+    205.0,
+    235.9
+   ],
+   "median_growth": 184.0,
+   "err_of_prompt_pred_(prompt+median_growth)_p50_p90": [
+    0.002,
+    0.013
+   ],
+   "share_within_4pct": 0.963,
+   "naive_no_growth_err_p90": [
+    0.024
+   ],
+   "naive_share_within_4pct": 0.945,
+   "err_of_growth_pred_p50_p90": [
+    0.165,
+    2.158
+   ],
+   "share_growth_within_4pct_of_growth": 0.167,
+   "share_growth_in_150_200": 0.518
+  },
+  "all_step_runs_all_steps": {
+   "steps": 1249,
+   "growth_tokens_p10_p25_p50_p75_p90": [
+    113.0,
+    156.0,
+    187.0,
+    217.0,
+    976.8
+   ],
+   "median_growth": 187.0,
+   "err_of_prompt_pred_(prompt+median_growth)_p50_p90": [
+    0.003,
+    0.081
+   ],
+   "share_within_4pct": 0.878,
+   "naive_no_growth_err_p90": [
+    0.102
+   ],
+   "naive_share_within_4pct": 0.841,
+   "err_of_growth_pred_p50_p90": [
+    0.184,
+    0.951
+   ],
+   "share_growth_within_4pct_of_growth": 0.158,
+   "share_growth_in_150_200": 0.443
+  },
+  "all_step_runs_excluding_first_step": {
+   "steps": 1124,
+   "growth_tokens_p10_p25_p50_p75_p90": [
+    105.0,
+    155.0,
+    184.0,
+    205.0,
+    225.0
+   ],
+   "median_growth": 184.0,
+   "err_of_prompt_pred_(prompt+median_growth)_p50_p90": [
+    0.002,
+    0.013
+   ],
+   "share_within_4pct": 0.944,
+   "naive_no_growth_err_p90": [
+    0.024
+   ],
+   "naive_share_within_4pct": 0.934,
+   "err_of_growth_pred_p50_p90": [
+    0.164,
+    0.947
+   ],
+   "share_growth_within_4pct_of_growth": 0.172,
+   "share_growth_in_150_200": 0.492
+  }
+ },
+ "step_call_counts": {
+  "thor_w3f_n4": 167,
+  "thor_w3f_n8": 165,
+  "orin_w3f_n2": 158,
+  "orin_w3f_n4": 154,
+  "orin_w3f_n8": 154,
+  "thor_w3_n4": 199,
+  "thor_w3_n8": 226,
+  "gr_w3f_sf_n2": 79,
+  "gr_ss_n2": 40,
+  "gr_ss_n4": 15,
+  "gr_w3_n2": 119
+ },
+ "P4c_retry_rescue": {
+  "definition": "rescue = mission whose PASSED line is True and whose last [SUPERVISOR] attempt number is >= 2",
+  "small_models": {
+   "orin_w1_n2": {
+    "missions": 36,
+    "finished_with_PASSED_line": 36,
+    "passed_first_attempt": 15,
+    "rescued_by_a_retry": 2,
+    "rescue_share_of_missions": 0.056,
+    "missions_with_a_failed_first_attempt": 21,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.095
+   },
+   "orin_w1_n4": {
+    "missions": 36,
+    "finished_with_PASSED_line": 36,
+    "passed_first_attempt": 15,
+    "rescued_by_a_retry": 2,
+    "rescue_share_of_missions": 0.056,
+    "missions_with_a_failed_first_attempt": 21,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.095
+   },
+   "orin_w1_n8": {
+    "missions": 36,
+    "finished_with_PASSED_line": 36,
+    "passed_first_attempt": 15,
+    "rescued_by_a_retry": 2,
+    "rescue_share_of_missions": 0.056,
+    "missions_with_a_failed_first_attempt": 21,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.095
+   },
+   "orin_w3f_n2": {
+    "missions": 12,
+    "finished_with_PASSED_line": 12,
+    "passed_first_attempt": 6,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 6,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   },
+   "orin_w3f_n4": {
+    "missions": 12,
+    "finished_with_PASSED_line": 12,
+    "passed_first_attempt": 5,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 7,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   },
+   "orin_w3f_n8": {
+    "missions": 12,
+    "finished_with_PASSED_line": 12,
+    "passed_first_attempt": 6,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 6,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   },
+   "gr_w3_n2": {
+    "missions": 12,
+    "finished_with_PASSED_line": 4,
+    "passed_first_attempt": 2,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 2,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   },
+   "gr_w3f_sf_n2": {
+    "missions": 11,
+    "finished_with_PASSED_line": 11,
+    "passed_first_attempt": 3,
+    "rescued_by_a_retry": 3,
+    "rescue_share_of_missions": 0.273,
+    "missions_with_a_failed_first_attempt": 8,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.375
+   },
+   "gr_ss_n2": {
+    "missions": 6,
+    "finished_with_PASSED_line": 6,
+    "passed_first_attempt": 2,
+    "rescued_by_a_retry": 1,
+    "rescue_share_of_missions": 0.167,
+    "missions_with_a_failed_first_attempt": 4,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.25
+   }
+  },
+  "big_model_for_reference": {
+   "thor_w1_n4": {
+    "missions": 21,
+    "finished_with_PASSED_line": 20,
+    "passed_first_attempt": 13,
+    "rescued_by_a_retry": 3,
+    "rescue_share_of_missions": 0.143,
+    "missions_with_a_failed_first_attempt": 7,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.429
+   },
+   "thor_w1_n8": {
+    "missions": 21,
+    "finished_with_PASSED_line": 21,
+    "passed_first_attempt": 15,
+    "rescued_by_a_retry": 2,
+    "rescue_share_of_missions": 0.095,
+    "missions_with_a_failed_first_attempt": 6,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.333
+   },
+   "thor_w3f_n4": {
+    "missions": 14,
+    "finished_with_PASSED_line": 14,
+    "passed_first_attempt": 10,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 4,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   },
+   "thor_w3f_n8": {
+    "missions": 14,
+    "finished_with_PASSED_line": 14,
+    "passed_first_attempt": 11,
+    "rescued_by_a_retry": 0,
+    "rescue_share_of_missions": 0.0,
+    "missions_with_a_failed_first_attempt": 3,
+    "rescue_share_of_missions_with_failed_first_attempt": 0.0
+   }
+  }
+ },
+ "O1_e4b_w1": {
+  "orin_w1_n2": {
+   "missions": 36,
+   "passed": 17,
+   "kJ_per_success": 35.665,
+   "missions_whose_transcript_is_P1_tool_calling_agent": 36,
+   "roles_in_llm_calls": {
+    "generator": 78,
+    "evaluator": 76
+   },
+   "queue_gt0_time_share": 0.0001,
+   "queue_gt0_and_pool_usage_ge90pct_time_share": 0.0,
+   "pool_usage_ge90pct_time_share": 0.0133,
+   "pool_usage_ge95pct_time_share": 0.0004,
+   "queue_gt0_but_pool_usage_below_50pct_time_share": 0.0001,
+   "queue_max": 1,
+   "running_mean": 1.67,
+   "pool_tokens": 46645,
+   "kv_cache_dtype": "auto"
+  },
+  "orin_w1_n4": {
+   "missions": 36,
+   "passed": 17,
+   "kJ_per_success": 25.693,
+   "missions_whose_transcript_is_P1_tool_calling_agent": 36,
+   "roles_in_llm_calls": {
+    "generator": 79,
+    "evaluator": 76
+   },
+   "queue_gt0_time_share": 0.3112,
+   "queue_gt0_and_pool_usage_ge90pct_time_share": 0.0992,
+   "pool_usage_ge90pct_time_share": 0.1475,
+   "pool_usage_ge95pct_time_share": 0.0618,
+   "queue_gt0_but_pool_usage_below_50pct_time_share": 0.0036,
+   "queue_max": 3,
+   "running_mean": 2.92,
+   "pool_tokens": 46645,
+   "kv_cache_dtype": "auto"
+  },
+  "orin_w1_n8": {
+   "missions": 36,
+   "passed": 17,
+   "kJ_per_success": 28.954,
+   "missions_whose_transcript_is_P1_tool_calling_agent": 36,
+   "roles_in_llm_calls": {
+    "generator": 81,
+    "evaluator": 76
+   },
+   "queue_gt0_time_share": 0.6306,
+   "queue_gt0_and_pool_usage_ge90pct_time_share": 0.2105,
+   "pool_usage_ge90pct_time_share": 0.2413,
+   "pool_usage_ge95pct_time_share": 0.0844,
+   "queue_gt0_but_pool_usage_below_50pct_time_share": 0.0056,
+   "queue_max": 7,
+   "running_mean": 3.06,
+   "pool_tokens": 46645,
+   "kv_cache_dtype": "auto"
+  }
+ },
+ "O2_granite": {
+  "pools_in_the_data_copy": {
+   "gr_w3_n2": {
+    "kv_cache_dtype": "auto",
+    "max_total_num_tokens": 21430,
+    "n_drones": 2,
+    "missions": 12,
+    "complete": true
+   },
+   "gr_w3f_sf_n2": {
+    "kv_cache_dtype": "auto",
+    "max_total_num_tokens": 21351,
+    "n_drones": 2,
+    "missions": 11,
+    "complete": false
+   },
+   "gr_ss_n2": {
+    "kv_cache_dtype": "auto",
+    "max_total_num_tokens": 21351,
+    "n_drones": 2,
+    "missions": 6,
+    "complete": true
+   },
+   "gr_ss_n4": {
+    "kv_cache_dtype": "auto",
+    "max_total_num_tokens": 21351,
+    "n_drones": 4,
+    "missions": 4,
+    "complete": false
+   }
+  },
+  "note": "",
+  "fleet_meta_with_fp8_or_pool_over_40K_for_granite": [],
+  "w3f_granite_sf_n2_16bit": {
+   "pool_tokens": 21351,
+   "conversation_sum_max": 42383,
+   "share_of_time_sum_of_conversations_exceeds_pool": 0.746,
+   "share_of_time_with_both_drones_in_a_mission_and_sum_exceeds_pool": 0.906,
+   "per_drone_conversation_max": {
+    "1": 21349,
+    "0": 21349
+   },
+   "queue_gt0_time_share": 0.667,
+   "max_prompt_tokens_any_call": 21291,
+   "evicted_tokens": 448350,
+   "share_of_time_both_drones_in_a_mission": 0.821
+  }
+ },
+ "O3_reread": {
+  "definition": "server-side time-to-first-token (ttft_s, recorded only when one request finished its first token in the sampling window) of calls whose uncached prompt (prompt_tokens - cached_tokens) is large; queue empty during the call (so no queueing is counted).",
+  "gemma-4-E4B (Orin-32-1)": {
+   "calls_used": 61,
+   "fit_ttft_s_=_a_+_b*tokens": [
+    3.04,
+    0.00082
+   ],
+   "predicted_ttft_s_at_15000_uncached_tokens": 15.3,
+   "uncached_range": [
+    6035,
+    16342
+   ],
+   "ttft_range_s": [
+    8.2,
+    17.1
+   ],
+   "median_rate_tok_per_s": 904,
+   "solo_calls_only(mean running<=1.2)": {
+    "n": 10,
+    "predicted_ttft_s_at_15000": 15.0,
+    "median_rate_tok_per_s": 922
+   },
+   "observed_calls_with_>=12K_uncached_tokens(unc,ttft_s,mean_running)": [
+    [
+     12403,
+     13.2,
+     1.8
+    ],
+    [
+     12835,
+     13.6,
+     1.69
+    ],
+    [
+     13468,
+     14.2,
+     1.56
+    ],
+    [
+     13080,
+     13.9,
+     1.6
+    ],
+    [
+     13025,
+     13.9,
+     3.39
+    ],
+    [
+     16342,
+     17.1,
+     1.85
+    ]
+   ]
+  },
+  "granite-4.2-8b (Orin-32-2)": {
+   "calls_used": 11,
+   "fit_ttft_s_=_a_+_b*tokens": [
+    7.98,
+    -3e-05
+   ],
+   "predicted_ttft_s_at_15000_uncached_tokens": 7.5,
+   "uncached_range": [
+    8016,
+    16849
+   ],
+   "ttft_range_s": [
+    6.2,
+    12.9
+   ],
+   "median_rate_tok_per_s": 1496,
+   "solo_calls_only(mean running<=1.2)": {
+    "n": 4,
+    "predicted_ttft_s_at_15000": 30.6,
+    "median_rate_tok_per_s": 2666
+   },
+   "observed_calls_with_>=12K_uncached_tokens(unc,ttft_s,mean_running)": [
+    [
+     12066,
+     6.3,
+     1.98
+    ],
+    [
+     12223,
+     6.3,
+     2.0
+    ],
+    [
+     16453,
+     12.9,
+     0.97
+    ],
+    [
+     16557,
+     6.2,
+     0.99
+    ],
+    [
+     16691,
+     6.3,
+     0.82
+    ],
+    [
+     16849,
+     6.3,
+     0.98
+    ]
+   ]
+  }
+ },
+ "_plots": {
+  "font_family": "IBM Plex Sans",
+  "files": [
+   "packing.png",
+   "loops.png",
+   "orin_wait.png",
+   "orin_granite.png"
+  ]
+ }
+}

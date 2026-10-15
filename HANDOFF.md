@@ -1,13 +1,28 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-15, 23:30 (IST).
+**Last updated:** 2026-10-16 (IST).
 
-**Next meeting: Fri 16 Oct.** Build the presentation from the brief, `reports/2026-10-15-meeting/README.md`:
-- the opportunity (waterfall, useful share about 7%);
-- the proposal: spend spare width and memory, chosen at run time;
-- the options table O1–O8 (§2), each marked measured or not tested;
-- the evidence (§3): drone fleets, TRF-3, and both live traffic verdicts;
-- the path to OSDI, and decisions for the professor.
+**16 Oct: the deck for the meeting is published** (reference deck, version 206, 98 slides;
+https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8). We present from slide 70.
+- **Slides 63–69** (`p5d-*`) are the drone campaign's own section, left unchanged.
+- **Slides 70–87, "Drones and traffic together"** (`jsc-*`): the setting, where the energy goes, the spare width and
+  memory, the platform, what we changed, packing, Thor's loops, the Orin's memory, live candidates, what binds per
+  board, the serving layer, how it decides, what a researcher gets, the gains with their evidence, closest work in two
+  tables, and the next test.
+- **Slides 88–98, the appendix** (`jsa-*`).
+- Sources and checks: `data/p5deck_v3/project/` (git-ignored), `reports/2026-10-16-deck/` (figures, the recheck).
+- **The drone campaign, rechecked from its raw runs** (`reports/2026-10-16-deck/README.md`). The headline numbers hold:
+  131 → 80 → 58 kJ per success on Thor; 94 looping calls; E4B queueing 0/31/63%. The deck uses the recomputed values.
+  To raise with the mentor:
+  - every fleet run was greedy (P1's tracer), so the loop savings stand against greedy decoding, not sampling;
+  - P1's time limits were not applied (8 drones: 10/21 at 99 kJ with them, still 1.3× better than one drone);
+  - granite's 16-bit pool is 21.4K, not 22.7K;
+  - no FP8 granite run is in the data;
+  - 193 moves, not 243; 682 steps, not 761;
+  - the read-back time is not reproduced;
+  - granite's retries rescued 17–27% of missions, not 0–7%.
+- **Related work** was checked against the papers (venues only where confirmed). The closest on energy is KAIROS
+  (arXiv 2604.16682, H100, no task success). No serving system found detects loops and resamples.
 
 **15 Oct results (all on P1's boards; details in the reports):**
 - **TRF-3, our platform against P1's:** faithful (`reports/2026-10-14-traffic-agent/`). We passed 8 of 9 tasks,
