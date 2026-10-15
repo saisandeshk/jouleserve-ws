@@ -1,0 +1,226 @@
+{
+ "model": "gemma",
+ "s1_dir": "/home/saisandeshk/work/runs/thor2/cand-gemma-s1-r1-20261015T1728",
+ "f4_dir": "/home/saisandeshk/work/runs/thor2/cand-gemma-f4-r1-20261015T2013",
+ "arms": {
+  "G (P1 greedy, recorded)": {
+   "runs": 48,
+   "passes": 28,
+   "pass_rate": 0.5833333333333334,
+   "energy_J": 2334895.9899999998,
+   "energy_per_success_J": 83389.14249999999,
+   "capped_calls": 31,
+   "calls": 303,
+   "mean_time_s": 720.0270833333333
+  },
+  "S1 (one sampled answer)": {
+   "runs": 12,
+   "passes": 10,
+   "pass_rate": 0.8333333333333334,
+   "energy_J": 645847.75,
+   "energy_per_success_J": 64584.775,
+   "capped_calls": 5,
+   "calls": 87,
+   "mean_time_s": 816.6
+  },
+  "F4 (first-of-4)": {
+   "runs": 12,
+   "passes": 7,
+   "pass_rate": 0.5833333333333334,
+   "energy_J": 631519.3999999999,
+   "energy_per_success_J": 90217.05714285713,
+   "capped_calls": 0,
+   "calls": 66,
+   "mean_time_s": 767.1333333333333
+  }
+ },
+ "gateway": {
+  "S1": {
+   "agent_calls": 87,
+   "winner_not_first": 0,
+   "winner_capped": 5,
+   "loser_tokens": 0,
+   "winner_tokens": 178118
+  },
+  "F4": {
+   "agent_calls": 81,
+   "winner_not_first": 59,
+   "winner_capped": 1,
+   "loser_tokens": 176234,
+   "winner_tokens": 95319
+  }
+ },
+ "f4_vs_s1_energy_per_success": 0.39687808996558593,
+ "f4_minus_s1_passes": -3,
+ "verdict": "absent",
+ "per_task": {
+  "day-summary": {
+   "G": [
+    1,
+    0,
+    0,
+    0
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "peak-count": {
+   "G": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "class-mix": {
+   "G": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "busiest-hour": {
+   "G": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "avg-per-minute": {
+   "G": [
+    1,
+    1,
+    0,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "unusual-vs-median": {
+   "G": [
+    1,
+    0,
+    0,
+    0
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "special-vehicle": {
+   "G": [
+    1,
+    0,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "heavy-vehicle": {
+   "G": [
+    0,
+    1,
+    0,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "first-last-sighting": {
+   "G": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "peak-start-end": {
+   "G": [
+    1,
+    1,
+    0,
+    0
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "viz-stacked-area": {
+   "G": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "viz-class-vs-dwell": {
+   "G": [
+    1,
+    0,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  }
+ }
+}

@@ -1,4 +1,4 @@
-# Parallel candidates: when do they pay? (WF-4 part 1, CAND-T1)
+# Parallel candidates: when do they pay? (WF-4, CAND-T1/T2)
 
 **15 Oct 2026.** Two parts:
 - **The bank analysis (done).** It uses the mentor's drone sample banks and cost curves (13–14 Oct, read-only copies in
@@ -104,16 +104,41 @@ that, and what sampling alone does against P1's greedy protocol.
   call; the gateway logged 12, including the 2 capped ones. P1's recorded runs have the same gap, so trace-based counts
   undercount runs cut by the timeout in every arm. For S1 and F4 the gateway log is the full record.
 
-**CAND-T1, gemma-26B (mixture of experts) on Thor-2: S1 is done (17:28–20:13); F4 is running.** Read beside P1's
-recorded greedy runs of the same 12 tasks (another setup):
+**CAND-T1, gemma-26B (mixture of experts) on Thor-2: done (15 Oct, 17:28–22:47). Verdict by the rule fixed before
+the data: "absent".** First-of-4 raised energy per success by 39.7% against one sampled answer, and it passed 3 fewer
+tasks. The loss is more than 2 passes, so it is read as an effect.
 
-| Arm | Runs | Passed | kJ per success | Capped calls |
-| --- | --- | --- | --- | --- |
-| G: P1 greedy, recorded (4 per task) | 48 | 28 | 83.4 | 31 (traces) |
-| S1: one sampled answer | 12 | 10 | 64.6 | 5 (gateway) |
+| Arm | Runs | Passed | kJ per success | Total kJ | Winning tokens | Capped calls (gateway) |
+| --- | --- | --- | --- | --- | --- | --- |
+| G: P1 greedy, recorded (4 per task) | 48 | 28 | 83.4 | 2,335 | — | 31 (traces) |
+| S1: one sampled answer | 12 | 10 | 64.6 | 646 | 178,118 | 5 |
+| F4: first-of-4 | 12 | 7 | 90.2 | 631 | 95,319 | 1 |
 
-Sampling alone already looks better than P1's greedy protocol here, as the drone banks suggested, but this is one repeat
-from another setup. With 10 of 12 already passing, F4 has little room to add passes.
+- **Energy was not the problem.** Even at 1.81× per step for 4 streams, first-of-4 used slightly less energy in total
+  (631 against 646 kJ). Its winners were 46% shorter, and the losers decoded 176K tokens in parallel.
+- **Passes were the problem.** F4 lost day-summary, first-last-sighting, heavy-vehicle and unusual-vs-median, and
+  gained viz-stacked-area.
+  - In heavy-vehicle, the winning candidate answered from general knowledge after 3 steps ("heavy goods vehicles are
+    generally restricted…") without reading the camera data. The first candidate to finish can be the one that gives up
+    early.
+  - unusual-vs-median hit the 1-hour workload timeout in F4.
+- **What it means for the mechanism:** first-to-finish selects for speed. On granite that cut off runaways (winners 25%
+  shorter, 2 more passes). On gemma it also selected premature final answers. The selection rule has to know what a good
+  answer looks like:
+  - a check, for example "do not accept a final answer before the agent has read the data";
+  - or a vote over the candidates' answers (option O3).
+
+  That is a design result, and it is one repeat on 12 tasks.
+- **G is P1's recorded greedy runs,** from P1's box and time. One sampled answer (S1, 10 of 12) did better than them here
+  (28 of 48), with fewer capped calls, as the drone banks suggested sampling would.
+
+**Both traffic arms together (15 Oct).** Candidates cost little or no extra energy on P1's traffic agent on either
+model, because the winners are shorter. Whether they pay depends on the selection rule:
+- on the dense granite, first-to-finish gave −24% energy per success ("weaker");
+- on the mixture-of-experts gemma, +40% ("absent"), because it picked premature answers.
+
+The bank prediction (candidates cost energy on the mixture of experts, at an unchanged pass rate) was wrong in its
+reason. Energy held; quality fell.
 
 **Gateway check (15 Oct, 00:55, before the arms):** the first-of-k gateway was run against P1's client stack.
 - **Client:** langchain 1.4.0, langchain-core 1.6.1, langchain-openai 1.6.0, langgraph 1.2.11, openai 3.8.0, with P1's
