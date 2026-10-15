@@ -128,7 +128,7 @@ of all of P1's board energy (`../2026-10-14-waterfall/waterfall.json`).
 | O7 | Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | **Not tested** (small bucket) |
 | O8 | Lower power mode or clocks when the width cannot be used | power | base power in every bucket | not measured | **Not tested**; P1 ran at locked maximum clocks |
 
-Status: **Measured** = a result exists on P1's boards; **Testing now** = runs in progress; **Not tested** = an idea, no data yet.
+Status: **Measured** = a result exists on P1's boards (one repeat where it says so); **Not tested** = an idea, no data yet.
 
 **What the table says:**
 - **O4 is the first gap a reviewer will find.** Speculative decoding uses the same width as packing (O1) and attacks

@@ -111,7 +111,7 @@ Sizes are median shares of all board energy across P1's configurations (`waterfa
 | O7 | Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | **Not tested** (small bucket) |
 | O8 | Lower power mode or clocks when the width cannot be used | power | base power in every bucket | not measured | **Not tested**; P1 ran at locked maximum clocks |
 
-Status: **Measured** = a result exists on P1's boards; **Testing now** = runs in progress; **Not tested** = an idea, no data yet.
+Status: **Measured** = a result exists on P1's boards (one repeat where it says so); **Not tested** = an idea, no data yet.
 
 The same table, for the presentation, is in `reports/2026-10-15-meeting/README.md` §2.
 
