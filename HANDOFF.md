@@ -6,7 +6,7 @@
 the options table O1–O8 (§2), with each option marked measured, testing now or not tested. The professor chooses among
 them, and the untested ones are in TRACKER as `OPT-*`.
 A one-page progress artifact for sharing (first person, no names; private until Sandesh shares it):
-https://claude.ai/artifact/D4KPy2zze4xWk3JjKsaNYQ (source in the session scratchpad; update it as the CAND verdicts land).
+https://claude.ai/artifact/D4KPy2zze4xWk3JjKsaNYQ (source copy in git-ignored `data/progress_page/`; update it as the CAND verdicts land).
 
 **15 Oct, 11:00: Thor-2 crashed overnight and the runs resumed at 10:41.**
 - **Cause:** Thor-2 reset at 01:24 from memory exhaustion.
