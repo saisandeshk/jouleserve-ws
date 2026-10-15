@@ -125,7 +125,8 @@ read-only against our copy, Thor-2 and the WS:
 - Graded by P1's grader (from a copy; it reproduces 336 of 336 of P1's Thor gemma grades).
 - Compared with P1's 4 recorded Thor runs of each task (instance A; `analysis/traffic_validate.py compare`).
 
-**Result on the 7 of 9 tasks that finished before Thor-2 crashed:**
+**Result on all 9 tasks.** Seven ran before Thor-2 crashed (at memory 0.80); the last two were rerun at the end of the
+CAND chain (15 Oct, 22:47–23:18, at memory 0.70):
 
 | Task | Ours | P1 passes | Calls, ours / P1 median | kJ, ours | kJ, P1 min–max (median) |
 | --- | --- | --- | --- | --- | --- |
@@ -136,15 +137,19 @@ read-only against our copy, Thor-2 and the WS:
 | avg-per-minute | pass | 3/4 | 9 / 10 | 38.5 | 20.5–66.5 (50.9) |
 | compare-periods | pass | 4/4 | 6 / 4 | 18.4 | 7.0–12.2 (8.6) |
 | heavy-vehicle | pass | 2/4 | 12 / 6 | 21.3 | 6.8–34.4 (11.7) |
+| first-last-sighting (rerun) | pass | 0/4 | 3 / 6 | 34.6 | 47.9–92.1 (70.4) |
+| peak-start-end (rerun) | fail | 2/4 | 6 / 8 | 52.4 | 22.7–58.9 (54.1) |
 
-- **Passes:** we passed 7 of 7, where P1 passed 22 of 28 on the same tasks.
-- **Energy:** ours lies within P1's own min–max on 5 of 7 tasks. Our total is 107.7 kJ, against 151.0 kJ for P1's
-  medians.
+- **Passes:** we passed 8 of 9, where P1 passed 24 of 36 on the same tasks. We passed first-last-sighting, which P1
+  never passed, and failed peak-start-end, which P1 passed 2 of 4 times.
+- **Energy:** ours lies within P1's own min–max on 6 of 9 tasks. Our total is 194.7 kJ, against 275.5 kJ for P1's
+  medians. On first-last-sighting we used less than P1's lowest run.
 - **Where we differ, the path differs.** In peak-count and compare-periods our agent made more calls.
-- **Per generated token,** the board's energy (ours over P1's median) is within 3–7% of P1's on 5 of 7 tasks. The
-  other two are busiest-hour (1.3×) and day-summary (1.7×), where our short runs carry tool time over few tokens.
-- **Reading:** the platform reproduces P1's outcomes on 7 of 7 tasks, and its per-token cost on 5 of 7 (busiest-hour
-  1.3×, day-summary 1.7×). Greedy runs still take different paths from
+- **Per generated token,** the board's energy (ours over P1's median) is within 3–7% of P1's on 5 of 9 tasks. The
+  others are 1.3–2.3× (busiest-hour, day-summary, peak-start-end, first-last-sighting), where tool time is large against
+  few generated tokens.
+- **Reading:** the platform reproduces P1's outcomes (8 of 9 passed, against P1's 24 of 36), and its per-token cost on
+  the decode-heavy tasks (5 of 9). Greedy runs still take different paths from
   P1's, as P1's own repeats do (day-summary ranges from 6.2 to 532 kJ).
 
 **The crash.** Thor-2 reset at 01:24, during the 8th task (peak-start-end). The cause was memory exhaustion:
@@ -157,7 +162,7 @@ P1's `--mem-fraction-static 0.80`, which had left about 5 GB for P1's agent, its
 database, Docker and the desktop. The fixes:
 - P5's servers now run at 0.70, which leaves about 28 GB free;
 - a memory guard (`env/thor2/memguard.sh`) stops P5's own server if free memory stays under 4 GB;
-- the last 2 TRF-3 tasks rerun at the end of the CAND chain (from 22:47; result below when done).
+- the last 2 TRF-3 tasks were rerun at the end of the CAND chain (22:47–23:18; in the table above).
 
 ## Questions for P1 (through Sandesh)
 

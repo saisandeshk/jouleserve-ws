@@ -6,7 +6,7 @@
 - the candidates analysis ([`../2026-10-15-candidates/`](../2026-10-15-candidates/README.md));
 - the thesis draft ([`../../planning/THESIS.md`](../../planning/THESIS.md));
 - the mentor's drone fleets (her doc, 14 Oct);
-- the live traffic runs on Thor-2 (§3; both candidate verdicts are in; TRF-3's last 2 tasks were rerun at the end).
+- the live traffic runs on Thor-2 (§3; all done by 15 Oct, 23:18).
 
 ## The short answer
 
@@ -176,12 +176,13 @@ her doc for P1's single-drone column.
   (logs read 15 Oct, 23:00). Details are in her doc.
 
 **Traffic: P1's agent, unchanged, on Thor-2 (ours, 15 Oct).**
-- **Is the platform faithful to P1? Yes, on the 7 tasks run before the crash.** TRF-3 ran gemma-26B with P1's greedy protocol, graded by P1's grader (which
-  reproduces 336 of 336 of P1's grades), on 7 of 9 tasks; Thor-2's crash cut the other 2, which were rerun at the end of the chain.
-  - We passed 7 of 7, where P1 passed 22 of 28 on the same tasks.
-  - Our energy lies within P1's own min–max on 5 of 7 tasks.
-  - Per generated token, our energy is within 3–7% of P1's on 5 of 7 tasks.
-  - Where we differ, the agent took a different path (more calls), as P1's own repeats do.
+- **Is the platform faithful to P1? Yes.** TRF-3 ran gemma-26B with P1's greedy protocol on 9 tasks, graded by P1's
+  grader (which reproduces 336 of 336 of P1's grades). Seven tasks ran before Thor-2's crash; the last two were rerun at
+  the end of the chain.
+  - We passed 8 of 9, where P1 passed 24 of 36 on the same tasks.
+  - Our energy lies within P1's own min–max on 6 of 9 tasks.
+  - Per generated token, our energy is within 3–7% of P1's on 5 of 9 tasks; the others are short or tool-heavy runs.
+  - Where we differ, the agent took a different path (more or fewer calls), as P1's own repeats do.
 
   Details: [`../2026-10-14-traffic-agent/`](../2026-10-14-traffic-agent/README.md).
 - **Do candidates pay on a dense model?** CAND-T2 runs granite-8B on 10 tasks, one sampled answer (S1) against

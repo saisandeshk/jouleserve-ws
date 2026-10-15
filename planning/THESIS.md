@@ -135,7 +135,7 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 | Where does the energy go? | Done: waterfall, 25 configurations |
 | Do candidates pay on drones? | Done on banks: yes on the Orin's dense E4B, no on Thor's MoE 26B. The E4B base is weak (15 of 168 sampled programs pass) |
 | Do candidates pay on traffic? | Granite (dense): **−24% energy per success, "weaker"** by the rule ("pays" needs 30%), same total energy, 8 against 6 of 10 passed. Gemma-26B (MoE): **+40%, "absent"**, same total energy, 7 against 10 of 12 passed. One repeat each |
-| Is the live traffic platform faithful to P1? | Yes on 7 of 9 tasks (TRF-3: 7 of 7 passed against P1's 22 of 28; energy within P1's min–max on 5 of 7); the last 2 were rerun at the end of the chain. P1's grader reproduces 336 of 336 of P1's grades |
+| Is the live traffic platform faithful to P1? | Yes (TRF-3, 9 tasks: 8 of 9 passed against P1's 24 of 36; energy within P1's min–max on 6 of 9). P1's grader reproduces 336 of 336 of P1's grades |
 | Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
 | Do other dense models behave like E4B? | Partly: granite on Thor-2 has cheap width too (4 streams 1.10× at 4K, 1.23× at 16K), and live it gave −24% ("weaker"). Other dense models are untested |
 

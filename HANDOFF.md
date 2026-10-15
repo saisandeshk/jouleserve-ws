@@ -10,9 +10,9 @@
 - the path to OSDI, and decisions for the professor.
 
 **15 Oct results (all on P1's boards; details in the reports):**
-- **TRF-3, our platform against P1's:** faithful on 7 of 9 tasks (`reports/2026-10-14-traffic-agent/`).
-  - We passed 7 of 7, where P1 passed 22 of 28. Our energy lies within P1's min–max on 5 of 7 tasks.
-  - The last 2 tasks were rerun at the end of the chain, run `trf3-gemma-A-rest-*`.
+- **TRF-3, our platform against P1's:** faithful (`reports/2026-10-14-traffic-agent/`). We passed 8 of 9 tasks,
+  where P1 passed 24 of 36. Our energy lies within P1's min–max on 6 of 9 tasks. The last 2 tasks are in run
+  `trf3-gemma-A-rest-*`.
 - **Granite cost curve on Thor-2:** 4 streams cost 1.10× per step at a 4K context and 1.23× at 16K. Extra width is cheap
   on a dense model, on Thor as on the Orin.
 - **CAND-T2, granite (dense), first-of-4 against one sampled answer:** −24.1% energy per success, "weaker" by the rule
@@ -41,9 +41,10 @@
 **Operations (nothing depends on the laptop):**
 - After a restart, run `env/p5_status.sh` from the repo root. It shows Thor-2, the WS follower and the units, and copies
   finished runs to the WS.
-- **Thor-2:** the chain `env/thor2/cand_chain4.sh` (tmux `p5-cand`) logs to `/media/hdd/p5/logs/cand_chain.log` and ends
-  with "CAND CHAIN DONE". P5's gemma server may still be up afterwards. Stop it with `docker stop p5-traffic-gemma` before
-  P1 uses the board; P1's `sweep-llm` stays stopped (restore it with `docker start sweep-llm`).
+- **Thor-2 is idle** since 23:30: the chain ended at 23:18 ("CAND CHAIN DONE"), and P5's gemma server and memory guard
+  are stopped. P1's `sweep-llm` stays stopped; restore it with `docker start sweep-llm`. With nothing running, the board
+  still shows about 102 GB used and 23 GB available. That is the memory held outside any process seen before on both
+  Thors; CUDA reused it last time, and a reboot clears it, but a reboot means remounting the USB disk.
 - **WS, tmux `p5-follow`** (`env/ws_follow.py`): every 5 minutes it copies runs from Thor-2 directly (the WS key is
   authorized there since 12:44), checks their SHA-256, runs the analyses and writes `~/work/runs/thor2/STATUS.txt`.
 - **Next steps:**
