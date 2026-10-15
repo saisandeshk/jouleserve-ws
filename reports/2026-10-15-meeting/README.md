@@ -47,6 +47,11 @@ grades.
 | Reading prompts (prefill) | 0–4% | ours, and P1's |
 | Tool waits | 0–7% | ours |
 
+**Useful utilization is about 7%.** Only a median 7% of P1's board energy went into the decoding and prompt reading that
+passing runs needed, priced at 4 requests decoding together. That is traffic 8% and drones 2%, and it is a lower bound,
+because passing runs' tool waits and flight time count as overhead. Seen this way, our metric is goodput per joule:
+energy per success = average board power ÷ successful tasks per hour (a suggested framing; THESIS.md §1).
+
 - **Stopping doomed runs is not our core.**
   - The best fixed stop rule leaves at least 15% to the oracle in 24 of 25 configurations.
   - But an online predictor beats that rule in only 3 of 25 on unseen tasks.
@@ -90,6 +95,16 @@ with each board's measured energy per decode step.
   - the best fixed k.
 
   The bar is 15% better in energy per success at the same pass rate (ENERGY_PLAN §5).
+
+**Candidates and packing are not the only consumers of the spare capacity** (full table: THESIS.md §5):
+- **Speculative decoding** uses the same width to verify draft tokens and gives the same answers. It competes with
+  packing for the one-at-a-time decoding bucket (traffic 17%). It must be measured, as part of B\* or as a third choice
+  for the controller.
+- **Candidates checked or voted on, not first to finish,** would reach wrong answers. Those are the largest failure
+  cause in traffic (16% of energy, against 7% for runaway calls); runaway calls dominate on drones (37%).
+- **A lower power mode** is the "don't spend it" baseline. P1 ran at locked maximum clocks, so it belongs in B\*.
+- **Memory for longer contexts** (FP8) reaches the context overflows (traffic 6%). It is a setting.
+- **Prefetching tool calls and a second, smaller model** are smaller or larger changes, left as future work.
 
 ## 3. Evidence on P1's boards
 
@@ -184,5 +199,9 @@ plus the agents-against-candidates map per board and model. We tell the professo
    change to P1's agents?
 3. If candidates pay only on dense models (the Orin class), is a story centred on Orin-class boards acceptable? Or must
    it hold on Thor's mixture-of-experts too, where packing alone wins?
-4. **The split with P1:** failed-run energy and offline stop policies stay P1's. P5 claims the online, multi-agent
+4. **The metric's framing:** energy per success presented as goodput per joule, with a deadline per task so that
+   latency counts? The deadlines would have to be chosen per workload.
+5. **Scope:** do speculative decoding and the board's power mode go into B\* as settings, or into the controller as
+   run-time choices?
+6. **The split with P1:** failed-run energy and offline stop policies stay P1's. P5 claims the online, multi-agent
    decision. Is that right?

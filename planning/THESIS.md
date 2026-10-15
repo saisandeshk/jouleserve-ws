@@ -1,6 +1,6 @@
 # P5 thesis: draft for discussion (TH-1)
 
-**15 Oct 2026, draft 2.** Draft 1 (14 Oct) is in git. It led with stopping doomed runs; the predictor test (WF-3b)
+**15 Oct 2026, draft 2 (13:00: goodput framing and the full menu of consumers added as suggestions).** Draft 1 (14 Oct) is in git. It led with stopping doomed runs; the predictor test (WF-3b)
 weakened that, and the candidates analysis moved the core. It is built on:
 - the energy waterfall ([`../reports/2026-10-14-waterfall/`](../reports/2026-10-14-waterfall/README.md));
 - the candidates analysis ([`../reports/2026-10-15-candidates/`](../reports/2026-10-15-candidates/README.md)).
@@ -22,6 +22,23 @@ Which is better, and how wide to go, changes with:
 - its memory.
 
 So a fixed setting loses, and a serving layer that makes the choice at run time cuts energy per successful task.
+
+**Suggested framing: useful utilization, or goodput (for the professor to decide).**
+- Energy per successful task = average board power ÷ goodput, where goodput is successful tasks per hour. Successes per
+  kJ is goodput per joule, the inverse of our metric.
+- Raw utilization rewards waste: a runaway decode keeps the GPU fully busy. Useful utilization counts only work that ends
+  in a correct answer.
+- On P1's logs, a median **7%** of board energy went into the decode and prefill that passing runs needed (traffic 8%,
+  drones 2%; priced at 4 requests decoding together; `waterfall.json`). That is a lower bound, because passing runs' tool
+  waits and flight time count as overhead.
+- Serving papers count goodput within a latency target. A deadline per task would make packing's latency cost (the
+  mentor's fleets: p95 mission time 69 min → 3.5 h) part of the trade, which a run-time controller has to manage.
+- **Suggested metrics:**
+  - headline: energy per success (goodput per joule);
+  - secondary: goodput within a deadline, and p95 task time;
+  - explanatory: the useful-energy share.
+
+  The deadlines are not set yet.
 
 ## 2. Why it is not a setting (the professor's "isn't that common sense?")
 
@@ -70,7 +87,37 @@ P1's logs, all 25 edge configurations (waterfall):
 - **Baseline it must beat (B\*):** P1's agents with model-card sampling, the best fixed number of agents per box, FP8 KV
   where the pool binds, and the best fixed k.
 
-## 5. What we have, and what is missing
+## 5. Every way to spend the spare capacity, and what each can attack
+
+The board's slack has three parts: decode width (several streams cost little more than one), KV memory, and idle time
+during tool waits. Its power can also be cut instead of used. Each consumer attacks a different part of the energy.
+Sizes are median shares of all board energy across P1's configurations (`waterfall.json`).
+
+| Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
+| --- | --- | --- | --- | --- |
+| More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | measured: the mentor's fleets, 2.3× less energy per success on Thor; the Orin is best at 4 agents |
+| Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | the banks; CAND-T1/T2 running |
+| Parallel candidates checked or voted (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | not tested |
+| Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | not tested; SGLang supports it |
+| Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | FP8 doubles the pool (CAP-J1); a setting |
+| A second, smaller model on the board (cascade, router or draft) | memory | wrong and runaway answers, at lower cost per try | — | not tested |
+| Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | small |
+| Lower power mode or clocks when the width cannot be used | power | base power in all of the above | not measured | not tested; P1 ran locked MAXN |
+
+**What this means for the thesis:**
+- **Packing and speculative decoding compete for the same width and the same bucket** (one-at-a-time decoding).
+  Speculation is the obvious reviewer question ("why not just speculate?"). It must be measured, either in B\* as a
+  fixed setting or as a third consumer the controller can choose.
+- **Candidates are the only consumer that attacks failed runs, the largest bucket.** The selection rule decides which
+  failures they reach:
+  - first to finish catches runaways, which dominate drones and Thor's traffic;
+  - a check or vote catches wrong answers, which dominate traffic on most boards.
+- **A lower power mode is the "don't spend it" baseline.** It belongs in B\*, because P1 ran at locked maximum clocks.
+- **Suggested scope:** the core is the run-time split of width and memory among agents, candidates and speculation.
+  FP8 and the power mode join B\* as settings. The check or vote is a selection variant of candidates. Prefetch and a
+  second model are named as future work.
+
+## 6. What we have, and what is missing
 
 | Question | Status |
 | --- | --- |
@@ -81,7 +128,7 @@ P1's logs, all 25 edge configurations (waterfall):
 | Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
 | Do other dense models behave like E4B? | Partly testable now: granite's cost curve on Thor-2 is queued |
 
-## 6. Overlaps and risks
+## 7. Overlaps and risks
 
 - **Prior work:**
   - Parallel sampling with first-to-finish exists for math reasoning (short-m@k, SART): fixed k, no energy, no agents,
@@ -97,7 +144,7 @@ P1's logs, all 25 edge configurations (waterfall):
 - **Overlap with P1.** P1 owns the failed-energy observation and its offline policies (attempt budgets, step cutoffs).
   P5's part is the online, multi-agent decision.
 
-## 7. Decisions this draft needs
+## 8. Decisions this draft needs
 
 1. **Sandesh and the mentor:** adopt "spend the board's width and memory: agents or candidates, chosen at run time" as
    the core?
