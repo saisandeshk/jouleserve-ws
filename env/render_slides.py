@@ -23,6 +23,9 @@ CHROME = next((c for c in (os.environ.get("SLIDE_CHROME"),
                            os.path.expanduser("~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell"),
                            "/opt/brave.com/brave/brave", "/usr/bin/brave-browser") if c and os.path.exists(c)), None)
 BLOBS = {
+         "/_blob/c75f3227593a6802c7ebf145c17de3d3": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-16-deck/figures/waterfall.png",
+         "/_blob/752b87e3d14c919a02383f5e03afc756": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-16-deck/figures/costcurve.png",
+         "/_blob/409085c1e4df4caa58a44a699ef48c28": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-16-deck/figures/candidates_traffic.png",
          "/_blob/cc1f12570a23d3868a67a9ebcd3b5861": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-06-options/figures/p1final_orin_rerun.png",
          "/_blob/01da3e3f8f51a8efbc244a75aec1c131": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-06-options/figures/p1final_prefill.png",
          "/_blob/bb39608d2a02b50852bd823c629e567f": "file:///home/saisandeshk/Study/ISP/jouleserve-ws/reports/2026-10-06-options/figures/p1final_evictions.png",
