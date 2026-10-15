@@ -69,6 +69,7 @@ with each board's measured energy per decode step.
 | --- | --- | --- | --- | --- |
 | Thor, gemma-26B (mixture of experts) | 1.81× | +12% (hard prompts), +25% (controls); passes 56% → 70% | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | 1.05× | **−70%**; passes 8.9% → 12.6% | 8, 4, 1 (memory) | candidates: 2 agents × 4 beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
+| Thor-2, granite-8B (dense) | 1.10× (4K context), 1.23× (16K) | *CAND-T2 running* | to be computed | to be measured |
 
 - **Why the answer flips with the model.**
   - On a mixture-of-experts, each extra stream wakes other experts, so width is expensive. Sampling already removed its

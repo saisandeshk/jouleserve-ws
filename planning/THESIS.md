@@ -31,6 +31,7 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
 | --- | --- | --- | --- | --- |
 | Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls) | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | +5% per step at 4 | **−70%** | 8, 4, 1 (memory) | **candidates**: 2 agents × 4 candidates beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
+| Thor-2, granite-8B (dense) | +10% per step at 4 (4K context), +23% (16K) | *live on traffic: CAND-T2 running* | to be computed | to be measured |
 
 - **The answer flips with the model.** On the MoE, extra streams activate other experts. Sampling already removed its
   runaway answers (0 of 168 samples capped), so candidates only buy pass rate (56% → 70% on hard prompts), at more

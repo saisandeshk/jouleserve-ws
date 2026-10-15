@@ -53,6 +53,19 @@ Code: `analysis/candidates_bank.py` (committed before its results were read). Ou
   memory.** That is a run-time decision, not a setting. It is the shape of an answer to "isn't that just a
   recommendation?". But it holds on one of the two boards measured, with a weak model.
 
+**A third board and model: granite-8B (dense) on Thor-2.** CAND-T2's calibration was measured on 15 Oct, 10:42–11:50,
+with the mentor's design (forced 2,048-token outputs, 2 repeats) and our sampler (`costcurve_granite_thor2.txt`). Energy
+per decode step, against one stream:
+
+| Context | 2 streams | 4 streams | 8 streams | 16 streams |
+| --- | --- | --- | --- | --- |
+| 4K tokens | 1.02× | 1.10× | 1.24× | 1.55× |
+| 16K tokens | 1.09× | 1.23× | 1.49× | 2.13× |
+
+A dense model on Thor sits close to the Orin's E4B (1.05× at 4) and far from Thor's mixture-of-experts (1.81× at 4).
+So the extra width is cheap because the model is dense, not because the board is an Orin. Longer contexts make each
+extra stream dearer (1.10× → 1.23× at 4), so the right k also depends on the context, which grows during a traffic run.
+
 **Caveats:**
 - The call-level model treats a failed call's retry as an independent repeat at the same cost. It leaves out the
   reflection call and the flight time between attempts, which would favour k > 1 a little.
