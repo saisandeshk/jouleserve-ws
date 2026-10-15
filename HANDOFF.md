@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-10-16 (IST).
 
-**16 Oct: the deck for the meeting is published** (reference deck, version 206, 98 slides;
+**16 Oct: the deck for the meeting is published** (reference deck, version 207, 98 slides;
 https://claude.ai/artifact/QrFXoAwDssEtftYgGnxVm8). We present from slide 70.
 - **Slides 63–69** (`p5d-*`) are the drone campaign's own section, left unchanged.
 - **Slides 70–87, "Drones and traffic together"** (`jsc-*`): the setting, where the energy goes, the spare width and

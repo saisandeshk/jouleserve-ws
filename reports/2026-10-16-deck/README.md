@@ -2,7 +2,7 @@
 
 **16 Oct 2026.** The reference deck (Slides artifact, private) gained a section "Drones and traffic together" (18 slides,
 `jsc-*`) and its appendix (11 slides, `jsa-*`), placed after the drone campaign's own slides (`p5d-*`, left unchanged).
-Deck version 206, 98 slides. Slide sources are in git-ignored `data/p5deck_v3/project/`; check them with
+Deck version 207, 98 slides. Slide sources are in git-ignored `data/p5deck_v3/project/`; check them with
 `python3 env/render_slides.py data/p5deck_v3 <out> [ids]`.
 
 ## Figures
