@@ -177,11 +177,14 @@ her doc for P1's single-drone column.
   Details: [`../2026-10-14-traffic-agent/`](../2026-10-14-traffic-agent/README.md).
 - **Do candidates pay on a dense model?** CAND-T2 runs granite-8B on 10 tasks, one sampled answer (S1) against
   first-of-4 (F4). The rules were fixed before the data.
-  - *pending (≈16:00): verdict, passes, energy per success.*
+  - **S1 done:** one sampled answer passed 6 of 10 at 126 kJ per success, with no capped calls in the traces. P1's
+    greedy runs of the same tasks passed 15 of 30 at 152 kJ, with 8 capped calls. This is cross-setup and one repeat,
+    so it is not read as an effect.
+  - *pending (≈17:30): F4 and the verdict.*
   - Granite's cost curve on Thor is in: 4 streams cost 1.10× per step at a 4K context and 1.23× at 16K. Extra width is
     cheap on a dense model on Thor too.
 - **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.
-  - *pending (≈18:30).* The bank analysis predicts that first-of-4 costs energy here.
+  - *pending (≈21:00).* The bank analysis predicts that first-of-4 costs energy here.
 - **An edge lesson from the platform:** P1's server flags reserve 80% of Thor's unified memory for the model server.
   Our live agent run exhausted the rest and crashed the board (15 Oct, 01:24). Memory left beside the server is part of
   the capacity problem the controller must manage, not a fixed setting.
