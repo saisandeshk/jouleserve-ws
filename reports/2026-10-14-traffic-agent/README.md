@@ -143,7 +143,8 @@ read-only against our copy, Thor-2 and the WS:
 - **Where we differ, the path differs.** In peak-count and compare-periods our agent made more calls.
 - **Per generated token,** the board's energy (ours over P1's median) is within 3–7% of P1's on 5 of 7 tasks. The
   other two are busiest-hour (1.3×) and day-summary (1.7×), where our short runs carry tool time over few tokens.
-- **Reading:** the platform reproduces P1's outcomes and per-token cost. Greedy runs still take different paths from
+- **Reading:** the platform reproduces P1's outcomes on 7 of 7 tasks, and its per-token cost on 5 of 7 (busiest-hour
+  1.3×, day-summary 1.7×). Greedy runs still take different paths from
   P1's, as P1's own repeats do (day-summary ranges from 6.2 to 532 kJ).
 
 **The crash.** Thor-2 reset at 01:24, during the 8th task (peak-start-end). The cause was memory exhaustion:
@@ -156,7 +157,7 @@ P1's `--mem-fraction-static 0.80`, which had left about 5 GB for P1's agent, its
 database, Docker and the desktop. The fixes:
 - P5's servers now run at 0.70, which leaves about 28 GB free;
 - a memory guard (`env/thor2/memguard.sh`) stops P5's own server if free memory stays under 4 GB;
-- the last 2 TRF-3 tasks rerun at the end of the CAND chain.
+- the last 2 TRF-3 tasks rerun at the end of the CAND chain (from 22:47; result below when done).
 
 ## Questions for P1 (through Sandesh)
 

@@ -3,8 +3,8 @@
 **15 Oct 2026.** Two parts:
 - **The bank analysis (done).** It uses the mentor's drone sample banks and cost curves (13–14 Oct, read-only copies in
   `~/work/mentor/` on the WS).
-- **The live traffic experiment CAND-T1 (running on Thor-2).** Its plan and rules were fixed before data in
-  [`PLAN.md`](PLAN.md).
+- **The live traffic experiments CAND-T2 (granite) and CAND-T1 (gemma), done on Thor-2 on 15 Oct.** Their plan and rules
+  were fixed before the data in [`PLAN.md`](PLAN.md).
 
 Code: `analysis/candidates_bank.py` (committed before its results were read). Output: `candidates_bank.json`.
 
@@ -54,7 +54,8 @@ Code: `analysis/candidates_bank.py` (committed before its results were read). Ou
   - Whether to pack more agents or to widen each agent's risky calls depends on the model and the memory.
 - **The decision depends on the model's cost curve, on how often it still degenerates under sampling, on load and on
   memory.** That is a run-time decision, not a setting. It is the shape of an answer to "isn't that just a
-  recommendation?". But it holds on one of the two boards measured, with a weak model.
+  recommendation?". In the banks it holds on one board (the Orin's E4B, a weak model); granite on Thor-2 points the same way live, weakly
+  (below).
 
 **A third board and model: granite-8B (dense) on Thor-2.** CAND-T2's calibration was measured on 15 Oct, 10:42–11:50,
 with the mentor's design (forced 2,048-token outputs, 2 repeats) and our sampler (`costcurve_granite_thor2.txt`). Energy
@@ -75,12 +76,10 @@ extra stream dearer (1.10× → 1.23× at 4), so the right k also depends on the
 - The candidates are assumed to decode in lockstep until the winner finishes.
 - The cost curves were measured at fixed widths with forced lengths.
 
-## Live traffic experiment (CAND-T1)
+## Live traffic experiments (CAND-T2, CAND-T1)
 
-Running on Thor-2 after the TRF-3 validation. See [`PLAN.md`](PLAN.md) for the arms (P1's greedy runs; one sampled
-answer; first-of-4), the 12 tasks and the rules. Given the bank result on Thor's mixture-of-experts model, first-of-4 is
-expected to cost energy on gemma-26B traffic too. The experiment checks whether traffic's chains of capped calls change
-that, and what sampling alone does against P1's greedy protocol.
+Both are done, and the results are below. The plan, arms, tasks and rules are in [`PLAN.md`](PLAN.md). The bank result
+predicted that first-of-4 would cost energy on gemma-26B. Live, the total energy held and the passes fell.
 
 **CAND-T2, granite-8B (dense) on Thor-2: done (15 Oct, 11:50–17:26). Verdict by the rule fixed before the data:
 "weaker".** First-of-4 cut energy per success by 24.1% against one sampled answer. "Pays" needed 30% or more.
@@ -123,7 +122,7 @@ tasks. The loss is more than 2 passes, so it is read as an effect.
     early.
   - unusual-vs-median hit the 1-hour workload timeout in F4.
 - **What it means for the mechanism:** first-to-finish selects for speed. On granite that cut off runaways (winners 25%
-  shorter, 2 more passes). On gemma it also selected premature final answers. The selection rule has to know what a good
+  shorter, 2 more passes). On gemma it also selected a premature final answer (heavy-vehicle). The selection rule has to know what a good
   answer looks like:
   - a check, for example "do not accept a final answer before the agent has read the data";
   - or a vote over the candidates' answers (option O3).
@@ -134,10 +133,12 @@ tasks. The loss is more than 2 passes, so it is read as an effect.
 
 **Both traffic arms together (15 Oct).** Candidates cost little or no extra energy on P1's traffic agent on either
 model, because the winners are shorter. Whether they pay depends on the selection rule:
-- on the dense granite, first-to-finish gave −24% energy per success ("weaker");
-- on the mixture-of-experts gemma, +40% ("absent"), because it picked premature answers.
+- on the dense granite, first-to-finish gave −24% energy per success ("weaker"). The whole gain is two passes at the same
+  total energy, inside the rule's 2-pass noise;
+- on the mixture-of-experts gemma, +40% ("absent"), with 3 fewer passes; in one lost task it picked a premature
+  answer (heavy-vehicle).
 
-The bank prediction (candidates cost energy on the mixture of experts, at an unchanged pass rate) was wrong in its
+The bank prediction (candidates raise passes but cost energy per success on the mixture of experts) was wrong in its
 reason. Energy held; quality fell.
 
 **Gateway check (15 Oct, 00:55, before the arms):** the first-of-k gateway was run against P1's client stack.

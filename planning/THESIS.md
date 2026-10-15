@@ -5,8 +5,9 @@ weakened that, and the candidates analysis moved the core. It is built on:
 - the energy waterfall ([`../reports/2026-10-14-waterfall/`](../reports/2026-10-14-waterfall/README.md));
 - the candidates analysis ([`../reports/2026-10-15-candidates/`](../reports/2026-10-15-candidates/README.md)).
 
-Sandesh and the mentor decide whether to adopt it; nothing is agreed yet. The traffic experiments (CAND-T1/T2) are
-running, and their results will confirm or change §4.
+Sandesh and the mentor decide whether to adopt it; nothing is agreed yet. The traffic experiments (CAND-T1/T2) finished on
+15 Oct; their verdicts are in §2 and §6 (one repeat each). §4 stands, and the selection rule is now an open design
+question (§7).
 
 ## 1. The claim
 
@@ -21,7 +22,8 @@ Which is better, and how wide to go, changes with:
 - the board's load;
 - its memory.
 
-So a fixed setting loses, and a serving layer that makes the choice at run time cuts energy per successful task.
+So a fixed setting may lose, and a serving layer that makes the choice at run time may cut energy per successful task.
+The run-time gain over the best fixed setting is not yet measured (§2, §6).
 
 **Suggested framing: useful utilization, or goodput (for the professor to decide).**
 - Energy per successful task = average board power ÷ goodput, where goodput is successful tasks per hour. Successes per
@@ -46,7 +48,7 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
 
 | Board, model | One more candidate costs | First-of-4 against one answer, energy per success | Best k at 1, 2, 4 agents | Best use of spare capacity |
 | --- | --- | --- | --- | --- |
-| Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls); **+40% live on P1's traffic agent** ("absent"; 10 → 7 of 12 passed at the same total energy, by picking premature answers) | 1, 1, 1 | more agents |
+| Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls); **+40% live on P1's traffic agent** ("absent"; 10 → 7 of 12 passed at the same total energy, a premature answer won the race in 1 of the 4 lost tasks, heavy-vehicle; another hit the 1-hour timeout) | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | +5% per step at 4 | **−70%** | 8, 4, 1 (memory) | **candidates**: 2 agents × 4 candidates beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
 | Thor-2, granite-8B (dense) | +10% per step at 4 (4K context), +23% (16K) | **−24% live on P1's traffic agent** ("weaker" by the rule; 8 against 6 of 10 passed; same total energy) | to be computed | to be measured |
 
@@ -62,8 +64,8 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
   - So the thesis rests on conditions that change during operation: agents arriving and leaving, contexts growing
     (the cost of 4 streams rises from 1.10× to 1.23× between 4K and 16K on granite), memory filling, and risky calls.
   - This is the missing Q2 bound (§6).
-- No fixed "use FP8", "pack N agents" or "use k candidates" reproduces this, because the right answer depends on run-time
-  load and on the model.
+- At a steady load, a fixed setting captures most of the gain (the best fixed k is within 8% where it fits). The case for
+  a run-time choice rests on changing conditions, which the Q2 bound has yet to measure.
 
 ## 3. Where the energy is (the professor's "is there an opportunity?")
 
@@ -101,7 +103,7 @@ Sizes are median shares of all board energy across P1's configurations (`waterfa
 | # | Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
 | --- | --- | --- | --- | --- | --- |
 | O1 | More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | **Measured** on drones (the mentor's fleets: 2.3× less energy per success on Thor; the Orin is best at 4 agents). Traffic fleets **not tested** |
-| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Testing now.** Drone banks done (Orin dense −70%, Thor MoE +12–25%); traffic CAND-T2 (granite) and CAND-T1 (gemma) running on Thor-2, results today |
+| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Measured** on traffic, one repeat each: granite (dense) −24% energy per success (two more passes of 10, at the same total energy); gemma (MoE) +40% (three fewer passes of 12). Drone banks: Orin dense −70%, Thor MoE +12–25% |
 | O3 | Parallel candidates checked or voted on (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | **Not tested** |
 | O4 | Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | **Not tested**; SGLang supports it |
 | O5 | Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | **Measured** as a setting: FP8 doubles the pool and cuts energy per token 44% (CAP-J1, Orin 32) |
@@ -133,9 +135,9 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 | Where does the energy go? | Done: waterfall, 25 configurations |
 | Do candidates pay on drones? | Done on banks: yes on the Orin's dense E4B, no on Thor's MoE 26B. The E4B base is weak (15 of 168 sampled programs pass) |
 | Do candidates pay on traffic? | Granite (dense): **−24% energy per success, "weaker"** by the rule ("pays" needs 30%), same total energy, 8 against 6 of 10 passed. Gemma-26B (MoE): **+40%, "absent"**, same total energy, 7 against 10 of 12 passed. One repeat each |
-| Is the live traffic platform faithful to P1? | **Running** (TRF-3); P1's grader reproduces 336 of 336 of P1's grades |
+| Is the live traffic platform faithful to P1? | Yes on 7 of 9 tasks (TRF-3: 7 of 7 passed against P1's 22 of 28; energy within P1's min–max on 5 of 7); the last 2 were rerun at the end of the chain. P1's grader reproduces 336 of 336 of P1's grades |
 | Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
-| Do other dense models behave like E4B? | Partly testable now: granite's cost curve on Thor-2 is queued |
+| Do other dense models behave like E4B? | Partly: granite on Thor-2 has cheap width too (4 streams 1.10× at 4K, 1.23× at 16K), and live it gave −24% ("weaker"). Other dense models are untested |
 
 ## 7. Overlaps and risks
 
@@ -150,8 +152,8 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 - **First-to-finish can pick premature answers.** On gemma traffic, the fastest candidate sometimes gave a final
   answer without reading the data (heavy-vehicle). The selection rule needs a check or a vote (option O3) before
   candidates can be trusted on every model.
-- **The dense case rested on E4B, a weak model.** Granite on P1's traffic agent now supports it (−24% energy per
-  success, "weaker" by our rule), on one repeat of 10 tasks.
+- **The dense case rested on E4B, a weak model.** Granite on P1's traffic agent points the same way, weakly: −24%
+  energy per success from two extra passes at the same total energy ("weaker" by our rule), one repeat of 10 tasks.
 - **On the MoE, candidates did not pay.** In the drone banks they cost energy; live on traffic they cost passes instead
   (same total energy). If every model worth deploying on a Thor is an MoE, candidates narrow to dense models and the
   Orin-class boards, and packing carries the MoE case.

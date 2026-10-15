@@ -99,8 +99,9 @@ So the dense case is the informative test on traffic, and a second gemma repeat 
   After the reboot, a granite S1 run and a cost-curve run lasted 2 minutes. They are renamed `aborted-*` and are not
   data. The cost-curve script had failed on `/flush_cache`'s plain-text reply; it is fixed.
 - **Change:** both servers run at `--mem-fraction-static 0.70` (`MEM` in `env/thor2/serve_*.sh`).
-  - That leaves about 30 GB for the rest of the board.
+  - That leaves about 28 GB for the rest of the board.
   - Gemma's pool comes out near P1's recorded Thor-2 pool (about 248K tokens). One agent with 4 candidates needs far less.
+    (Measured afterwards: 262,234 tokens for gemma and 137,130 for granite at 0.70.)
   - Arms, tasks and rules are unchanged. S1 and F4 of each model share one server, so the comparison is unaffected.
   - TRF-3's first 7 tasks ran at 0.80 and its last 2 run at 0.70. At one agent the pool never binds.
 
