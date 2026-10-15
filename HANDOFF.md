@@ -5,6 +5,9 @@
 **Next meeting: 16 Oct.** Build the presentation from `reports/2026-10-15-meeting/README.md` (the brief). It includes
 the options table O1–O8 (§2), with each option marked measured, testing now or not tested. The professor chooses among
 them, and the untested ones are in TRACKER as `OPT-*`.
+The flow artifact (https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP) has two tabs since 15 Oct, 17:40: the flow of 14 Oct,
+and "The serving layer, if it works" (the hypothetical design, what a researcher gets, and the gains with their evidence).
+Its source is in git-ignored `data/flow_page/flow.html`.
 A one-page progress artifact for sharing (first person, no names; private until Sandesh shares it):
 https://claude.ai/artifact/D4KPy2zze4xWk3JjKsaNYQ (source copy in git-ignored `data/progress_page/`; update it as the CAND verdicts land).
 
