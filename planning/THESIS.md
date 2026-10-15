@@ -152,8 +152,9 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
   candidates can be trusted on every model.
 - **The dense case rested on E4B, a weak model.** Granite on P1's traffic agent now supports it (−24% energy per
   success, "weaker" by our rule), on one repeat of 10 tasks.
-- **On the MoE, candidates lose energy.** If every model worth deploying on a Thor is an MoE, the story narrows to the
-  Orin-class boards.
+- **On the MoE, candidates did not pay.** In the drone banks they cost energy; live on traffic they cost passes instead
+  (same total energy). If every model worth deploying on a Thor is an MoE, candidates narrow to dense models and the
+  Orin-class boards, and packing carries the MoE case.
 - **Overlap with P1.** P1 owns the failed-energy observation and its offline policies (attempt budgets, step cutoffs).
   P5's part is the online, multi-agent decision.
 
