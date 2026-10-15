@@ -15,7 +15,7 @@
    - Inside passing runs, decoding one request at a time is the largest avoidable part: 2–36% of traffic energy,
      median 17%.
    - Reading prompts and tool waits are small, which is why retention is out.
-2. **What do we propose?** A serving layer that spends the board's spare decode width and KV memory in one of two ways:
+2. **What do we propose?** A serving layer that spends the board's spare decode width and KV memory in two main ways (§2 lists the other consumers, such as speculative decoding):
    - on **more agents** (packing);
    - on **parallel candidates** for an agent's risky calls (first of k sampled answers wins).
 
