@@ -20,6 +20,12 @@ their status is in her doc.
 | TH-1 | One-page thesis | repo | doing: draft 1 written 14 Oct (`planning/THESIS.md`) | agreed with the mentor |
 | TRF-2a | Copy the traffic agent's code from Thor-2 (`/media/ssd/Deepstream-Yolo-upstream/camera_query_agent/`) | Thor-2 → WS | **done** 14 Oct | code on the WS, SHA-256 recorded | `~/work/p1/traffic_agent/` (131 files, 4 MB); needs and blockers in `reports/2026-10-14-traffic-agent/` (no docker on the WS; package versions from P1) |
 | TRF-2b | Camera data (only what the final tasks use) and the sandbox image | Thor-2 → WS/unit | waits for P1's reply | data on the WS, checked |
+| OPT-O1t | O1 on traffic: fleets of P1's unchanged traffic agent (1, 2, 4, 8 per board) | Thor-2 | todo: after the professor's choice | energy per success, pass rate, p95 time per N | the drone fleets are the mentor's (measured) |
+| OPT-O3 | O3: candidates checked or voted on (majority of the candidates' final answers) | Thor-2 | todo: after the professor's choice | pass rate and energy per success against O2's first-to-finish | targets wrong answers (traffic 16% of energy) |
+| OPT-O4 | O4: speculative decoding (SGLang n-gram or a draft model) at 1 agent and under load | Thor-2, an Orin | todo: after the professor's choice | energy per generated token and per success against no speculation, at 1–8 agents | the first reviewer question; B\* or a controller choice |
+| OPT-O6 | O6: a second, smaller model on the board (cascade or router) | a unit | todo: future work unless chosen | — | — |
+| OPT-O7 | O7: prefetching the likely next tool call during waits | — | todo: future work unless chosen | — | tool waits are 0–7% of energy |
+| OPT-O8 | O8: lower power mode or clocks (nvpmodel) at 1 agent and under load | an Orin 32 (password-free nvpmodel) | todo: after the professor's choice | energy per success against locked MAXN | the "don't spend it" baseline; changes P1's clock rule, so Sandesh decides |
 
 
 How to use it:

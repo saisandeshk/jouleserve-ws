@@ -93,26 +93,30 @@ The board's slack has three parts: decode width (several streams cost little mor
 during tool waits. Its power can also be cut instead of used. Each consumer attacks a different part of the energy.
 Sizes are median shares of all board energy across P1's configurations (`waterfall.json`).
 
-| Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
-| --- | --- | --- | --- | --- |
-| More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | measured: the mentor's fleets, 2.3× less energy per success on Thor; the Orin is best at 4 agents |
-| Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | the banks; CAND-T1/T2 running |
-| Parallel candidates checked or voted (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | not tested |
-| Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | not tested; SGLang supports it |
-| Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | FP8 doubles the pool (CAP-J1); a setting |
-| A second, smaller model on the board (cascade, router or draft) | memory | wrong and runaway answers, at lower cost per try | — | not tested |
-| Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | small |
-| Lower power mode or clocks when the width cannot be used | power | base power in all of the above | not measured | not tested; P1 ran locked MAXN |
+| # | Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
+| --- | --- | --- | --- | --- | --- |
+| O1 | More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | **Measured** on drones (the mentor's fleets: 2.3× less energy per success on Thor; the Orin is best at 4 agents). Traffic fleets **not tested** |
+| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Testing now.** Drone banks done (Orin dense −70%, Thor MoE +12–25%); traffic CAND-T2 (granite) and CAND-T1 (gemma) running on Thor-2, results today |
+| O3 | Parallel candidates checked or voted on (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | **Not tested** |
+| O4 | Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | **Not tested**; SGLang supports it |
+| O5 | Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | **Measured** as a setting: FP8 doubles the pool and cuts energy per token 44% (CAP-J1, Orin 32) |
+| O6 | A second, smaller model on the board (cascade, router or draft) | memory | wrong and runaway answers, at a lower cost per try | — | **Not tested** |
+| O7 | Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | **Not tested** (small bucket) |
+| O8 | Lower power mode or clocks when the width cannot be used | power | base power in every bucket | not measured | **Not tested**; P1 ran at locked maximum clocks |
+
+Status: **Measured** = a result exists on P1's boards; **Testing now** = runs in progress; **Not tested** = an idea, no data yet.
+
+The same table, for the presentation, is in `reports/2026-10-15-meeting/README.md` §2.
 
 **What this means for the thesis:**
-- **Packing and speculative decoding compete for the same width and the same bucket** (one-at-a-time decoding).
+- **Packing (O1) and speculative decoding (O4) compete for the same width and the same bucket** (one-at-a-time decoding).
   Speculation is the obvious reviewer question ("why not just speculate?"). It must be measured, either in B\* as a
   fixed setting or as a third consumer the controller can choose.
-- **Candidates are the only consumer that attacks failed runs, the largest bucket.** The selection rule decides which
+- **Candidates (O2, O3) are the only consumers that attack failed runs, the largest bucket.** The selection rule decides which
   failures they reach:
   - first to finish catches runaways, which dominate drones and Thor's traffic;
   - a check or vote catches wrong answers, which dominate traffic on most boards.
-- **A lower power mode is the "don't spend it" baseline.** It belongs in B\*, because P1 ran at locked maximum clocks.
+- **A lower power mode (O8) is the "don't spend it" baseline.** It belongs in B\*, because P1 ran at locked maximum clocks.
 - **Suggested scope:** the core is the run-time split of width and memory among agents, candidates and speculation.
   FP8 and the power mode join B\* as settings. The check or vote is a selection variant of candidates. Prefetch and a
   second model are named as future work.

@@ -2,6 +2,10 @@
 
 **Last updated:** 2026-10-15, 01:00 (IST).
 
+**Next meeting: 16 Oct.** Build the presentation from `reports/2026-10-15-meeting/README.md` (the brief). It includes
+the options table O1–O8 (§2), with each option marked measured, testing now or not tested. The professor chooses among
+them, and the untested ones are in TRACKER as `OPT-*`.
+
 **15 Oct, 11:00: Thor-2 crashed overnight and the runs resumed at 10:41.**
 - **Cause:** Thor-2 reset at 01:24 from memory exhaustion.
   - The kernel's out-of-memory killer fired from 01:10:02, and the kernel log stops at 01:23:33.

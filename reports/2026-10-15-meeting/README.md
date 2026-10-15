@@ -1,6 +1,6 @@
 # P5 for the professor: where the energy goes, and what we propose
 
-**Draft, 15 Oct 2026.** This brief prepares the next meeting, whose date is not fixed. It answers the questions of
+**Draft, 15 Oct 2026.** This brief prepares the next meeting, on 16 Oct; the presentation is built from it. It answers the questions of
 14 Oct (D23). Sources:
 - the energy waterfall ([`../2026-10-14-waterfall/`](../2026-10-14-waterfall/README.md));
 - the candidates analysis ([`../2026-10-15-candidates/`](../2026-10-15-candidates/README.md));
@@ -15,7 +15,7 @@
    - Inside passing runs, decoding one request at a time is the largest avoidable part: 2–36% of traffic energy,
      median 17%.
    - Reading prompts and tool waits are small, which is why retention is out.
-2. **What do we propose?** A serving layer that spends the board's spare decode width and KV memory in two main ways (§2 lists the other consumers, such as speculative decoding):
+2. **What do we propose?** A serving layer that spends the board's spare decode width and KV memory in two main ways (§2's options table lists the others, O1–O8):
    - on **more agents** (packing);
    - on **parallel candidates** for an agent's risky calls (first of k sampled answers wins).
 
@@ -96,15 +96,46 @@ with each board's measured energy per decode step.
 
   The bar is 15% better in energy per success at the same pass rate (ENERGY_PLAN §5).
 
-**Candidates and packing are not the only consumers of the spare capacity** (full table: THESIS.md §5):
-- **Speculative decoding** uses the same width to verify draft tokens and gives the same answers. It competes with
-  packing for the one-at-a-time decoding bucket (traffic 17%). It must be measured, as part of B\* or as a third choice
-  for the controller.
-- **Candidates checked or voted on, not first to finish,** would reach wrong answers. Those are the largest failure
-  cause in traffic (16% of energy, against 7% for runaway calls); runaway calls dominate on drones (37%).
-- **A lower power mode** is the "don't spend it" baseline. P1 ran at locked maximum clocks, so it belongs in B\*.
-- **Memory for longer contexts** (FP8) reaches the context overflows (traffic 6%). It is a setting.
-- **Prefetching tool calls and a second, smaller model** are smaller or larger changes, left as future work.
+### Options for the professor: every way to spend the spare capacity
+
+**For the presentation: one slide with this table.** The professor chooses among the options. We are testing O2 now. O1
+and O5 are measured, and the rest are ideas.
+
+The board's slack has three parts:
+- decode width (several streams cost little more than one);
+- KV memory;
+- idle time during tool waits.
+
+Its power can also be cut instead of used. Each option attacks a different part of the energy. Sizes are median shares
+of all of P1's board energy (`../2026-10-14-waterfall/waterfall.json`).
+
+| # | Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
+| --- | --- | --- | --- | --- | --- |
+| O1 | More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | **Measured** on drones (the mentor's fleets: 2.3× less energy per success on Thor; the Orin is best at 4 agents). Traffic fleets **not tested** |
+| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Testing now.** Drone banks done (Orin dense −70%, Thor MoE +12–25%); traffic CAND-T2 (granite) and CAND-T1 (gemma) running on Thor-2, results today |
+| O3 | Parallel candidates checked or voted on (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | **Not tested** |
+| O4 | Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | **Not tested**; SGLang supports it |
+| O5 | Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | **Measured** as a setting: FP8 doubles the pool and cuts energy per token 44% (CAP-J1, Orin 32) |
+| O6 | A second, smaller model on the board (cascade, router or draft) | memory | wrong and runaway answers, at a lower cost per try | — | **Not tested** |
+| O7 | Run the likely next tool call during a wait (prefetch) | idle time | tool waits | 0–7% | **Not tested** (small bucket) |
+| O8 | Lower power mode or clocks when the width cannot be used | power | base power in every bucket | not measured | **Not tested**; P1 ran at locked maximum clocks |
+
+Status: **Measured** = a result exists on P1's boards; **Testing now** = runs in progress; **Not tested** = an idea, no data yet.
+
+**What the table says:**
+- **O4 is the first gap a reviewer will find.** Speculative decoding uses the same width as packing (O1) and attacks
+  the same bucket. "Why not just speculate?" needs a measured answer: in B\* as a setting, or as a third choice for the
+  controller.
+- **Only candidates (O2, O3) attack failed runs, the largest bucket.** The selection rule decides which failures they
+  reach:
+  - first to finish catches runaways, which dominate drones and Thor's traffic;
+  - a check or vote catches wrong answers, which dominate traffic on most boards.
+- **O8 is the "don't spend it" baseline.** P1 ran at locked maximum clocks, so a lower power mode belongs in B\*.
+- **Suggested scope:**
+  - the core is the run-time split of width and memory among O1, O2 and O4;
+  - O5 and O8 join B\* as settings;
+  - O3 is a selection variant of O2;
+  - O6 and O7 are future work.
 
 ## 3. Evidence on P1's boards
 
