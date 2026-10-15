@@ -186,7 +186,9 @@ her doc for P1's single-drone column.
   - Granite's cost curve on Thor is in: 4 streams cost 1.10× per step at a 4K context and 1.23× at 16K. Extra width is
     cheap on a dense model on Thor too.
 - **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.
-  - *pending (≈21:00).* The bank analysis predicts that first-of-4 costs energy here.
+  - **S1 done (17:28–20:13):** one sampled answer passed 10 of 12 at 65 kJ per success, with 5 capped calls. P1's greedy
+    runs of the same tasks (another setup) passed 28 of 48 at 83 kJ, with 31 capped calls.
+  - *pending (≈23:00): F4 and the verdict.* The bank analysis predicts that first-of-4 costs energy here.
 - **An edge lesson from the platform:** P1's server flags reserve 80% of Thor's unified memory for the model server.
   Our live agent run exhausted the rest and crashed the board (15 Oct, 01:24). Memory left beside the server is part of
   the capacity problem the controller must manage, not a fixed setting.

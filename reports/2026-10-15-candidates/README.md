@@ -104,6 +104,17 @@ that, and what sampling alone does against P1's greedy protocol.
   call; the gateway logged 12, including the 2 capped ones. P1's recorded runs have the same gap, so trace-based counts
   undercount runs cut by the timeout in every arm. For S1 and F4 the gateway log is the full record.
 
+**CAND-T1, gemma-26B (mixture of experts) on Thor-2: S1 is done (17:28–20:13); F4 is running.** Read beside P1's
+recorded greedy runs of the same 12 tasks (another setup):
+
+| Arm | Runs | Passed | kJ per success | Capped calls |
+| --- | --- | --- | --- | --- |
+| G: P1 greedy, recorded (4 per task) | 48 | 28 | 83.4 | 31 (traces) |
+| S1: one sampled answer | 12 | 10 | 64.6 | 5 (gateway) |
+
+Sampling alone already looks better than P1's greedy protocol here, as the drone banks suggested, but this is one repeat
+from another setup. With 10 of 12 already passing, F4 has little room to add passes.
+
 **Gateway check (15 Oct, 00:55, before the arms):** the first-of-k gateway was run against P1's client stack.
 - **Client:** langchain 1.4.0, langchain-core 1.6.1, langchain-openai 1.6.0, langgraph 1.2.11, openai 3.8.0, with P1's
   agent module imported so that its sglang reasoning patch applies.
