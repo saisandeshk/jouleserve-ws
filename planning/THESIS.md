@@ -48,7 +48,7 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
 | --- | --- | --- | --- | --- |
 | Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls) | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | +5% per step at 4 | **−70%** | 8, 4, 1 (memory) | **candidates**: 2 agents × 4 candidates beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
-| Thor-2, granite-8B (dense) | +10% per step at 4 (4K context), +23% (16K) | *live on traffic: CAND-T2 running* | to be computed | to be measured |
+| Thor-2, granite-8B (dense) | +10% per step at 4 (4K context), +23% (16K) | **−24% live on P1's traffic agent** ("weaker" by the rule; 8 against 6 of 10 passed; same total energy) | to be computed | to be measured |
 
 - **The answer flips with the model.** On the MoE, extra streams activate other experts. Sampling already removed its
   runaway answers (0 of 168 samples capped), so candidates only buy pass rate (56% → 70% on hard prompts), at more
@@ -132,7 +132,7 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 | --- | --- |
 | Where does the energy go? | Done: waterfall, 25 configurations |
 | Do candidates pay on drones? | Done on banks: yes on the Orin's dense E4B, no on Thor's MoE 26B. The E4B base is weak (15 of 168 sampled programs pass) |
-| Do candidates pay on traffic? | **Running** (CAND-T1 gemma-26B, CAND-T2 granite dense; rules fixed before data) |
+| Do candidates pay on traffic? | Granite (dense): **−24% energy per success, "weaker"** by the rule (needs 30% for "pays"), same total energy, 8 against 6 of 10 passed, one repeat. Gemma-26B (MoE): running |
 | Is the live traffic platform faithful to P1? | **Running** (TRF-3); P1's grader reproduces 336 of 336 of P1's grades |
 | Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
 | Do other dense models behave like E4B? | Partly testable now: granite's cost curve on Thor-2 is queued |

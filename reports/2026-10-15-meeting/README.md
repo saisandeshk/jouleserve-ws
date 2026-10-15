@@ -179,10 +179,10 @@ her doc for P1's single-drone column.
   Details: [`../2026-10-14-traffic-agent/`](../2026-10-14-traffic-agent/README.md).
 - **Do candidates pay on a dense model?** CAND-T2 runs granite-8B on 10 tasks, one sampled answer (S1) against
   first-of-4 (F4). The rules were fixed before the data.
-  - **S1 done:** one sampled answer passed 6 of 10 at 126 kJ per success, with no capped calls in the traces. P1's
-    greedy runs of the same tasks passed 15 of 30 at 152 kJ, with 8 capped calls. This is cross-setup and one repeat,
-    so it is not read as an effect.
-  - *pending (≈17:30): F4 and the verdict.*
+  - **Verdict: "weaker"** (the rule needed 30% for "pays"). First-of-4 cut energy per success by 24% (126 → 96 kJ),
+    with the same total energy (757 → 766 kJ). It passed 8 of 10 tasks against 6 of 10, including every task the single
+    answer passed; a 2-pass difference is not read as an effect. The winners were 25% shorter. This is one repeat on 10
+    tasks. P1's greedy runs of the same tasks (another setup) passed 15 of 30 at 152 kJ.
   - Granite's cost curve on Thor is in: 4 streams cost 1.10× per step at a 4K context and 1.23× at 16K. Extra width is
     cheap on a dense model on Thor too.
 - **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.

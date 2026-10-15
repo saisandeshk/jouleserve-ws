@@ -1,0 +1,188 @@
+{
+ "model": "granite",
+ "s1_dir": "/home/saisandeshk/work/runs/thor2/cand-granite-s1-r1-20261015T1150",
+ "f4_dir": "/home/saisandeshk/work/runs/thor2/cand-granite-f4-r1-20261015T1436",
+ "arms": {
+  "G (P1 greedy, recorded)": {
+   "runs": 30,
+   "passes": 15,
+   "pass_rate": 0.5,
+   "energy_J": 2273071.99,
+   "energy_per_success_J": 151538.13266666667,
+   "capped_calls": 8,
+   "calls": 157,
+   "mean_time_s": 1010.8166666666666
+  },
+  "S1 (one sampled answer)": {
+   "runs": 10,
+   "passes": 6,
+   "pass_rate": 0.6,
+   "energy_J": 756559.14,
+   "energy_per_success_J": 126093.19,
+   "capped_calls": 0,
+   "calls": 44,
+   "mean_time_s": 992.0
+  },
+  "F4 (first-of-4)": {
+   "runs": 10,
+   "passes": 8,
+   "pass_rate": 0.8,
+   "energy_J": 765705.39,
+   "energy_per_success_J": 95713.17375,
+   "capped_calls": 0,
+   "calls": 61,
+   "mean_time_s": 1018.65
+  }
+ },
+ "gateway": {
+  "S1": {
+   "agent_calls": 56,
+   "winner_not_first": 0,
+   "winner_capped": 2,
+   "loser_tokens": 0,
+   "winner_tokens": 105213
+  },
+  "F4": {
+   "agent_calls": 68,
+   "winner_not_first": 48,
+   "winner_capped": 0,
+   "loser_tokens": 169639,
+   "winner_tokens": 79206
+  }
+ },
+ "f4_vs_s1_energy_per_success": -0.24093304523424297,
+ "f4_minus_s1_passes": 2,
+ "verdict": "weaker",
+ "per_task": {
+  "day-summary": {
+   "G": [
+    0,
+    0,
+    0
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "peak-count": {
+   "G": [
+    1,
+    0,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "class-mix": {
+   "G": [
+    1,
+    0,
+    0
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "busiest-hour": {
+   "G": [
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "avg-per-minute": {
+   "G": [
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "compare-periods": {
+   "G": [
+    0,
+    0,
+    0
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "unusual-vs-median": {
+   "G": [
+    0,
+    0,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "stalled-vehicle": {
+   "G": [
+    1,
+    1,
+    1
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  },
+  "peak-start-end": {
+   "G": [
+    0,
+    1,
+    0
+   ],
+   "S1": [
+    0
+   ],
+   "F4": [
+    0
+   ]
+  },
+  "viz-class-vs-dwell": {
+   "G": [
+    1,
+    0,
+    0
+   ],
+   "S1": [
+    1
+   ],
+   "F4": [
+    1
+   ]
+  }
+ }
+}

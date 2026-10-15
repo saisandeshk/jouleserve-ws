@@ -82,15 +82,24 @@ answer; first-of-4), the 12 tasks and the rules. Given the bank result on Thor's
 expected to cost energy on gemma-26B traffic too. The experiment checks whether traffic's chains of capped calls change
 that, and what sampling alone does against P1's greedy protocol.
 
-**CAND-T2, granite: S1 is done (15 Oct, 11:50–14:36); F4 is running.** S1 is one sampled answer through the gateway at
-k = 1. It is read beside P1's recorded greedy runs of the same 10 tasks, which come from a different setup:
+**CAND-T2, granite-8B (dense) on Thor-2: done (15 Oct, 11:50–17:26). Verdict by the rule fixed before the data:
+"weaker".** First-of-4 cut energy per success by 24.1% against one sampled answer. "Pays" needed 30% or more.
 
-| Arm | Runs | Passed | kJ per success | Capped calls (traces) |
-| --- | --- | --- | --- | --- |
-| G: P1 greedy, recorded (3 per task) | 30 | 15 | 151.5 | 8 |
-| S1: one sampled answer (ours) | 10 | 6 | 126.1 | 0 (the gateway log shows 2) |
+| Arm | Runs | Passed | kJ per success | Total kJ | Winning tokens | Capped calls (gateway) |
+| --- | --- | --- | --- | --- | --- | --- |
+| G: P1 greedy, recorded (3 per task) | 30 | 15 | 151.5 | 2,273 | — | 8 (traces) |
+| S1: one sampled answer | 10 | 6 | 126.1 | 757 | 105,213 | 2 |
+| F4: first-of-4 | 10 | 8 | 95.7 | 766 | 79,206 | 0 |
 
-- **One repeat:** differences of 2 passes or fewer are not read.
+- **First-of-4 cost no extra energy in total** (+1%, 766 against 757 kJ). The winners were 25% shorter (79K against 105K
+  tokens). The losers decoded 170K tokens in parallel, at 1.10–1.23× per step on this dense model.
+- **F4 passed every task S1 passed, and two more** (class-mix, compare-periods). Under the rule, a 2-pass difference is
+  not read as an effect.
+- **48 of 68 winners were not the first candidate,** so the race was real.
+- **One repeat, 10 tasks.** The energy per success result rests on 6 against 8 passes.
+- **G is P1's recorded greedy runs** from P1's box and time. Sampled answers (S1) are not worse than them here (6 of 10
+  against 15 of 30).
+
 - **A trace gap:** peak-start-end hit the agent's 1-hour workload timeout. P1's trace then keeps only the run's first
   call; the gateway logged 12, including the 2 capped ones. P1's recorded runs have the same gap, so trace-based counts
   undercount runs cut by the timeout in every arm. For S1 and F4 the gateway log is the full record.
