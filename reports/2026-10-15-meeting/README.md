@@ -6,7 +6,7 @@
 - the candidates analysis ([`../2026-10-15-candidates/`](../2026-10-15-candidates/README.md));
 - the thesis draft ([`../../planning/THESIS.md`](../../planning/THESIS.md));
 - the mentor's drone fleets (her doc, 14 Oct);
-- the live traffic runs on Thor-2 (§3; slots marked *pending* fill in as the runs end).
+- the live traffic runs on Thor-2 (§3; all results in, 15 Oct 23:00).
 
 ## The short answer
 
@@ -22,9 +22,12 @@
    It chooses between them at run time, from the model's cost curve, the load and the free memory, to cut energy per
    successful task.
 3. **Why is it not a setting?** The right choice flips:
-   - **with the model:** candidates cut energy per success by 70% on a dense model and raise it by 12–25% on a
-     mixture-of-experts;
-   - **with the load:** the best number of candidates falls from 8 to 4 to 1 as agents are added.
+   - **with the model:** on P1's live traffic agent, first-of-4 cut energy per success by 24% on the dense granite, and
+     raised it by 40% on the mixture-of-experts gemma (one repeat each). The drone banks show the same split: −70% on the
+     dense E4B, +12–25% on the 26B;
+   - **with the load:** the best number of candidates falls from 8 to 4 to 1 as agents are added;
+   - **with the selection rule:** on gemma, the first candidate to finish was sometimes a premature answer, given without
+     reading the data. Which candidate to keep is part of the design.
 
    At a steady load, though, the best fixed k comes close: on the Orin, fixed k = 4 is within 8% of the adaptive choice
    where it fits. The case for a run-time choice therefore rests on changing conditions (load, context length, memory,
@@ -69,14 +72,14 @@ energy per success = average board power ÷ successful tasks per hour (a suggest
 
 ![Energy per success against candidates per call, by load](../2026-10-15-candidates/candidates.png)
 
-This comes from the mentor's drone sample banks: 8 sampled programs per prompt, each flown and graded. It is combined
-with each board's measured energy per decode step.
+The figure and the drone numbers come from the mentor's drone sample banks: 8 sampled programs per prompt, each flown
+and graded, combined with each board's measured energy per decode step. The live traffic numbers are from Thor-2 (§3).
 
 | Board, model | Cost of 4 streams against 1, per step | First-of-4 against one answer, energy per success | Best k at 1, 2, 4 agents | Best use of spare capacity |
 | --- | --- | --- | --- | --- |
-| Thor, gemma-26B (mixture of experts) | 1.81× | +12% (hard prompts), +25% (controls); passes 56% → 70% | 1, 1, 1 | more agents |
+| Thor, gemma-26B (mixture of experts) | 1.81× | Drone banks: +12% (hard prompts), +25% (controls); passes 56% → 70%. **Live traffic: +40%**, 10 → 7 of 12 passed, same total energy | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | 1.05× | **−70%**; passes 8.9% → 12.6% | 8, 4, 1 (memory) | candidates: 2 agents × 4 beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
-| Thor-2, granite-8B (dense) | 1.10× (4K context), 1.23× (16K) | *CAND-T2 running* | to be computed | to be measured |
+| Thor-2, granite-8B (dense) | 1.10× (4K context), 1.23× (16K) | **Live traffic: −24%**, 6 → 8 of 10 passed, same total energy | to be computed | candidates, by its cost curve |
 
 - **Why the answer flips with the model.**
   - On a mixture-of-experts, each extra stream wakes other experts, so width is expensive. Sampling already removed its
@@ -100,8 +103,8 @@ with each board's measured energy per decode step.
 
 ### Options for the professor: every way to spend the spare capacity
 
-**For the presentation: one slide with this table.** The professor chooses among the options. We are testing O2 now. O1
-and O5 are measured, and the rest are ideas.
+**For the presentation: one slide with this table.** The professor chooses among the options. O1, O2 and O5 have
+measurements, and the rest are ideas.
 
 The board's slack has three parts:
 - decode width (several streams cost little more than one);
@@ -114,8 +117,8 @@ of all of P1's board energy (`../2026-10-14-waterfall/waterfall.json`).
 | # | Way to spend it | Resource | What it attacks | Size: traffic / drones | Status |
 | --- | --- | --- | --- | --- | --- |
 | O1 | More agents per board (packing) | width, memory | one-at-a-time decoding | 17% / 5% | **Measured** on drones (the mentor's fleets: 2.3× less energy per success on Thor; the Orin is best at 4 agents). Traffic fleets **not tested** |
-| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Testing now.** Drone banks done (Orin dense −70%, Thor MoE +12–25%); traffic CAND-T2 (granite) and CAND-T1 (gemma) running on Thor-2, results today |
-| O3 | Parallel candidates checked or voted on (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | **Not tested** |
+| O2 | Parallel candidates, first to finish wins | width | runaway (capped) calls | 7% / 37% | **Measured** on traffic, one repeat each: granite (dense) −24% energy per success; gemma (MoE) +40%, because the fastest candidate was sometimes a premature answer. Drone banks: Orin dense −70%, Thor MoE +12–25% |
+| O3 | Parallel candidates checked or voted on (run each candidate's program, keep the majority answer) | width, tool time | wrong answers | 16% / 34% | **Not tested**; the gemma result points here |
 | O4 | Speculative decoding (draft or n-gram tokens verified in one pass; the same answers) | width | one-at-a-time decoding, per token | 17% / 5% | **Not tested**; SGLang supports it |
 | O5 | Memory for longer contexts (FP8 KV, fewer agents) | memory | context overflow | 6% / 0% | **Measured** as a setting: FP8 doubles the pool and cuts energy per token 44% (CAP-J1, Orin 32) |
 | O6 | A second, smaller model on the board (cascade, router or draft) | memory | wrong and runaway answers, at a lower cost per try | — | **Not tested** |
@@ -163,10 +166,10 @@ her doc for P1's single-drone column.
 - **The open question for the controller:** on the Orin, the bank analysis says the capacity past 2 agents is better
   spent on candidates (2 agents × 4 candidates). The live test is a 2-drone fleet with first-of-4 against the 4-drone
   fleet above.
-- **Still running (15 Oct, 01:00):**
-  - Thor-1: step-wise fleet, gemma-26B, 4 drones. So far 9 of 12 missions passed; all 7 short B-tasks passed.
-  - Orin-32-2: step-wise fleet, granite, 2 drones.
-  - Orin-32-3: Reflexion fleet, granite, 4 drones.
+- **Since then:** step-wise fleets (a different agent and task set, so not comparable with the table) finished on
+  Thor-1 (gemma-26B, 14 missions: 10 passed at 93 kJ per success with 4 drones, 64 kJ with 8) and on Orin-32-1 (E4B,
+  12 missions: 5 passed at 37 kJ with 4, 6 at 31 kJ with 8). Steady-state fleets are running on Thor-1 and the Orins
+  (logs read 15 Oct, 23:00). Details are in her doc.
 
 **Traffic: P1's agent, unchanged, on Thor-2 (ours, 15 Oct).**
 - **Is the platform faithful to P1? Yes.** TRF-3 ran gemma-26B with P1's greedy protocol, graded by P1's grader (which
@@ -188,7 +191,13 @@ her doc for P1's single-drone column.
 - **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.
   - **S1 done (17:28–20:13):** one sampled answer passed 10 of 12 at 65 kJ per success, with 5 capped calls. P1's greedy
     runs of the same tasks (another setup) passed 28 of 48 at 83 kJ, with 31 capped calls.
-  - *pending (≈23:00): F4 and the verdict.* The bank analysis predicts that first-of-4 costs energy here.
+  - **Verdict: "absent".** First-of-4 raised energy per success by 40% (65 → 90 kJ) and passed 7 of 12 against 10.
+    Energy was not the problem: its total was slightly lower (631 against 646 kJ), because the winners were 46%
+    shorter. Passes were: in heavy-vehicle, the fastest candidate answered from general knowledge after 3 steps,
+    without reading the camera data. First-to-finish rewards speed, and a premature answer is fast.
+- **What the two traffic results say together:** candidates cost little or no extra energy on P1's agent with either
+  model, because the winners are shorter. Whether they pay depends on the model and on the selection rule. A check
+  ("no final answer before the data is read") or a vote (O3) is the next design step.
 - **An edge lesson from the platform:** P1's server flags reserve 80% of Thor's unified memory for the model server.
   Our live agent run exhausted the rest and crashed the board (15 Oct, 01:24). Memory left beside the server is part of
   the capacity problem the controller must manage, not a fixed setting.
@@ -222,6 +231,7 @@ her doc for P1's single-drone column.
 | By | What | Who |
 | --- | --- | --- |
 | 18 Oct | **The decisive bound (Q2-1):** run-time choice against the best fixed configuration under changing load, growing contexts and risky calls, offline. If it is under 15%, switch to the fallback below | Sandesh with Claude |
+| 19 Oct | Candidates with a check (no final answer before the data is read) against first-to-finish, gemma traffic on Thor-2 | Sandesh with Claude |
 | 20 Oct | Speculative decoding (O4) measured on Thor-2, for B\* | Sandesh with Claude |
 | 25 Oct | The controller, first version, in the gateway. B\* measured on traffic (Thor-2) and drones (the mentor's fleets) | Sandesh with Claude; the mentor |
 | 8 Nov | Live fleets with the controller: traffic on Thor-2 and an Orin, drones on Thor and the Orins | both |

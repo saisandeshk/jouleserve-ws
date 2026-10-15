@@ -1,6 +1,6 @@
 # P5 thesis: draft for discussion (TH-1)
 
-**15 Oct 2026, draft 2 (13:00: goodput framing and the full menu of consumers added as suggestions).** Draft 1 (14 Oct) is in git. It led with stopping doomed runs; the predictor test (WF-3b)
+**15 Oct 2026, draft 2 (13:00: goodput framing and the full menu of consumers added as suggestions; 23:00: both live traffic verdicts).** Draft 1 (14 Oct) is in git. It led with stopping doomed runs; the predictor test (WF-3b)
 weakened that, and the candidates analysis moved the core. It is built on:
 - the energy waterfall ([`../reports/2026-10-14-waterfall/`](../reports/2026-10-14-waterfall/README.md));
 - the candidates analysis ([`../reports/2026-10-15-candidates/`](../reports/2026-10-15-candidates/README.md)).
@@ -46,7 +46,7 @@ From the mentor's drone sample banks and the boards' measured cost curves (compu
 
 | Board, model | One more candidate costs | First-of-4 against one answer, energy per success | Best k at 1, 2, 4 agents | Best use of spare capacity |
 | --- | --- | --- | --- | --- |
-| Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls) | 1, 1, 1 | more agents |
+| Thor, gemma-26B (mixture of experts) | +81% per step at 4 | +12% (hard prompts), +25% (controls); **+40% live on P1's traffic agent** ("absent"; 10 → 7 of 12 passed at the same total energy, by picking premature answers) | 1, 1, 1 | more agents |
 | Orin 32, gemma-E4B (dense) | +5% per step at 4 | **−70%** | 8, 4, 1 (memory) | **candidates**: 2 agents × 4 candidates beat 4 agents × 1 (0.16 against 0.26 of one answer at one agent) |
 | Thor-2, granite-8B (dense) | +10% per step at 4 (4K context), +23% (16K) | **−24% live on P1's traffic agent** ("weaker" by the rule; 8 against 6 of 10 passed; same total energy) | to be computed | to be measured |
 
@@ -132,7 +132,7 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 | --- | --- |
 | Where does the energy go? | Done: waterfall, 25 configurations |
 | Do candidates pay on drones? | Done on banks: yes on the Orin's dense E4B, no on Thor's MoE 26B. The E4B base is weak (15 of 168 sampled programs pass) |
-| Do candidates pay on traffic? | Granite (dense): **−24% energy per success, "weaker"** by the rule (needs 30% for "pays"), same total energy, 8 against 6 of 10 passed, one repeat. Gemma-26B (MoE): running |
+| Do candidates pay on traffic? | Granite (dense): **−24% energy per success, "weaker"** by the rule ("pays" needs 30%), same total energy, 8 against 6 of 10 passed. Gemma-26B (MoE): **+40%, "absent"**, same total energy, 7 against 10 of 12 passed. One repeat each |
 | Is the live traffic platform faithful to P1? | **Running** (TRF-3); P1's grader reproduces 336 of 336 of P1's grades |
 | Does the choice matter live with several agents? | Not yet: needs fleets with candidates (the mentor's W1 harness, Thor-2 traffic fleets) |
 | Do other dense models behave like E4B? | Partly testable now: granite's cost curve on Thor-2 is queued |
@@ -147,7 +147,11 @@ The same table, for the presentation, is in `reports/2026-10-15-meeting/README.m
 
   The novelty is the run-time choice between agents and candidates, driven by cost curve, load and memory, judged by
   energy per success on edge boards.
-- **The dense case rests on E4B, a weak model.** The granite and traffic runs test whether it generalises.
+- **First-to-finish can pick premature answers.** On gemma traffic, the fastest candidate sometimes gave a final
+  answer without reading the data (heavy-vehicle). The selection rule needs a check or a vote (option O3) before
+  candidates can be trusted on every model.
+- **The dense case rested on E4B, a weak model.** Granite on P1's traffic agent now supports it (−24% energy per
+  success, "weaker" by our rule), on one repeat of 10 tasks.
 - **On the MoE, candidates lose energy.** If every model worth deploying on a Thor is an MoE, the story narrows to the
   Orin-class boards.
 - **Overlap with P1.** P1 owns the failed-energy observation and its offline policies (attempt budgets, step cutoffs).
