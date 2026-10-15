@@ -219,6 +219,8 @@ her doc for P1's single-drone column.
 
 | By | What | Who |
 | --- | --- | --- |
+| 18 Oct | **The decisive bound (Q2-1):** run-time choice against the best fixed configuration under changing load, growing contexts and risky calls, offline. If it is under 15%, switch to the fallback below | Sandesh with Claude |
+| 20 Oct | Speculative decoding (O4) measured on Thor-2, for B\* | Sandesh with Claude |
 | 25 Oct | The controller, first version, in the gateway. B\* measured on traffic (Thor-2) and drones (the mentor's fleets) | Sandesh with Claude; the mentor |
 | 8 Nov | Live fleets with the controller: traffic on Thor-2 and an Orin, drones on Thor and the Orins | both |
 | 22 Nov | Full evaluation, ablations, sensitivity (pool size, model) | both |
