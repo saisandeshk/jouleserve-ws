@@ -34,8 +34,8 @@ WS.
 - **WS, tmux `p5-follow`** (`env/ws_follow.py`): every 5 minutes it verifies the SHA-256 of each finished run that has
   reached `~/work/runs/thor2/` and runs its analysis. TRF-3 → `p5_validate.txt`; cost curve → `p5_costcurve.txt`; each
   CAND pair → `cand_<model>.txt`. It writes `~/work/runs/thor2/STATUS.txt`.
-- **Copying:** the WS's key is not authorized on Thor-2, so the laptop relays the runs (`env/p5_relay_thor2.sh`). Once
-  Sandesh authorizes the WS key there, the follower copies them itself.
+- **Copying:** since 15 Oct 12:44 the WS's key is authorized on Thor-2 (Sandesh). The follower copies runs itself ("copy
+  mode: direct" in STATUS.txt), so nothing depends on the laptop.
 
 **14 Oct: the professor meeting took place; P5 now follows the energy.** The current plan is
 [`planning/ENERGY_PLAN.md`](planning/ENERGY_PLAN.md) (one page; it replaces OPTIONS_PLAN v2.0). Everything below this
