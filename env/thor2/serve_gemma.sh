@@ -13,7 +13,7 @@ docker run -d --rm --read-only --tmpfs /tmp --log-driver none --name p5-traffic-
   -e HF_HUB_OFFLINE=1 -e HF_HUB_CACHE=/root/.cache/huggingface/hub -e HOME=/p5cache -e XDG_CACHE_HOME=/p5cache/xdg -e TRITON_CACHE_DIR=/p5cache/triton \
   -e TORCHINDUCTOR_CACHE_DIR=/p5cache/inductor -e FLASHINFER_WORKSPACE_BASE=/p5cache \
   lmsysorg/sglang:latest-cu130-runtime sh -c "python3 -m sglang.launch_server --model-path google/gemma-4-26B-A4B-it \
-  --served-model-name gemma4-it --mem-fraction-static 0.80 --context-length 110000 --attention-backend triton \
+  --served-model-name gemma4-it --mem-fraction-static ${MEM:-0.70} --context-length 110000 --attention-backend triton \
   --tool-call-parser gemma4 --reasoning-parser gemma4 --default-chat-template-kwargs '{\"enable_thinking\":true}' \
   --host 0.0.0.0 --port 30000 --enable-metrics --disable-cuda-graph --enable-cache-report --random-seed 42 \
   > /p5logs/p5-traffic-gemma.log 2>&1"

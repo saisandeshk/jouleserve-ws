@@ -13,7 +13,7 @@ docker run -d --rm --read-only --tmpfs /tmp --log-driver none --name p5-traffic-
   -e HF_HUB_OFFLINE=1 -e HF_HUB_CACHE=/root/.cache/huggingface/hub -e HOME=/p5cache -e XDG_CACHE_HOME=/p5cache/xdg -e TRITON_CACHE_DIR=/p5cache/triton \
   -e TORCHINDUCTOR_CACHE_DIR=/p5cache/inductor -e FLASHINFER_WORKSPACE_BASE=/p5cache \
   lmsysorg/sglang:latest-cu130-runtime sh -c "python3 -m sglang.launch_server --model-path ibm-granite/granite-4.2-8b \
-  --served-model-name granite --mem-fraction-static 0.80 --context-length 110000 --attention-backend triton \
+  --served-model-name granite --mem-fraction-static ${MEM:-0.70} --context-length 110000 --attention-backend triton \
   --tool-call-parser qwen3_coder --reasoning-parser deepseek-r1 --max-mamba-cache-size 64 \
   --host 0.0.0.0 --port 30000 --enable-metrics --disable-cuda-graph --enable-cache-report --random-seed 42 \
   > /p5logs/p5-traffic-granite.log 2>&1"

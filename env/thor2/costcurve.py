@@ -22,7 +22,11 @@ JETSON = "/media/hdd/p5/jsw-dev/jsw/telemetry/jetson.py"
 def post(url, body, timeout=3600):
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read() or b"{}")
+        raw = r.read()
+    try:
+        return json.loads(raw or b"{}")
+    except ValueError:                       # /flush_cache answers in plain text
+        return {}
 
 
 def prompt(ctx):
@@ -45,6 +49,8 @@ def main():
     samples = os.path.join(a.out, "device_samples.jsonl")
     pid = os.path.join(a.out, "sampler.pid")
     sp = subprocess.Popen([sys.executable, JETSON, "sample", "--out", samples, "--interval", "180", "--pidfile", pid])
+    import atexit
+    atexit.register(sp.terminate)            # never leave the sampler running if a request fails
     time.sleep(5)
     sys.path.insert(0, os.path.dirname(JETSON))
     import jetson  # noqa: E402

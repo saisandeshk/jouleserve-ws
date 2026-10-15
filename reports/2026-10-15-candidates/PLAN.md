@@ -89,6 +89,21 @@ So the dense case is the informative test on traffic, and a second gemma repeat 
 3. **Run order on Thor-2** (`env/thor2/cand_chain2.sh`): TRF-3 → gemma S1 → gemma F4 → granite server and cost curve →
    granite S1 → granite F4.
 
+**Amendment, 15 Oct 10:55 IST (before any CAND data): the servers' memory fraction.**
+- **What happened:** Thor-2 crashed at 01:24, during TRF-3's 8th task. The cause was memory exhaustion:
+  - the kernel's out-of-memory killer fired from 01:10:02 (`/var/log/kern.log`);
+  - the gemma server at P1's `--mem-fraction-static 0.80` had left about 5 GB for P1's agent, its tools, Docker and
+    the desktop;
+  - the board reset after the log stopped at 01:23:33.
+
+  After the reboot, a granite S1 run and a cost-curve run lasted 2 minutes. They are renamed `aborted-*` and are not
+  data. The cost-curve script had failed on `/flush_cache`'s plain-text reply; it is fixed.
+- **Change:** both servers run at `--mem-fraction-static 0.70` (`MEM` in `env/thor2/serve_*.sh`).
+  - That leaves about 30 GB for the rest of the board.
+  - Gemma's pool comes out near P1's recorded Thor-2 pool (about 248K tokens). One agent with 4 candidates needs far less.
+  - Arms, tasks and rules are unchanged. S1 and F4 of each model share one server, so the comparison is unaffected.
+  - TRF-3's first 7 tasks ran at 0.80 and its last 2 run at 0.70. At one agent the pool never binds.
+
 **Order change, 15 Oct 00:50 IST (before any data):** CAND-T2 (granite, the informative dense case) now runs before CAND-T1
 (gemma-26B, whose result the bank analysis already predicts), so the test of the thesis's positive half comes first
 (`env/thor2/cand_chain3.sh`). Arms, tasks and rules are unchanged.

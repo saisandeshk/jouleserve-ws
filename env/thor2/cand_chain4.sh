@@ -1,10 +1,11 @@
 #!/bin/bash
 # Resume after Thor-2's unclean reboot (15 Oct 01:24, mid TRF-3; the USB disk had to be remounted):
-#  0. close the cut TRF-3 run (rc=cut, SHA256SUMS), and log free memory every 30 s to logs/mem.log (cause unknown);
-#  1. CAND-T2: granite-4.2-8b (P1's flags), its cost curve, then S1 (k = 1) and F4 (k = 4), 10 tasks;
-#  2. CAND-T1: gemma-26B (P1's flags), S1 and F4, 12 tasks;
+#  0. close the cut TRF-3 run (rc=cut, SHA256SUMS), and log free memory every 30 s to logs/mem.log (the crash was memory exhaustion);
+#  1. CAND-T2: granite-4.2-8b (P1's flags, memory fraction 0.70), its cost curve, then S1 (k = 1) and F4 (k = 4), 10 tasks;
+#  2. CAND-T1: gemma-26B (P1's flags, memory fraction 0.70), S1 and F4, 12 tasks;
 #  3. TRF-3's tasks the crash cut off, on the same gemma server.
-# Arms, tasks and rules as in cand_chain3.sh and reports/2026-10-15-candidates/PLAN.md.
+# Arms, tasks and rules as in cand_chain3.sh and reports/2026-10-15-candidates/PLAN.md. Servers at --mem-fraction-static
+# 0.70 (MEM; P1 used 0.80): the 01:24 crash was memory exhaustion (PLAN.md, amendment of 15 Oct 10:55).
 # Run inside tmux:  tmux new-session -d -s p5-cand "bash /media/hdd/p5/bin/cand_chain4.sh"
 P=/media/hdd/p5; L=$P/logs/cand_chain.log
 [ -d $P/bin ] || { echo "$P missing: is the USB disk mounted on /media/hdd?" >&2; exit 1; }
@@ -35,7 +36,7 @@ say "TRF-3 left for the end of this chain: ${REST3:-none}"
 say "swap to granite"
 docker stop p5-traffic-gemma >/dev/null 2>&1; sleep 5
 bash $P/bin/serve_granite.sh >> $L 2>&1 || { say "GRANITE SERVE FAILED"; kill $MP; exit 1; }
-curl -s http://127.0.0.1:30101/get_server_info > $P/logs/p5-traffic-granite.server_info.json
+I=$P/logs/p5-traffic-granite.server_info.$(date +%m%dT%H%M).json; curl -s http://127.0.0.1:30101/get_server_info > $I; [ -s $I ] || curl -s http://127.0.0.1:30101/server_info > $I
 say "granite cost curve start"
 python3 $P/bin/costcurve.py --server http://127.0.0.1:30101 --model granite \
   --out $P/runs/costcurve-granite-$(date +%Y%m%dT%H%M) >> $L 2>&1
@@ -49,7 +50,7 @@ done
 say "swap to gemma"
 docker stop p5-traffic-granite >/dev/null 2>&1; sleep 10
 bash $P/bin/serve_gemma.sh >> $L 2>&1 || { say "GEMMA SERVE FAILED"; kill $MP; exit 1; }
-curl -s http://127.0.0.1:30101/get_server_info > $P/logs/p5-traffic-gemma.server_info.json
+I=$P/logs/p5-traffic-gemma.server_info.$(date +%m%dT%H%M).json; curl -s http://127.0.0.1:30101/get_server_info > $I; [ -s $I ] || curl -s http://127.0.0.1:30101/server_info > $I
 for spec in "s1 1" "f4 4"; do
   set -- $spec
   say "gemma arm $1 (k=$2) start"
