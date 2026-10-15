@@ -2,6 +2,24 @@
 
 **Last updated:** 2026-10-15, 01:00 (IST).
 
+**15 Oct, 10:45: Thor-2 crashed and the runs are paused until its USB disk is mounted again.**
+- **What happened:** Thor-2 rebooted uncleanly at 01:24 (`last` says "crash"; the cause is unknown, and the journal
+  needs root).
+  - TRF-3 was cut at about 8 of 9 tasks, and the CAND chain had not started.
+  - The USB disk (NTFS "My Passport", `/dev/sda1`, UUID `3CC6F08EC6F049A2`) has no fstab entry, so it did not mount
+    again. `/media/hdd`, with all of P5's Thor-2 data, is empty until it is mounted.
+- **Needs Sandesh (sudo):**
+  `sudo mount -t ntfs-3g -o uid=1004,gid=1004,umask=022 /dev/sda1 /media/hdd`.
+  - The ids are `mayankarya`'s, matching the files' earlier owner and modes.
+  - An fstab entry with `nofail` would survive the next reboot. That is P1's machine, so it is P1's call.
+- **Then, automatically:** a laptop watcher starts `env/thor2/cand_chain4.sh` in tmux `p5-cand`. It:
+  - closes the cut TRF-3 run;
+  - logs free memory every 30 s to `logs/mem.log`;
+  - runs granite (cost curve, S1, F4), then gemma (S1, F4), then TRF-3's missing tasks.
+
+  If the laptop is off, start it by hand:
+  `tmux new-session -d -s p5-cand "bash /media/hdd/p5/bin/cand_chain4.sh"`, after copying the script there.
+
 **15 Oct, running (survives laptop power cuts):** after a restart, run `env/p5_status.sh` from the repo root. It shows
 Thor-2's chains and runs, the WS follower's status and the units' containers, and relays Thor-2's finished runs to the
 WS.

@@ -6,7 +6,8 @@
 #   NORELAY=1 env/p5_status.sh  status only
 O="-o BatchMode=yes -o ConnectTimeout=8"
 echo "== Thor-2 (P5's traffic runs) =="
-ssh $O mayankarya@10.24.24.80 'tmux ls 2>&1 | grep p5- ; docker ps --format "{{.Names}}  {{.Status}}" | grep p5-;
+ssh $O mayankarya@10.24.24.80 '[ -d /media/hdd/p5 ] || echo "!! /media/hdd/p5 missing: the USB disk is not mounted (Thor-2 rebooted?); see HANDOFF"; uptime -s | sed "s/^/booted /";
+  tmux ls 2>&1 | grep p5- ; docker ps --format "{{.Names}}  {{.Status}}" | grep p5-;
   for f in trf3_chain.log cand_chain.log; do echo "-- $f"; tail -3 /media/hdd/p5/logs/$f 2>/dev/null; done
   echo "-- runs (tasks done, finished?)"; cd /media/hdd/p5/runs && for d in */; do d=${d%/};
   n=$(cat $d/runs.jsonl 2>/dev/null | wc -l); f=$(grep -o "rc=[0-9]*" $d/p5_run.txt 2>/dev/null || { [ -f $d/costcurve.jsonl ] && echo done; } || echo running);
