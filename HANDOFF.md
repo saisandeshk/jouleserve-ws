@@ -1,50 +1,56 @@
 # HANDOFF — jouleserve-ws
 
-**Last updated:** 2026-10-15, 01:00 (IST).
+**Last updated:** 2026-10-15, 23:30 (IST).
 
-**Next meeting: 16 Oct.** Build the presentation from `reports/2026-10-15-meeting/README.md` (the brief). It includes
-the options table O1–O8 (§2), with each option marked measured, testing now or not tested. The professor chooses among
-them, and the untested ones are in TRACKER as `OPT-*`.
-The flow artifact (https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP) has two tabs since 15 Oct, 17:40: the flow of 14 Oct,
-and "The serving layer, if it works" (the hypothetical design, what a researcher gets, and the gains with their evidence).
-Its source is in git-ignored `data/flow_page/flow.html`.
-A one-page progress artifact for sharing (first person, no names; private until Sandesh shares it):
-https://claude.ai/artifact/D4KPy2zze4xWk3JjKsaNYQ (source copy in git-ignored `data/progress_page/`; update it as the CAND verdicts land).
+**Next meeting: Fri 16 Oct.** Build the presentation from the brief, `reports/2026-10-15-meeting/README.md`:
+- the opportunity (waterfall, useful share about 7%);
+- the proposal: spend spare width and memory, chosen at run time;
+- the options table O1–O8 (§2), each marked measured or not tested;
+- the evidence (§3): drone fleets, TRF-3, and both live traffic verdicts;
+- the path to OSDI, and decisions for the professor.
 
-**15 Oct, 11:00: Thor-2 crashed overnight and the runs resumed at 10:41.**
-- **Cause:** Thor-2 reset at 01:24 from memory exhaustion.
-  - The kernel's out-of-memory killer fired from 01:10:02, and the kernel log stops at 01:23:33.
-  - Our gemma server at P1's `--mem-fraction-static 0.80` had left about 5 GB for P1's agent, its tools, Docker and the
-    desktop.
-  - Details are in `reports/2026-10-14-traffic-agent/` (TRF-3 section).
-- **Fixes:**
-  - Servers run at 0.70, which leaves about 28 GB free. This is the CAND plan's amendment of 10:55, made before any
-    data.
-  - `env/thor2/memguard.sh` (tmux `p5-memguard`) stops P5's own server if free memory stays under 4 GB.
-  - The cost-curve script now tolerates `/flush_cache`'s plain-text reply.
-  - Two 2-minute runs from 10:37 are renamed `aborted-*`.
-- **The USB disk** (NTFS "My Passport", `/dev/sda1`) has no fstab entry. Sandesh remounted it at 10:36. After any
-  reboot it needs `sudo mount -t ntfs-3g -o uid=1004,gid=1004,umask=022 /dev/sda1 /media/hdd`, then
-  `tmux new-session -d -s p5-cand "bash /media/hdd/p5/bin/cand_chain4.sh"`.
-- **TRF-3 is done for 7 of 9 tasks, and the platform is faithful to P1.** We passed 7 of 7, against P1's 22 of 28.
-  Our energy lies within P1's min–max on 5 of 7 tasks. The last 2 tasks rerun at the end of the chain.
-- **Thor-1** (the mentor's units) has only about 2.9 GB free beside her 26B server. No out-of-memory kills there yet
-  (kern.log, 15 Oct).
+**15 Oct results (all on P1's boards; details in the reports):**
+- **TRF-3, our platform against P1's:** faithful on 7 of 9 tasks (`reports/2026-10-14-traffic-agent/`).
+  - We passed 7 of 7, where P1 passed 22 of 28. Our energy lies within P1's min–max on 5 of 7 tasks.
+  - The last 2 tasks were rerun at the end of the chain, run `trf3-gemma-A-rest-*`.
+- **Granite cost curve on Thor-2:** 4 streams cost 1.10× per step at a 4K context and 1.23× at 16K. Extra width is cheap
+  on a dense model, on Thor as on the Orin.
+- **CAND-T2, granite (dense), first-of-4 against one sampled answer:** −24.1% energy per success, "weaker" by the rule
+  fixed before the data.
+  - 8 against 6 of 10 passed, at the same total energy.
+- **CAND-T1, gemma-26B (MoE):** +39.7% energy per success, "absent".
+  - 7 against 10 of 12 passed, at the same total energy.
+  - First-to-finish picked premature answers; in heavy-vehicle the winner answered without reading the data.
+  - So the rule for picking the winner matters, and the next design step is a check or a vote (O3).
+- **A correction (15 Oct):** "fixed k = 1 costs 2.7× the adaptive choice" compared against the worst setting. The best
+  fixed k is within 8% at a steady load. So the run-time claim rests on changing conditions; that is the decisive
+  bound Q2-1 (TRACKER), first after the meeting.
+- **Thor-2 crashed at 01:24 from memory exhaustion.**
+  - The OOM killer fired from 01:10, at P1's `--mem-fraction-static 0.80`.
+  - Fixes: servers at 0.70, plus `env/thor2/memguard.sh` (tmux `p5-memguard`).
+  - The USB disk has no fstab entry. After any reboot, Sandesh mounts it:
+    `sudo mount -t ntfs-3g -o uid=1004,gid=1004,umask=022 /dev/sda1 /media/hdd`.
+  - Thor-1 (the mentor's) runs with about 3 GB free: the same risk.
 
-**15 Oct, running (survives laptop power cuts):** after a restart, run `env/p5_status.sh` from the repo root. It shows
-Thor-2's chains and runs, the WS follower's status and the units' containers, and relays Thor-2's finished runs to the
-WS.
-- **Thor-2, tmux `p5-trf3`, then `p5-cand`** (self-chaining, nothing on the laptop):
-  - TRF-3 (gemma greedy, 9 tasks);
-  - then CAND-T2 (granite: cost curve, S1, F4);
-  - then CAND-T1 (gemma: S1, F4).
+**Artifacts (private unless Sandesh shares them):**
+- **Progress page,** first person, no names, shared with the mentor: https://claude.ai/artifact/D4KPy2zze4xWk3JjKsaNYQ.
+  Its source is in git-ignored `data/progress_page/`.
+- **Flow page,** two tabs: the flow of 14 Oct, and "The serving layer, if it works" (the design, the menu O1–O8, and
+  what a researcher gets): https://claude.ai/artifact/VGdZ6v2fwacEiNRTc8ceDP. Its source is in `data/flow_page/`.
 
-  Logs are in `/media/hdd/p5/logs/{trf3_chain,cand_chain}.log` ("CHAIN DONE", "CAND CHAIN DONE").
-- **WS, tmux `p5-follow`** (`env/ws_follow.py`): every 5 minutes it verifies the SHA-256 of each finished run that has
-  reached `~/work/runs/thor2/` and runs its analysis. TRF-3 → `p5_validate.txt`; cost curve → `p5_costcurve.txt`; each
-  CAND pair → `cand_<model>.txt`. It writes `~/work/runs/thor2/STATUS.txt`.
-- **Copying:** since 15 Oct 12:44 the WS's key is authorized on Thor-2 (Sandesh). The follower copies runs itself ("copy
-  mode: direct" in STATUS.txt), so nothing depends on the laptop.
+**Operations (nothing depends on the laptop):**
+- After a restart, run `env/p5_status.sh` from the repo root. It shows Thor-2, the WS follower and the units, and copies
+  finished runs to the WS.
+- **Thor-2:** the chain `env/thor2/cand_chain4.sh` (tmux `p5-cand`) logs to `/media/hdd/p5/logs/cand_chain.log` and ends
+  with "CAND CHAIN DONE". P5's gemma server may still be up afterwards. Stop it with `docker stop p5-traffic-gemma` before
+  P1 uses the board; P1's `sweep-llm` stays stopped (restore it with `docker start sweep-llm`).
+- **WS, tmux `p5-follow`** (`env/ws_follow.py`): every 5 minutes it copies runs from Thor-2 directly (the WS key is
+  authorized there since 12:44), checks their SHA-256, runs the analyses and writes `~/work/runs/thor2/STATUS.txt`.
+- **Next steps:**
+  - Q2-1, the decisive bound under changing load (about 18 Oct);
+  - candidates with a check, on gemma (19 Oct);
+  - speculative decoding, O4 (20 Oct);
+  - the controller (25 Oct).
 
 **14 Oct: the professor meeting took place; P5 now follows the energy.** The current plan is
 [`planning/ENERGY_PLAN.md`](planning/ENERGY_PLAN.md) (one page; it replaces OPTIONS_PLAN v2.0). Everything below this
