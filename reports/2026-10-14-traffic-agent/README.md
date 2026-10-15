@@ -117,6 +117,47 @@ read-only against our copy, Thor-2 and the WS:
 3. Permission to copy the data: 31 GB for text-only models, 60 GB with images.
 4. Whether Devstral counts as text-only.
 
+## TRF-3: P1's agent live on Thor-2, against P1's runs (15 Oct)
+
+**Setup:**
+- P1's agent, unchanged, with P1's run settings (greedy, seed 42, 8,000-token cap, 20 steps; `env/thor2/traffic_run.sh`).
+- P1's gemma-26B traffic server flags, in a P5 container.
+- Graded by P1's grader (from a copy; it reproduces 336 of 336 of P1's Thor gemma grades).
+- Compared with P1's 4 recorded Thor runs of each task (instance A; `analysis/traffic_validate.py compare`).
+
+**Result on the 7 of 9 tasks that finished before Thor-2 crashed:**
+
+| Task | Ours | P1 passes | Calls, ours / P1 median | kJ, ours | kJ, P1 min–max (median) |
+| --- | --- | --- | --- | --- | --- |
+| day-summary | pass | 1/4 | 2 / 4.5 | 9.9 | 6.2–532 (62.8) |
+| peak-count | pass | 4/4 | 3 / 2 | 5.3 | 2.3–3.5 (3.0) |
+| class-mix | pass | 4/4 | 3 / 4 | 7.3 | 5.0–14.3 (8.4) |
+| busiest-hour | pass | 4/4 | 2 / 2 | 7.1 | 4.2–7.6 (5.8) |
+| avg-per-minute | pass | 3/4 | 9 / 10 | 38.5 | 20.5–66.5 (50.9) |
+| compare-periods | pass | 4/4 | 6 / 4 | 18.4 | 7.0–12.2 (8.6) |
+| heavy-vehicle | pass | 2/4 | 12 / 6 | 21.3 | 6.8–34.4 (11.7) |
+
+- **Passes:** we passed 7 of 7, where P1 passed 22 of 28 on the same tasks.
+- **Energy:** ours lies within P1's own min–max on 5 of 7 tasks. Our total is 107.7 kJ, against 151.0 kJ for P1's
+  medians.
+- **Where we differ, the path differs.** In peak-count and compare-periods our agent made more calls.
+- **Per generated token,** the board's energy (ours over P1's median) is within 3–7% of P1's on 5 of 7 tasks. The
+  other two are busiest-hour (1.3×) and day-summary (1.7×), where our short runs carry tool time over few tokens.
+- **Reading:** the platform reproduces P1's outcomes and per-token cost. Greedy runs still take different paths from
+  P1's, as P1's own repeats do (day-summary ranges from 6.2 to 532 kJ).
+
+**The crash.** Thor-2 reset at 01:24, during the 8th task (peak-start-end). The cause was memory exhaustion:
+- the kernel's out-of-memory killer fired from 01:10:02 and killed desktop processes in a loop;
+- swap was full, the page cache had dropped to almost nothing, and P1's sampler stalled at 01:15:39;
+- the kernel log stops at 01:23:33.
+
+At the first kill, process memory was only about 12 GB. Most of the rest was GPU memory reserved by the server at
+P1's `--mem-fraction-static 0.80`, which had left about 5 GB for P1's agent, its SQLite and Python tools over a 20 GB
+database, Docker and the desktop. The fixes:
+- P5's servers now run at 0.70, which leaves about 28 GB free;
+- a memory guard (`env/thor2/memguard.sh`) stops P5's own server if free memory stays under 4 GB;
+- the last 2 TRF-3 tasks rerun at the end of the CAND chain.
+
 ## Questions for P1 (through Sandesh)
 
 1. A `pip freeze` of `camera_query_agent/.venv`, and which `agent.py` the final sweeps used. The copy's `agent.py` differs

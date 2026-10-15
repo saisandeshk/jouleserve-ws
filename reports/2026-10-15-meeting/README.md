@@ -120,14 +120,23 @@ her doc for P1's single-drone column.
   - Orin-32-3: Reflexion fleet, granite, 4 drones.
 
 **Traffic: P1's agent, unchanged, on Thor-2 (ours, 15 Oct).**
-- **Is the platform faithful to P1?** TRF-3 runs gemma-26B with P1's greedy protocol on 9 tasks, graded by P1's
-  grader, which reproduces 336 of 336 of P1's grades.
-  - *pending (≈01:30): pass and energy per task against P1's recorded runs.*
+- **Is the platform faithful to P1? Yes.** TRF-3 ran gemma-26B with P1's greedy protocol, graded by P1's grader (which
+  reproduces 336 of 336 of P1's grades), on 7 of 9 tasks; Thor-2's crash cut the other 2, which rerun later today.
+  - We passed 7 of 7, where P1 passed 22 of 28 on the same tasks.
+  - Our energy lies within P1's own min–max on 5 of 7 tasks.
+  - Per generated token, our energy is within 3–7% of P1's on 5 of 7 tasks.
+  - Where we differ, the agent took a different path (more calls), as P1's own repeats do.
+
+  Details: [`../2026-10-14-traffic-agent/`](../2026-10-14-traffic-agent/README.md).
 - **Do candidates pay on a dense model?** CAND-T2 runs granite-8B on 10 tasks, one sampled answer (S1) against
   first-of-4 (F4). The rules were fixed before the data.
-  - *pending (≈08:00): verdict, passes, energy per success; granite's cost curve on Thor.*
+  - *pending (≈18:30): verdict, passes, energy per success.*
+  - *pending (≈12:00): granite's cost curve on Thor.*
 - **And on the mixture-of-experts?** CAND-T1 runs gemma-26B on 12 tasks, S1 against F4.
-  - *pending (≈12:00).* The bank analysis predicts that first-of-4 costs energy here.
+  - *pending (≈21:30).* The bank analysis predicts that first-of-4 costs energy here.
+- **An edge lesson from the platform:** P1's server flags reserve 80% of Thor's unified memory for the model server.
+  Our live agent run exhausted the rest and crashed the board (15 Oct, 01:24). Memory left beside the server is part of
+  the capacity problem the controller must manage, not a fixed setting.
 
 ## 4. The critiques of 14 Oct, answered
 

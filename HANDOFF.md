@@ -2,23 +2,25 @@
 
 **Last updated:** 2026-10-15, 01:00 (IST).
 
-**15 Oct, 10:45: Thor-2 crashed and the runs are paused until its USB disk is mounted again.**
-- **What happened:** Thor-2 rebooted uncleanly at 01:24 (`last` says "crash"; the cause is unknown, and the journal
-  needs root).
-  - TRF-3 was cut at about 8 of 9 tasks, and the CAND chain had not started.
-  - The USB disk (NTFS "My Passport", `/dev/sda1`, UUID `3CC6F08EC6F049A2`) has no fstab entry, so it did not mount
-    again. `/media/hdd`, with all of P5's Thor-2 data, is empty until it is mounted.
-- **Needs Sandesh (sudo):**
-  `sudo mount -t ntfs-3g -o uid=1004,gid=1004,umask=022 /dev/sda1 /media/hdd`.
-  - The ids are `mayankarya`'s, matching the files' earlier owner and modes.
-  - An fstab entry with `nofail` would survive the next reboot. That is P1's machine, so it is P1's call.
-- **Then, automatically:** a laptop watcher starts `env/thor2/cand_chain4.sh` in tmux `p5-cand`. It:
-  - closes the cut TRF-3 run;
-  - logs free memory every 30 s to `logs/mem.log`;
-  - runs granite (cost curve, S1, F4), then gemma (S1, F4), then TRF-3's missing tasks.
-
-  If the laptop is off, start it by hand:
-  `tmux new-session -d -s p5-cand "bash /media/hdd/p5/bin/cand_chain4.sh"`, after copying the script there.
+**15 Oct, 11:00: Thor-2 crashed overnight and the runs resumed at 10:41.**
+- **Cause:** Thor-2 reset at 01:24 from memory exhaustion.
+  - The kernel's out-of-memory killer fired from 01:10:02, and the kernel log stops at 01:23:33.
+  - Our gemma server at P1's `--mem-fraction-static 0.80` had left about 5 GB for P1's agent, its tools, Docker and the
+    desktop.
+  - Details are in `reports/2026-10-14-traffic-agent/` (TRF-3 section).
+- **Fixes:**
+  - Servers run at 0.70, which leaves about 28 GB free. This is the CAND plan's amendment of 10:55, made before any
+    data.
+  - `env/thor2/memguard.sh` (tmux `p5-memguard`) stops P5's own server if free memory stays under 4 GB.
+  - The cost-curve script now tolerates `/flush_cache`'s plain-text reply.
+  - Two 2-minute runs from 10:37 are renamed `aborted-*`.
+- **The USB disk** (NTFS "My Passport", `/dev/sda1`) has no fstab entry. Sandesh remounted it at 10:36. After any
+  reboot it needs `sudo mount -t ntfs-3g -o uid=1004,gid=1004,umask=022 /dev/sda1 /media/hdd`, then
+  `tmux new-session -d -s p5-cand "bash /media/hdd/p5/bin/cand_chain4.sh"`.
+- **TRF-3 is done for 7 of 9 tasks, and the platform is faithful to P1.** We passed 7 of 7, against P1's 22 of 28.
+  Our energy lies within P1's min–max on 5 of 7 tasks. The last 2 tasks rerun at the end of the chain.
+- **Thor-1** (the mentor's units) has only about 2.9 GB free beside her 26B server. No out-of-memory kills there yet
+  (kern.log, 15 Oct).
 
 **15 Oct, running (survives laptop power cuts):** after a restart, run `env/p5_status.sh` from the repo root. It shows
 Thor-2's chains and runs, the WS follower's status and the units' containers, and relays Thor-2's finished runs to the

@@ -98,14 +98,22 @@ def compare(run_dir, cell=CELL):
     for o in ours:
         t = theirs.get((o["task"], o["instance"]), [])
         med = lambda k: statistics.median([x[k] for x in t if x[k] is not None]) if any(x[k] is not None for x in t) else None
+        es = [x["energy_J"] for x in t if x["energy_J"] is not None]
         row = dict(o, p1_runs=len(t), p1_passes=sum(x["result"] == "pass" for x in t), p1_calls=med("calls"),
-                   p1_out=med("out"), p1_energy_J=med("energy_J"))
+                   p1_out=med("out"), p1_energy_J=med("energy_J"), p1_energy_min_J=min(es) if es else None,
+                   p1_energy_max_J=max(es) if es else None,
+                   energy_in_p1_range=bool(es) and o["energy_J"] is not None and min(es) <= o["energy_J"] <= max(es))
         out.append(row)
         e = (o["energy_J"] or 0) / 1e3
         pe = (row["p1_energy_J"] or 0) / 1e3
         print(f"{o['task']:22s} {o['result']:>5s} {row['p1_passes']:>4d}/{row['p1_runs']:<5d} | "
               f"{o['calls']:>7d} / {row['p1_calls'] or 0:<8.0f} | {o['out']:>8d} / {row['p1_out'] or 0:<9.0f} | "
               f"{e:>6.1f} / {pe:<6.1f}")
+    n = len(out)
+    print(f"summary: ours passed {sum(r['result'] == 'pass' for r in out)}/{n}; P1 passed "
+          f"{sum(r['p1_passes'] for r in out)}/{sum(r['p1_runs'] for r in out)} on the same tasks; our energy within P1's "
+          f"min-max on {sum(r['energy_in_p1_range'] for r in out)}/{n} tasks; total {sum(r['energy_J'] or 0 for r in out) / 1e3:.1f} kJ "
+          f"against P1's medians {sum(r['p1_energy_J'] or 0 for r in out) / 1e3:.1f} kJ")
     json.dump(out, open(os.path.join(run_dir, "p5_validate.json"), "w"), indent=1, default=str)
     print("wrote", os.path.join(run_dir, "p5_validate.json"))
 
